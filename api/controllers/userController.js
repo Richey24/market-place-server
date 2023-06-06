@@ -5,7 +5,13 @@ const bcrypt = require("bcrypt");
 
 exports.register = async (req, res) => {
    
-   console.log('resiter user')
+   console.log('POST registering user')
+
+
+
+
+
+   // TODO: add tenant id to verify that user can register to more than one tenant
    let isUser = await User.find({ email: req.body.email });
    console.log(isUser)
 
@@ -24,6 +30,9 @@ exports.register = async (req, res) => {
 
    let data = await user.save();
    const token = await user.generateAuthToken(); // here it is calling the method that we created in the model
+
+
+
    res.status(201).json({ user, token });
 }
 
@@ -119,7 +128,7 @@ exports.addShippingAddress = async (req, res)=> {
         street: req.body.street,
         phone: req.body.phone,
         zipcode: req.body.zipcode,
-        company: reg.body.company,
+        company: req.body.company,
         email: req.body.email,
         userId: req.userData._id
     });
