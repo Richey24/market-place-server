@@ -32,23 +32,23 @@ app.use(morgan("dev")); // configire morgan
 // define first route
 app.get("/", (req, res) => {
   console.log("Hello MEVN Soldier");
-  // res.status(201).json({ message: 'working' }); 
+  res.status(201).json({ message: 'working' });
 });
 
-const userRouter     = require('./api/routes/user')
+const userRouter = require('./api/routes/user')
 const categoryRouter = require('./api/routes/category')
-const productRouter  = require('./api/routes/product')
-const shoppingCart   = require('./api/routes/cart')
+const productRouter = require('./api/routes/product')
+const shoppingCart = require('./api/routes/cart')
 
-app.use('/api/auth',  userRouter );
-app.use('/api/user',  userRouter );
+app.use('/api/auth', userRouter);
+app.use('/api/user', userRouter);
 
-app.use('/api/products', productRouter );
-app.use('/api/categories', categoryRouter );
+app.use('/api/products', productRouter);
+app.use('/api/categories', categoryRouter);
 
 app.use('/api/carts', shoppingCart);
 
 app.listen(PORT, () => {
-	console.log(`App is running on ${PORT}`);
+  console.log(`App is running on ${PORT}`);
 })
 
