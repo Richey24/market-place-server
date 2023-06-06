@@ -4,7 +4,6 @@
   "description": "Tenant Base eCommerce Website ",
   "main": "index.js",
   "scripts": {
-    "test": "test",
     "start": "node index.js"
   },
   "author": "Lionel Francis",
