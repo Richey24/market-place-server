@@ -10,7 +10,7 @@ const app = express();
 
 //configure database and mongoose
 mongoose
-  .connect('mongodb://localhost:27017/israelmarketplace', { useNewUrlParser: true })
+  .connect(process.env.MONGO_URL, { useNewUrlParser: true })
   .then(() => {
     console.log("Database is connected");
   })
