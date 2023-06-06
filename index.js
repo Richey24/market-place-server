@@ -39,6 +39,8 @@ const userRouter     = require('./api/routes/user')
 const categoryRouter = require('./api/routes/category')
 const productRouter  = require('./api/routes/product')
 const shoppingCart   = require('./api/routes/cart')
+const adsRouter      = require('./api/routes/ads')
+const wishlistRouter = require('./api/routes/wishlists')
 
 app.use('/api/auth',  userRouter );
 app.use('/api/user',  userRouter );
@@ -47,6 +49,10 @@ app.use('/api/products', productRouter );
 app.use('/api/categories', categoryRouter );
 
 app.use('/api/carts', shoppingCart);
+app.use('/api/ads', adsRouter);
+app.use('/api/wishlists', wishlistRouter);
+
+
 
 app.listen(PORT, () => {
 	console.log(`App is running on ${PORT}`);
