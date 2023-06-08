@@ -9,7 +9,7 @@ exports.getOnboarding = async (req, res) => {
 	console.table(req.table);
 
 	// Onboarding params
-	let date = new Date(Date.now()).toLocaleString();
+	let date = new Date().toLocaleDateString();
 	let company_name = req.body.company_name;
 	let company_type = req.body.company_type;
 	let tenantname = req.body.tenant 
@@ -40,13 +40,15 @@ exports.getOnboarding = async (req, res) => {
     	await odoo.connect();
     	console.log("Connect to Odoo XML-RPC");
 
-    	let company_id = await odoo.execute_kw("res.company", "create", [
-    		{ 'account_open_date': date, 'active': true }
+    	let partner = await odoo.execute_kw('res.partner', 'create', [
+    		{is_company: true, is_published: true, is_public: true, name: company_name}
     	]);
 
-    	let partner = await odoo.execute_kw('res.partner', 'create', [
-    		{company_name: company_name, company_id: company_id}
+    	let company_id = await odoo.execute_kw("res.company", "create", [
+    		{ 'account_opening_date': date, 'active': true, name:  req.body.company_name}
     	]);
+
+    	
 
     	const save_user = new User ({
     		firstname: req.body.firstname,
