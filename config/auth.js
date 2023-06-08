@@ -1,17 +1,13 @@
-const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
-	
-	try {
-		const token = req.headers.authorization.replace("Bearer ", "")
+module.exports = (err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode);
 
-		const decoded = jwt.verify(token, "secret");
-		req.userData = decoded;
+  console.error(err);
 
-		next();
-	} catch(err) {
-		return res.status(401).json({
-			message: "Authentification Failed"
-		})
-	}
+  res.json({
+    error: {
+      message: err.message,
+    },
+  });
 }
