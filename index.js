@@ -41,6 +41,8 @@ const productRouter = require('./api/routes/product')
 const shoppingCart = require('./api/routes/cart')
 const adsRouter = require('./api/routes/ads')
 const wishlistRouter = require('./api/routes/wishlists')
+const onboardingRouter = require('./api/routes/onboarding');
+
 
 app.use('/api/auth', userRouter);
 app.use('/api/user', userRouter);
@@ -52,6 +54,7 @@ app.use('/api/carts', shoppingCart);
 app.use('/api/ads', adsRouter);
 app.use('/api/wishlists', wishlistRouter);
 
+app.use('/api/onboarding', onboardingRouter )
 
 
 app.listen(PORT, () => {
