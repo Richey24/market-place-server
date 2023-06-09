@@ -1,6 +1,6 @@
 const User = require('../../model/User');
 const Companies = require('../../model/Company');
-var Odoo = require('async-odoo-xmlrpc');
+const Odoo = require('../../config/odoo.connection');
 
 
 exports.getOnboarding = async (req, res) => {
@@ -30,21 +30,15 @@ exports.getOnboarding = async (req, res) => {
 	let phone     = req.body.phone;
 	
 
-	var odoo = new Odoo({ url: 'http://104.43.252.217/', port: 80,
-        db: 'bitnami_odoo',
-        username: 'user@example.com',
-        password: '850g6dHsX1TQ'
-    });
-
     try {
-    	await odoo.connect();
+		await Odoo.connect();
     	console.log("Connect to Odoo XML-RPC");
 
-    	let partner = await odoo.execute_kw('res.partner', 'create', [
+		let partner = await Odoo.execute_kw('res.partner', 'create', [
     		{is_company: true, is_published: true, is_public: true, name: company_name}
     	]);
 
-    	let company_id = await odoo.execute_kw("res.company", "create", [
+		let company_id = await Odoo.execute_kw("res.company", "create", [
     		{ 'account_opening_date': date, 'active': true, name:  req.body.company_name}
     	]);
 

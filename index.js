@@ -1,10 +1,12 @@
 const express = require("express");
+const { errors } = require('celebrate');
+
 const PORT = process.env.PORT || 4000;
 const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-const config = require("./config/db");
+require('dotenv').config()
 
 const app = express();
 
@@ -15,6 +17,8 @@ mongoose
     console.log("Database is connected");
   })
   .catch(err => {
+    console.log({ mongo: process.env.MONGO_URL })
+
     console.log({ database_error: err });
   });
 // db configuaration ends here
@@ -55,6 +59,7 @@ app.use('/api/ads', adsRouter);
 app.use('/api/wishlists', wishlistRouter);
 
 app.use('/api/onboarding', onboardingRouter )
+app.use(errors());
 
 
 app.listen(PORT, () => {
