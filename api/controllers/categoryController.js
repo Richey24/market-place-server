@@ -14,7 +14,7 @@ exports.getCategories = async ( req, res) => {
     try {
         await odoo.connect();
         console.log("Connect to Odoo XML-RPC is successed.");
-        let categories = await odoo.execute_kw('product.public.category', 'search_read', [], 0, 8);
+        let categories = await odoo.execute_kw('product.public.category', 'search_read', [], 0, 1);
         res.status(201).json({ categories });
     } catch (e) {
         console.error('Error when trying to connect odoo xml-rpc', e)
