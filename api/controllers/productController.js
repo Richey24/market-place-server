@@ -1,4 +1,6 @@
 var Odoo = require('async-odoo-xmlrpc');
+const  Company = require('../../model/Company');
+const { addProduct } = require('../../services/product.service');
 
 exports.getProducts = async (req, res) => {
 	
@@ -26,7 +28,6 @@ exports.getProducts = async (req, res) => {
         console.error("Error when try connect Odoo XML-RPC.", e);
     }	
 }
-
 
 exports.filterProducts = async (req, res) => {
 
@@ -69,9 +70,7 @@ exports.filterProducts = async (req, res) => {
 		} catch(e) {
 		    console.error("Error when try connect Odoo XML-RPC.", e);
 		}
-
 }
-
 
 exports.productDetails = async ( req, res) => {
 
@@ -103,7 +102,6 @@ exports.productDetails = async ( req, res) => {
 	    }
 }
 
-
 exports.wishlistProduct = async ( req, res) => {
 
 		console.log(" GET /api/details");
@@ -134,22 +132,22 @@ exports.wishlistProduct = async ( req, res) => {
 	    }
 }
 
-// exports.createProducts = async (req, res) => {
+exports.createProduct = async (req, res) => {
 
-// 	var odoo = new Odoo({
-//         url: 'http://104.43.252.217/',
-//         port: 80,
-//         db: 'bitnami_odoo',
-//         username: 'user@example.com',
-//         password: '850g6dHsX1TQ'
-//     });
+	let user = req.userData;
+	// let companyInfo = Company.findOne({ userId: user._id})
 
+	var odoo = new Odoo({url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
+        username: 'user@example.com',
+        password: '850g6dHsX1TQ'
+    });
 
-// 	try {
-// 		await odoo.execute_kw('product.template', 'search', [
-//             [['id', '=', productId]]]);
+    let params = {
+    	odoo: odoo,
+    	product: req.body,
+    	user: user
+    }
 
-// 		models.execute_kw(db, uid, password, 'res.partner', 'create', [{'name': "New Partner"}])
-// 	}
-// }
-
+	const product = await addProduct(params)
+	res.status(201).json({product})
+}
