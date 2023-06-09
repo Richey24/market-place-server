@@ -1,10 +1,18 @@
 const express = require('express');
+const { celebrate, Joi, Segments } = require('celebrate');
+
 const router = express.Router();
 const auth = require('../../config/auth');
+const validate = require("../../middlewares/validate")
 
-const category = require('../controllers/categoryController')
+const createCategoryDTO = require("../../schemas/category.schema")
 
-router.get('/', category.getCategories);
-router.get('/:id', category.categoryDetails );
-router.post('/', category.createCategory);
+
+const categoryController = require('../controllers/category.controller');
+
+router.get('/', categoryController.findAll);
+router.get('/:id', categoryController.findOne);
+router.post('/', celebrate({ body: createCategoryDTO }), categoryController.create);
+router.put('/:id', categoryController.update);
+
 module.exports = router;

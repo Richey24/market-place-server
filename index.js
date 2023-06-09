@@ -10,13 +10,13 @@ const app = express();
 
 //configure database and mongoose
 mongoose
-     .connect(process.env.MONGO_URL, { useNewUrlParser: true })
-     .then(() => {
-          console.log("Database is connected");
-     })
-     .catch((err) => {
-          console.log({ database_error: err });
-     });
+  .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+  .then(() => {
+    console.log("Database is connected");
+  })
+  .catch((err) => {
+    console.log({ database_error: err });
+  });
 // db configuaration ends here
 
 //registering cors
@@ -31,8 +31,8 @@ app.use(morgan("dev")); // configire morgan
 
 // define first route
 app.get("/", (req, res) => {
-     console.log("Hello MEVN Soldier");
-     // res.status(201).json({ message: 'working' });
+  console.log("Hello MEVN Soldier");
+  // res.status(201).json({ message: 'working' });
 });
 
 const userRouter = require("./api/routes/user");
@@ -60,5 +60,5 @@ app.use("/api/wishlists", wishlistRouter);
 app.use("/api/onboarding", onboardingRouter);
 
 app.listen(PORT, () => {
-     console.log(`App is running on ${PORT}`);
+  console.log(`App is running on ${PORT}`);
 });
