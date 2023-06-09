@@ -60,8 +60,6 @@ exports.getOnboarding = async (req, res) => {
 	    		partner_id: partner, 
 	    		website: domain,
 	    		email: req.body.email,
-	    		country: req.body.country,
-	    		state: req.body.state,
 	    		phone: req.body.phone,
 	    		currency_id: 1
     	    }
