@@ -5,6 +5,8 @@ const auth = require('../../config/auth');
 const productController = require('../controllers/productController')
 
 router.get('/', productController.getProducts);
+router.post('/', productController.createProduct);
 router.get('/featured', productController.filterProducts);
 router.get('/details/:id', productController.productDetails );
+
 module.exports = router;

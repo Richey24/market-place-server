@@ -4,7 +4,8 @@
   "description": "Tenant Base eCommerce Website ",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development node index.js"
+    "dev": "nodemon index.js",
+    "start": "node index.js"
   },
   "author": "Lionel Francis",
   "license": "ISC",
@@ -13,17 +14,15 @@
     "bcrypt": "^5.1.0",
     "celebrate": "^15.0.1",
     "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.1.4",
     "express": "^4.18.2",
-    "express-joi": "^0.3.1",
-    "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.0",
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.1",
-    "nodemon": "^2.0.22",
-    "twilio": "^4.11.0",
-    "zod": "^3.21.4"
+    "twilio": "^4.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
