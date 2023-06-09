@@ -48,10 +48,10 @@ class CategoryController {
             ]);
             if (resUpdate) {
 
-                let res = await Odoo.execute_kw('product.public.category', 'search_read', [
+                let data = await Odoo.execute_kw('product.public.category', 'search_read', [
                     [['id', '=', req.params.id]]
                 ]);
-                res.status(201).json(res);
+                res.status(201).json(data);
             } else {
                 res.status(500) //TODO: make this better
 

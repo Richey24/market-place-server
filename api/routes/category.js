@@ -3,7 +3,6 @@ const { celebrate, Joi, Segments } = require('celebrate');
 
 const router = express.Router();
 const auth = require('../../config/auth');
-const validate = require("../../middlewares/validate")
 
 const createCategoryDTO = require("../../schemas/category.schema")
 
