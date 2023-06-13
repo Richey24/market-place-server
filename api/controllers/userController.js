@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 exports.register = async (req, res) => {
      console.log("POST registering user");
 
-     // TODO: add tenant id to veri
+     // TODO: add tenant id to verify
      let isUser = await User.find({ email: req.body.email });
      console.log("hiii", isUser);
 
@@ -25,8 +25,18 @@ exports.register = async (req, res) => {
      });
 
      let data = await user.save();
+
+     // Omit password from the user object before sending the response
+     const userWithoutPassword = {
+          _id: data._id,
+          firstname: data.firstname,
+          lastname: data.lastname,
+          email: data.email,
+          role: data.role,
+     };
+
      const token = await user.generateAuthToken();
-     res.status(201).json({ user, token });
+     res.status(201).json({ user: userWithoutPassword, token });
 };
 
 exports.loginUser = async (req, res) => {
@@ -36,13 +46,22 @@ exports.loginUser = async (req, res) => {
 
      const user = await User.findByCredentials(email, password);
 
+     const userWithoutPassword = {
+          _id: user._id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          role: user.role,
+          onboarded: user.onboarded
+     };
+
      console.log(user);
      if (!user) {
           return res.status(401).json({ error: "Login failed! Check authenthication credentails" });
      }
 
      const token = await user.generateAuthToken();
-     res.status(201).json({ user, token });
+     res.status(201).json({ user: userWithoutPassword, token });
 };
 
 exports.logoutUser = async (req, res) => {
