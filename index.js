@@ -5,7 +5,6 @@ const morgan = require("morgan");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-// const config = require("./config/db");
 const app = express();
 
 //configure database and mongoose
