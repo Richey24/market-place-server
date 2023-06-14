@@ -35,6 +35,15 @@ const userSchema = mongoose.Schema({
           default: false,
      },
 
+     phone: {
+          type: Number,
+     },
+
+     companyId: {
+          type: mongoose.Schema.Types.ObjectId,
+          default: null,
+     },
+
      tokens: [
           {
                token: {

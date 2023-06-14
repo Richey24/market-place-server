@@ -2,6 +2,19 @@ const User = require("../../model/User");
 const Company = require("../../model/Company");
 var Odoo = require("async-odoo-xmlrpc");
 
+const getErrorMessage = (faultCode) => {
+     switch (faultCode) {
+          case 1:
+               return "User/Company Already Exists";
+          case 2:
+               return "Access Denied";
+          case 3:
+               return "Invalid Database";
+          default:
+               return "Unknown Error";
+     }
+};
+
 exports.getOnboarding = async (req, res) => {
      console.log("Post Request: Onboarding Users");
      console.log(req.body, req.userData);
@@ -22,24 +35,21 @@ exports.getOnboarding = async (req, res) => {
      let theme = req.body.theme;
      let brandcolor = req.body.colors;
      let subscription = req.body.subscription;
-
-     //User Params
-     let firstname = req.body.firstname;
-     let lastname = req.body.lastname;
-     let email = req.body.email;
-     let role = "vendor";
-     let password = req.body.password;
-     let country = req.body.country;
-     let city = req.body.city;
-     let state = req.body.state;
-     let address1 = req.body.address;
-     let phone = req.body.phone;
+     const { firstname, lastname, email, _id } = req.userData;
 
      try {
-          await Odoo.connect();
+          var odoo = new Odoo({
+               url: "http://104.43.252.217/",
+               port: 80,
+               db: "bitnami_odoo",
+               username: "user@example.com",
+               password: "850g6dHsX1TQ",
+          });
+
+          await odoo.connect();
           console.log("Connected to Odoo XML-RPC");
 
-          let partner = await Odoo.execute_kw("res.partner", "create", [
+          let partner = await odoo.execute_kw("res.partner", "create", [
                { is_company: true, is_published: true, is_public: true, name: company_name },
           ]);
 
@@ -51,44 +61,52 @@ exports.getOnboarding = async (req, res) => {
                     name: req.body.company_name,
                     partner_id: partner,
                     website: domain,
-                    email: req.body.email,
-                    phone: req.body.phone,
+                    email,
+                    phone: "80911223344",
                     currency_id: 1,
                },
           ]);
 
-          const save_user = new User({
-               firstname: req.body.firstname,
-               lastname: req.body.lastname,
-               email: req.body.email,
-               role: "vendor",
-               password: req.body.password,
-          });
+          //   const save_user = new User({
+          //        firstname: req.body.firstname,
+          //        lastname: req.body.lastname,
+          //        email: req.body.email,
+          //        role: "vendor",
+          //        password: req.body.password,
+          //   });
 
-          let data = await save_user.save();
-          const token = await save_user.generateAuthToken();
+          //   let data = await save_user.save();
+          //   const token = await save_user.generateAuthToken();
 
           const save_company = new Company({
-               user_id: data._id,
+               user_id: _id,
                company_id: company_id,
                company_name: company_name,
                company_type: company_type,
                subdomain: tenantname,
                theme: theme,
-               phone: req.body.phone,
+               phone: "09033442211",
                logo: req.body.logo,
                brandcolor: brandcolor,
                subscription: subscription,
-               country: req.body.country,
-               city: req.body.city,
-               state: req.body.state,
+               country: "req.body.country",
+               city: "req.body.city",
+               state: " req.body.state",
           });
 
           let company_data = await save_company.save();
-
-          res.status(201).json({ company: company_data, user: data, status: false });
-     } catch (e) {
-          res.status(400).json({ error: e, status: false });
-          console.error("Error when try connect Odoo XML-RPC.", e);
+          await User.findByIdAndUpdate(_id, {
+               $set: { onboarded: true, companyId: company_data?._id },
+          });
+          res.status(201).json({ company: company_data, status: true });
+     } catch (error) {
+          const faultCode = error?.faultCode;
+          if (faultCode) {
+               const errorMessage = getErrorMessage(faultCode);
+               res.status(400).json({ error: errorMessage, status: false });
+               //    console.error("Error creating company:", faultCode, errorMessage);
+          } else {
+               res.status(400).json({ error, status: false });
+          }
      }
 };
