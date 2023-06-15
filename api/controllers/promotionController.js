@@ -4,7 +4,11 @@ const {
 	addPromotion,
 	updatePromotion,
 	getPromotion,
-	deletePromotion 
+	deletePromotion ,
+	getPromotionRewards,
+	addPromotionRewards,
+	getPromotionCondition,
+	addPromotionConditon
 } = require('../../services/promotion.service');
 
 /**
@@ -60,9 +64,70 @@ exports.createPromotions = async (req, res) => {
 
 	const promos = await addPromotion(params);
 	res.status(201).json({promos})
-
 }
 
+/**
+ * this function create conditions
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
+exports.createCondition = async ( req, res) => {
+
+	let user = req.userData;
+	let company_id = 1;
+
+
+	var odoo = new Odoo({
+		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
+		username: 'user@example.com',
+		password: '850g6dHsX1TQ'
+	});
+
+	let params = {
+		odoo: odoo,
+		condition: req.body,
+		user: user
+	}
+
+	const condition = await addPromotionConditon(params);
+	res.status(201).json({condition})
+}
+
+/**
+ * this function creates new rewards
+ * @return {[type]} [description]
+ */
+exports.createRewards = async (req, res) => {
+
+	let user = req.userData;
+	let company_id = 1;
+
+
+	var odoo = new Odoo({
+		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
+		username: 'user@example.com',
+		password: '850g6dHsX1TQ'
+	});
+
+	console.log(req.body)
+
+	let params = {
+		odoo: odoo,
+		reward: req.body,
+		user: user
+	}
+
+	const rewards = await addPromotionRewards(params);
+	res.status(201).json({rewards})
+}
+
+/**
+ * This function get rewards
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
 exports.getRewards = async ( req, res) => {
 
 	let user = req.userData;
@@ -80,6 +145,27 @@ exports.getRewards = async ( req, res) => {
 		user: user
 	}
 
-	const rewards = await getReward(params);
+	const rewards = await getPromotionRewards(params);
 	res.status(201).json({ rewards })
+}
+
+exports.getCondtions = async ( req, res ) => {
+
+	let user = req.userData;
+	let company_id = 1;
+
+	var odoo = new Odoo({
+		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
+		username: 'user@example.com',
+		password: '850g6dHsX1TQ'
+	});
+
+	let params = {
+		odoo: odoo,
+		promo: req.body,
+		user: user
+	}
+
+	const conditions = await getPromotionCondition(params);
+	res.status(201).json({conditions});
 }

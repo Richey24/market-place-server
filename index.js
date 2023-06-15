@@ -59,8 +59,8 @@ app.use("/api/ads", adsRouter);
 app.use("/api/wishlists", wishlistRouter);
 
 app.use("/api/onboarding", onboardingRouter);
-
 app.use("/api/promotions", promotionRouter);
+
 
 app.listen(PORT, () => {
   console.log(`App is running on ${PORT}`);
