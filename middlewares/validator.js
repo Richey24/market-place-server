@@ -8,7 +8,6 @@ const validate = (schema) => (req, res, next) => {
     };
 
     const error = verify.body?.error || verify.params?.error || verify.query?.error;
-    console.log({ schema })
     if (error) {
         const errorMessage = error.details[0].message;
         res.status(422).json({

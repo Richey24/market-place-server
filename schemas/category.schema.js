@@ -6,4 +6,11 @@ const createCategorySchema = {
     })
 }
 
-module.exports = { createCategorySchema }
+const createSubCategorySchema = {
+    body: Joi.object({
+        categoryId: Joi.number().required(),
+        name: Joi.string().required(),
+    })
+}
+
+module.exports = { createCategorySchema, createSubCategorySchema }

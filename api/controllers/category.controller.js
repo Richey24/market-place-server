@@ -60,6 +60,23 @@ class CategoryController {
             console.error('Error when trying to connect odoo xml-rpc', e)
         }
     }
+
+    async createSubCategory(req, res) {
+        const { categoryId, name } = req.body
+
+        try {
+            await Odoo.connect()
+            let id = await Odoo.execute_kw('product.public.category', 'create', [
+                {
+                    'name': name,
+                    'parent_id': categoryId
+                }
+            ]);
+            res.status(201).json({ id });
+        } catch (e) {
+            console.error('Error when trying to connect odoo xml-rpc', e)
+        }
+    }
 }
 
 module.exports = new CategoryController()
