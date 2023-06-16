@@ -67,17 +67,6 @@ exports.getOnboarding = async (req, res) => {
                },
           ]);
 
-          //   const save_user = new User({
-          //        firstname: req.body.firstname,
-          //        lastname: req.body.lastname,
-          //        email: req.body.email,
-          //        role: "vendor",
-          //        password: req.body.password,
-          //   });
-
-          //   let data = await save_user.save();
-          //   const token = await save_user.generateAuthToken();
-
           const save_company = new Company({
                user_id: _id,
                company_id: company_id,
@@ -108,5 +97,45 @@ exports.getOnboarding = async (req, res) => {
           } else {
                res.status(400).json({ error, status: false });
           }
+     }
+};
+
+exports.verifyCompanyName = async (req, res) => {
+     const { companyName } = req.body;
+
+     try {
+          // Check if company name already exists
+          const existingCompany = await Company.findOne({ company_name: companyName });
+          if (existingCompany) {
+               return res
+                    .status(409)
+                    .json({ message: "Company name already exists.", status: false });
+          }
+
+          // Company name is unique
+          res.status(200).json({ message: "Company name is unique.", status: true });
+     } catch (error) {
+          console.error("Error verifying company name uniqueness:", error);
+          res.status(500).json({ message: "Internal server error.", status: false });
+     }
+};
+
+exports.verifyDomainName = async (req, res) => {
+     const { domainName } = req.body;
+
+     try {
+          // Check if company name already exists
+          const existingCompany = await Company.findOne({ subdomain: domainName });
+          if (existingCompany) {
+               return res
+                    .status(409)
+                    .json({ message: "Domain name already exists.", status: false });
+          }
+
+          // Company name is unique
+          res.status(200).json({ message: "Domain name is unique.", status: true });
+     } catch (error) {
+          console.error("Error verifying Domain name uniqueness:", error);
+          res.status(500).json({ message: "Internal server error.", status: false });
      }
 };
