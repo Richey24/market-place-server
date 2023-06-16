@@ -4,8 +4,13 @@ class CategoryController {
     async findAll(req, res) {
         try {
             await Odoo.connect()
-            console.log("Connect to Odoo XML-RPC is successed.");
-            let categories = await Odoo.execute_kw('product.public.category', 'search_read', [], 0, 8);
+            let categories = await Odoo.execute_kw('product.public.category', 'search_read', [[]],
+                {
+                    'fields': ['name'],
+                    'order': 'id desc'
+                },
+            );
+            console.log("desc");
             res.status(200).json(categories);
         } catch (e) {
             console.error('Error when trying to connect odoo xml-rpc', e)

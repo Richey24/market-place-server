@@ -8,6 +8,6 @@ const categoryController = require('../controllers/category.controller');
 router.get('/', categoryController.findAll);
 router.get('/:id', categoryController.findOne);
 router.post('/', validate(createCategorySchema), categoryController.create);
-router.put('/:id', categoryController.update);
+router.patch('/:id', categoryController.update);
 router.post('/subcategory', validate(createSubCategorySchema), categoryController.createSubCategory)
 module.exports = router;
