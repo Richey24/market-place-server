@@ -46,7 +46,7 @@ exports.filterProducts = async (req, res) => {
 			]);
 			res.status(201).json({ products });
 		} else {
-			
+
 			let products = await odoo.execute_kw('product.product', 'search_read', [
 				[['type', '=', 'consu'], ['public_categ_ids', '=', Number(category)]]
 				, ['name', 'list_price', 'image_512', 'categ_id', 'rating_avg', 'rating_count', 'website_url', 'public_categ_ids', 'website_meta_keywords'] // Fields
@@ -89,6 +89,7 @@ exports.wishlistProduct = async (req, res) => {
 	console.log(" GET /api/details");
 
 	const productId = req.params.id
+	
 	try {
 		await odoo.connect();
 
@@ -106,7 +107,9 @@ exports.wishlistProduct = async (req, res) => {
 }
 
 exports.createProduct = async (req, res) => {
-
+    
+    let user = req.userData;
+    
 	var odoo = new Odoo({
 		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
 		username: 'user@example.com',
@@ -116,7 +119,7 @@ exports.createProduct = async (req, res) => {
 	let params = {
 		odoo: odoo,
 		product: req.body,
-		user: user
+		// user: user
 	}
 
 	const product = await addProduct(params)

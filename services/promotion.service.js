@@ -1,4 +1,10 @@
 
+
+/**
+ * This function get all promotions
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
 const getPromotion = async (params ) => {
 
 	//TODO: need find out if i can call odoo connection once
@@ -25,6 +31,11 @@ const getPromotion = async (params ) => {
 	return promotion;
 }
 
+/**
+ * This function creates promotion condition 
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
 const addPromotion = async ( params ) => {
 
 	const currentDate = new Date();
@@ -53,15 +64,20 @@ const addPromotion = async ( params ) => {
 	}
 }
 
+/**
+ * This function get all promotion rewards
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
 const getPromotionRewards = async ( params ) => {
 
 	try {
 		await params.odoo.connect();
-		let rewards = await params.odoo.execute_kw('loyalty.rewards', 'search_read',[
-		   [['company_id', '=', false]]
+		let rewards = await params.odoo.execute_kw('loyalty.reward', 'search_read',[
+		   [['company_id', '=', 1]]
 		   , ['id', 'display_name', 'active', 'discount_max_amount', 'discount_mode',
 		   	  'discount_product_category_id', 'discount_product_domain', 'discount_product_ids',
-		   	  'reward_product_ids', 'reward_product_id', 'reward_type'
+		   	  'reward_product_ids', 'reward_product_id', 'reward_type', 'company_id', 'program_id'
 		   	]
 		   , 0, 5 // offset, limit
 		]);
@@ -72,26 +88,81 @@ const getPromotionRewards = async ( params ) => {
 	}
 }
 
+/**
+ * This function get all company promotions
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
+const getPromotionCondition = async ( params ) => {
+
+	try {
+		await params.odoo.connect();
+		let conditions = await params.odoo.execute_kw('loyalty.rule', 'search_read', [
+			[['company_id', '=', 1]]
+			,['id', 'display_name']
+			, 0, 5 // offset, limit
+		]);
+
+		return await conditions;
+	} catch (e) {
+		console.error('Error when trying to connect to Odoo XML-RPC', e);
+	}
+}
+/**
+ * This service add Promotion reward
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
 const addPromotionRewards = async ( params ) => {
 	try {
 		await params.odoo.connect();
-		let rewards = await params.odoo.execute_kw('loyalty.rewards', 'create', [
+		let rewards = await params.odoo.execute_kw('loyalty.reward', 'create', [
 			{
-				program_id: params.reward.program_id,
 				description: params.reward.desc,
 				discount: params.reward.discount,
 				display_name: params.reward.display_name,
 				reward_type: params.reward.reward_type,
+				program_id: params.reward.program_id,
 				reward_product_qty: params.reward_product_qty
 			}
 		])
 
 		return await rewards;
 	} catch (e) {
-		console.error('Error when try connect Odoo XML-RPC');
+		console.error('Error when try connect Odoo XML-RPC', e);
 	}
 }
 
+/**
+ * This service add condition rule
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
+const addPromotionConditon = async ( params ) => {
+
+	console.log(params);
+	try {
+		await params.odoo.connect();
+		let conditions = await params.odoo.execute_kw('loyalty.rule', 'create', [
+			{
+				program_id: params.condition.program_id,
+				program_ids: params.condition.program_ids,
+				product_category_id: params.condition.product_category_id,
+				minimum_qty: params.condition.minimum_qty,
+				mode: params.condition.mode,
+				program_type: params.condition.program_type,
+				rewards_points_mode: params.condition.points_mode,
+				minimum_amount_tax_mode: params.condition.minimum_amount_tax_mode,
+				display_name: params.condition.display_name,
+				minimum_amount: params.condition.minimum_amount 
+			}
+		]);
+
+		return await conditions
+	} catch (e ) {
+		console.error('Something went wrong', e)
+	}
+}
 /**
  * This funciton update promotion
  * @param  {[type]} params [description]
@@ -126,9 +197,7 @@ const updatePromotion = async ( params ) => {
 		console.error('Error when trying to connect to Odoo ')
 	}
 }
-
 const updatePromotionReward = async ( params ) => {}
-const getPromotionCondition = async ( params ) => {}
 const updatePromotionCondition = async ( params ) => {}
 const deletePromotion = async ( params ) => {}
 
@@ -136,5 +205,9 @@ module.exports = {
  	getPromotion,
  	addPromotion,
  	updatePromotion,
- 	deletePromotion
+ 	deletePromotion,
+ 	getPromotionRewards,
+ 	getPromotionCondition,
+ 	addPromotionConditon,
+ 	addPromotionRewards
 };
