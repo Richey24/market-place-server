@@ -52,7 +52,7 @@ exports.loginUser = async (req, res) => {
           lastname: user.lastname,
           email: user.email,
           role: user.role,
-          onboarded: user.onboarded
+          onboarded: user.onboarded,
      };
 
      console.log(user);
@@ -193,5 +193,20 @@ exports.listShipping = async (req, res) => {
      });
 
 exports.getUserDetails = async (req, res) => {
-     return await res.json(req.userData);
+     // console.log(req.userData);
+     try {
+          const user = await User.findById(req.userData._id).populate({
+               path: "companyId",
+               options: { virtuals: true },
+          });
+
+          if (!user) {
+               return res.status(404).json({ message: "User not found.", status: false });
+          }
+
+          res.status(200).json({ user, company: null });
+     } catch (error) {
+          console.error("Error fetching user:", error);
+          res.status(500).json({ message: "Internal server error." });
+     }
 };

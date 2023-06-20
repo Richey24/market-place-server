@@ -41,7 +41,7 @@ const userSchema = mongoose.Schema({
 
      companyId: {
           type: mongoose.Schema.Types.ObjectId,
-          default: null,
+          ref: "Company",
      },
 
      tokens: [
