@@ -196,7 +196,7 @@ exports.getUserDetails = async (req, res) => {
      // console.log(req.userData);
      try {
           const user = await User.findById(req.userData._id).populate({
-               path: "companyId",
+               path: "company",
                options: { virtuals: true },
           });
 

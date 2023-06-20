@@ -85,7 +85,7 @@ exports.getOnboarding = async (req, res) => {
 
           let company_data = await save_company.save();
           await User.findByIdAndUpdate(_id, {
-               $set: { onboarded: true, companyId: company_data?._id },
+               $set: { onboarded: true, company: company_data?._id },
           });
           res.status(201).json({ company: company_data, status: true });
      } catch (error) {

@@ -39,7 +39,7 @@ const userSchema = mongoose.Schema({
           type: Number,
      },
 
-     companyId: {
+     company: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Company",
      },
