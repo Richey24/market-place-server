@@ -2,6 +2,52 @@ const User = require("../../model/User");
 const Billing = require("../../model/Billing");
 const Shipping = require("../../model/Shipping");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+
+const sendEmail = (email, name) => {
+     const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+               user: "olaiyabasit@gmail.com",
+               pass: "uwfpiycurkdkvcso",
+          },
+     });
+     const mailOptions = {
+          from: "hello@example.com",
+          to: email,
+          subject: "Welcome to Our Ecommerce Marketplace - Your Free Trial Period!",
+          text: `Dear ${name},
+          We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.
+          We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way. That is why we are delighted to offer you a free two-week trial period to set up and review your ecommerce store.
+          During this trial period, you will have ample time to familiarize yourself with our platform, showcase your products, and ensure that your store is a true reflection of your brand.
+          Here are some key details regarding your free trial period:
+          Trial Start Date: [Insert start date]
+          Trial End Date: [Insert end date]
+          -------------------------------------------------------------------------------------------------------------------
+          Benefits of the Trial Period:
+          Opportunity to create and customize your ecommerce store.
+          Full access to our suite of tools and features.
+          Upload and organize your products, descriptions, and images.
+          Familiarize yourself with our user-friendly interface.
+          Explore our robust marketing, promotional, and video training resources.
+          Evaluate the effectiveness of our platform for your business.
+          We realize that we as people of color are stronger together, and when we stand together our possibilities are limitless.
+          Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.
+          Best regards,
+          i.b. Israel
+          CEO / President
+          Dreamtech Labs, LLC
+          858.384-6488`,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
 
 exports.register = async (req, res) => {
      console.log("POST registering user");
@@ -36,6 +82,7 @@ exports.register = async (req, res) => {
      };
 
      const token = await user.generateAuthToken();
+     sendEmail(req.body.email, req.body.firstname);
      res.status(201).json({ user: userWithoutPassword, token });
 };
 
