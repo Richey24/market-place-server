@@ -6,8 +6,10 @@ const { createCategorySchema, createSubCategorySchema } = require("../../schemas
 const categoryController = require('../controllers/category.controller');
 
 router.get('/', categoryController.findAll);
-router.get('/:id', categoryController.findOne);
 router.post('/', validate(createCategorySchema), categoryController.create);
+router.get('/:id', categoryController.findOne);
 router.patch('/:id', categoryController.update);
+router.delete('/:id', categoryController.deleteCategory);
 router.post('/subcategory', validate(createSubCategorySchema), categoryController.createSubCategory)
+
 module.exports = router;
