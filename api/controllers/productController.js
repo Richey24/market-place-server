@@ -1,6 +1,6 @@
 var Odoo = require('async-odoo-xmlrpc');
 const Company = require('../../model/Company');
-const { addProduct } = require('../../services/product.service');
+const { addProduct, getFeaturedProducts } = require('../../services/product.service');
 
 exports.getProducts = async (req, res) => {
 
@@ -21,6 +21,35 @@ exports.getProducts = async (req, res) => {
 	} catch (e) {
 		console.error("Error when try connect Odoo XML-RPC.", e);
 	}
+}
+
+/**
+ * This function will get featured products for the landing page
+ * @param  {[type]} req [description]
+ * @param  {[type]} res [description]
+ * @return {[type]}     [description]
+ */
+exports.getFeaturedProducts = async ( req, res) => {
+
+	console.log('GET  api/products/featured')
+
+	let user = req.userData;
+	let company_id = 1;
+
+	var odoo = new Odoo({
+		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
+		username: 'user@example.com',
+		password: '850g6dHsX1TQ'
+	})
+
+	let params = {
+		odoo: odoo,
+		promo: req.body,
+		user: user
+	}
+
+	const products = await getFeaturedProducts(params);
+	res.status(201).json({products})
 }
 
 exports.filterProducts = async (req, res) => {

@@ -1,4 +1,5 @@
 const Odoo = require('../../config/odoo.connection');
+const { getFeaturedCategories } = require('../../services/category.service');
 
 class CategoryController {
     async findAll(req, res) {
@@ -82,6 +83,8 @@ class CategoryController {
             console.error('Error when trying to connect odoo xml-rpc', e)
         }
     }
+
+  
 }
 
 module.exports = new CategoryController()

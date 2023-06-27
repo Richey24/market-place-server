@@ -42,10 +42,11 @@ const adsRouter = require("./api/routes/ads");
 const wishlistRouter = require("./api/routes/wishlists");
 const onboardingRouter = require("./api/routes/onboarding");
 const promotionRouter = require('./api/routes/promotion');
-const errorHandler = require("./config/errorHandler");
+const themeRouter = require('./api/routes/theme')
+// const errorHandler = require("./config/errorHandler");
 
 // //for error handling
-app.use(errorHandler)
+// app.use(errorHandler)
 
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
@@ -59,6 +60,7 @@ app.use("/api/wishlists", wishlistRouter);
 
 app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
+app.use('/api/themes', themeRouter);
 
 
 app.listen(PORT, () => {

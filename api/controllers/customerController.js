@@ -4,8 +4,9 @@ const User = require('../../services/customer.service');
 exports.getCustomers = async ( req, res) => {
 
 	let user = req.userData;
-
 	let company_id = user.company_id;
+
+	ad
 }
 
 exports.addCustomers = async ( req, res) => {}
