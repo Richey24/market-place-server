@@ -48,8 +48,14 @@ const companySchema = mongoose.Schema({
 		type: String,
 		required: [true, "city is a required field"]
 	},
+
 	address: {
 		type: String,
+	},
+
+	categories: {
+		type: Array,
+		required: false
 	}
 });
 
