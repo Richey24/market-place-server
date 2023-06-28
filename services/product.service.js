@@ -11,19 +11,27 @@ const unitOfMeasure = async (odoo) => {
 	}
 }
 
-const getProduct = async ( params ) => {
+/**
+ * This function get feature products
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
+const getFeaturedProducts = async ( params ) => {
     console.log("GET /api/products");
 	try {
-		await Odoo.connect();
-		let products = await Odoo.execute_kw('product.template', 'search_read', [[['type', '=', 'consu']]], { 'fields': ['name', 'public_categ_ids'], 'limit': 5 })
-		res.status(201).json({ products });
+		await params.odoo.connect();
+		let products = await params.odoo.execute_kw('product.template', 'search_read', [
+			[['type', '=', 'consu']] 
+			, ['name', 'list_price', 'description_sale', 'categ_id', 'id', 'website_url']
+				, 0, 8 
+			]);
+		return products;
 	} catch (e) {
 		console.error("Error when try connect Odoo XML-RPC.", e);
 	}
 }
 
 const addProduct = async (  params ) => {
-	
 	try {
 		await params.odoo.connect();
 		let product = await params.odoo.execute_kw('product.template', 'create', [
@@ -50,7 +58,7 @@ const updateProduct = async ( params ) => {
 	try {
 		await params.odoo.connect();
 		let product = await odoo.execute_kw('product.template', 'write', [
-        [params.product.id]
+        [params.product_id]
 	        , {
 				base_unit_count: params.product.qty, 
 	    		categ_id: params.product.category_id, 
@@ -70,6 +78,7 @@ const updateProduct = async ( params ) => {
 	}
 }
 
+
 /**
  * This function delete a user product
  * @param  {[array]} product_id [The id of the product that has been seleected]
@@ -81,6 +90,7 @@ const deleteProduct = async ( params ) => {
 
 module.exports = {
   addProduct,
-  unitOfMeasure
+  unitOfMeasure,
+  getFeaturedProducts
 };
 

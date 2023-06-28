@@ -92,17 +92,7 @@ class CategoryController {
         }
     }
 
-    async deleteCategory(req, res) {
-        const { id } = req.params
-        try {
-            await Odoo.connect()
-            const isDeleted = Odoo.execute_kw('res.partner', 'unlink', [id]);
 
-            res.status(201).json({ deleted: isDeleted });
-        } catch (e) {
-            console.error('Error when trying to connect odoo xml-rpc', e)
-        }
-    }
 }
 
 module.exports = new CategoryController()
