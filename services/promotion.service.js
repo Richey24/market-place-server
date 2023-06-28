@@ -1,4 +1,4 @@
-
+const { getRewardById } = require('./reward.service')
 
 /**
  * This function get all promotions
@@ -9,26 +9,37 @@ const getPromotion = async (params ) => {
 
 	//TODO: need find out if i can call odoo connection once
 	await params.odoo.connect();
-	let promotion = await params.odoo.execute_kw('loyalty.program', 'search_read',[
-		   [['company_id', '=', false]]
-		   , ['name', 
-		   	  'active', 
-		   	  'applies_on', 
-		   	  'available_on', 
-		   	  'coupon_count', 
-		   	  'coupon_count_display',
-		   	  'coupon_ids',
-		   	  'limit_usage',
-		   	  'program_type',
-		   	  'reward_ids',
-		   	  'rule_ids',
-		   	  'trigger',
-		   	  'trigger_product_ids'
-		   	  ]
+	let promotions = await params.odoo.execute_kw('loyalty.program', 'search_read',[
+		   [['company_id', '=', 1]]
+		   , [ 'name',  'active', 'applies_on', 'available_on', 'coupon_count', 
+		   	   'coupon_count_display', 'coupon_ids', 'limit_usage', 'program_type',
+			   'reward_ids', 'rule_ids', 'trigger', 'trigger_product_ids'
+		   	 ]
 		   , 0, 5 // offset, limit
-		]);
+	]);
 
-	return promotion;
+	let loyality = await Promise.all(promotions.map(async (obj)  => {
+
+		 let data = {
+			id: obj.id,
+			name: obj.name,
+			active: obj.active,
+			applies_on: obj.applies_on,
+			available_on: obj.available_on,
+			coupon_count: obj.coupon_count,
+			coupon_count_display: obj.coupon_count_display,
+			coupon_ids: obj.coupon_ids,
+			limit_usage: obj.limit_usage,
+			program_type: obj.program_type,
+			rewards_ids: obj.reward_ids,
+			rule_id: obj.rule_id,
+			rewards: await params.odoo.execute_kw('loyalty.reward', 'read', [obj.reward_ids[0]])
+		 }
+		 console.log(data)
+		 return data;
+	}))
+
+	return await loyality;
 }
 
 /**

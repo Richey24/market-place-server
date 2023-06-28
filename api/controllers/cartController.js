@@ -23,7 +23,7 @@ exports.createCart = async ( req, res) => {
 			if (err) {
 				return res.status(201).json({ message: "Something went wrong"})
 			} else {
-				return res.status(201).json({message: "Item Added", status: true})
+				return res.status(201).json({ message: "Item Added", status: true})
 			}
 		});
 
