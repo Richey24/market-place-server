@@ -1,6 +1,7 @@
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 var Odoo = require("async-odoo-xmlrpc");
+const { formatDate, sendEmail } = require("../../config/helpers");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -20,12 +21,10 @@ exports.getOnboarding = async (req, res) => {
      console.log(req.body, req.userData);
 
      const currentDate = new Date();
+     const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
 
-     const year = currentDate.getFullYear();
-     const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-     const day = String(currentDate.getDate()).padStart(2, "0");
-
-     const formattedDate = `${year}-${month}-${day}`;
+     const formattedDate = formatDate(currentDate);
+     const formattedTrialEndDate = formatDate(trialEndDate);
 
      // Onboarding params
      let date = formattedDate;
@@ -35,6 +34,8 @@ exports.getOnboarding = async (req, res) => {
      let theme = req.body.theme;
      let brandcolor = req.body.colors;
      let subscription = req.body.subscription;
+     let subscribed = false;
+     let trial_End_Date = formattedTrialEndDate;
      const { firstname, lastname, email, _id } = req.userData;
 
      try {
@@ -78,12 +79,35 @@ exports.getOnboarding = async (req, res) => {
                logo: req.body.logo,
                brandcolor: brandcolor,
                subscription: subscription,
+               subscribed: subscribed,
+               account_opening_date: date,
+               trial_end_date: trial_End_Date,
                country: "req.body.country",
                city: "req.body.city",
                state: " req.body.state",
           });
 
           let company_data = await save_company.save();
+          sendEmail(email, firstname);
+
+          User.find(
+               {
+                    trial_end_date: {
+                         $gte: currentDate.setHours(0, 0, 0, 0),
+                         $lt: currentDate.setHours(23, 59, 59, 999),
+                    },
+               },
+               (err, users) => {
+                    if (err) {
+                         console.error(err);
+                         return;
+                    }
+
+                    users.forEach((user) => {
+                         console.log("Yes");
+                    });
+               },
+          );
           await User.findByIdAndUpdate(_id, {
                $set: { onboarded: true, company: company_data?._id },
           });
