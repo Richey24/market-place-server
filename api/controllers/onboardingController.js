@@ -16,9 +16,6 @@ const getErrorMessage = (faultCode) => {
 };
 
 exports.getOnboarding = async (req, res) => {
-     console.log("Post Request: Onboarding Users");
-     console.log(req.body, req.userData);
-
      const currentDate = new Date();
 
      const year = currentDate.getFullYear();

@@ -10,7 +10,6 @@ router.get('/:companyId', validate(getCategory), categoryController.findAll);
 router.post('/', auth, validate(createCategorySchema), categoryController.create);
 router.get('/:id', categoryController.findOne);
 router.patch('/:id', auth, categoryController.update);
-router.delete('/:id', auth, categoryController.deleteCategory);
 router.post('/subcategory', auth, validate(createSubCategorySchema), categoryController.createSubCategory)
 router.get('/featured', catController.fetchFeatureCategories);
 
