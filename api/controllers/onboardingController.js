@@ -78,9 +78,9 @@ exports.getOnboarding = async (req, res) => {
                logo: req.body.logo,
                brandcolor: brandcolor,
                subscription: subscription,
-               country: "req.body.country",
-               city: "req.body.city",
-               state: " req.body.state",
+               country: req.body.country,
+               city: req.body.city,
+               state: req.body.state,
           });
 
           let company_data = await save_company.save();
