@@ -1,7 +1,7 @@
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 var Odoo = require("async-odoo-xmlrpc");
-const { formatDate, sendEmail } = require("../../config/helpers");
+const { formatDate, sendEmail, reminderJob } = require("../../config/helpers");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -23,8 +23,8 @@ exports.getOnboarding = async (req, res) => {
      const currentDate = new Date();
      const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
 
-     const formattedDate = formatDate(currentDate);
-     const formattedTrialEndDate = formatDate(trialEndDate);
+     const formattedDate = formatDate(new Date(currentDate));
+     const formattedTrialEndDate = formatDate(new Date(trialEndDate));
 
      // Onboarding params
      let date = formattedDate;
@@ -90,24 +90,7 @@ exports.getOnboarding = async (req, res) => {
           let company_data = await save_company.save();
           sendEmail(email, firstname);
 
-          User.find(
-               {
-                    trial_end_date: {
-                         $gte: currentDate.setHours(0, 0, 0, 0),
-                         $lt: currentDate.setHours(23, 59, 59, 999),
-                    },
-               },
-               (err, users) => {
-                    if (err) {
-                         console.error(err);
-                         return;
-                    }
-
-                    users.forEach((user) => {
-                         console.log("Yes");
-                    });
-               },
-          );
+          reminderJob.start();
           await User.findByIdAndUpdate(_id, {
                $set: { onboarded: true, company: company_data?._id },
           });

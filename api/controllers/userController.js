@@ -2,23 +2,9 @@ const User = require("../../model/User");
 const Billing = require("../../model/Billing");
 const Shipping = require("../../model/Shipping");
 const bcrypt = require("bcrypt");
-const cron = require("node-cron");
-const { sendTrialEndReminderEmail } = require("../../config/helpers");
 
 exports.register = async (req, res) => {
      console.log("POST registering user");
-
-     const reminderJob = cron.schedule("0 9 * * *", () => {
-          const currentDate = new Date();
-          const endDate = new Date();
-          endDate.setDate(endDate.getDate() + 14);
-          const reminderDate = new Date(endDate);
-          reminderDate.setDate(reminderDate.getDate() - 3);
-          if (currentDate.toDateString() === reminderDate.toDateString()) {
-               // Code to send the trial end reminder email
-               sendTrialEndReminderEmail(req.body.email, req.body.firstname);
-          }
-     });
 
      // TODO: add tenant id to verify
      let isUser = await User.find({ email: req.body.email });
@@ -50,7 +36,6 @@ exports.register = async (req, res) => {
      };
 
      const token = await user.generateAuthToken();
-     reminderJob.start();
      res.status(201).json({ user: userWithoutPassword, token });
 };
 

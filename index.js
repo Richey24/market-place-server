@@ -9,13 +9,13 @@ const app = express();
 
 //configure database and mongoose
 mongoose
-  .connect(process.env.MONGO_URL, { useNewUrlParser: true })
-  .then(() => {
-    console.log("Database is connected");
-  })
-  .catch((err) => {
-    console.log({ database_error: err });
-  });
+     .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+     .then(() => {
+          console.log("Database is connected");
+     })
+     .catch((err) => {
+          console.log({ database_error: err });
+     });
 // db configuaration ends here
 
 //registering cors
@@ -30,8 +30,8 @@ app.use(morgan("dev")); // configire morgan
 
 // define first route
 app.get("/", (req, res) => {
-  console.log("Hello MEVN Soldier");
-  // res.status(201).json({ message: 'working' });
+     console.log("Hello MEVN Soldier");
+     // res.status(201).json({ message: 'working' });
 });
 
 const userRouter = require("./api/routes/user");
@@ -41,11 +41,12 @@ const shoppingCart = require("./api/routes/cart");
 const adsRouter = require("./api/routes/ads");
 const wishlistRouter = require("./api/routes/wishlists");
 const onboardingRouter = require("./api/routes/onboarding");
-const promotionRouter = require('./api/routes/promotion');
+const promotionRouter = require("./api/routes/promotion");
+const extendtrialRouter = require("./api/routes/extendtrial");
 const errorHandler = require("./config/errorHandler");
 
 // //for error handling
-app.use(errorHandler)
+app.use(errorHandler);
 
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
@@ -59,8 +60,8 @@ app.use("/api/wishlists", wishlistRouter);
 
 app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
-
+app.use("/api/extendtrial", extendtrialRouter);
 
 app.listen(PORT, () => {
-  console.log(`App is running on ${PORT}`);
+     console.log(`App is running on ${PORT}`);
 });

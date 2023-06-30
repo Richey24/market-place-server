@@ -1,4 +1,6 @@
 const nodemailer = require("nodemailer");
+const Company = require("../model/Company");
+const cron = require("node-cron");
 
 const sendEmail = (email, name) => {
      const startDate = new Date();
@@ -250,4 +252,26 @@ const formatDate = (date) => {
      return formattedDate;
 };
 
-module.exports = { sendEmail, sendTrialEndReminderEmail, formatDate };
+const reminderJob = cron.schedule("0 9 * * *", () => {
+     const currentDate = formatDate(new Date());
+
+     Company.find({ trial_end_date: currentDate }, (err, companies) => {
+          if (err) {
+               console.error(err);
+               return;
+          }
+
+          companies.forEach(async (company) => {
+               try {
+                    const user = await User.findById(company.user_id);
+                    if (user) {
+                         sendTrialEndReminderEmail(user.email, user.firstname);
+                    }
+               } catch (error) {
+                    console.error(error);
+               }
+          });
+     });
+});
+
+module.exports = { sendEmail, sendTrialEndReminderEmail, formatDate, reminderJob };
