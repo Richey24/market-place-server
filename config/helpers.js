@@ -2,7 +2,7 @@ const nodemailer = require("nodemailer");
 const Company = require("../model/Company");
 const cron = require("node-cron");
 
-const sendEmail = (email, name) => {
+const sendOnboardingEmail = (email, name) => {
      const startDate = new Date();
      const endDate = new Date();
      endDate.setDate(endDate.getDate() + 14);
@@ -124,6 +124,124 @@ const sendEmail = (email, name) => {
          </body>
          </html>
        `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
+const sendWelcomeEmail = (email, name) => {
+     const startDate = new Date();
+     const endDate = new Date();
+     endDate.setDate(endDate.getDate() + 14);
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Welcome to Our IsrealB Marketplace",
+          html: `
+       <!DOCTYPE html>
+       <html>
+       <head>
+         <style>
+           /* CSS styles for the email template */
+           @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+       
+           body {
+             font-family: 'Montserrat', Arial, sans-serif;
+             line-height: 1.6;
+           }
+           .container {
+             max-width: 600px;
+             margin: 0 auto;
+             padding: 20px;
+             background-color: #f5f5f5;
+             border-radius: 5px;
+           }
+           .header {
+             text-align: center;
+             margin-bottom: 20px;
+           }
+           .message {
+             margin-bottom: 20px;
+             background-color: #ffffff;
+             padding: 20px;
+             border-radius: 5px;
+           }
+           .highlight {
+             font-weight: bold;
+           }
+           .footer {
+             margin-top: 20px;
+             text-align: center;
+             font-size: 12px;
+           }
+           .logo {
+             display: block;
+             margin: 0 auto;
+             max-width: 200px;
+           }
+           .cta-button {
+             display: inline-block;
+             margin-top: 20px;
+             padding: 10px 20px;
+             background-color: #007bff;
+             color: #ffffff;
+             text-decoration: none;
+             border-radius: 5px;
+           }
+           .cta-button:hover {
+             background-color: #0056b3;
+           }
+         </style>
+       </head>
+       <body>
+         <div class="container">
+           <div class="header">
+             <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+             <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
+           </div>
+           <div class="message">
+             <p>Dear ${name},</p>
+             <p>We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.</p>
+             <p>We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way.</p>
+             <p>Here are some key benefits of joining our platform:</p>
+             <ul>
+               <li>Opportunity to create and customize your ecommerce store.</li>
+               <li>Full access to our suite of tools and features.</li>
+               <li>Upload and organize your products, descriptions, and images.</li>
+               <li>Familiarize yourself with our user-friendly interface.</li>
+               <li>Explore our robust marketing, promotional, and video training resources.</li>
+               <li>Evaluate the effectiveness of our platform for your business.</li>
+             </ul>
+           </div>
+           <div class="message">
+             <p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
+             <a class="cta-button" href="https://example.com">Get Started</a>
+           </div>
+           <div class="footer">
+             <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+           </div>
+         </div>
+       </body>
+       </html>       
+    `,
      };
      transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
@@ -274,4 +392,10 @@ const reminderJob = cron.schedule("0 9 * * *", () => {
      });
 });
 
-module.exports = { sendEmail, sendTrialEndReminderEmail, formatDate, reminderJob };
+module.exports = {
+     sendOnboardingEmail,
+     sendTrialEndReminderEmail,
+     formatDate,
+     reminderJob,
+     sendWelcomeEmail,
+};

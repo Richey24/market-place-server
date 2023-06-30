@@ -1,7 +1,7 @@
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 var Odoo = require("async-odoo-xmlrpc");
-const { formatDate, sendEmail, reminderJob } = require("../../config/helpers");
+const { formatDate, sendOnboardingEmail, reminderJob } = require("../../config/helpers");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -88,7 +88,7 @@ exports.getOnboarding = async (req, res) => {
           });
 
           let company_data = await save_company.save();
-          sendEmail(email, firstname);
+          sendOnboardingEmail(email, firstname);
 
           reminderJob.start();
           await User.findByIdAndUpdate(_id, {

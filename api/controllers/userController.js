@@ -2,6 +2,7 @@ const User = require("../../model/User");
 const Billing = require("../../model/Billing");
 const Shipping = require("../../model/Shipping");
 const bcrypt = require("bcrypt");
+const { sendWelcomeEmail } = require("../../config/helpers");
 
 exports.register = async (req, res) => {
      console.log("POST registering user");
@@ -36,6 +37,7 @@ exports.register = async (req, res) => {
      };
 
      const token = await user.generateAuthToken();
+     sendWelcomeEmail(req.body.email, req.body.firstname);
      res.status(201).json({ user: userWithoutPassword, token });
 };
 
