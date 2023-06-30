@@ -31,7 +31,7 @@ app.use(morgan("dev")); // configire morgan
 // define first route
 app.get("/", (req, res) => {
   console.log("Hello MEVN Soldier");
-  // res.status(201).json({ message: 'working' });
+  res.status(201).json({ message: 'working' });
 });
 
 const userRouter = require("./api/routes/user");
