@@ -77,12 +77,13 @@ exports.filterProducts = async (req, res) => {
 		} else {
 
 			let products = await odoo.execute_kw('product.product', 'search_read', [
-				[['type', '=', 'consu'], ['public_categ_ids', '=', Number(category)]]
+				[['type', '=', 'consu']]
+				// [['type', '=', 'consu'], ['public_categ_ids', '=', Number(category)]]
 				, ['name', 'list_price', 'image_512', 'categ_id', 'rating_avg', 'rating_count', 'website_url', 'public_categ_ids', 'website_meta_keywords'] // Fields
 				, 0, 5 // Offset, Limit
 			]);
 
-			res.status(201).json({ products });
+			res.status(201).json(products);
 		}
 
 	} catch (e) {

@@ -24,7 +24,7 @@ const companySchema = mongoose.Schema({
 	},
 
 	theme: {
-		type: Number,
+		type: String,
 		required: [true, "Theme is a required field"]
 	},
 
