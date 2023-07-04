@@ -57,6 +57,8 @@ const companySchema = mongoose.Schema({
 		type: Array,
 		required: false
 	}
+}, {
+	timestamps: true,
 });
 
 const Company = mongoose.model('Company', companySchema ) ;
