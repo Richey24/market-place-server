@@ -1,5 +1,6 @@
 const Company = require("../../model/Company");
 const User = require("../../model/User");
+const { sendTrialExtensionEmail } = require("../../config/helpers");
 
 exports.extendTrial = async (req, res) => {
      const companyId = req.params.companyId;
@@ -23,6 +24,11 @@ exports.extendTrial = async (req, res) => {
 
                // Save the updated company document
                company.save();
+               
+               // get the user and send the trial extension email
+               const user = User.findById(company.user_id);
+               sendTrialExtensionEmail(user.name, user.email, newTrialEndDate);
+
                res.status(201).json({ new_trial_end_date: newTrialEndDate });
           })
           .then((updatedCompany) => {

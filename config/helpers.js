@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const Company = require("../model/Company");
 const cron = require("node-cron");
+const User = require("../model/User");
 
 const sendOnboardingEmail = (email, name) => {
      const startDate = new Date();
@@ -136,7 +137,6 @@ const sendOnboardingEmail = (email, name) => {
 };
 
 const sendWelcomeEmail = (email, name) => {
-     const startDate = new Date();
      const endDate = new Date();
      endDate.setDate(endDate.getDate() + 14);
      const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
@@ -362,6 +362,136 @@ const sendTrialEndReminderEmail = (email, name) => {
      });
 };
 
+const sendTrialExtensionEmail = (email, name, trialEndDate) => {
+     const endDate = new Date();
+     endDate.setDate(endDate.getDate() + 14);
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Your Free Trial Period Has Been Extended!",
+          html: `
+         <!DOCTYPE html>
+         <html>
+         <head>
+           <style>
+             /* CSS styles for the email template */
+             @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+     
+             body {
+               font-family: 'Montserrat', Arial, sans-serif;
+               line-height: 1.6;
+             }
+             .container {
+               max-width: 600px;
+               margin: 0 auto;
+               padding: 20px;
+               background-color: #f5f5f5;
+               border-radius: 5px;
+             }
+             .header {
+               text-align: center;
+               margin-bottom: 20px;
+             }
+             .message {
+               margin-bottom: 20px;
+               background-color: #ffffff;
+               padding: 20px;
+               border-radius: 5px;
+             }
+             .highlight {
+               font-weight: bold;
+             }
+             .footer {
+               margin-top: 20px;
+               text-align: center;
+               font-size: 12px;
+             }
+             .logo {
+               display: block;
+               margin: 0 auto;
+               max-width: 200px;
+             }
+             .cta-button {
+               display: inline-block;
+               margin-top: 20px;
+               padding: 10px 20px;
+               background-color: #007bff;
+               color: #ffffff;
+               text-decoration: none;
+               border-radius: 5px;
+             }
+             .cta-button:hover {
+               background-color: #0056b3;
+             }
+           </style>
+         </head>
+         <body>
+           <div class="container">
+             <div class="header">
+               <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+               <h1 style="color: #333333;">Your Free Trial Period Has Been Extended!</h1>
+             </div>
+             <div class="message">
+               <p>Dear ${name},</p>
+               <p>We hope you're enjoying your trial period on our vibrant and dynamic ecommerce marketplace.</p>
+               <p>We're excited to inform you that your trial period has been extended by 7 days. You now have additional time to explore our platform, showcase your products, and familiarize yourself with all the features and tools we offer.</p>
+               <p>Please note the updated trial end date:</p>
+               <ul>
+                 <li><span class="highlight">Trial End Date:</span> ${formattedDate(
+                      trialEndDate,
+                 )}</li>
+               </ul>
+             </div>
+             <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
+             <div class="message">
+               <p><span class="highlight">Benefits of the Trial Period:</span></p>
+               <ul>
+                 <li>Opportunity to create and customize your ecommerce store.</li>
+                 <li>Full access to our suite of tools and features.</li>
+                 <li>Upload and organize your products, descriptions, and images.</li>
+                 <li>Familiarize yourself with our user-friendly interface.</li>
+                 <li>Explore our robust marketing, promotional, and video training resources.</li>
+                 <li>Evaluate the effectiveness of our platform for your business.</li>
+               </ul>
+             </div>
+             <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
+             <div class="message">
+               <p>We realize that we, as people of color, are stronger together, and when we stand together, our possibilities are limitless.</p>
+             </div>
+             <div class="message">
+               <p>Keep making the most of your extended trial period! If you have any questions or need further assistance, please don't hesitate to reach out to us. We're here to support you.</p>
+               <a class="cta-button" href="https://example.com">Get Started</a>
+             </div>
+             <div class="footer">
+               <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+             </div>
+           </div>
+         </body>
+         </html>        
+    `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
 const formatDate = (date) => {
      const year = date.getFullYear();
      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
@@ -395,6 +525,7 @@ const reminderJob = cron.schedule("0 9 * * *", () => {
 module.exports = {
      sendOnboardingEmail,
      sendTrialEndReminderEmail,
+     sendTrialExtensionEmail,
      formatDate,
      reminderJob,
      sendWelcomeEmail,
