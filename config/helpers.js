@@ -492,6 +492,220 @@ const sendTrialExtensionEmail = (email, name, trialEndDate) => {
      });
 };
 
+const sendSubscriptionEmail = (email, name) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Thank You for Subscribing to Our Service",
+          html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        /* CSS styles for the email template */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    
+        body {
+          font-family: 'Montserrat', Arial, sans-serif;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f5f5f5;
+          border-radius: 5px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .message {
+          margin-bottom: 20px;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+        }
+        .highlight {
+          font-weight: bold;
+        }
+        .footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 12px;
+        }
+        .logo {
+          display: block;
+          margin: 0 auto;
+          max-width: 200px;
+        }
+        .cta-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 5px;
+        }
+        .cta-button:hover {
+          background-color: #0056b3;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <h1 style="color: #333333;">Thank You for Subscribing to Our Service!</h1>
+        </div>
+        <div class="message">
+          <p>Dear ${name},</p>
+          <p>Thank you for subscribing to our service! We're thrilled to have you on board.</p>
+          <p>By subscribing, you'll gain access to a range of benefits and features that will enhance your experience with our service. We're committed to providing you with top-notch support and ensuring your satisfaction.</p>
+          <p>If you have any questions, feedback, or need assistance, please feel free to reach out to us. Our dedicated support team is ready to assist you.</p>
+        </div>
+        <div class="message">
+          <p>Here's what you can expect as a subscriber:</p>
+          <ul>
+            <li>Access to exclusive features and functionality.</li>
+            <li>Regular updates and improvements to enhance your experience.</li>
+            <li>Priority customer support for any service-related inquiries.</li>
+            <li>Opportunity to provide feedback and influence future enhancements.</li>
+          </ul>
+        </div>
+        <div class="footer">
+          <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you have any concerns or wish to unsubscribe from our service, please <a href="#" style="color: #777777; text-decoration: underline;">contact us</a>.</p>
+        </div>
+      </div>
+    </body>
+    </html>       
+ `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
+const sendSubscriptionExpiredEmail = (email, name) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Subscription Expired or Canceled",
+          html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        /* CSS styles for the email template */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    
+        body {
+          font-family: 'Montserrat', Arial, sans-serif;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f5f5f5;
+          border-radius: 5px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .message {
+          margin-bottom: 20px;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+        }
+        .highlight {
+          font-weight: bold;
+        }
+        .footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 12px;
+        }
+        .logo {
+          display: block;
+          margin: 0 auto;
+          max-width: 200px;
+        }
+        .cta-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #007bff;
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 5px;
+        }
+        .cta-button:hover {
+          background-color: #0056b3;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <h1 style="color: #333333;">Your Subscription Has Expired or Been Canceled</h1>
+        </div>
+        <div class="message">
+          <p>Dear ${name},</p>
+          <p>We're writing to inform you that your subscription has expired or been canceled.</p>
+          <p>We want to take this opportunity to thank you for being a valued subscriber and for your support during the subscription period. We hope our service has met your expectations and provided you with value.</p>
+          <p>If you have any questions, need assistance, or would like to reactivate your subscription, please feel free to contact our support team. We'll be happy to assist you.</p>
+        </div>
+        <div class="message">
+          <p>We appreciate your time with us and hope to have the opportunity to serve you again in the future.</p>
+          <p>Thank you and best regards,</p>
+          <p>The IsraelB Marketplace Team</p>
+        </div>
+        <div class="footer">
+          <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you have any concerns, please <a href="#" style="color: #777777; text-decoration="underline;">contact us</a>.</p>
+        </div>
+      </div>
+    </body>
+    </html>       
+ `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
 const formatDate = (date) => {
      const year = date.getFullYear();
      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
@@ -526,6 +740,8 @@ module.exports = {
      sendOnboardingEmail,
      sendTrialEndReminderEmail,
      sendTrialExtensionEmail,
+     sendSubscriptionEmail,
+     sendSubscriptionExpiredEmail,
      formatDate,
      reminderJob,
      sendWelcomeEmail,
