@@ -706,6 +706,124 @@ const sendSubscriptionExpiredEmail = (email, name) => {
      });
 };
 
+const sendCouponEmail = (email, name) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "FREE Ads Code: Supercharge Your Sales Today!",
+          html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            <p>We have fantastic news for you as a valued tenant on our ecommerce marketplace! You now have access to a FREE Ads code that will turbocharge your sales and attract more customers to your store's landing page.</p>
+            <p>With our Ads code, you can:</p>
+            <ul>
+              <li>Boost Visibility: Display your products prominently on our high-traffic landing page, reaching a wider audience of potential customers.</li>
+              <li>Drive Targeted Traffic: Attract visitors who are genuinely interested in your products, resulting in higher conversion rates and increased sales.</li>
+              <li>Amplify Your Brand: Create an immersive brand experience, highlight special offers, and leave a lasting impression on your customers.</li>
+            </ul>
+          </div>
+          <div class="message">
+            <p>It's easy to get started:</p>
+            <ol>
+              <li>Log in to your store's admin panel on our marketplace.</li>
+              <li>Go to the "Ads" section in your dashboard.</li>
+              <li>Follow the instructions to generate your unique Ads code.</li>
+              <li>Copy and paste the code onto your store's landing page.</li>
+            </ol>
+            <p>Watch your sales grow as the Ads code works its magic!</p>
+            <p>If you need any assistance, our dedicated support team is here to help. Contact us at [support email/phone number].</p>
+            <p>Don't miss out on this incredible opportunity to boost your online presence and generate more revenue. The FREE Ads code is our way of showing appreciation for your commitment to our marketplace.</p>
+          </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+     };
+
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
 const formatDate = (date) => {
      const year = date.getFullYear();
      const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
@@ -742,6 +860,7 @@ module.exports = {
      sendTrialExtensionEmail,
      sendSubscriptionEmail,
      sendSubscriptionExpiredEmail,
+     sendCouponEmail,
      formatDate,
      reminderJob,
      sendWelcomeEmail,
