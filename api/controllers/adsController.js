@@ -1,11 +1,11 @@
 const advertService = require('../../services/advert.service')
-const { successResponder } = require('../../utils/http_responder')
+const { successResponder, errorResponder } = require('../../utils/http_responder')
 class AdvertController {
 
     async createAdvertType(req, res) {
         const type = await advertService.createAdvertType(req.body)
 
-        successResponder(res, type, "Advert Type created successfull")
+        return successResponder(res, type, "Advert Type created successfull")
     }
 
 
@@ -14,7 +14,7 @@ class AdvertController {
 
         const advert = await advertService.create({ ...req.body, advertType: advertType._id })
 
-        successResponder(res, advert, 201, "Advert created successFully")
+        return successResponder(res, advert, 201, "Advert created successFully")
     }
 
     async findAll(req, res) {
@@ -22,11 +22,11 @@ class AdvertController {
             console.log({ body: req.query })
 
             const adverts = await advertService.findByType(req.query.type)
-            successResponder(res, adverts)
+            return successResponder(res, adverts)
         } else {
             const adverts = await advertService.findAll()
 
-            successResponder(res, adverts)
+            return successResponder(res, adverts)
         }
     }
 
@@ -36,11 +36,11 @@ class AdvertController {
         try {
             const updateAdvert = await advertService.updateOne(advertId, req.body)
 
-            successResponder(res, updateAdvert, 201, "Update successfull")
+            return successResponder(res, updateAdvert, 201, "Update successfull")
 
         }
-        catch (err) {
-            throw err
+        catch (error) {
+            return errorResponder(res, error?.code, error?.message);
         }
     }
 }
