@@ -5,7 +5,7 @@ const advertTypeSchema = mongoose.Schema({
 	name: {
 		type: String,
 		unique: true,
-		enum: [ADVERT_TYPE.BANNER, ADVERT_TYPE.PRODUCT, ADVERT_TYPE.PIN],
+		enum: [ADVERT_TYPE.BANNER, ADVERT_TYPE.CATEGORY, ADVERT_TYPE.PIN],
 		required: true,
 	},
 	maxAdsLimit: {
