@@ -14,7 +14,7 @@ const ADVERT_TYPE = Object.freeze({
 
 const newAdvertTypeSchema = {
     body: Joi.object({
-        name: Joi.string().valid(...Object.values(ADVERT_TYPE)),
+        name: Joi.string().valid(...Object.values(ADVERT_TYPE)).required(),
         maxAdsLimit: Joi.number(),
     })
 }

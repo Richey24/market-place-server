@@ -50,7 +50,7 @@ class CompanyService {
     */
     async updateOne(_id, payload) {
         console.log({ payload })
-        return await advertModel.updateOne({ _id }, payload)
+        return await advertModel.findOneAndUpdate({ _id }, payload)
     }
 
 
