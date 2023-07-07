@@ -8,14 +8,14 @@ const mongoose = require("mongoose");
 const app = express();
 
 //configure database and mongoose
-mongoose
-  .connect(process.env.MONGO_URL, { useNewUrlParser: true })
-  .then(() => {
-    console.log("Database is connected");
-  })
-  .catch((err) => {
-    console.log({ database_error: err });
-  });
+// mongoose
+//   .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+//   .then(() => {
+//     console.log("Database is connected");
+//   })
+//   .catch((err) => {
+//     console.log({ database_error: err });
+//   });
 // db configuaration ends here
 
 //registering cors
@@ -43,6 +43,7 @@ const onboardingRouter = require("./api/routes/onboarding");
 const promotionRouter = require('./api/routes/promotion');
 const themeRouter = require('./api/routes/theme')
 const advertRouter = require('./api/routes/advert')
+const imageRouter = require('./api/routes/image')
 // const errorHandler = require("./config/errorHandler");
 
 // //for error handling
@@ -61,6 +62,7 @@ app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
 app.use('/api/themes', themeRouter);
 app.use('/api/advert', advertRouter);
+app.use("/image", imageRouter)
 
 
 app.listen(PORT, () => {
