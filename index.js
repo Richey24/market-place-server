@@ -31,18 +31,19 @@ app.use(morgan("dev")); // configire morgan
 // define first route
 app.get("/", (req, res) => {
   console.log("Hello MEVN Soldier");
-  // res.status(201).json({ message: 'working' });
+  res.status(201).json({ message: 'working' });
 });
 
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
 const productRouter = require("./api/routes/product");
 const shoppingCart = require("./api/routes/cart");
-const adsRouter = require("./api/routes/ads");
 const wishlistRouter = require("./api/routes/wishlists");
 const onboardingRouter = require("./api/routes/onboarding");
 const promotionRouter = require('./api/routes/promotion');
 const themeRouter = require('./api/routes/theme')
+const advertRouter = require('./api/routes/advert')
+const imageRouter = require('./api/routes/image')
 // const errorHandler = require("./config/errorHandler");
 
 // //for error handling
@@ -55,12 +56,13 @@ app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
 
 app.use("/api/carts", shoppingCart);
-app.use("/api/ads", adsRouter);
 app.use("/api/wishlists", wishlistRouter);
 
 app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
 app.use('/api/themes', themeRouter);
+app.use('/api/advert', advertRouter);
+app.use("/image", imageRouter)
 
 
 app.listen(PORT, () => {

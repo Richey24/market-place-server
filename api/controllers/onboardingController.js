@@ -15,11 +15,15 @@ const getErrorMessage = (faultCode) => {
      }
 };
 
+<<<<<<< HEAD
 exports.postOnboarding = async( req, res) => {
      
      console.log("Post Request: Onboarding Users");
      console.log(req.body, req.userData);
 
+=======
+exports.getOnboarding = async (req, res) => {
+>>>>>>> 7c6ee1d840a54acd929751024ad8be81e9061eee
      const currentDate = new Date();
 
      const year = currentDate.getFullYear();
@@ -79,14 +83,14 @@ exports.postOnboarding = async( req, res) => {
                logo: req.body.logo,
                brandcolor: brandcolor,
                subscription: subscription,
-               country: "req.body.country",
-               city: "req.body.city",
-               state: " req.body.state",
+               country: req.body.country,
+               city: req.body.city,
+               state: req.body.state,
           });
 
           let company_data = await save_company.save();
           await User.findByIdAndUpdate(_id, {
-               $set: { onboarded: true, companyId: company_data?._id },
+               $set: { onboarded: true, company: company_data?._id },
           });
           res.status(201).json({ company: company_data, status: true });
      } catch (error) {
