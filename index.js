@@ -8,14 +8,14 @@ const mongoose = require("mongoose");
 const app = express();
 
 //configure database and mongoose
-// mongoose
-//   .connect(process.env.MONGO_URL, { useNewUrlParser: true })
-//   .then(() => {
-//     console.log("Database is connected");
-//   })
-//   .catch((err) => {
-//     console.log({ database_error: err });
-//   });
+mongoose
+  .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+  .then(() => {
+    console.log("Database is connected");
+  })
+  .catch((err) => {
+    console.log({ database_error: err });
+  });
 // db configuaration ends here
 
 //registering cors
