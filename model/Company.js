@@ -23,10 +23,11 @@ const companySchema = mongoose.Schema({
           required: [true, "Subdomain is a required field"],
      },
 
-     theme: {
-          type: String,
-          required: [true, "Theme is a required field"],
-     },
+	theme: {
+		type: String,
+		required: [true, "Theme is a required field"]
+	},
+
 
      logo: {
           type: String,

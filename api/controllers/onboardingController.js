@@ -15,7 +15,15 @@ const getErrorMessage = (faultCode) => {
      }
 };
 
+<<<<<<< HEAD
+exports.postOnboarding = async( req, res) => {
+     
+     console.log("Post Request: Onboarding Users");
+     console.log(req.body, req.userData);
+
+=======
 exports.getOnboarding = async (req, res) => {
+>>>>>>> 7c6ee1d840a54acd929751024ad8be81e9061eee
      const currentDate = new Date();
 
      const year = currentDate.getFullYear();
@@ -95,6 +103,13 @@ exports.getOnboarding = async (req, res) => {
                res.status(400).json({ error, status: false });
           }
      }
+}
+
+exports.getOnboarding = async (req, res) => {  
+     console.log('get onboarding api');
+     let domain = req.params.domain;
+     const company = await Company.find({ subdomain: domain });
+     return res.status(201).json( company );
 };
 
 exports.verifyCompanyName = async (req, res) => {
