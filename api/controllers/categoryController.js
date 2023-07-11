@@ -42,7 +42,7 @@ exports.fetchFeatureCategories = async ( req, res) => {
     }
 
     const categories = await getFeaturedCategories(params)
-    res.status(201).json({categories})
+    res.status(201).json(categories)
 
 }
 
