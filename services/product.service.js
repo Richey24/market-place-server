@@ -45,16 +45,16 @@ const addProduct = async (params) => {
                let product = await params.odoo.execute_kw("product.template", "create", [
                     {
                          base_unit_count: 2,
-                         categ_id: params.product.category,
-                         //  standard_price: params.product.list_price,
-                         standard_price: params.product.standard_price,
-                         name: params.product.title,
-                         // image: params.product.image,
-                         //  uom_name: params.product.uom_name,
-                         display_name: params.product.title,
-                         // product_variant_ids: 1,
-                         //  website_published: params.product.published,
-                         //  company_id: user.company.company_id,
+                         categ_id: [2, "All / Saleable"],
+                         standard_price: 200,
+                         //  standard_price: params.product.standard_price,
+                         name: "params.product.title",
+                         //  image: "params.product.image",
+                         uom_name: "Units",
+                         display_name: "params.product.title",
+                         product_variant_ids: [27],
+                         website_published: "params.product.published",
+                         company_id: 22,
                     },
                ]);
                return await product;
