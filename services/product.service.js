@@ -2,15 +2,15 @@ const Company = require('../model/Company')
 const Odoo = require('../config/odoo.connection');
 
 const unitOfMeasure = async (odoo) => {
-	try {
-		await odoo.connect();
-		console.log('Get unit of mesasure')
-		let uom =  await odoo.execute_kw('uom.uom', 'search_read', [])
-	    return { uom }
-	} catch ( e ) {
-		console.error('Error when trying to connect to odoo xml-rpc');
-	}
-}
+     try {
+          await odoo.connect();
+          console.log("Get unit of mesasure");
+          let uom = await odoo.execute_kw("uom.uom", "search_read", []);
+          return { uom };
+     } catch (e) {
+          console.error("Error when trying to connect to odoo xml-rpc");
+     }
+};
 
 const getProductById = async (id) => {
 
@@ -136,4 +136,3 @@ module.exports = {
   getProductById,
   getProductDetails
 };
-

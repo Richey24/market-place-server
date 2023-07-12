@@ -9,13 +9,13 @@ const app = express();
 
 //configure database and mongoose
 mongoose
-  .connect(process.env.MONGO_URL, { useNewUrlParser: true })
-  .then(() => {
-    console.log("Database is connected");
-  })
-  .catch((err) => {
-    console.log({ database_error: err });
-  });
+     .connect(process.env.MONGO_URL, { useNewUrlParser: true })
+     .then(() => {
+          console.log("Database is connected");
+     })
+     .catch((err) => {
+          console.log({ database_error: err });
+     });
 // db configuaration ends here
 
 //registering cors
@@ -66,5 +66,5 @@ app.use("/image", imageRouter)
 
 
 app.listen(PORT, () => {
-  console.log(`App is running on ${PORT}`);
+     console.log(`App is running on ${PORT}`);
 });

@@ -1,6 +1,7 @@
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 var Odoo = require("async-odoo-xmlrpc");
+const { formatDate, sendOnboardingEmail, reminderJob } = require("../../config/helpers");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -15,15 +16,12 @@ const getErrorMessage = (faultCode) => {
      }
 };
 
-
 exports.getOnboarding = async (req, res) => {
      const currentDate = new Date();
+     const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
 
-     const year = currentDate.getFullYear();
-     const month = String(currentDate.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-     const day = String(currentDate.getDate()).padStart(2, "0");
-
-     const formattedDate = `${year}-${month}-${day}`;
+     const formattedDate = formatDate(new Date(currentDate));
+     const formattedTrialEndDate = formatDate(new Date(trialEndDate));
 
      // Onboarding params
      let date = formattedDate;
@@ -33,7 +31,9 @@ exports.getOnboarding = async (req, res) => {
      let theme = req.body.theme;
      let brandcolor = req.body.colors;
      let subscription = req.body.subscription;
-     const { firstname, lastname, email, _id } = req.userData;
+     let subscribed = false;
+     let trial_End_Date = formattedTrialEndDate;
+     const { firstname, email, _id } = req.userData;
 
      try {
           var odoo = new Odoo({
@@ -76,12 +76,19 @@ exports.getOnboarding = async (req, res) => {
                logo: req.body.logo,
                brandcolor: brandcolor,
                subscription: subscription,
-               country: req.body.country,
-               city: req.body.city,
-               state: req.body.state,
+               subscribed: subscribed,
+               account_opening_date: date,
+               trial_end_date: trial_End_Date,
+               country: "req.body.country",
+               city: "req.body.city",
+               state: " req.body.state",
           });
 
           let company_data = await save_company.save();
+          
+          sendOnboardingEmail(email, firstname);
+
+          reminderJob.start();
           await User.findByIdAndUpdate(_id, {
                $set: { onboarded: true, company: company_data?._id },
           });
@@ -96,13 +103,13 @@ exports.getOnboarding = async (req, res) => {
                res.status(400).json({ error, status: false });
           }
      }
-}
+};
 
-exports.getOnboarding = async (req, res) => {  
-     console.log('get onboarding api');
+exports.getOnboarding = async (req, res) => {
+     console.log("get onboarding api");
      let domain = req.params.domain;
      const company = await Company.find({ subdomain: domain });
-     return res.status(201).json( company );
+     return res.status(201).json(company);
 };
 
 exports.verifyCompanyName = async (req, res) => {
