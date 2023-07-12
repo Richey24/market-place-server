@@ -6,22 +6,22 @@ const mainControllerModel = require('../../model/MainCategory');
 
 class CategoryController {
 
-    async findAll(req, res) {
-        try {
-            await Odoo.connect()
-            const company = await CompanyService.findById(req.params.companyId)
-            let categories = await Odoo.execute_kw('product.public.category', 'search_read', [[['id', 'in', company.categories]]],
-                {
-                    'fields': ['name'],
-                    'order': 'id desc'
-                },
-            );
+    // async findAll(req, res) {
+    //     try {
+    //         await Odoo.connect()
+    //         const company = await CompanyService.findById(req.params.companyId)
+    //         let categories = await Odoo.execute_kw('product.public.category', 'search_read', [[['id', 'in', company.categories]]],
+    //             {
+    //                 'fields': ['name'],
+    //                 'order': 'id desc'
+    //             },
+    //         );
 
-            res.status(200).json(categories);
-        } catch (e) {
-            console.error('Error when trying to connect odoo xml-rpc', e)
-        }
-    }
+    //         res.status(200).json(categories);
+    //     } catch (e) {
+    //         console.error('Error when trying to connect odoo xml-rpc', e)
+    //     }
+    // }
 
     async findOne(req, res) {
         try {
@@ -118,4 +118,34 @@ class CategoryController {
     }
 }
 
-module.exports = new CategoryController()
+exports.findAll = async( req, res) => {
+
+}
+
+exports.fetchFeatureCategories = async ( req, res) => {
+
+    console.log('../fetching feature categories')
+    
+    let user = req.userData;
+    let company_id = 1;
+
+    var odoo = new Odoo({
+        url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
+        username: 'user@example.com',
+        password: '850g6dHsX1TQ'
+    });
+
+    let params = {
+        odoo: odoo,
+        promo: req.body,
+        user: user
+    }
+
+    const categories = await getFeaturedCategories(params)
+    res.status(201).json(categories)
+
+}
+
+exports.categoryDetails = async (req, res ) => {}
+
+exports.createCategory = async ( req, res) => {}

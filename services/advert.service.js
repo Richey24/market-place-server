@@ -1,6 +1,6 @@
 const advertModel = require('../model/Advert');
 const advertTypeModel = require('../model/AdvertType');
-
+const { NotFoundError } = require('../utils/error')
 class CompanyService {
 
     async createAdvertType(payload) {
@@ -49,8 +49,14 @@ class CompanyService {
     * @returns {Promise<Object>} The updated advert object.
     */
     async updateOne(_id, payload) {
-        console.log({ payload })
-        return await advertModel.updateOne({ _id }, payload)
+
+        const advert = await advertModel.findOneAndUpdate({ _id }, payload)
+
+        if (!advert) {
+            throw new NotFoundError("There is no advert with this id")
+        }
+
+        return advert
     }
 
 

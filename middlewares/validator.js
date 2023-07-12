@@ -1,6 +1,7 @@
 const Joi = require('joi');
 
 const validate = (schema) => (req, res, next) => {
+
     const verify = {
         body: schema.body && schema.body.validate(req.body),
         params: schema.params && schema.params.validate(req.params),
