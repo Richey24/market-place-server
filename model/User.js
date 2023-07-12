@@ -36,20 +36,12 @@ const userSchema = mongoose.Schema({
           type: Boolean,
           default: false,
      },
-     subscribed: {
-          type: Boolean,
-          default: false,
-     },
      phone: {
           type: Number,
      },
      created_at: {
           type: Date,
           default: Date.now,
-     },
-     trial_endDate: {
-          type: Date,
-          default: new Date(currentDate.getTime() + 14 * 24 * 60 * 60 * 1000),
      },
      company: {
           type: mongoose.Schema.Types.ObjectId,
