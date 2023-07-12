@@ -1,5 +1,11 @@
 const { Joi } = require('celebrate');
 
+const getCategory = {
+    params: Joi.object({
+        companyId: Joi.string().required(),
+    })
+}
+
 const createCategorySchema = {
     body: Joi.object({
         name: Joi.string().required(),
@@ -13,4 +19,4 @@ const createSubCategorySchema = {
     })
 }
 
-module.exports = { createCategorySchema, createSubCategorySchema }
+module.exports = { createCategorySchema, createSubCategorySchema, getCategory }

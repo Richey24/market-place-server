@@ -24,7 +24,7 @@ const companySchema = mongoose.Schema({
      },
 
      theme: {
-          type: Number,
+          type: String,
           required: [true, "Theme is a required field"],
      },
 
@@ -44,18 +44,25 @@ const companySchema = mongoose.Schema({
           type: String,
           required: [true, "country is a required field"],
      },
-     subscibed: {
-          type: Boolean,
-          default: false,
-     },
-     trial_end_date: {
-          type: String,
-     },
      city: {
           type: String,
           required: [true, "city is a required field"],
      },
+
      address: {
+          type: String,
+     },
+
+     categories: {
+          type: Array,
+          required: false,
+     },
+     subscibed: {
+          type: Boolean,
+          default: false,
+     },
+     
+     trial_end_date: {
           type: String,
      },
 });

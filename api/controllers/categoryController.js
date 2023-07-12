@@ -1,24 +1,149 @@
-var Odoo = require('async-odoo-xmlrpc');
+const { getFeaturedCategories } = require('../../services/category.service');
+const Odoo = require('../../config/odoo.connection');
+const CompanyService = require('../../services/company.service')
+const UserService = require('../../services/user.service')
+const mainControllerModel = require('../../model/MainCategory');
 
-exports.getCategories = async ( req, res) => {
+class CategoryController {
 
-	console.log("GET /api/categories")
-	var odoo = new Odoo({
-        url: 'http://104.43.252.217/',
-        port: 80,
-        db: 'bitnami_odoo',
+    // async findAll(req, res) {
+    //     try {
+    //         await Odoo.connect()
+    //         const company = await CompanyService.findById(req.params.companyId)
+    //         let categories = await Odoo.execute_kw('product.public.category', 'search_read', [[['id', 'in', company.categories]]],
+    //             {
+    //                 'fields': ['name'],
+    //                 'order': 'id desc'
+    //             },
+    //         );
+
+    //         res.status(200).json(categories);
+    //     } catch (e) {
+    //         console.error('Error when trying to connect odoo xml-rpc', e)
+    //     }
+    // }
+
+    async findOne(req, res) {
+        try {
+            await Odoo.connect()
+            let data = await Odoo.execute_kw('product.public.category', 'search_read', [
+                [['id', '=', req.params.id]]
+            ]);
+            res.status(200).json(data);
+        } catch (e) {
+            console.error('Error when trying to connect odoo xml-rpc', e)
+        }
+    }
+
+    async create(req, res) {
+        try {
+            const { name } = req.body
+
+            await Odoo.connect()
+            let id = await Odoo.execute_kw('product.public.category', 'create', [
+                { 'name': name }
+            ]);
+            const user = await UserService.findById(req.userData._id)
+
+            const company = await CompanyService.updateCategories(user.company._id, id)
+
+            res.status(201).json({ id, company });
+        } catch (e) {
+            console.error('Error when trying to connect odoo xml-rpc', e)
+        }
+    }
+
+    async update(req, res) {
+        const id = req.params.id
+
+        try {
+            await Odoo.connect()
+            let resUpdate = await Odoo.execute_kw('product.public.category', 'write', [
+                [id]
+                , { 'name': req.body.name }
+            ]);
+            if (resUpdate) {
+
+                let data = await Odoo.execute_kw('product.public.category', 'search_read', [
+                    [['id', '=', req.params.id]]
+                ]);
+                res.status(201).json(data);
+            } else {
+                res.status(500) //TODO: make this better
+
+            }
+        } catch (e) {
+            console.error('Error when trying to connect odoo xml-rpc', e)
+        }
+    }
+
+    async createSubCategory(req, res) {
+        const { categoryId, name } = req.body
+
+        try {
+            await Odoo.connect()
+            let id = await Odoo.execute_kw('product.public.category', 'create', [
+                {
+                    'name': name,
+                    'parent_id': categoryId
+                }
+            ]);
+            res.status(201).json({ id });
+        } catch (e) {
+            console.error('Error when trying to connect odoo xml-rpc', e)
+        }
+    }
+
+    async fetchFeatureCategories(req, res) {
+
+        console.log('../fetching feature categories')
+
+        let user = req.userData;
+
+        let params = {
+            odoo: Odoo,
+            promo: req.body,
+            user: user
+        }
+
+        const categories = await getFeaturedCategories(params)
+        res.status(201).json({ categories })
+
+    }
+
+    async createMainController(req, res) {
+        const category = await mainControllerModel.create({ name: req.body.name })
+
+        res.status(200).json(category)
+    }
+}
+
+exports.findAll = async( req, res) => {
+
+}
+
+exports.fetchFeatureCategories = async ( req, res) => {
+
+    console.log('../fetching feature categories')
+    
+    let user = req.userData;
+    let company_id = 1;
+
+    var odoo = new Odoo({
+        url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
         username: 'user@example.com',
         password: '850g6dHsX1TQ'
     });
 
-    try {
-        await odoo.connect();
-        console.log("Connect to Odoo XML-RPC is successed.");
-        let categories = await odoo.execute_kw('product.public.category', 'search_read', [], 0, 1);
-        res.status(201).json({ categories });
-    } catch (e) {
-        console.error('Error when trying to connect odoo xml-rpc', e)
+    let params = {
+        odoo: odoo,
+        promo: req.body,
+        user: user
     }
+
+    const categories = await getFeaturedCategories(params)
+    res.status(201).json(categories)
+
 }
 
 exports.categoryDetails = async (req, res ) => {}

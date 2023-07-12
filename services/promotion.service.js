@@ -1,34 +1,49 @@
-
-
+const { getRewardById } = require('./reward.service')
+const Odoo = require('../config/odoo.connection');
 /**
  * This function get all promotions
  * @param  {[type]} params [description]
  * @return {[type]}        [description]
  */
-const getPromotion = async (params ) => {
-
-	//TODO: need find out if i can call odoo connection once
-	await params.odoo.connect();
-	let promotion = await params.odoo.execute_kw('loyalty.program', 'search_read',[
-		   [['company_id', '=', false]]
-		   , ['name', 
-		   	  'active', 
-		   	  'applies_on', 
-		   	  'available_on', 
-		   	  'coupon_count', 
-		   	  'coupon_count_display',
-		   	  'coupon_ids',
-		   	  'limit_usage',
-		   	  'program_type',
-		   	  'reward_ids',
-		   	  'rule_ids',
-		   	  'trigger',
-		   	  'trigger_product_ids'
-		   	  ]
-		   , 0, 5 // offset, limit
+const getPromotion = async (params ) => {	
+	console.log('..get promotionS')
+	try {
+		await Odoo.connect();
+		
+		let promotions = await Odoo.execute_kw('loyalty.program', 'search_read',[
+			[['company_id', '=', 1]]
+			, [ 'name',  'active', 'applies_on', 'available_on', 'coupon_count', 
+				'coupon_count_display', 'coupon_ids', 'limit_usage', 'program_type',
+				'reward_ids', 'rule_ids', 'trigger', 'trigger_product_ids'
+				]
+			, 0, 5 // offset, limit
 		]);
 
-	return promotion;
+		let loyality = await Promise.all(promotions.map(async (obj)  => {
+			let data = {
+				id: obj.id,
+				name: obj.name,
+				active: obj.active,
+				applies_on: obj.applies_on,
+				available_on: obj.available_on,
+				coupon_count: obj.coupon_count,
+				coupon_count_display: obj.coupon_count_display,
+				coupon_ids: obj.coupon_ids,
+				limit_usage: obj.limit_usage,
+				program_type: obj.program_type,
+				rewards_ids: obj.reward_ids,
+				rule_id: obj.rule_id,
+				rewards: await Odoo.execute_kw('loyalty.reward', 'read', [obj.reward_ids[0]])
+			}
+			console.log(data)
+			return data;
+		}))
+		
+		return await loyality;
+	} catch (e) {
+		console.error('Error when try connect Odoo XML-RPC', e)
+	}
+
 }
 
 /**
@@ -46,8 +61,8 @@ const addPromotion = async ( params ) => {
 	const formattedDate = `${year}-${month}-${day}`;
 
 	try {
-		await params.odoo.connect();
-		let promotion = await params.odoo.execute_kw('loyalty.program', 'create', [ {
+		var odoo = await Odoo.connect();
+		let promotion = await odoo.execute_kw('loyalty.program', 'create', [ {
 			applies_on: params.promo.applies_on,
 			company_id: params.promo.company_id,
 			// coupon_code: params.promo.coupon_code,
@@ -72,8 +87,8 @@ const addPromotion = async ( params ) => {
 const getPromotionRewards = async ( params ) => {
 
 	try {
-		await params.odoo.connect();
-		let rewards = await params.odoo.execute_kw('loyalty.reward', 'search_read',[
+		var odoo = await Odoo.connect();
+		let rewards = await odoo.execute_kw('loyalty.reward', 'search_read',[
 		   [['company_id', '=', 1]]
 		   , ['id', 'display_name', 'active', 'discount_max_amount', 'discount_mode',
 		   	  'discount_product_category_id', 'discount_product_domain', 'discount_product_ids',
@@ -96,8 +111,8 @@ const getPromotionRewards = async ( params ) => {
 const getPromotionCondition = async ( params ) => {
 
 	try {
-		await params.odoo.connect();
-		let conditions = await params.odoo.execute_kw('loyalty.rule', 'search_read', [
+		var odoo = await Odoo.connect();
+		let conditions = await odoo.execute_kw('loyalty.rule', 'search_read', [
 			[['company_id', '=', 1]]
 			,['id', 'display_name']
 			, 0, 5 // offset, limit
@@ -115,8 +130,8 @@ const getPromotionCondition = async ( params ) => {
  */
 const addPromotionRewards = async ( params ) => {
 	try {
-		await params.odoo.connect();
-		let rewards = await params.odoo.execute_kw('loyalty.reward', 'create', [
+		var odoo = await Odoo.connect();
+		let rewards = await odoo.execute_kw('loyalty.reward', 'create', [
 			{
 				description: params.reward.desc,
 				discount: params.reward.discount,
@@ -142,8 +157,8 @@ const addPromotionConditon = async ( params ) => {
 
 	console.log(params);
 	try {
-		await params.odoo.connect();
-		let conditions = await params.odoo.execute_kw('loyalty.rule', 'create', [
+		var odoo = await Odoo.connect();
+		let conditions = await odoo.execute_kw('loyalty.rule', 'create', [
 			{
 				program_id: params.condition.program_id,
 				program_ids: params.condition.program_ids,
@@ -179,8 +194,8 @@ const updatePromotion = async ( params ) => {
 	const formattedDate = `${year}-${month}-${day}`;
 	
 	try {
-		await params.odoo.connect();
-		let promo = await params.odoo.execute_kw('loyalty.program', 'write', [
+		var odoo = await Odoo.connect();
+		let promo = await odoo.execute_kw('loyalty.program', 'write', [
 			[params.promo.id], 
 				{
 					applied_on: params.applied_on,
@@ -193,6 +208,8 @@ const updatePromotion = async ( params ) => {
 					limit_usage: params.limit_usage
 				}
 		]);
+
+		return promo
 	} catch (e) {
 		console.error('Error when trying to connect to Odoo ')
 	}

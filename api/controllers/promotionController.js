@@ -1,5 +1,7 @@
 var Odoo = require('async-odoo-xmlrpc');
 const Company = require('../../model/Company');
+const { getRewards } = require('../../services/reward.service')
+
 const { 
 	addPromotion,
 	updatePromotion,
@@ -10,6 +12,7 @@ const {
 	getPromotionCondition,
 	addPromotionConditon
 } = require('../../services/promotion.service');
+
 
 /**
  * This get Promotion by company id
@@ -22,14 +25,7 @@ exports.getPromotions = async (req, res) => {
 	let user = req.userData;
 	let company_id = 1;
 
-	var odoo = new Odoo({
-		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
-		username: 'user@example.com',
-		password: '850g6dHsX1TQ'
-	});
-
 	let params = {
-		odoo: odoo,
 		promo: req.body,
 		user: user
 	}
@@ -57,7 +53,6 @@ exports.createPromotions = async (req, res) => {
 	});
 
 	let params = {
-		odoo: odoo,
 		promo: req.body,
 		user: user
 	}
@@ -78,14 +73,7 @@ exports.createCondition = async ( req, res) => {
 	let company_id = 1;
 
 
-	var odoo = new Odoo({
-		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
-		username: 'user@example.com',
-		password: '850g6dHsX1TQ'
-	});
-
 	let params = {
-		odoo: odoo,
 		condition: req.body,
 		user: user
 	}
@@ -168,4 +156,17 @@ exports.getCondtions = async ( req, res ) => {
 
 	const conditions = await getPromotionCondition(params);
 	res.status(201).json({conditions});
+}
+
+exports.getPromotionBanner = async (req, res) => {
+	let user = req.userData;
+	let company_id = 1;
+	
+	let params = {
+		promo: req.body,
+		user: user
+	}
+
+	const rewards = await getRewards(params);
+	res.status(201).json(rewards);
 }

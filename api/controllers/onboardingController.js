@@ -17,9 +17,6 @@ const getErrorMessage = (faultCode) => {
 };
 
 exports.getOnboarding = async (req, res) => {
-     console.log("Post Request: Onboarding Users");
-     console.log(req.body, req.userData);
-
      const currentDate = new Date();
      const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
 
@@ -36,7 +33,7 @@ exports.getOnboarding = async (req, res) => {
      let subscription = req.body.subscription;
      let subscribed = false;
      let trial_End_Date = formattedTrialEndDate;
-     const { firstname, lastname, email, _id } = req.userData;
+     const { firstname, email, _id } = req.userData;
 
      try {
           var odoo = new Odoo({
@@ -88,6 +85,7 @@ exports.getOnboarding = async (req, res) => {
           });
 
           let company_data = await save_company.save();
+          
           sendOnboardingEmail(email, firstname);
 
           reminderJob.start();
@@ -105,6 +103,13 @@ exports.getOnboarding = async (req, res) => {
                res.status(400).json({ error, status: false });
           }
      }
+};
+
+exports.getOnboarding = async (req, res) => {
+     console.log("get onboarding api");
+     let domain = req.params.domain;
+     const company = await Company.find({ subdomain: domain });
+     return res.status(201).json(company);
 };
 
 exports.verifyCompanyName = async (req, res) => {
