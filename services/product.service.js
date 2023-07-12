@@ -1,5 +1,6 @@
-const Company = require("../model/Company");
 const User = require("../model/User");
+const Company = require("../model/Company");
+const Odoo = require("../config/odoo.connection");
 
 const unitOfMeasure = async (odoo) => {
      try {
@@ -12,6 +13,17 @@ const unitOfMeasure = async (odoo) => {
      }
 };
 
+const getProductById = async (id) => {
+     let productId = id;
+
+     try {
+          await Odoo.connect();
+          let products = await Odoo.execute_kw("product.product", "read", [productId]);
+          return products;
+     } catch (e) {
+          console.error("XMPLC Error", e);
+     }
+};
 /**
  * This function get feature products
  * @param  {[type]} params [description]
@@ -20,8 +32,8 @@ const unitOfMeasure = async (odoo) => {
 const getFeaturedProducts = async (params) => {
      console.log("GET /api/products");
      try {
-          await params.odoo.connect();
-          let products = await params.odoo.execute_kw("product.template", "search_read", [
+          await Odoo.connect();
+          let products = await Odoo.execute_kw("product.product", "search_read", [
                [["type", "=", "consu"]],
                ["name", "list_price", "description_sale", "categ_id", "id", "website_url"],
                0,
@@ -35,34 +47,39 @@ const getFeaturedProducts = async (params) => {
 
 const addProduct = async (params) => {
      try {
-          const user = await User.findById(params.user._id).populate({
-               path: "company",
-               options: { virtuals: true },
-          });
-          console.log(params);
-          if (user) {
-               await params.odoo.connect();
-               let product = await params.odoo.execute_kw("product.template", "create", [
-                    {
-                         base_unit_count: 2,
-                         categ_id: [2, "All / Saleable"],
-                         standard_price: 200,
-                         //  standard_price: params.product.standard_price,
-                         name: "params.product.title",
-                         //  image: "params.product.image",
-                         uom_name: "Units",
-                         display_name: "params.product.title",
-                         product_variant_ids: [27],
-                         website_published: "params.product.published",
-                         company_id: 22,
-                    },
-               ]);
-               return await product;
-          } else {
-               throw "Invalid Login";
-          }
+          await params.odoo.connect();
+          let product = await params.odoo.execute_kw("product.template", "create", [
+               {
+                    base_unit_count: params.product.qty,
+                    categ_id: params.product.category_id,
+                    list_price: params.product.list_price,
+                    standard_price: params.product.standard_price,
+                    name: params.product.name,
+                    // image_512: "params.product.image",
+                    uom_name: params.product.uom_name,
+                    display_name: params.product.name,
+                    // product_variant_ids: 1,
+                    website_published: params.product.published,
+               },
+          ]);
+          return await product;
      } catch (e) {
-          throw ("Error when try connect Odoo XML-RPC.", e);
+          console.error("Error when try connect Odoo XML-RPC.", e);
+          throw e;
+     }
+};
+
+const getProductDetails = async (productId) => {
+     try {
+          await Odoo.connect();
+          console.log("Connect to odoo XML-RPC is successed.");
+
+          let id = await Odoo.execute_kw("product.template", "search", [[["id", "=", productId]]]);
+          let details = await Odoo.execute_kw("product.template", "read", [id]);
+
+          return details;
+     } catch (e) {
+          console.error("Error when try connect Odoo XML-RPC.", e);
      }
 };
 
@@ -97,8 +114,21 @@ const updateProduct = async (params) => {
  */
 const deleteProduct = async (params) => {};
 
+// const getProductImageUrl = async (params) => {
+
+// 	try {
+// 		await params.odoo.connect();
+// 		let product = await odoo.execute_kw('product.template', 'read', [
+// 			[params.product_id]
+// 	} catch (e) {
+
+// 	}
+// }
+
 module.exports = {
      addProduct,
      unitOfMeasure,
      getFeaturedProducts,
+     getProductById,
+     getProductDetails,
 };
