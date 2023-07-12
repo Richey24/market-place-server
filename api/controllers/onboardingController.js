@@ -15,15 +15,8 @@ const getErrorMessage = (faultCode) => {
      }
 };
 
-<<<<<<< HEAD
-exports.postOnboarding = async( req, res) => {
-     
-     console.log("Post Request: Onboarding Users");
-     console.log(req.body, req.userData);
 
-=======
 exports.getOnboarding = async (req, res) => {
->>>>>>> 7c6ee1d840a54acd929751024ad8be81e9061eee
      const currentDate = new Date();
 
      const year = currentDate.getFullYear();

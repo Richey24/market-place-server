@@ -6,22 +6,22 @@ const mainControllerModel = require('../../model/MainCategory');
 
 class CategoryController {
 
-    async findAll(req, res) {
-        try {
-            await Odoo.connect()
-            const company = await CompanyService.findById(req.params.companyId)
-            let categories = await Odoo.execute_kw('product.public.category', 'search_read', [[['id', 'in', company.categories]]],
-                {
-                    'fields': ['name'],
-                    'order': 'id desc'
-                },
-            );
+    // async findAll(req, res) {
+    //     try {
+    //         await Odoo.connect()
+    //         const company = await CompanyService.findById(req.params.companyId)
+    //         let categories = await Odoo.execute_kw('product.public.category', 'search_read', [[['id', 'in', company.categories]]],
+    //             {
+    //                 'fields': ['name'],
+    //                 'order': 'id desc'
+    //             },
+    //         );
 
-            res.status(200).json(categories);
-        } catch (e) {
-            console.error('Error when trying to connect odoo xml-rpc', e)
-        }
-    }
+    //         res.status(200).json(categories);
+    //     } catch (e) {
+    //         console.error('Error when trying to connect odoo xml-rpc', e)
+    //     }
+    // }
 
     async findOne(req, res) {
         try {
@@ -116,6 +116,10 @@ class CategoryController {
 
         res.status(200).json(category)
     }
+}
+
+exports.findAll = async( req, res) => {
+
 }
 
 exports.fetchFeatureCategories = async ( req, res) => {

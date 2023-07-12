@@ -8,10 +8,10 @@ exports.getProducts = async (req, res) => {
 
 	try {
 
-		await odoo.connect();
+		await Odoo.connect();
 		console.log("Connect to Odoo XML-RPC - api/products");
 
-		let products = await odoo.execute_kw('product.template', 'search_read', [[['type', '=', 'consu']]], { 'fields': ['name', 'public_categ_ids'] })
+		let products = await Odoo.execute_kw('product.template', 'search_read', [[['type', '=', 'consu']]], { 'fields': ['name', 'public_categ_ids'] })
 		res.status(201).json({ products });
 
 	} catch (e) {
