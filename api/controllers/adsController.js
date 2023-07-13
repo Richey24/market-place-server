@@ -4,15 +4,16 @@ class AdvertController {
      async createAdvertType(req, res) {
           const type = await advertService.createAdvertType(req.body);
 
+
           return successResponder(res, type, "Advert Type created successfull");
      }
 
      async create(req, res) {
-          const advertType = await advertService.findAdvertType(req.body.advertType);
+          // const advertType = await advertService.findAdvertType(req.body.advertType);
 
-          const advert = await advertService.create({ ...req.body, advertType: advertType._id });
+          // const advert = await advertService.create({ ...req.body, advertType: advertType._id });
 
-          return successResponder(res, advert, 201, "Advert created successFully");
+          // return successResponder(res, advert, 201, "Advert created successFully");
      }
 
      async findAllAdsService(req, res) {
