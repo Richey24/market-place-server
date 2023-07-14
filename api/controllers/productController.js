@@ -9,22 +9,19 @@ const {
 
 exports.getProducts = async (req, res) => {
 	console.log("GET /api/products");
+	await Odoo.connect();
+	console.log("Connect to Odoo XML-RPC - api/products");
 
 	try {
-		await Odoo.connect();
+		await odoo.connect();
 		console.log("Connect to Odoo XML-RPC - api/products");
 
-		try {
-			await odoo.connect();
-			console.log("Connect to Odoo XML-RPC - api/products");
+		let products = await odoo.execute_kw('product.template', 'search_read', [[['type', '=', 'consu']]], { 'fields': ['name', 'public_categ_ids'] })
+		res.status(201).json({ products });
 
-			let products = await odoo.execute_kw('product.template', 'search_read', [[['type', '=', 'consu']]], { 'fields': ['name', 'public_categ_ids'] })
-			res.status(201).json({ products });
-
-		} catch (e) {
-			console.error("Error when try connect Odoo XML-RPC.", e);
-			res.status(500).json({ message: "An error occured" });
-		}
+	} catch (e) {
+		console.error("Error when try connect Odoo XML-RPC.", e);
+		res.status(500).json({ message: "An error occured" });
 	}
 }
 
