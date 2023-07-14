@@ -16,7 +16,7 @@ const getErrorMessage = (faultCode) => {
      }
 };
 
-exports.getOnboarding = async (req, res) => {
+exports.postOnboarding = async (req, res) => {
      const currentDate = new Date();
      const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
 
