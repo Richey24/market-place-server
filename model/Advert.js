@@ -12,10 +12,10 @@ const AdvertSchema = mongoose.Schema(
                ref: "AdvertType",
                required: true,
           },
-        //   company_id: {
-        //        type: Number,
-        //        required: [true, "Company id is required"],
-        //   },
+          company_id: {
+               type: Number,
+               required: [true, "Company id is required"],
+          },
           imageUrl: {
                type: String,
                required: true,
