@@ -20,6 +20,7 @@ exports.getProducts = async (req, res) => {
 
 	} catch (e) {
 		console.error("Error when try connect Odoo XML-RPC.", e);
+		res.status(500).json({ message: "An error occured" });
 	}
 }
 
@@ -29,7 +30,7 @@ exports.getProducts = async (req, res) => {
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
  */
-exports.getFeaturedProducts = async ( req, res) => {
+exports.getFeaturedProducts = async (req, res) => {
 
 	console.log('GET  api/products/featured')
 
@@ -49,7 +50,7 @@ exports.getFeaturedProducts = async ( req, res) => {
 	}
 
 	const products = await getFeaturedProducts(params);
-	res.status(201).json({products})
+	res.status(201).json({ products })
 }
 
 exports.filterProducts = async (req, res) => {
@@ -67,7 +68,7 @@ exports.filterProducts = async (req, res) => {
 	try {
 		await odoo.connect();
 
-		if (category === null) {	
+		if (category === null) {
 			let products = await odoo.execute_kw('product.product', 'search_read', [
 				[['type', '=', 'consu']]
 				, ['name', 'list_price', 'image_512', 'categ_id', 'rating_avg', 'rating_count', 'website_url', 'public_categ_ids', 'website_meta_keywords'] // Fields
@@ -118,7 +119,7 @@ exports.wishlistProduct = async (req, res) => {
 	console.log(" GET /api/details");
 
 	const productId = req.params.id
-	
+
 	try {
 		await odoo.connect();
 
@@ -136,9 +137,9 @@ exports.wishlistProduct = async (req, res) => {
 }
 
 exports.createProduct = async (req, res) => {
-    
-    let user = req.userData;
-    
+
+	let user = req.userData;
+
 	var odoo = new Odoo({
 		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
 		username: 'user@example.com',
