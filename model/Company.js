@@ -57,6 +57,14 @@ const companySchema = mongoose.Schema({
           type: Array,
           required: false,
      },
+     subscibed: {
+          type: Boolean,
+          default: false,
+     },
+     
+     trial_end_date: {
+          type: String,
+     },
 });
 
 const Company = mongoose.model("Company", companySchema);

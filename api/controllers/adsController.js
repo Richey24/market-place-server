@@ -1,48 +1,49 @@
-const advertService = require('../../services/advert.service')
-const { successResponder, errorResponder } = require('../../utils/http_responder')
+const advertService = require("../../services/advert.service");
+const { successResponder, errorResponder } = require("../../utils/http_responder");
 class AdvertController {
+     async createAdvertType(req, res) {
+          const type = await advertService.createAdvertType(req.body);
 
-    async createAdvertType(req, res) {
-        const type = await advertService.createAdvertType(req.body)
+          return successResponder(res, type, "Advert Type created successfull");
+     }
 
-        return successResponder(res, type, "Advert Type created successfull")
-    }
+     async create(req, res) {
+          const advertType = await advertService.findAdvertType(req.body.advertType);
 
+          const advert = await advertService.create({ ...req.body, advertType: advertType._id });
 
-    async create(req, res) {
-        const advertType = await advertService.findAdvertType(req.body.advertType)
+          return successResponder(res, advert, 201, "Advert created successFully");
+     }
 
-        const advert = await advertService.create({ ...req.body, advertType: advertType._id })
+     async findAllAdsService(req, res) {
+          const adService = await advertService.findAllType();
 
-        return successResponder(res, advert, 201, "Advert created successFully")
-    }
+          return successResponder(res, adService);
+     }
 
-    async findAll(req, res) {
-        if (req.query.type) {
-            console.log({ body: req.query })
+     async findAll(req, res) {
+          if (req.query.type) {
+               const adverts = await advertService.findByType(req.query.type);
 
-            const adverts = await advertService.findByType(req.query.type)
-            return successResponder(res, adverts)
-        } else {
-            const adverts = await advertService.findAll()
+               return successResponder(res, adverts);
+          } else {
+               const adverts = await advertService.findAll();
 
-            return successResponder(res, adverts)
-        }
-    }
+               return successResponder(res, adverts);
+          }
+     }
 
-    async updateOne(req, res) {
-        const { advertId } = req.params
+     async updateOne(req, res) {
+          const { advertId } = req.params;
 
-        try {
-            const updateAdvert = await advertService.updateOne(advertId, req.body)
+          try {
+               const updateAdvert = await advertService.updateOne(advertId, req.body);
 
-            return successResponder(res, updateAdvert, 201, "Update successfull")
-
-        }
-        catch (error) {
-            return errorResponder(res, error?.code, error?.message);
-        }
-    }
+               return successResponder(res, updateAdvert, 201, "Update successfull");
+          } catch (error) {
+               return errorResponder(res, error?.code, error?.message);
+          }
+     }
 }
 
-module.exports = new AdvertController()
+module.exports = new AdvertController();

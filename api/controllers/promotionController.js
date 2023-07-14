@@ -25,14 +25,7 @@ exports.getPromotions = async (req, res) => {
 	let user = req.userData;
 	let company_id = 1;
 
-	var odoo = new Odoo({
-		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
-		username: 'user@example.com',
-		password: '850g6dHsX1TQ'
-	});
-
 	let params = {
-		odoo: odoo,
 		promo: req.body,
 		user: user
 	}
@@ -60,7 +53,6 @@ exports.createPromotions = async (req, res) => {
 	});
 
 	let params = {
-		odoo: odoo,
 		promo: req.body,
 		user: user
 	}
@@ -81,14 +73,7 @@ exports.createCondition = async ( req, res) => {
 	let company_id = 1;
 
 
-	var odoo = new Odoo({
-		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
-		username: 'user@example.com',
-		password: '850g6dHsX1TQ'
-	});
-
 	let params = {
-		odoo: odoo,
 		condition: req.body,
 		user: user
 	}
@@ -176,15 +161,8 @@ exports.getCondtions = async ( req, res ) => {
 exports.getPromotionBanner = async (req, res) => {
 	let user = req.userData;
 	let company_id = 1;
-
-	var odoo = new Odoo({
-		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
-		username: 'user@example.com',
-		password: '850g6dHsX1TQ'
-	});
-
+	
 	let params = {
-		odoo: odoo,
 		promo: req.body,
 		user: user
 	}
