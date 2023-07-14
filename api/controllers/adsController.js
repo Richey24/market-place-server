@@ -23,9 +23,8 @@ class AdvertController {
 
      async findAll(req, res) {
           if (req.query.type) {
-               console.log({ body: req.query });
-
                const adverts = await advertService.findByType(req.query.type);
+
                return successResponder(res, adverts);
           } else {
                const adverts = await advertService.findAll();
