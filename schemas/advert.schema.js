@@ -27,7 +27,7 @@ const createAdvertSchema = {
           imageUrl: Joi.string().required(),
           productId: Joi.number(),
           categoryId: Joi.string(),
-          company_id: Joi.number().required(),
+          company_id: Joi.string().required(),
      }),
 };
 

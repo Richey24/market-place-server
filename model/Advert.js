@@ -13,7 +13,7 @@ const AdvertSchema = mongoose.Schema(
                required: true,
           },
           company_id: {
-               type: Number,
+               type: String,
                required: [true, "Company id is required"],
           },
           imageUrl: {
@@ -45,6 +45,14 @@ const AdvertSchema = mongoose.Schema(
           timestamps: true,
      },
 );
+
+AdvertSchema.virtual("advertTypeName", {
+     ref: "AdvertType",
+     localField: "advertType",
+     foreignField: "_id",
+     justOne: true,
+     options: { select: "name" }, // Retrieve only the "name" field from AdvertType
+});
 
 const Advert = mongoose.model("Advert", AdvertSchema);
 
