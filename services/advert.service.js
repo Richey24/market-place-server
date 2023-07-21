@@ -28,7 +28,7 @@ class CompanyService {
       * @returns {Promise<AdvertDocument[]>} The found adverts.
       */
      async findAll() {
-          return await advertModel.find();
+          return await advertModel.find().populate("advertType", "name");
      }
 
      /**
@@ -42,6 +42,14 @@ class CompanyService {
                return [];
           }
           return await advertModel.find({ advertType: type._id }).populate("advertType");
+     }
+
+     async findByCompany(company_id) {
+          const ads = await advertModel.find({ company_id }).populate("advertType", "name");
+          if (!ads) {
+               throw new NotFoundError("There is no advert with this id");
+          }
+          return ads;
      }
 
      /**

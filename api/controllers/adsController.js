@@ -21,6 +21,12 @@ class AdvertController {
           return successResponder(res, adService);
      }
 
+     async findAdsByCompany(req, res) {
+          const adverts = await advertService.findByCompany(req.query.company_id);
+
+          return successResponder(res, adverts);
+     }
+
      async findAll(req, res) {
           if (req.query.type) {
                const adverts = await advertService.findByType(req.query.type);
