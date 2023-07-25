@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { USER_ROLE } = require("../schemas/user.schema");
 
 const currentDate = new Date();
 
@@ -26,6 +27,8 @@ const userSchema = mongoose.Schema({
      },
      role: {
           type: String,
+          default: USER_ROLE.USER,
+          enum: [USER_ROLE.USER, USER_ROLE.ADMIN],
           required: [true, "Please include user role"],
      },
      password: {
