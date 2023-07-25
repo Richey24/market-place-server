@@ -9,7 +9,12 @@ class CompanyService {
     async findById(id) {
         return await companyModel.findById(id)
     }
-
+    async findOne(filterQuery, queryOption) {
+        return await companyModel.findOne(filterQuery, {}, queryOption)
+    }
+    async find(filterQuery,) {
+        return await companyModel.findOne(filterQuery)
+    }
     async updateOne(_id, payload) {
         return await companyModel.updateOne({ where: { _id } }, { ...payload })
     }

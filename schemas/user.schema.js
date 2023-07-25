@@ -5,12 +5,6 @@ const USER_ROLE = Object.freeze({
      ADMIN: "ADMIN",
 });
 
-const ADVERT_TYPE = Object.freeze({
-     BANNER: "BANNER",
-     PRODUCT: "PRODUCT",
-     PIN: "PIN",
-});
-
 
 module.exports = {
      USER_ROLE
