@@ -16,7 +16,7 @@ class ContactUsController {
             populate: { path: 'user_id' },
             lean: true,
         })
-
+        //test subdomain : testing2
         if (!company) {
             return errorResponder(res, 404, "This message has does not belong to any domain or vendor")
         }

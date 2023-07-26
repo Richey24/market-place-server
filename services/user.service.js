@@ -17,6 +17,7 @@ class UserService {
     async updateOne(id, payload) {
         return await userModel.updateOne({ where: { id } }, { ...payload })
     }
+
 }
 
 module.exports = new UserService()
