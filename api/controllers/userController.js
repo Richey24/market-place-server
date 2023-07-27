@@ -52,6 +52,9 @@ exports.register = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
+     console.log({
+          body: req.body
+     })
      try {
           console.log("logging user in");
           const email = req.body.email;
@@ -68,7 +71,6 @@ exports.loginUser = async (req, res) => {
                onboarded: user.onboarded,
                subscribed: user.subscribed,
           };
-
 
           if (!user) {
                return res
