@@ -12,6 +12,7 @@ const advertController = require("../controllers/adsController");
 router.get("/", advertController.findAll);
 router.get("/advert-service", advertController.findAllAdsService);
 router.get("/company-adverts", advertController.findAdsByCompany);
+router.get("/ad-id", advertController.findAdById);
 router.post("/", validate(createAdvertSchema), advertController.create);
 router.post("/new-advert-type", validate(newAdvertTypeSchema), advertController.createAdvertType);
 router.patch("/:advertId", validate(getAdvertSchema), advertController.updateOne);
