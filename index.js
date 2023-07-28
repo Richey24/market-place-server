@@ -30,8 +30,8 @@ app.use(morgan("dev")); // configire morgan
 
 // define first route
 app.get("/", (req, res) => {
-  console.log("Hello MEVN Soldier");
-  res.status(201).json({ message: 'working' });
+     console.log("Hello MEVN Soldier");
+     res.status(201).json({ message: "working" });
 });
 
 const userRouter = require("./api/routes/user");
@@ -40,11 +40,13 @@ const productRouter = require("./api/routes/product");
 const shoppingCart = require("./api/routes/cart");
 const wishlistRouter = require("./api/routes/wishlists");
 const onboardingRouter = require("./api/routes/onboarding");
-const promotionRouter = require('./api/routes/promotion');
-const themeRouter = require('./api/routes/theme')
-const advertRouter = require('./api/routes/advert')
-const contactUsRouter = require('./api/routes/contact-us')
-const imageRouter = require('./api/routes/image')
+const promotionRouter = require("./api/routes/promotion");
+const themeRouter = require("./api/routes/theme");
+const advertRouter = require("./api/routes/advert");
+const contactUsRouter = require("./api/routes/contact-us");
+const imageRouter = require("./api/routes/image");
+const siteRouter = require("./api/routes/site");
+
 // const errorHandler = require("./config/errorHandler");
 
 // //for error handling
@@ -52,6 +54,7 @@ const imageRouter = require('./api/routes/image')
 
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
+app.use("/api/site", siteRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -61,11 +64,10 @@ app.use("/api/wishlists", wishlistRouter);
 
 app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
-app.use('/api/themes', themeRouter);
-app.use('/api/advert', advertRouter);
-app.use('/api/contact-us', contactUsRouter);
-app.use("/image", imageRouter)
-
+app.use("/api/themes", themeRouter);
+app.use("/api/advert", advertRouter);
+app.use("/api/contact-us", contactUsRouter);
+app.use("/image", imageRouter);
 
 app.listen(PORT, () => {
      console.log(`App is running on ${PORT}`);

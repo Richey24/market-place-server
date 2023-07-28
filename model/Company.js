@@ -5,6 +5,10 @@ const companySchema = mongoose.Schema({
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
      },
+     site: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Site",
+     },
      company_id: {
           type: Number,
           required: [true, "Company id is required"],
@@ -61,7 +65,7 @@ const companySchema = mongoose.Schema({
           type: Boolean,
           default: false,
      },
-     
+
      trial_end_date: {
           type: String,
      },

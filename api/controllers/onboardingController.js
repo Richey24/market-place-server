@@ -1,5 +1,6 @@
 const User = require("../../model/User");
 const Company = require("../../model/Company");
+const Site = require("../../model/Site");
 var Odoo = require("async-odoo-xmlrpc");
 const { formatDate, sendOnboardingEmail, reminderJob } = require("../../config/helpers");
 
@@ -14,6 +15,47 @@ const getErrorMessage = (faultCode) => {
           default:
                return "Unknown Error";
      }
+};
+
+const site = {
+     theme: "theme1",
+     pages: [
+          {
+               name: "home",
+               layout: "",
+               sections: [
+                    {
+                         name: "footer",
+                         content: "",
+                         component: {
+                              theme: "theme1",
+                              name: "",
+                         },
+                    },
+                    {
+                         name: "header",
+                         content: "",
+                         component: {
+                              theme: "theme1",
+                              props: { phone: "+1940595000" },
+                         },
+                    },
+                    {
+                         name: "home",
+                         content: "",
+                         component: {
+                              theme: "theme1",
+                              props: { phone: "+1940595000" },
+                         },
+                    },
+               ],
+          },
+     ],
+     pageLinks: ["home", "shop"],
+     styles: {
+          colors: [],
+          mode: "light",
+     },
 };
 
 exports.postOnboarding = async (req, res) => {
@@ -86,6 +128,13 @@ exports.postOnboarding = async (req, res) => {
 
           let company_data = await save_company.save();
 
+          try {
+               const save_site = new Site(site);
+               const site_data = await save_site.save();
+               await Company.findByIdAndUpdate(company_data?._id, {
+                    $set: { site: site_data?._id },
+               });
+          } catch (err) {}
           sendOnboardingEmail(email, firstname);
 
           reminderJob.start();
