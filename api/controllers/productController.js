@@ -13,15 +13,12 @@ exports.getProducts = async (req, res) => {
 	console.log("Connect to Odoo XML-RPC - api/products");
 
 	try {
-		await odoo.connect();
-		console.log("Connect to Odoo XML-RPC - api/products");
-
-		let products = await odoo.execute_kw('product.template', 'search_read', [[['type', '=', 'consu']]], { 'fields': ['name', 'public_categ_ids'] })
+		let products = await Odoo.execute_kw('product.template', 'search_read', [[['type', '=', 'consu']]], { 'fields': ['name', 'public_categ_ids'] })
 		res.status(201).json({ products });
 
 	} catch (e) {
 		console.error("Error when try connect Odoo XML-RPC.", e);
-		res.status(500).json({ message: "An error occured" });
+		res.status(500).json(e);
 	}
 }
 
@@ -114,7 +111,7 @@ exports.wishlistProduct = async (req, res) => {
 	const productId = req.params.id;
 
 	try {
-		await odoo.connect();
+		await Odoo.connect();
 
 		let id = await Odoo.execute_kw("product.template", "search", [[["id", "=", productId]]]);
 
