@@ -22,11 +22,15 @@ const AdvertSchema = mongoose.Schema(
           },
           status: {
                type: String,
-               default: ADVERT_STATUS.ACTIVE,
+               default: ADVERT_STATUS.DISABLED,
                enum: [ADVERT_STATUS.ACTIVE, ADVERT_STATUS.DISABLED],
                required: true,
           },
           productId: {
+               type: Number,
+               required: false,
+          },
+          merits: {
                type: Number,
                required: false,
           },
@@ -45,6 +49,20 @@ const AdvertSchema = mongoose.Schema(
           timestamps: true,
      },
 );
+
+// Middleware to add 30 days to the endDatePeriod before saving
+AdvertSchema.pre("save", function (next) {
+     // Get the current endDatePeriod value
+     let endDatePeriod = this.endDatePeriod;
+
+     // Add 30 days to the endDatePeriod
+     endDatePeriod.setDate(endDatePeriod.getDate() + 30);
+
+     // Update the endDatePeriod in the document
+     this.endDatePeriod = endDatePeriod;
+
+     next();
+});
 
 AdvertSchema.virtual("advertTypeName", {
      ref: "AdvertType",

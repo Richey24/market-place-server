@@ -43,6 +43,7 @@ const onboardingRouter = require("./api/routes/onboarding");
 const promotionRouter = require('./api/routes/promotion');
 const themeRouter = require('./api/routes/theme')
 const advertRouter = require('./api/routes/advert')
+const contactUsRouter = require('./api/routes/contact-us')
 const imageRouter = require('./api/routes/image')
 // const errorHandler = require("./config/errorHandler");
 
@@ -62,6 +63,7 @@ app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
 app.use('/api/themes', themeRouter);
 app.use('/api/advert', advertRouter);
+app.use('/api/contact-us', contactUsRouter);
 app.use("/image", imageRouter)
 
 

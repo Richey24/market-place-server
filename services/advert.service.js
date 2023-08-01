@@ -39,7 +39,7 @@ class CompanyService {
      async findByType(advertType) {
           const type = await advertTypeModel.findOne({ name: advertType });
           if (!type) {
-               return [];
+               throw new NotFoundError("There is no type for this advert");
           }
           return await advertModel.find({ advertType: type._id }).populate("advertType");
      }
@@ -50,6 +50,14 @@ class CompanyService {
                throw new NotFoundError("There is no advert with this id");
           }
           return ads;
+     }
+
+     async findById(_id) {
+          const advert = await advertModel.findOne({ _id }).populate("advertType", "name");
+          if (!advert) {
+               throw new NotFoundError("There is no advert with this id");
+          }
+          return advert;
      }
 
      /**

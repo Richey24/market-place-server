@@ -22,9 +22,22 @@ class AdvertController {
      }
 
      async findAdsByCompany(req, res) {
-          const adverts = await advertService.findByCompany(req.query.company_id);
+          try {
+               const adverts = await advertService.findByCompany(req.query.company_id);
+               return successResponder(res, adverts);
+          } catch (error) {
+               return errorResponder(res, error?.code, error?.message);
+          }
+     }
 
-          return successResponder(res, adverts);
+     async findAdById(req, res) {
+          try {
+               const adverts = await advertService.findById(req.query.id);
+
+               return successResponder(res, adverts);
+          } catch (error) {
+               return errorResponder(res, error?.code, error?.message);
+          }
      }
 
      async findAll(req, res) {

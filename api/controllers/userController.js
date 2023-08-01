@@ -1,6 +1,7 @@
 const User = require("../../model/User");
 const Billing = require("../../model/Billing");
 const Shipping = require("../../model/Shipping");
+const Company = require("../../model/Company")
 const bcrypt = require("bcrypt");
 const { sendWelcomeEmail } = require("../../config/helpers");
 
@@ -9,24 +10,27 @@ exports.register = async (req, res) => {
           console.log("POST registering user");
 
           // TODO: add tenant id to verify
-          let isUser = await User.find({ email: req.body.email });
-          console.log("hiii", isUser);
+          let user = await User.findOne({ email: req.body.email });
 
-          if (isUser.length >= 1) {
+          if (user) {
                return res.status(409).json({
                     message: "email already in use",
                });
           }
-
-          const user = new User({
+          let company;
+          if (req.body.domain) {
+               company = await Company.findOne({ subdomain: req.body.domain });
+          }
+          const newUser = new User({
                firstname: req.body.firstname,
                lastname: req.body.lastname,
                email: req.body.email,
                role: req.body.role,
                password: req.body.password,
+               ...(company && { company: company._id })
           });
 
-          let data = await user.save();
+          let data = await newUser.save();
 
           // Omit password from the user object before sending the response
           const userWithoutPassword = {
@@ -35,17 +39,22 @@ exports.register = async (req, res) => {
                lastname: data.lastname,
                email: data.email,
                role: data.role,
+               company: data.company
           };
 
-          const token = await user.generateAuthToken();
+          const token = await newUser.generateAuthToken();
           sendWelcomeEmail(req.body.email, req.body.firstname);
           res.status(201).json({ user: userWithoutPassword, token });
+
      } catch (error) {
           res.status(400).json({ error });
      }
 };
 
 exports.loginUser = async (req, res) => {
+     console.log({
+          body: req.body
+     })
      try {
           console.log("logging user in");
           const email = req.body.email;
@@ -63,7 +72,6 @@ exports.loginUser = async (req, res) => {
                subscribed: user.subscribed,
           };
 
-          console.log(user);
           if (!user) {
                return res
                     .status(401)
