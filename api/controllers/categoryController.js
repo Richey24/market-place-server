@@ -19,6 +19,7 @@ class CategoryController {
 
                res.status(200).json(categories);
           } catch (e) {
+               res.status(500).json(e);
                console.error('Error when trying to connect odoo xml-rpc', e)
           }
      }
@@ -31,6 +32,7 @@ class CategoryController {
                ]);
                res.status(200).json(data);
           } catch (e) {
+               res.status(500).json(e);
                console.error('Error when trying to connect odoo xml-rpc', e)
           }
      }
@@ -49,6 +51,7 @@ class CategoryController {
 
                res.status(201).json({ id, company });
           } catch (e) {
+               res.status(500).json(e);
                console.error('Error when trying to connect odoo xml-rpc', e)
           }
      }
@@ -73,6 +76,7 @@ class CategoryController {
 
                }
           } catch (e) {
+               res.status(500).json(e);
                console.error('Error when trying to connect odoo xml-rpc', e)
           }
      }
@@ -90,6 +94,7 @@ class CategoryController {
                ]);
                res.status(201).json({ id });
           } catch (e) {
+               res.status(500).json(e);
                console.error('Error when trying to connect odoo xml-rpc', e)
           }
      }
