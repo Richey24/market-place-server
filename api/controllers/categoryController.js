@@ -125,13 +125,15 @@ exports.findAll = async (req, res) => {
           let user = req.userData;
           let company_id = 1;
 
-          //   var odoo = new Odoo({
-          //        url: "http://104.43.252.217/",
-          //        port: 80,
-          //        db: "bitnami_odoo",
-          //        username: "user@example.com",
-          //        password: "850g6dHsX1TQ",
-          //   });
+          // var odoo = new Odoo({
+          //      url: "http://104.43.252.217/",
+          //      port: 80,
+          //      db: "bitnami_odoo",
+          //      username: "user@example.com",
+          //      password: "850g6dHsX1TQ",
+          // });
+
+          console.log(Odoo);
 
           let params = {
                odoo: Odoo,
@@ -171,6 +173,6 @@ exports.fetchFeatureCategories = async (req, res) => {
      res.status(201).json(categories);
 };
 
-exports.categoryDetails = async (req, res) => {};
+exports.categoryDetails = async (req, res) => { };
 
-exports.createCategory = async (req, res) => {};
+exports.createCategory = async (req, res) => { };
