@@ -19,6 +19,50 @@ const getErrorMessage = (faultCode) => {
 
 const site = {
      theme: "theme1",
+     footer: {
+          name: "footer",
+          content: "",
+          component: {
+               theme: "theme1",
+               name: "",
+          },
+     },
+     header: {
+          name: "header",
+          content: "",
+          component: {
+               theme: "theme1",
+               props: {
+                    company: {},
+                    static: {
+                         languages: [],
+                         currencies: [],
+                         socials: [
+                              { name: "facebook", link: "/" },
+                              { name: "instagram", link: "/" },
+                              { name: "twitter", link: "/" },
+                         ],
+                         pageLinks: [
+                              {
+                                   name: "home",
+                                   url: "/",
+                                   subMenu: null,
+                              },
+                              {
+                                   name: "shop",
+                                   url: "/tester",
+                                   subMenu: [
+                                        {
+                                             name: "tester",
+                                             url: "/shop/tester",
+                                        },
+                                   ],
+                              },
+                         ],
+                    },
+               },
+          },
+     },
      pages: [
           {
                name: "home",
@@ -55,13 +99,13 @@ const site = {
      styles: {
           colors: [],
           mode: "light",
+          demoLink: "demo13",
      },
 };
 
 exports.postOnboarding = async (req, res) => {
      const currentDate = new Date();
      const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
-
      const formattedDate = formatDate(new Date(currentDate));
      const formattedTrialEndDate = formatDate(new Date(trialEndDate));
 
@@ -134,7 +178,10 @@ exports.postOnboarding = async (req, res) => {
                await Company.findByIdAndUpdate(company_data?._id, {
                     $set: { site: site_data?._id },
                });
-          } catch (err) {}
+          } catch (err) {
+               console.log("error creatting site", err);
+          }
+
           sendOnboardingEmail(email, firstname);
 
           reminderJob.start();

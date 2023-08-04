@@ -16,54 +16,21 @@ exports.getSiteByDomain = async (req, res) => {
           await odoo.connect();
           console.log("Connected to Odoo XML-RPC");
 
-          const company = await Company.findOne({ subdomain: domain }).populate({
-               path: "site",
-               options: { virtuals: true },
-          });
+          const company = await Company.findOne({ subdomain: domain })
+               .populate({
+                    path: "site",
+               })
+               .populate({
+                    path: "user_id",
+               });
 
-          const site = {
-               theme: "theme1",
-               pages: [
-                    {
-                         name: "home",
-                         layout: "",
-                         sections: [
-                              {
-                                   name: "footer",
-                                   content: "",
-                                   component: {
-                                        theme: "theme1",
-                                        name: "",
-                                   },
-                              },
-                              {
-                                   name: "header",
-                                   content: "",
-                                   component: {
-                                        theme: "theme1",
-                                        props: { phone: "+1940595000" },
-                                   },
-                              },
-                              {
-                                   name: "home",
-                                   content: "",
-                                   component: {
-                                        theme: "theme1",
-                                        props: { phone: "+1940595000" },
-                                   },
-                              },
-                         ],
-                    },
-               ],
-               pageLinks: ["home", "shop"],
-               styles: {
-                    colors: [],
-                    mode: "light",
-               },
-          };
-
-          res.status(201).json({ status: true, domain, company });
+          if (company) {
+               res.status(201).json({ status: true, domain, company });
+          } else {
+               throw "Subdomain does not exist";
+          }
      } catch (error) {
+          console.log("error", error);
           res.status(400).json({ error, status: false });
      }
 };

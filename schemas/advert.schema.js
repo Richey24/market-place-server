@@ -28,6 +28,8 @@ const createAdvertSchema = {
           productId: Joi.number(),
           categoryId: Joi.string(),
           company_id: Joi.string().required(),
+          status: Joi.string(),
+          merits: Joi.number(),
      }),
 };
 

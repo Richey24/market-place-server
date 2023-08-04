@@ -17,30 +17,28 @@ const companySchema = mongoose.Schema({
           type: String,
           required: [true, "Company Name is required"],
      },
-
      company_type: {
           type: String,
      },
-
      subdomain: {
           type: String,
           required: [true, "Subdomain is a required field"],
      },
-
+     phone: {
+          type: String,
+          required: [true, "Phone is a required field"],
+     },
      theme: {
           type: String,
           required: [true, "Theme is a required field"],
      },
-
      logo: {
           type: String,
      },
-
      brandcolor: {
           type: Array,
           required: [true, "brandcolor is a required feild"],
      },
-
      subscription: {
           type: String,
      },
@@ -52,11 +50,9 @@ const companySchema = mongoose.Schema({
           type: String,
           required: [true, "city is a required field"],
      },
-
      address: {
           type: String,
      },
-
      categories: {
           type: Array,
           required: false,
@@ -65,7 +61,6 @@ const companySchema = mongoose.Schema({
           type: Boolean,
           default: false,
      },
-
      trial_end_date: {
           type: String,
      },

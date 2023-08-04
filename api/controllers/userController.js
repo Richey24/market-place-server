@@ -1,7 +1,7 @@
 const User = require("../../model/User");
 const Billing = require("../../model/Billing");
 const Shipping = require("../../model/Shipping");
-const Company = require("../../model/Company")
+const Company = require("../../model/Company");
 const bcrypt = require("bcrypt");
 const { sendWelcomeEmail } = require("../../config/helpers");
 
@@ -27,7 +27,8 @@ exports.register = async (req, res) => {
                email: req.body.email,
                role: req.body.role,
                password: req.body.password,
-               ...(company && { company: company._id })
+               phone: req.body.phone,
+               ...(company && { company: company._id }),
           });
 
           let data = await newUser.save();
@@ -39,19 +40,21 @@ exports.register = async (req, res) => {
                lastname: data.lastname,
                email: data.email,
                role: data.role,
-               company: data.company
+               company: data.company,
           };
 
           const token = await newUser.generateAuthToken();
           sendWelcomeEmail(req.body.email, req.body.firstname);
           res.status(201).json({ user: userWithoutPassword, token });
-
      } catch (error) {
           res.status(400).json({ error });
      }
 };
 
 exports.loginUser = async (req, res) => {
+     console.log({
+          body: req.body,
+     });
      try {
           console.log("logging user in");
           const email = req.body.email;
@@ -68,7 +71,6 @@ exports.loginUser = async (req, res) => {
                onboarded: user.onboarded,
                subscribed: user.subscribed,
           };
-
 
           if (!user) {
                return res

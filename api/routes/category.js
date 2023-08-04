@@ -11,5 +11,10 @@ const categoryController = require("../controllers/categoryController");
 
 router.get("/:companyId", categoryController.findAll);
 router.post("/", auth, categoryController.create);
+router.get("/:id", categoryController.findOne);
+router.patch("/:id", auth, categoryController.update);
+router.post("/subcategory", auth, categoryController.createSubCategory);
+router.get("/featured", categoryController.fetchFeatureCategories);
+router.post("/main", auth, categoryController.createMainController);
 
 module.exports = router;
