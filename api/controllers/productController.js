@@ -7,22 +7,35 @@ const {
      getProductDetails,
 } = require("../../services/product.service");
 
-exports.getProducts = async (req, res) => {
+exports.getProductbyCompanyId = async (req, res) => {
      console.log("GET /api/products");
 
      try {
-          await Odoo.connect();
-          console.log("Connect to Odoo XML-RPC - api/products");
+          const companyId = [+req.params.companyId];
+          console.log("companyId", companyId);
+          if (req.params.companyId) {
+               await Odoo.connect();
+               console.log("Connect to Odoo XML-RPC - api/products");
 
-          let products = await Odoo.execute_kw(
-               "product.template",
-               "search_read",
-               [[["type", "=", "consu"]]],
-               { fields: ["name", "public_categ_ids"] },
-          );
-          res.status(201).json({ products });
-     } catch (e) {
-          console.error("Error when try connect Odoo XML-RPC.", e);
+               const products = await Odoo.execute_kw(
+                    "product.template",
+                    "search_read",
+                    [
+                         [
+                              ["type", "=", "consu"],
+                              ["company_id", "=", companyId],
+                         ],
+                    ],
+                    { fields: ["name", "public_categ_ids"] },
+               );
+
+               res.status(200).json({ products, status: true });
+          } else {
+               res.status(404).json({ error: "Invalid Company Id", status: false });
+          }
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };
 
@@ -132,17 +145,16 @@ exports.wishlistProduct = async (req, res) => {
 exports.createProduct = async (req, res) => {
      // let user = req.userData;
      try {
-
           let params = {
                odoo: Odoo,
-               product: req.body,
+               product: { ...req.body, images: req.files },
                // user: user
           };
 
           const product = await addProduct({ ...params });
-          console.log("product", product);
-          res.status(201).json({ product });
+
+          res.status(201).json({ product: product, status: true });
      } catch (err) {
-          res.status(400).json({ err });
+          res.status(400).json({ err, status: false });
      }
 };

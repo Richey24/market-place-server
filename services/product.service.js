@@ -1,6 +1,8 @@
 const User = require("../model/User");
 const Company = require("../model/Company");
 const Odoo = require("../config/odoo.connection");
+const { toDataURL } = require("../utils/imageBase64");
+const fs = require("fs");
 
 const unitOfMeasure = async (odoo) => {
      try {
@@ -47,25 +49,49 @@ const getFeaturedProducts = async (params) => {
 
 const addProduct = async (params) => {
      try {
+          const images = params.product.images || [];
+
+          // Convert each image buffer to base64
+          const base64Images = images.map((image) => {
+               return {
+                    ...image,
+                    base64: image.buffer.toString("base64"),
+               };
+          });
+
+          // Connect to Odoo instance
           await params.odoo.connect();
-          let product = await params.odoo.execute_kw("product.template", "create", [
-               {
-                    base_unit_count: params.product.qty,
-                    categ_id: params.product.category_id,
-                    list_price: params.product.list_price,
-                    standard_price: params.product.standard_price,
-                    name: params.product.name,
-                    // image_512: "params.product.image",
-                    uom_name: params.product.uom_name,
-                    display_name: params.product.name,
-                    // product_variant_ids: 1,
-                    website_published: params.product.published,
-               },
+
+          // Create the product
+          const productData = {
+               base_unit_count: params.product.qty,
+               categ_id: params.product.category_id,
+               list_price: params.product.list_price,
+               standard_price: params.product.standard_price,
+               name: params.product.name,
+               uom_name: params.product.uom_name,
+               display_name: params.product.name,
+               website_published: params.product.published,
+               company_id: params.product.company_id,
+          };
+
+          const productId = await params.odoo.execute_kw("product.template", "create", [
+               productData,
           ]);
-          return await product;
-     } catch (e) {
-          console.error("Error when try connect Odoo XML-RPC.", e);
-          throw e;
+
+          // Write the images if provided
+          for (const base64Image of base64Images) {
+               await params.odoo.execute_kw("product.template", "write", [
+                    [productId],
+                    { image_1920: base64Image.base64 },
+               ]);
+          }
+
+          // Return the ID of the created product
+          return productId;
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          throw error;
      }
 };
 

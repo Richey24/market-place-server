@@ -17,90 +17,138 @@ const getErrorMessage = (faultCode) => {
      }
 };
 
-const site = {
-     theme: "theme1",
-     footer: {
-          name: "footer",
-          content: "",
-          component: {
-               theme: "theme1",
-               name: "",
-          },
-     },
-     header: {
-          name: "header",
-          content: "",
-          component: {
-               theme: "theme1",
-               props: {
-                    company: {},
-                    static: {
-                         languages: [],
-                         currencies: [],
-                         socials: [
-                              { name: "facebook", link: "/" },
-                              { name: "instagram", link: "/" },
-                              { name: "twitter", link: "/" },
-                         ],
-                         pageLinks: [
-                              {
-                                   name: "home",
-                                   url: "/",
-                                   subMenu: null,
-                              },
-                              {
-                                   name: "shop",
-                                   url: "/tester",
-                                   subMenu: [
-                                        {
-                                             name: "tester",
-                                             url: "/shop/tester",
-                                        },
-                                   ],
-                              },
-                         ],
+const site = (theme) => {
+     return {
+          theme,
+          footer: {
+               name: "footer",
+               content: "",
+               component: {
+                    theme,
+                    name: "",
+                    props: {
+                         static: {
+                              customerService: [
+                                   { name: "Help & Faq", link: "/" },
+                                   { name: "Order Tracking", link: "/" },
+                                   { name: "Shipping & Delivery", link: "/" },
+                                   { name: "Orders History", link: "/" },
+                                   { name: "Advanced Search", link: "/" },
+                                   { name: "About Us", link: "/" },
+                                   { name: "Corporate Sales", link: "/" },
+                                   { name: "Privacy", link: "/" },
+                              ],
+                              popularTags: [
+                                   { name: "Cloths", link: "/" },
+                                   { name: "Fashions", link: "/" },
+                                   { name: "Hub", link: "/" },
+                                   { name: "Shirt", link: "/" },
+                                   { name: "Skirt", link: "/" },
+                                   { name: "Sports", link: "/" },
+                                   { name: "Sweater", link: "/" },
+                              ],
+                         },
                     },
                },
           },
-     },
-     pages: [
-          {
-               name: "home",
-               layout: "",
-               sections: [
-                    {
-                         name: "footer",
-                         content: "",
-                         component: {
-                              theme: "theme1",
-                              name: "",
+          header: {
+               name: "header",
+               content: "",
+               component: {
+                    theme,
+                    props: {
+                         company: {},
+                         static: {
+                              languages: [],
+                              currencies: [],
+                              socials: [
+                                   { name: "facebook", link: "/" },
+                                   { name: "instagram", link: "/" },
+                                   { name: "twitter", link: "/" },
+                              ],
+                              pageLinks: [
+                                   {
+                                        name: "home",
+                                        url: "/",
+                                        subMenu: null,
+                                   },
+                                   {
+                                        name: "shop",
+                                        url: "/tester",
+                                        subMenu: [
+                                             {
+                                                  name: "tester",
+                                                  url: "/shop/tester",
+                                             },
+                                        ],
+                                   },
+                              ],
                          },
                     },
-                    {
-                         name: "header",
-                         content: "",
-                         component: {
-                              theme: "theme1",
-                              props: { phone: "+1940595000" },
-                         },
-                    },
-                    {
-                         name: "home",
-                         content: "",
-                         component: {
-                              theme: "theme1",
-                              props: { phone: "+1940595000" },
-                         },
-                    },
-               ],
+               },
           },
-     ],
-     pageLinks: ["home", "shop"],
-     styles: {
-          colors: [],
-          mode: "light",
-          demoLink: "demo13",
-     },
+          pages: [
+               {
+                    name: "home",
+                    layout: "",
+                    sections: [
+                         {
+                              name: "home",
+                              content: "",
+                              component: {
+                                   theme,
+                                   props: {
+                                        static: {
+                                             promotion: {
+                                                  homePage: [],
+                                             },
+                                             banner: [
+                                                  {
+                                                       title: "",
+                                                       text: "",
+                                                       imageUrl: "",
+                                                  },
+                                                  {
+                                                       title: "",
+                                                       text: "",
+                                                       imageUrl: "",
+                                                  },
+                                             ],
+                                             dealsBanner: [
+                                                  {
+                                                       title: "",
+                                                       text: "",
+                                                       imageUrl: "",
+                                                       link: "/",
+                                                  },
+                                                  {
+                                                       title: "",
+                                                       text: "",
+                                                       imageUrl: "",
+                                                       link: "/",
+                                                  },
+                                                  {
+                                                       title: "",
+                                                       text: "",
+                                                       imageUrl: "",
+                                                       link: "/",
+                                                  },
+                                             ],
+                                             featuredProtured: [],
+                                        },
+                                   },
+                              },
+                         },
+                    ],
+               },
+          ],
+          pageLinks: ["home", "shop"],
+          styles: {
+               colors: [],
+               mode: "light",
+               demoLink: "demo13",
+          },
+     };
 };
 
 exports.postOnboarding = async (req, res) => {
@@ -165,15 +213,16 @@ exports.postOnboarding = async (req, res) => {
                subscribed: subscribed,
                account_opening_date: date,
                trial_end_date: trial_End_Date,
-               country: "req.body.country",
-               city: "req.body.city",
-               state: " req.body.state",
+               country: req.body.country,
+               city: req.body.city,
+               state: req.body.state,
+               categories: req.body.categories || [],
           });
 
           let company_data = await save_company.save();
 
           try {
-               const save_site = new Site(site);
+               const save_site = new Site(site(theme));
                const site_data = await save_site.save();
                await Company.findByIdAndUpdate(company_data?._id, {
                     $set: { site: site_data?._id },

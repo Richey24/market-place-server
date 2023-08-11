@@ -20,10 +20,12 @@ mongoose
 
 //registering cors
 app.use(cors());
-
-//configure body parser
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
+// //configure body parser
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
 //configure body-parser ends here
 
 app.use(morgan("dev")); // configire morgan
