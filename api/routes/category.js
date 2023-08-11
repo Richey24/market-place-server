@@ -9,12 +9,12 @@ const {
 } = require("../../schemas/category.schema");
 const categoryController = require("../controllers/categoryController");
 
-router.get("/:companyId", categoryController.findAll);
-router.post("/", auth, categoryController.create);
 router.get("/:id", categoryController.findOne);
+router.get("/company/:companyId", categoryController.findAll);
+router.post("/", auth, categoryController.create);
 router.patch("/:id", auth, categoryController.update);
+router.get("/get/featured", categoryController.fetchFeatureCategories);
 router.post("/subcategory", auth, categoryController.createSubCategory);
-router.get("/featured", categoryController.fetchFeatureCategories);
 router.post("/main", auth, categoryController.createMainController);
 
 module.exports = router;
