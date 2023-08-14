@@ -143,7 +143,6 @@ exports.wishlistProduct = async (req, res) => {
 };
 
 exports.createProduct = async (req, res) => {
-<<<<<<< HEAD
      // let user = req.userData;
      try {
           let params = {
@@ -159,21 +158,4 @@ exports.createProduct = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
-=======
-	// let user = req.userData;
-	try {
 
-		let params = {
-			odoo: Odoo,
-			product: req.body,
-			// user: user
-		};
-
-		const product = await addProduct({ ...params });
-		console.log("product", product);
-		res.status(201).json({ product });
-	} catch (err) {
-		res.status(400).json({ err });
-	}
-}
->>>>>>> fd411d5307dc495faf65b0d3afe44a097dba73c9
