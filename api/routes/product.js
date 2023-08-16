@@ -6,8 +6,11 @@ const productController = require("../controllers/productController");
 
 router.get("/:companyId", auth, productController.getProductbyCompanyId);
 router.post("/", auth, multer().any("images"), productController.createProduct);
-router.get("/featured", productController.getFeaturedProducts);
+router.post("/multiple", productController.createMultipleProducts);
+
+router.get("/site/featured", productController.getFeaturedProducts);
 router.get("/details/:id", productController.productDetails);
 router.get("/filter", productController.filterProducts);
+router.get("/site/:companyId", productController.getProductbyCompanyId);
 
 module.exports = router;

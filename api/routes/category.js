@@ -12,6 +12,7 @@ const categoryController = require("../controllers/categoryController");
 router.get("/:id", categoryController.findOne);
 router.get("/company/:companyId", categoryController.findAll);
 router.post("/", auth, categoryController.create);
+router.post("/multiple", categoryController.createMultiple);
 router.patch("/:id", auth, categoryController.update);
 router.get("/get/featured", categoryController.fetchFeatureCategories);
 router.post("/subcategory", auth, categoryController.createSubCategory);

@@ -3,6 +3,7 @@ const Company = require("../model/Company");
 const Odoo = require("../config/odoo.connection");
 const { toDataURL } = require("../utils/imageBase64");
 const fs = require("fs");
+const axios = require("axios");
 
 const unitOfMeasure = async (odoo) => {
      try {
@@ -95,6 +96,64 @@ const addProduct = async (params) => {
      }
 };
 
+const addMultipleProducts = async (params) => {
+     try {
+          const productIds = [];
+          for (const product of params.products) {
+               const images = product?.images || [];
+               const base64Images = [];
+
+               // Convert each image URL to base64
+               for (const imageUrl of images) {
+                    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+                    const imageBuffer = Buffer.from(response.data, "binary");
+
+                    base64Images.push({
+                         url: imageUrl,
+                         base64: imageBuffer.toString("base64"),
+                    });
+               }
+
+               // // Connect to Odoo instance
+               await params.odoo.connect();
+
+               // // Create the product
+               const productData = {
+                    base_unit_count: product.qty,
+                    categ_id: product.category_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    name: product.name,
+                    uom_name: product.uom_name,
+                    display_name: product.name,
+                    website_published: product.published,
+                    company_id: product.company_id,
+               };
+
+               const productId = await params.odoo.execute_kw("product.template", "create", [
+                    productData,
+               ]);
+
+               // // Write the images if provided
+               for (const base64Image of base64Images) {
+                    await params.odoo.execute_kw("product.template", "write", [
+                         [productId],
+                         { image_1920: base64Image.base64 },
+                    ]);
+               }
+               productIds.push(productId);
+               // Log the ID of the created product
+               console.log(`Product created with ID: ${productId}`);
+          }
+
+          // Return a success message or relevant data
+          return productIds;
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          throw error;
+     }
+};
+
 const getProductDetails = async (productId) => {
      try {
           await Odoo.connect();
@@ -157,4 +216,5 @@ module.exports = {
      getFeaturedProducts,
      getProductById,
      getProductDetails,
+     addMultipleProducts,
 };

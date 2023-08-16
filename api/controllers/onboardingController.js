@@ -3,6 +3,9 @@ const Company = require("../../model/Company");
 const Site = require("../../model/Site");
 var Odoo = require("async-odoo-xmlrpc");
 const { formatDate, sendOnboardingEmail, reminderJob } = require("../../config/helpers");
+const { initProducts } = require("../../utils/initProducts");
+const { addMultipleProducts } = require("../../services/product.service");
+const companyService = require("../../services/company.service");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -106,31 +109,36 @@ const site = (theme) => {
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl: "",
+                                                       imageUrl:
+                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/banner/banner-fashion-1.jpg",
                                                   },
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl: "",
+                                                       imageUrl:
+                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/banner/banner-fashion-2.jpg",
                                                   },
                                              ],
                                              dealsBanner: [
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl: "",
+                                                       imageUrl:
+                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-8.jpg",
                                                        link: "/",
                                                   },
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl: "",
+                                                       imageUrl:
+                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-7.jpg",
                                                        link: "/",
                                                   },
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl: "",
+                                                       imageUrl:
+                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-6.jpg",
                                                        link: "/",
                                                   },
                                              ],
@@ -157,7 +165,6 @@ exports.postOnboarding = async (req, res) => {
      const formattedDate = formatDate(new Date(currentDate));
      const formattedTrialEndDate = formatDate(new Date(trialEndDate));
 
-     // Onboarding params
      let date = formattedDate;
      let company_name = req.body.company_name;
      let company_type = req.body.company_type;
@@ -168,6 +175,7 @@ exports.postOnboarding = async (req, res) => {
      let subscribed = false;
      let trial_End_Date = formattedTrialEndDate;
      const { firstname, email, _id } = req.userData;
+     const categories = req.body.categories;
 
      try {
           var odoo = new Odoo({
@@ -199,6 +207,20 @@ exports.postOnboarding = async (req, res) => {
                },
           ]);
 
+          // HANDLE CREATE CATEOGIES
+          const categoryIds = [];
+          if (company_id)
+               try {
+                    for (const category of categories) {
+                         const id = await odoo.execute_kw("product.public.category", "create", [
+                              { name: category.name },
+                         ]);
+                         categoryIds.push(id);
+                    }
+               } catch (err) {
+                    console.log("failed catgories", err);
+               }
+
           const save_company = new Company({
                user_id: _id,
                company_id: company_id,
@@ -216,7 +238,7 @@ exports.postOnboarding = async (req, res) => {
                country: req.body.country,
                city: req.body.city,
                state: req.body.state,
-               categories: req.body.categories || [],
+               categories: categoryIds || [],
           });
 
           let company_data = await save_company.save();
@@ -231,14 +253,28 @@ exports.postOnboarding = async (req, res) => {
                console.log("error creatting site", err);
           }
 
+          // HANDLE CREATE PRODUCTS
+          let params = {
+               odoo,
+               products: initProducts(company_id),
+          };
+          if (company_id)
+               try {
+                    await addMultipleProducts({ ...params });
+               } catch (err) {
+                    console.log("failed products", err);
+               }
+
           sendOnboardingEmail(email, firstname);
 
           reminderJob.start();
           await User.findByIdAndUpdate(_id, {
                $set: { onboarded: true, company: company_data?._id },
           });
+
           res.status(201).json({ company: company_data, status: true });
      } catch (error) {
+          console.log("err", error);
           const faultCode = error?.faultCode;
           if (faultCode) {
                const errorMessage = getErrorMessage(faultCode);
