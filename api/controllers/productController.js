@@ -162,7 +162,6 @@ exports.createProduct = async (req, res) => {
 };
 
 exports.createMultipleProducts = async (req, res) => {
-    
      try {
           let params = {
                odoo: Odoo,
