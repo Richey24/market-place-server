@@ -51,7 +51,7 @@ const getFeaturedProducts = async (params) => {
 const addProduct = async (params) => {
      try {
           const images = params.product.images || [];
-
+          const customTags = ["victor", "ikenna"];
           // Convert each image buffer to base64
           const base64Images = images.map((image) => {
                return {
@@ -74,6 +74,7 @@ const addProduct = async (params) => {
                display_name: params.product.name,
                website_published: params.product.published,
                company_id: params.product.company_id,
+               product_tag_ids: [1, 5, 4, 6],
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [

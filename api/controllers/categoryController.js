@@ -120,6 +120,10 @@ class CategoryController {
                          parent_id: categoryId,
                     },
                ]);
+
+               const user = await UserService.findById(req.userData._id);
+               await CompanyService.updateCategories(user.company._id, id);
+               
                res.status(201).json({ id });
           } catch (e) {
                res.status(500).json(e);

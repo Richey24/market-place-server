@@ -28,7 +28,7 @@ exports.initProducts = (company_id) => [
           standard_price: "101",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-3.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-3.jpg",
           ],
      },
      {
@@ -44,7 +44,7 @@ exports.initProducts = (company_id) => [
           standard_price: "1280",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-4.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-4.jpg",
           ],
      },
      {
@@ -60,7 +60,7 @@ exports.initProducts = (company_id) => [
           standard_price: "1280",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-5.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-5.jpg",
           ],
      },
      {
@@ -76,7 +76,7 @@ exports.initProducts = (company_id) => [
           standard_price: "299",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-6.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-6.jpg",
           ],
      },
      {
@@ -92,7 +92,7 @@ exports.initProducts = (company_id) => [
           standard_price: "1280",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-7.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-7.jpg",
           ],
      },
      {
@@ -108,7 +108,7 @@ exports.initProducts = (company_id) => [
           standard_price: "55",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-8.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-8.jpg",
           ],
      },
      {
@@ -124,7 +124,7 @@ exports.initProducts = (company_id) => [
           standard_price: "199",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-9.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-9.jpg",
           ],
      },
      {
@@ -140,7 +140,7 @@ exports.initProducts = (company_id) => [
           standard_price: "39",
           images: [
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-14.jpg",
-               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
+               "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-14.jpg",
           ],
      },
 ];

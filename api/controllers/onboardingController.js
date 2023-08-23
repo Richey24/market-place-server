@@ -110,13 +110,13 @@ const site = (theme) => {
                                                        title: "",
                                                        text: "",
                                                        imageUrl:
-                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/banner/banner-fashion-1.jpg",
+                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/slider/slide-1.png",
                                                   },
                                                   {
                                                        title: "",
                                                        text: "",
                                                        imageUrl:
-                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/banner/banner-fashion-2.jpg",
+                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/slider/slide-2.jpg",
                                                   },
                                              ],
                                              dealsBanner: [
