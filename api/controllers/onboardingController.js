@@ -6,7 +6,7 @@ const { formatDate, sendOnboardingEmail, reminderJob } = require("../../config/h
 const { initProducts } = require("../../utils/initProducts");
 const { addMultipleProducts } = require("../../services/product.service");
 const companyService = require("../../services/company.service");
-const { default: bannerImages } = require("../../utils/bannerImages");
+const bannerImages = require("../../utils/bannerImages");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {

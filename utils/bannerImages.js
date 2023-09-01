@@ -169,4 +169,4 @@ const bannerImages = {
     },
 }
 
-export default bannerImages
+module.exports = bannerImages
