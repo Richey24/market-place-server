@@ -6,6 +6,7 @@ const { formatDate, sendOnboardingEmail, reminderJob } = require("../../config/h
 const { initProducts } = require("../../utils/initProducts");
 const { addMultipleProducts } = require("../../services/product.service");
 const companyService = require("../../services/company.service");
+const bannerImages = require("../../utils/bannerImages");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -110,13 +111,13 @@ const site = (theme) => {
                                                        title: "",
                                                        text: "",
                                                        imageUrl:
-                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/slider/slide-1.png",
+                                                            bannerImages[theme].banner1,
                                                   },
                                                   {
                                                        title: "",
                                                        text: "",
                                                        imageUrl:
-                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/slider/slide-2.jpg",
+                                                            bannerImages[theme].banner2,
                                                   },
                                              ],
                                              dealsBanner: [
