@@ -58,7 +58,7 @@ const tagRouter = require("./api/routes/tag");
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
-app.use("/api/tag", tagRouter);
+app.use("/api/tags", tagRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);

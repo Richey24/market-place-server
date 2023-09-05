@@ -1,21 +1,12 @@
 const User = require("../../model/User");
 const Company = require("../../model/Company");
+const Site = require("../../model/Site");
+
 var Odoo = require("async-odoo-xmlrpc");
 
 exports.getSiteByDomain = async (req, res) => {
      const { domain } = req.params;
      try {
-          var odoo = new Odoo({
-               url: "http://104.43.252.217/",
-               port: 80,
-               db: "bitnami_odoo",
-               username: "user@example.com",
-               password: "850g6dHsX1TQ",
-          });
-
-          await odoo.connect();
-          console.log("Connected to Odoo XML-RPC");
-
           const company = await Company.findOne({ subdomain: domain })
                .populate({
                     path: "site",
@@ -28,6 +19,25 @@ exports.getSiteByDomain = async (req, res) => {
                res.status(201).json({ status: true, domain, company });
           } else {
                throw "Subdomain does not exist";
+          }
+     } catch (error) {
+          console.log("error", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.updateSiteById = async (req, res) => {
+     const { id } = req.params;
+     const updateData = req.body;
+
+     console.log("updateData", updateData);
+     try {
+          const site = await Site.findByIdAndUpdate(id, { $set: { ...updateData } }, { new: true });
+
+          if (site) {
+               res.status(201).json({ status: true, site });
+          } else {
+               throw "Site does not exist";
           }
      } catch (error) {
           console.log("error", error);

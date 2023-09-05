@@ -36,12 +36,20 @@ const getFeaturedProducts = async (params) => {
      console.log("GET /api/products");
      try {
           await Odoo.connect();
-          let products = await Odoo.execute_kw("product.product", "search_read", [
-               [["type", "=", "consu"]],
-               ["name", "list_price", "description_sale", "categ_id", "id", "website_url"],
-               0,
-               8,
-          ]);
+
+          const tagName = "Featured Product";
+          const products = await Odoo.execute_kw(
+               "product.product",
+               "search_read",
+               [
+                    [
+                         ["product_tag_ids.name", "=", tagName],
+                         ["company_id", "=", params.company_id],
+                    ],
+               ],
+
+               {},
+          );
           return products;
      } catch (e) {
           console.error("Error when try connect Odoo XML-RPC.", e);
@@ -51,7 +59,6 @@ const getFeaturedProducts = async (params) => {
 const addProduct = async (params) => {
      try {
           const images = params.product.images || [];
-          const customTags = ["victor", "ikenna"];
           // Convert each image buffer to base64
           const base64Images = images.map((image) => {
                return {
@@ -74,14 +81,20 @@ const addProduct = async (params) => {
                display_name: params.product.name,
                website_published: params.product.published,
                company_id: params.product.company_id,
-               product_tag_ids: [1, 5, 4, 6],
+               // product_tag_ids: [1, 5, 4, 6],
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
                productData,
           ]);
 
-          // Write the images if provided
+          if (JSON.parse(params.product.product_tag_ids).length > 0) {
+               await params.odoo.execute_kw("product.template", "write", [
+                    [productId],
+                    { product_tag_ids: JSON.parse(params.product.product_tag_ids) },
+               ]);
+          }
+          // // Write the images if provided
           for (const base64Image of base64Images) {
                await params.odoo.execute_kw("product.template", "write", [
                     [productId],
@@ -90,7 +103,7 @@ const addProduct = async (params) => {
           }
 
           // Return the ID of the created product
-          return productId;
+          return 1;
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
           throw error;

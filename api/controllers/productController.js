@@ -49,13 +49,14 @@ exports.getProductbyCompanyId = async (req, res) => {
  */
 exports.getFeaturedProducts = async (req, res) => {
      console.log("GET  api/products/featured");
+     const company_id = [+req.params.companyId];
 
      let user = req.userData;
-     let company_id = 1;
 
      let params = {
           promo: req.body,
           user: user,
+          company_id,
      };
 
      const products = await getFeaturedProducts(params);
@@ -115,9 +116,6 @@ exports.filterProducts = async (req, res) => {
 };
 
 exports.productDetails = async (req, res) => {
-     console.log(" GET /api/details");
-
-     console.log(" GET /api/details");
      const productId = req.params.id;
 
      const details = await getProductDetails(productId);

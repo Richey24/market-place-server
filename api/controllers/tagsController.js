@@ -37,7 +37,7 @@ class TagsController {
 
      async create(req, res) {
           try {
-               const { name, companyId } = req.body;
+               const { name } = req.body;
                console.log("tabnmae", name);
                await Odoo.connect();
                const newTag = await Odoo.execute_kw("product.tag", "create", [{ name }]);
