@@ -24,6 +24,22 @@ const getErrorMessage = (faultCode) => {
 const site = (theme) => {
      return {
           theme,
+          topAds: {
+               name: "topAds",
+               content: "",
+               component: {
+                    theme,
+                    name: "",
+                    props: {
+                         static: {
+                              show: true,
+                              title: "Get Up to40% OFF New-Season Styles",
+                              categories: ["men", "woman"],
+                              additionalText: "Limited time only",
+                         },
+                    },
+               },
+          },
           footer: {
                name: "footer",
                content: "",
@@ -104,20 +120,24 @@ const site = (theme) => {
                                    props: {
                                         static: {
                                              promotion: {
-                                                  homePage: [],
+                                                  enabled: true,
+                                                  promotion: {},
+                                             },
+                                             guarantee: {
+                                                  shipping: "",
+                                                  money: "",
+                                                  support: "",
                                              },
                                              banner: [
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl:
-                                                            bannerImages[theme].banner1,
+                                                       imageUrl: bannerImages[theme].banner1,
                                                   },
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl:
-                                                            bannerImages[theme].banner2,
+                                                       imageUrl: bannerImages[theme].banner2,
                                                   },
                                              ],
                                              dealsBanner: [
@@ -143,7 +163,78 @@ const site = (theme) => {
                                                        link: "/",
                                                   },
                                              ],
-                                             featuredProtured: [],
+                                        },
+                                   },
+                              },
+                         },
+                    ],
+               },
+               {
+                    name: "about_us",
+                    layout: "",
+                    sections: [
+                         {
+                              name: "about_us",
+                              content: "",
+                              component: {
+                                   theme,
+                                   props: {
+                                        static: {
+                                             history: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. desktop publishing software like Aldus PageMaker including versions. was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently",
+                                             team: [
+                                                  {
+                                                       name: "Victor",
+                                                       role: "Engineer",
+                                                       image_url: "",
+                                                  },
+                                                  {
+                                                       name: "Ib",
+                                                       role: "CEO",
+                                                       image_url: "",
+                                                  },
+                                             ],
+                                        },
+                                   },
+                              },
+                         },
+                    ],
+               },
+               {
+                    name: "contact_us",
+                    layout: "",
+                    sections: [
+                         {
+                              name: "contact_us",
+                              content: "",
+                              component: {
+                                   theme,
+                                   props: {
+                                        static: {
+                                             contact_email: "example@gmail.com",
+                                             getInTouch:
+                                                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget leo at velit imperdiet varius. In eu ipsum vitae velit congue iaculis vitae at risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                                             businessHours: [
+                                                  "Monday - Friday 9am to 5pm",
+                                                  "Saturday - 9am to 2pm",
+                                                  "Sunday - Closed",
+                                             ],
+                                             faq: [
+                                                  {
+                                                       title: "this is just a test",
+                                                       description:
+                                                            "this is just a text descriptions",
+                                                  },
+                                                  {
+                                                       title: "this is just a test",
+                                                       description:
+                                                            "this is just a text descriptions",
+                                                  },
+                                                  {
+                                                       title: "this is just a test",
+                                                       description:
+                                                            "this is just a text descriptions",
+                                                  },
+                                             ],
                                         },
                                    },
                               },
