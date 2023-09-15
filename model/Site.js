@@ -23,6 +23,7 @@ const siteSchema = new mongoose.Schema({
      pageLinks: [String],
      header: sectionSchema,
      footer: sectionSchema,
+     topAds: sectionSchema,
      company: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Company",
