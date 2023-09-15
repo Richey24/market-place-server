@@ -45,19 +45,18 @@ exports.getProductbyCategory = async (req, res) => {
      console.log("GET /api/products");
 
      try {
-          const category = [+req.params.category];
+          const category = req.params.category;
           console.log("category", category);
           if (req.params.category) {
                await Odoo.connect();
                console.log("Connect to Odoo XML-RPC - api/products");
 
                const products = await Odoo.execute_kw(
-                    "product.template",
+                    "product.public.category",
                     "search_read",
                     [
                          [
-                              ["type", "=", "consu"],
-                              ["company_id", "=", category],
+                              ["name", "=", category],
                          ],
                     ],
                     { fields: ["name", "public_categ_ids"] },
@@ -65,7 +64,7 @@ exports.getProductbyCategory = async (req, res) => {
 
                res.status(200).json({ products, status: true });
           } else {
-               res.status(404).json({ error: "Invalid Company Id", status: false });
+               res.status(404).json({ error: "Invalid Category", status: false });
           }
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
