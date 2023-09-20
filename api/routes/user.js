@@ -10,6 +10,7 @@ router.post("/login", asyncHandler(userController.loginUser));
 router.post("/logout", asyncHandler(userController.logoutUser));
 
 router.get("/me", auth, userController.getUserDetails);
+router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 
 //billing
 router.post("/add-billing-address", auth, userController.addBillingAddress);

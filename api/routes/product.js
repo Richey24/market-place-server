@@ -5,6 +5,8 @@ const multer = require("multer");
 const productController = require("../controllers/productController");
 
 router.get("/:companyId", auth, productController.getProductbyCompanyId);
+// router.get("/:companyId/:productId", productController.getProductById);
+
 router.get("/category/:category", auth, productController.getProductbyCategory);
 router.post("/", auth, multer().any("images"), productController.createProduct);
 router.post("/multiple", productController.createMultipleProducts);

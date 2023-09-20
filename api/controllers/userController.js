@@ -214,7 +214,7 @@ exports.listShipping = async (req, res) => {
      });
 
 exports.getUserDetails = async (req, res) => {
-     // console.log(req.userData);
+     console.log(req.userData);
      try {
           const user = await User.findById(req.userData._id).populate({
                path: "company",
@@ -229,5 +229,26 @@ exports.getUserDetails = async (req, res) => {
      } catch (error) {
           console.error("Error fetching user:", error);
           res.status(500).json({ message: "Internal server error." });
+     }
+};
+
+exports.getCustomersByCompanyId = async (req, res) => {
+     try {
+          const { companyId } = req.params;
+
+          // Assuming role is stored as a field in the User model
+          const customers = await User.find({ company: companyId, role: "USER" });
+
+          if (!customers || customers.length === 0) {
+               return res.status(404).json({
+                    message: "No users found for the specified customerId, companyId, and role.",
+                    status: false,
+               });
+          }
+
+          res.status(200).json({ customers, status: true });
+     } catch (error) {
+          console.error("Error fetching users:", error);
+          res.status(500).json({ message: "Internal server error.", status: true });
      }
 };

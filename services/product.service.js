@@ -100,10 +100,33 @@ const addProduct = async (params) => {
                     [productId],
                     { image_1920: base64Image.base64 },
                ]);
+
+               const recordId = await Odoo.execute_kw("ir.attachment", "create", [
+                    {
+                         name: "productId.png",
+                         datas: base64Image.base64,
+                         res_model: "ir.ui.view",
+                         res_id: productId,
+                         res_field: "product_images",
+                         public: true,
+                         company_id: params.product.company_id,
+                    },
+               ]);
+
+               console.log("Image saved with ID:", recordId);
+               // const imageRecordId = await Odoo.execute_kw("product.images", "create", [
+               //      { image: base64Image.base64 },
+               // ]);
+               // // Associate the image record with the product (assuming `productId` is the product's ID)
+               // await Odoo.execute_kw("product.template", "write", [
+               //      [productId],
+               //      { images_ids: [[4, imageRecordId]] },
+               // ]);
           }
 
+          // saveImageToOdoo(base64Images[0].base64);
           // Return the ID of the created product
-          return 1;
+          return productId;
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
           throw error;
@@ -173,10 +196,28 @@ const getProductDetails = async (productId) => {
           await Odoo.connect();
           console.log("Connect to odoo XML-RPC is successed.");
 
-          let id = await Odoo.execute_kw("product.template", "search", [[["id", "=", productId]]]);
-          let details = await Odoo.execute_kw("product.template", "read", [id]);
+          const fields = ["name", "res_id", "res_model", "public", "datas"];
+          let attachments = await Odoo.execute_kw("ir.attachment", "search_read", [
+               [],
+               // fields,
+               // [["name", "=", "s_mega_menu_images_subtitles_default_image_3.jpg"]],
+          ]);
 
-          return details;
+          // console.log("attachments", attachments);
+
+          if (attachments?.length > 0) {
+               const et = attachments.filter((attachment) => {
+                    return attachment?.res_id === productId;
+               });
+
+               console.log("et", et);
+          }
+          // const productImages = await Odoo.execute_kw("product.image", "search_read", [
+          //      [["product_tmpl_id", "=", id]],
+          //      { fields: ["image"] },
+          // ]);
+
+          return attachments;
      } catch (e) {
           console.error("Error when try connect Odoo XML-RPC.", e);
      }
