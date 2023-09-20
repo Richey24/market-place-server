@@ -5,7 +5,10 @@ const ShoppingCartSchema = mongoose.Schema({
   userId: {
     type: String,
     required: true,
-    unique: true
+  },
+  companyId: {
+    type: String,
+    required: true,
   },
   items: [
     {
@@ -19,19 +22,19 @@ const ShoppingCartSchema = mongoose.Schema({
         required: true
       },
 
-     productPrice: {
-       type: Number,
-       required: true
-     },
-
-     productImage: {
-       type: String,
-       required: true
-     },
-     quantity: {
+      productPrice: {
         type: Number,
         required: true
-     }
+      },
+
+      productImage: {
+        type: String,
+        required: true
+      },
+      quantity: {
+        type: Number,
+        required: true
+      }
     }
   ],
   createdAt: {
@@ -42,3 +45,5 @@ const ShoppingCartSchema = mongoose.Schema({
 
 // Create the ShoppingCart model
 const ShoppingCart = mongoose.model('ShoppingCart', ShoppingCartSchema);
+
+module.exports = ShoppingCart
