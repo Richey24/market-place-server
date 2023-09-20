@@ -2,11 +2,11 @@ var Odoo = require('async-odoo-xmlrpc');
 const Company = require('../../model/Company');
 const { getRewards } = require('../../services/reward.service')
 
-const { 
+const {
 	addPromotion,
 	updatePromotion,
 	getPromotion,
-	deletePromotion ,
+	deletePromotion,
 	getPromotionRewards,
 	addPromotionRewards,
 	getPromotionCondition,
@@ -21,17 +21,11 @@ const {
  * @return {[type]}     [description]
  */
 exports.getPromotions = async (req, res) => {
-	
-	let user = req.userData;
-	let company_id = 1;
 
-	let params = {
-		promo: req.body,
-		user: user
-	}
+	let company_id = req.params.company_id;
 
-	const promos = await getPromotion(params)
-	res.status(201).json({promos})
+	const promos = await getPromotion(company_id)
+	res.status(201).json({ promos })
 }
 
 /**
@@ -43,7 +37,6 @@ exports.getPromotions = async (req, res) => {
 exports.createPromotions = async (req, res) => {
 
 	let user = req.userData;
-	let company_id = 1;
 
 
 	var odoo = new Odoo({
@@ -58,7 +51,28 @@ exports.createPromotions = async (req, res) => {
 	}
 
 	const promos = await addPromotion(params);
-	res.status(201).json({promos})
+	res.status(201).json({ promos })
+}
+
+exports.updatePromotions = async (req, res) => {
+
+	let user = req.userData;
+
+
+	var odoo = new Odoo({
+		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
+		username: 'user@example.com',
+		password: '850g6dHsX1TQ'
+	});
+
+	let params = {
+		id: req.params.id,
+		promo: req.body,
+		user: user
+	}
+
+	const promos = await updatePromotion(params);
+	res.status(201).json({ promos })
 }
 
 /**
@@ -67,7 +81,7 @@ exports.createPromotions = async (req, res) => {
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
  */
-exports.createCondition = async ( req, res) => {
+exports.createCondition = async (req, res) => {
 
 	let user = req.userData;
 	let company_id = 1;
@@ -79,7 +93,7 @@ exports.createCondition = async ( req, res) => {
 	}
 
 	const condition = await addPromotionConditon(params);
-	res.status(201).json({condition})
+	res.status(201).json({ condition })
 }
 
 /**
@@ -107,7 +121,7 @@ exports.createRewards = async (req, res) => {
 	}
 
 	const rewards = await addPromotionRewards(params);
-	res.status(201).json({rewards})
+	res.status(201).json({ rewards })
 }
 
 /**
@@ -116,7 +130,7 @@ exports.createRewards = async (req, res) => {
  * @param  {[type]} res [description]
  * @return {[type]}     [description]
  */
-exports.getRewards = async ( req, res) => {
+exports.getRewards = async (req, res) => {
 
 	let user = req.userData;
 	let company_id = 1;
@@ -137,7 +151,7 @@ exports.getRewards = async ( req, res) => {
 	res.status(201).json({ rewards })
 }
 
-exports.getCondtions = async ( req, res ) => {
+exports.getCondtions = async (req, res) => {
 
 	let user = req.userData;
 	let company_id = 1;
@@ -155,13 +169,13 @@ exports.getCondtions = async ( req, res ) => {
 	}
 
 	const conditions = await getPromotionCondition(params);
-	res.status(201).json({conditions});
+	res.status(201).json({ conditions });
 }
 
 exports.getPromotionBanner = async (req, res) => {
 	let user = req.userData;
 	let company_id = 1;
-	
+
 	let params = {
 		promo: req.body,
 		user: user
