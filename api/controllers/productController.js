@@ -140,7 +140,7 @@ exports.productDetails = async (req, res) => {
      const productId = req.params.id;
 
      const details = await getProductDetails(productId);
-     console.log("product", details);
+     // console.log("product", details);
      res.status(201).json({ details });
 };
 

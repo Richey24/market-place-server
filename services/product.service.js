@@ -203,8 +203,6 @@ const getProductDetails = async (productId) => {
                // [["name", "=", "s_mega_menu_images_subtitles_default_image_3.jpg"]],
           ]);
 
-          // console.log("attachments", attachments);
-
           if (attachments?.length > 0) {
                const et = attachments.filter((attachment) => {
                     return attachment?.res_id === productId;
