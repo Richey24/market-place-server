@@ -240,8 +240,8 @@ exports.getCustomersByCompanyId = async (req, res) => {
           const customers = await User.find({ company: companyId, role: "USER" });
 
           if (!customers || customers.length === 0) {
-               return res.status(404).json({
-                    message: "No users found for the specified customerId, companyId, and role.",
+               return res.status(200).json({
+                    customers: [],
                     status: false,
                });
           }

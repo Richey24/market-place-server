@@ -114,14 +114,7 @@ const addProduct = async (params) => {
                ]);
 
                console.log("Image saved with ID:", recordId);
-               // const imageRecordId = await Odoo.execute_kw("product.images", "create", [
-               //      { image: base64Image.base64 },
-               // ]);
-               // // Associate the image record with the product (assuming `productId` is the product's ID)
-               // await Odoo.execute_kw("product.template", "write", [
-               //      [productId],
-               //      { images_ids: [[4, imageRecordId]] },
-               // ]);
+     
           }
 
           // saveImageToOdoo(base64Images[0].base64);
