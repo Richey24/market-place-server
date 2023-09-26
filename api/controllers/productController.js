@@ -54,11 +54,7 @@ exports.getProductbyCategory = async (req, res) => {
                const products = await Odoo.execute_kw(
                     "product.public.category",
                     "search_read",
-                    [
-                         [
-                              ["name", "=", category],
-                         ],
-                    ],
+                    [[["name", "=", category]]],
                     { fields: ["name", "public_categ_ids"] },
                );
 
@@ -72,12 +68,6 @@ exports.getProductbyCategory = async (req, res) => {
      }
 };
 
-/**
- * This function will get featured products for the landing page
- * @param  {[type]} req [description]
- * @param  {[type]} res [description]
- * @return {[type]}     [description]
- */
 exports.getFeaturedProducts = async (req, res) => {
      console.log("GET  api/products/featured");
      const company_id = [+req.params.companyId];
@@ -150,7 +140,8 @@ exports.productDetails = async (req, res) => {
      const productId = req.params.id;
 
      const details = await getProductDetails(productId);
-     res.status(201).json(details);
+     console.log("product", details);
+     res.status(201).json({ details });
 };
 
 exports.wishlistProduct = async (req, res) => {
