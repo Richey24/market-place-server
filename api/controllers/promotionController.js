@@ -12,6 +12,7 @@ const {
 	getPromotionCondition,
 	addPromotionConditon
 } = require('../../services/promotion.service');
+const Promotion = require('../../model/Promotion');
 
 
 /**
@@ -35,23 +36,20 @@ exports.getPromotions = async (req, res) => {
  * @return {[type]}     [description]
  */
 exports.createPromotions = async (req, res) => {
-
-	let user = req.userData;
-
-
-	var odoo = new Odoo({
-		url: 'http://104.43.252.217/', port: 80, db: 'bitnami_odoo',
-		username: 'user@example.com',
-		password: '850g6dHsX1TQ'
-	});
-
-	let params = {
-		promo: req.body,
-		user: user
+	try {
+		if (!body.promoCode || !body.discountType || !body.discountValue || !body.target || !body.target_id) {
+			return req.status(400).json({ message: "One or more parameter missing" })
+		}
+		const body = req.body
+		const checkPromo = await Promotion.findOne({ promoCode: body.promoCode })
+		if (checkPromo) {
+			return res.status(419).json({ message: "promo code already exist" })
+		}
+		const promos = await Promotion.create(body);
+		res.status(201).json(promos)
+	} catch (error) {
+		res.status(201).json({ message: "An error occured" })
 	}
-
-	const promos = await addPromotion(params);
-	res.status(201).json({ promos })
 }
 
 exports.updatePromotions = async (req, res) => {
