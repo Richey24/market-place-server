@@ -5,6 +5,14 @@ const promotionSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    name: {
+        type: String,
+        required: true,
+    },
+    active: {
+        type: Boolean,
+        required: true,
+    },
     promoCode: {
         type: String,
         required: true,
@@ -28,7 +36,7 @@ const promotionSchema = mongoose.Schema({
     },
     date: {
         type: Date,
-        default: Date.now()
+        required: true,
     },
 })
 
