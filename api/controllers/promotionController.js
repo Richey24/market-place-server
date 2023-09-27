@@ -44,20 +44,17 @@ exports.getPromotions = async (req, res) => {
  * @return {[type]}     [description]
  */
 exports.createPromotions = async (req, res) => {
-	try {
-		if (!body.promoCode || !body.discountType || !body.discountValue || !body.target || !body.target_id || !body.company_id) {
-			return req.status(400).json({ message: "One or more parameter missing" })
-		}
-		const body = req.body
-		const checkPromo = await Promotion.findOne({ promoCode: body.promoCode })
-		if (checkPromo) {
-			return res.status(419).json({ message: "promo code already exist" })
-		}
-		const promos = await Promotion.create(body);
-		res.status(201).json(promos)
-	} catch (error) {
-		res.status(500).json({ message: "An error occured" })
+	const body = req.body
+	if (!body.promoCode || !body.discountType || !body.discountValue || !body.target || !body.target_id || !body.company_id) {
+		return res.status(400).json({ message: "One or more parameter missing" })
 	}
+	const checkPromo = await Promotion.findOne({ promoCode: body.promoCode })
+	if (checkPromo) {
+		return res.status(419).json({ message: "promo code already exist" })
+	}
+	const promos = await Promotion.create(body);
+	res.status(201).json(promos)
+
 }
 
 exports.updatePromotions = async (req, res) => {
