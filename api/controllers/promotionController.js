@@ -45,7 +45,7 @@ exports.getPromotions = async (req, res) => {
  */
 exports.createPromotions = async (req, res) => {
 	try {
-		if (!body.promoCode || !body.discountType || !body.discountValue || !body.target || !body.target_id) {
+		if (!body.promoCode || !body.discountType || !body.discountValue || !body.target || !body.target_id || !body.company_id) {
 			return req.status(400).json({ message: "One or more parameter missing" })
 		}
 		const body = req.body

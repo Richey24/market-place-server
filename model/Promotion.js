@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const promotionSchema = mongoose.Schema({
+    company_id: {
+        type: String,
+        required: true,
+    },
     promoCode: {
         type: String,
         required: true,
