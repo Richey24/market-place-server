@@ -4,11 +4,12 @@ const Shipping = require("../../model/Shipping");
 const Company = require("../../model/Company");
 const bcrypt = require("bcrypt");
 const { sendWelcomeEmail } = require("../../config/helpers");
+const Odoo = require("../../config/odoo.connection");
 
 exports.register = async (req, res) => {
      try {
           console.log("POST registering user");
-
+          await Odoo.connect();
           // TODO: add tenant id to verify
           let user = await User.findOne({ email: req.body.email });
 
@@ -21,6 +22,21 @@ exports.register = async (req, res) => {
           if (req.body.domain) {
                company = await Company.findOne({ subdomain: req.body.domain });
           }
+
+          let partner_id;
+          if (!req.body.role) {
+               partner_id = await Odoo.execute_kw("res.partner", "create", [
+                    {
+                         name: `${req.body.firstname} ${req.body.lastname}`,
+                         email: req.body.email,
+                         phone: req.body.phone,
+                         company_id: company.company_id,
+                         is_published: true,
+                    },
+               ]);
+               console.log("Partner created successfully. Partner ID:", partner_id);
+          }
+
           const newUser = new User({
                firstname: req.body.firstname,
                lastname: req.body.lastname,
@@ -28,6 +44,7 @@ exports.register = async (req, res) => {
                role: req.body.role,
                password: req.body.password,
                phone: req.body.phone,
+               partner_id: partner_id,
                ...(company && { company: company._id }),
           });
 
@@ -45,9 +62,10 @@ exports.register = async (req, res) => {
 
           const token = await newUser.generateAuthToken();
           sendWelcomeEmail(req.body.email, req.body.firstname);
-          res.status(201).json({ user: userWithoutPassword, token });
+          res.status(201).json({ user: userWithoutPassword, token, status: true });
      } catch (error) {
-          res.status(400).json({ error });
+          console.log("errpr", error);
+          res.status(400).json({ error, status: true });
      }
 };
 

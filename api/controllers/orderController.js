@@ -1,4 +1,5 @@
-var Odoo = require("async-odoo-xmlrpc");
+// var Odoo = require("async-odoo-xmlrpc");
+const Odoo = require("../../config/odoo.connection");
 const { addOrder } = require("../../services/order.service");
 
 exports.getOrders = async (req, res) => {
@@ -28,22 +29,26 @@ exports.getOrders = async (req, res) => {
 };
 
 exports.createOrder = async (req, res) => {
-     let user = req.userData;
+     try {
+          let user = req.userData;
+          await Odoo.connect();
+          const partnerData = await Odoo.execute_kw("res.partner", "search", [[]], {
+               fields: ["name", "email", "phone", "company_id"],
+          });
+          console.log("partner", partnerData);
+          const orderData = {
+               partner_id: 162,
+               company_id: 122,
+               order_line: [[0, 0, { product_id: 232, product_uom_qty: 4 }]],
+          };
 
-     var odoo = new Odoo({
-          url: "http://104.43.252.217/",
-          port: 80,
-          db: "bitnami_odoo",
-          username: "user@example.com",
-          password: "850g6dHsX1TQ",
-     });
+          const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
+          console.log("Order created successfully. Order ID:", orderId);
 
-     let params = {
-          odoo: odoo,
-          product: req.body,
-          // user: user
-     };
-
-     const product = await addOrder(params);
-     res.status(201).json({ product });
+          // const product = await addOrder(params);
+          res.status(201).json({ orderId, status: true });
+     } catch (error) {
+          console.log("error", error);
+          res.status(400).json({ error, status: false });
+     }
 };

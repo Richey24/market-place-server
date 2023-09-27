@@ -42,6 +42,9 @@ const userSchema = mongoose.Schema({
      phone: {
           type: Number,
      },
+     partner_id: {
+          type: Number,
+     },
      created_at: {
           type: Date,
           default: Date.now,

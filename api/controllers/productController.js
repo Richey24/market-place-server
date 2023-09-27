@@ -6,6 +6,7 @@ const {
      getFeaturedProducts,
      getProductDetails,
      addMultipleProducts,
+     getProductById,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -139,7 +140,7 @@ exports.filterProducts = async (req, res) => {
 exports.productDetails = async (req, res) => {
      const productId = req.params.id;
 
-     const details = await getProductDetails(productId);
+     const details = await getProductById(productId);
      // console.log("product", details);
      res.status(201).json({ details });
 };

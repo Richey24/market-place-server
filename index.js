@@ -49,6 +49,7 @@ const contactUsRouter = require("./api/routes/contact-us");
 const imageRouter = require("./api/routes/image");
 const siteRouter = require("./api/routes/site");
 const tagRouter = require("./api/routes/tag");
+const orderRouter = require("./api/routes/order");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -59,6 +60,7 @@ app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
 app.use("/api/tags", tagRouter);
+app.use("/api/orders", orderRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
