@@ -27,11 +27,11 @@ exports.getPromotions = async (req, res) => {
 		if (!company_id) {
 			return res.status(400).json({ message: "Company ID is required" })
 		}
-		const promo = await Promotion.findOne({ company_id: company_id })
+		const promo = await Promotion.find({ company_id: company_id })
 		if (!promo) {
 			return res.status(400).json({ message: "No Promotion Found with this company ID" })
 		}
-		res.status(201).json(promo)
+		res.status(200).json(promo)
 	} catch (error) {
 		res.status(500).json({ message: "An error occured" })
 	}
