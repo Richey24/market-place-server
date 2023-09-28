@@ -11,7 +11,7 @@ const promotionSchema = mongoose.Schema({
         default: true
     },
     active: {
-        type: Boolean,
+        type: String,
         required: true,
     },
     promoCode: {
