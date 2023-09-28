@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../../config/auth");
 
-const productController = require("../controllers/productController");
+const orderController = require("../controllers/orderController");
 
-router.get("/", productController.getProducts);
+router.get("/", orderController.getOrders);
+router.post("/", orderController.createOrder);
 
 module.exports = router;

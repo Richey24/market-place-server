@@ -114,14 +114,7 @@ const addProduct = async (params) => {
                ]);
 
                console.log("Image saved with ID:", recordId);
-               // const imageRecordId = await Odoo.execute_kw("product.images", "create", [
-               //      { image: base64Image.base64 },
-               // ]);
-               // // Associate the image record with the product (assuming `productId` is the product's ID)
-               // await Odoo.execute_kw("product.template", "write", [
-               //      [productId],
-               //      { images_ids: [[4, imageRecordId]] },
-               // ]);
+     
           }
 
           // saveImageToOdoo(base64Images[0].base64);
@@ -202,8 +195,6 @@ const getProductDetails = async (productId) => {
                // fields,
                // [["name", "=", "s_mega_menu_images_subtitles_default_image_3.jpg"]],
           ]);
-
-          // console.log("attachments", attachments);
 
           if (attachments?.length > 0) {
                const et = attachments.filter((attachment) => {
