@@ -7,6 +7,7 @@ const promotionController = require('../controllers/promotionController');
 router.get('/:company_id', promotionController.getPromotions);
 router.post('/', promotionController.createPromotions);
 router.put('/:id', promotionController.updatePromotions);
+router.delete('/:id', promotionController.deletePromotions);
 
 router.post('/rewards', promotionController.createRewards);
 router.get('/rewards', promotionController.getRewards);

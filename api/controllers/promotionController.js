@@ -44,22 +44,24 @@ exports.getPromotions = async (req, res) => {
  * @return {[type]}     [description]
  */
 exports.createPromotions = async (req, res) => {
-	const body = req.body
-	if (!body.promoCode || !body.discountType || !body.discountValue || !body.target || !body.target_id || !body.company_id) {
-		return res.status(400).json({ message: "One or more parameter missing" })
+	try {
+		const body = req.body
+		if (!body.promoCode || !body.discountType || !body.discountValue || !body.target || !body.target_id || !body.company_id) {
+			return res.status(400).json({ message: "One or more parameter missing" })
+		}
+		const checkPromo = await Promotion.findOne({ promoCode: body.promoCode })
+		if (checkPromo) {
+			return res.status(419).json({ message: "promo code already exist" })
+		}
+		const promos = await Promotion.create(body);
+		res.status(201).json(promos)
+	} catch (error) {
+		res.status(500).json({ message: "An error occured" })
 	}
-	const checkPromo = await Promotion.findOne({ promoCode: body.promoCode })
-	if (checkPromo) {
-		return res.status(419).json({ message: "promo code already exist" })
-	}
-	const promos = await Promotion.create(body);
-	res.status(201).json(promos)
-
 }
 
 exports.updatePromotions = async (req, res) => {
 	try {
-
 		const id = req.params.id
 		const body = req.body
 		if (!id) {
@@ -67,6 +69,19 @@ exports.updatePromotions = async (req, res) => {
 		}
 		await Promotion.findByIdAndUpdate(id, body)
 		res.status(201).json({ message: "Updated Successfully" })
+	} catch (error) {
+		res.status(500).json({ message: "An error occured" })
+	}
+}
+
+exports.deletePromotions = async (req, res) => {
+	try {
+		const id = req.params.id
+		if (!id) {
+			return res.status(400).json({ message: "ID is required" })
+		}
+		await Promotion.findByIdAndDelete(id)
+		res.status(200).json({ message: "Deleted Successfully" })
 	} catch (error) {
 		res.status(500).json({ message: "An error occured" })
 	}
