@@ -8,6 +8,7 @@ const promotionSchema = mongoose.Schema({
     name: {
         type: String,
         required: true,
+        default: true
     },
     active: {
         type: Boolean,
