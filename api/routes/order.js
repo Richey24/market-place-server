@@ -4,7 +4,7 @@ const auth = require("../../config/auth");
 
 const orderController = require("../controllers/orderController");
 
-router.get("/", orderController.getOrders);
-router.post("/", orderController.createOrder);
+router.get("/", auth, orderController.getOrders);
+router.post("/", auth, orderController.createOrder);
 
 module.exports = router;
