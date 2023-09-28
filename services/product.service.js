@@ -18,11 +18,13 @@ const unitOfMeasure = async (odoo) => {
 
 const getProductById = async (id) => {
      let productId = id;
-
+     console.log("id", id);
      try {
           await Odoo.connect();
-          let products = await Odoo.execute_kw("product.product", "read", [productId]);
-          return products;
+          const productData = await Odoo.execute_kw("product.template", "search_read", [
+               [["id", "=", productId]],
+          ]);
+          return productData;
      } catch (e) {
           console.error("XMPLC Error", e);
      }
@@ -114,7 +116,6 @@ const addProduct = async (params) => {
                ]);
 
                console.log("Image saved with ID:", recordId);
-     
           }
 
           // saveImageToOdoo(base64Images[0].base64);
