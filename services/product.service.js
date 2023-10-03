@@ -127,6 +127,74 @@ const addProduct = async (params) => {
      }
 };
 
+const updateProduct = async (params) => {
+     try {
+          const images = params.product.images || [];
+          // Convert each image buffer to base64
+          const base64Images = images?.map((image) => {
+               return {
+                    ...image,
+                    base64: image.buffer.toString("base64"),
+               };
+          });
+
+          await params.odoo.connect();
+          console.log(" params.product", params.product);
+          // Create the product
+          const productData = {
+               base_unit_count: params.product.qty,
+               categ_id: +params.product.category_id,
+               list_price: params.product.list_price,
+               standard_price: params.product.standard_price,
+               name: params.product.name,
+               uom_name: params.product.uom_name,
+               display_name: params.product.name,
+               website_published: params.product.published,
+               company_id: params.product.company_id,
+               // product_tag_ids: [1, 5, 4, 6],
+          };
+          // Update the product data
+          const result = await params.odoo.execute_kw("product.template", "write", [
+               [+params?.productId],
+               productData,
+          ]);
+          console.log("result", result);
+
+          if (result) {
+               console.log("Product data updated successfully. Product ID:", +params?.productId);
+          } else {
+               console.error("Failed to update product data.");
+               throw new Error("Failed to update product data.");
+          }
+
+          for (const base64Image of base64Images) {
+               await params.odoo.execute_kw("product.template", "write", [
+                    [productId],
+                    { image_1920: base64Image.base64 },
+               ]);
+
+               const recordId = await Odoo.execute_kw("ir.attachment", "create", [
+                    {
+                         name: "productId.png",
+                         datas: base64Image.base64,
+                         res_model: "ir.ui.view",
+                         res_id: productId,
+                         res_field: "product_images",
+                         public: true,
+                         company_id: params.product.company_id,
+                    },
+               ]);
+
+               console.log("Image saved with ID:", recordId);
+          }
+
+          return result;
+     } catch (error) {
+          console.error("Error updating product:", error);
+          throw error;
+     }
+};
+
 const addMultipleProducts = async (params) => {
      try {
           const productIds = [];
@@ -215,29 +283,29 @@ const getProductDetails = async (productId) => {
      }
 };
 
-const updateProduct = async (params) => {
-     try {
-          await params.odoo.connect();
-          let product = await odoo.execute_kw("product.template", "write", [
-               [params.product_id],
-               {
-                    base_unit_count: params.product.qty,
-                    categ_id: params.product.category_id,
-                    list_price: params.product.list_price,
-                    standard_price: params.product.standard_price,
-                    name: params.product.name,
-                    // image: params.product.image,
-                    uom_name: params.product.uom_name,
-                    display_name: params.product.name,
-                    // product_variant_ids: 1,
-                    website_published: params.product.published,
-               },
-          ]);
-          return product;
-     } catch (e) {
-          console.error("Error when try connect Odoo XML-RPC.", e);
-     }
-};
+// const updateProduct = async (params) => {
+//      try {
+//           await params.odoo.connect();
+//           let product = await odoo.execute_kw("product.template", "write", [
+//                [params.product_id],
+//                {
+//                     base_unit_count: params.product.qty,
+//                     categ_id: params.product.category_id,
+//                     list_price: params.product.list_price,
+//                     standard_price: params.product.standard_price,
+//                     name: params.product.name,
+//                     // image: params.product.image,
+//                     uom_name: params.product.uom_name,
+//                     display_name: params.product.name,
+//                     // product_variant_ids: 1,
+//                     website_published: params.product.published,
+//                },
+//           ]);
+//           return product;
+//      } catch (e) {
+//           console.error("Error when try connect Odoo XML-RPC.", e);
+//      }
+// };
 
 /**
  * This function delete a user product
@@ -264,4 +332,5 @@ module.exports = {
      getProductById,
      getProductDetails,
      addMultipleProducts,
+     updateProduct,
 };
