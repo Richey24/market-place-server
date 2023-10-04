@@ -7,6 +7,7 @@ const {
      getProductDetails,
      addMultipleProducts,
      getProductById,
+     updateProduct,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -175,6 +176,24 @@ exports.createProduct = async (req, res) => {
           };
 
           const product = await addProduct({ ...params });
+
+          res.status(201).json({ product: product, status: true });
+     } catch (err) {
+          res.status(400).json({ err, status: false });
+     }
+};
+
+exports.updateProduct = async (req, res) => {
+     // let user = req.userData;
+     console.log("parasm", req.params);
+     try {
+          let params = {
+               odoo: Odoo,
+               product: { ...req.body, images: req.files },
+               productId: req.params?.id,
+          };
+
+          const product = await updateProduct({ ...params });
 
           res.status(201).json({ product: product, status: true });
      } catch (err) {

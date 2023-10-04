@@ -8,7 +8,8 @@ router.get("/:companyId", auth, productController.getProductbyCompanyId);
 // router.get("/:companyId/:productId", productController.getProductById);
 
 router.get("/category/:category", auth, productController.getProductbyCategory);
-router.post("/", multer().any("images"), productController.createProduct);
+router.post("/", auth, multer().any("images"), productController.createProduct);
+router.put("/:id", auth, multer().any("images"), productController.updateProduct);
 router.post("/multiple", productController.createMultipleProducts);
 
 router.get("/:companyId/featured", productController.getFeaturedProducts);

@@ -1,54 +1,340 @@
 // var Odoo = require("async-odoo-xmlrpc");
 const Odoo = require("../../config/odoo.connection");
+const User = require("../../model/User");
 const { addOrder } = require("../../services/order.service");
 
 exports.getOrders = async (req, res) => {
      console.log("GET /api/orders");
-     var odoo = new Odoo({
-          url: "http://104.43.252.217/",
-          port: 80,
-          db: "bitnami_odoo",
-          username: "user@example.com",
-          password: "850g6dHsX1TQ",
-     });
+     let user = req.userData;
+     const partnerId = 163;
 
      try {
-          await odoo.connect();
-          console.log("Connect to Odoo XML-RPC - api/products");
-
-          let products = await odoo.execute_kw(
-               "order.template",
-               "search_read",
-               [[["type", "=", "consu"]]],
-               { fields: ["name", "public_categ_ids"], limit: 5 },
+          await Odoo.connect();
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [[["partner_id", "=", partnerId]]],
+               {
+                    fields: ["name", "partner_id"],
+               },
           );
-          res.status(201).json({ products });
-     } catch (e) {
-          console.error("Error when try connect Odoo XML-RPC.", e);
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               [
+                    "id",
+                    "partner_id",
+                    "order_line",
+                    "company_id",
+                    "name",
+                    "state",
+                    "amount_total",
+                    "date_order",
+               ],
+          ]);
+          const ordersWithDetails = await Promise.all(
+               orders.map(async (order) => {
+                    const orderLines = await Odoo.execute_kw(
+                         "sale.order.line",
+                         "search_read",
+                         [[["order_id", "=", order.id]]],
+                         {
+                              fields: ["product_id", "product_uom_qty", "price_unit"],
+                         },
+                    );
+                    order.order_lines = orderLines;
+                    return order;
+               }),
+          );
+
+          res.status(201).json({ orders: ordersWithDetails, status: true });
+     } catch (error) {
+          console.error("Error when try connect Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.getOrdersByPartner = async (req, res) => {
+     console.log("GET /api/orders");
+
+     try {
+          await Odoo.connect();
+
+          let user = await User.findById(req.params.customerId);
+
+          if (user) {
+               const partnerId = user?.partner_id;
+
+               const orderIds = await Odoo.execute_kw(
+                    "sale.order",
+                    "search",
+                    [
+                         [
+                              ["partner_id", "=", partnerId],
+                              ["state", "=", "draft"],
+                         ],
+                    ],
+                    {
+                         fields: ["name", "partner_id"],
+                    },
+               );
+               const orders = await Odoo.execute_kw("sale.order", "read", [
+                    orderIds,
+                    [
+                         "id",
+                         "partner_id",
+                         "order_line",
+                         "company_id",
+                         "name",
+                         "state",
+                         "amount_total",
+                         "date_order",
+                    ],
+               ]);
+               const ordersWithDetails = await Promise.all(
+                    orders.map(async (order) => {
+                         const orderLines = await Odoo.execute_kw(
+                              "sale.order.line",
+                              "search_read",
+                              [[["order_id", "=", order.id]]],
+                              {
+                                   fields: ["product_id", "product_uom_qty", "price_unit"],
+                              },
+                         );
+                         order.order_lines = orderLines;
+                         return order;
+                    }),
+               );
+
+               return res.status(201).json({ order: ordersWithDetails[0], status: true });
+          }
+          res.status(201).json({ orders: null, status: true });
+     } catch (error) {
+          console.error("Error when try connect Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.getOrderHistoryByPartner = async (req, res) => {
+     console.log("GET /api/orders");
+
+     try {
+          await Odoo.connect();
+
+          let user = await User.findById(req.params.customerId);
+
+          if (user) {
+               const partnerId = user?.partner_id;
+
+               const orderIds = await Odoo.execute_kw(
+                    "sale.order",
+                    "search",
+                    [
+                         [
+                              ["partner_id", "=", partnerId],
+                              // ["state", "=", "draft"],
+                         ],
+                    ],
+                    {
+                         fields: ["name", "partner_id"],
+                    },
+               );
+               const orders = await Odoo.execute_kw("sale.order", "read", [
+                    orderIds,
+                    [
+                         "id",
+                         "partner_id",
+                         "order_line",
+                         "company_id",
+                         "name",
+                         "state",
+                         "amount_total",
+                         "date_order",
+                    ],
+               ]);
+               const ordersWithDetails = await Promise.all(
+                    orders.map(async (order) => {
+                         const orderLines = await Odoo.execute_kw(
+                              "sale.order.line",
+                              "search_read",
+                              [[["order_id", "=", order.id]]],
+                              {
+                                   fields: ["product_id", "product_uom_qty", "price_unit"],
+                              },
+                         );
+                         order.order_lines = orderLines;
+                         return order;
+                    }),
+               );
+
+               return res.status(201).json({ orders: ordersWithDetails, status: true });
+          }
+          res.status(201).json({ orders: null, status: true });
+     } catch (error) {
+          console.error("Error when try connect Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
      }
 };
 
 exports.createOrder = async (req, res) => {
      try {
-          let user = req.userData;
           await Odoo.connect();
-          const partnerData = await Odoo.execute_kw("res.partner", "search", [[]], {
-               fields: ["name", "email", "phone", "company_id"],
-          });
-          console.log("partner", partnerData);
-          const orderData = {
-               partner_id: 162,
-               company_id: 122,
-               order_line: [[0, 0, { product_id: 232, product_uom_qty: 4 }]],
-          };
 
-          const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
-          console.log("Order created successfully. Order ID:", orderId);
+          const productData = req.body.products;
+          const userId = req.body.userId;
+          const companyId = req.body.companyId;
 
-          // const product = await addOrder(params);
-          res.status(201).json({ orderId, status: true });
+          let user = await User.findById(userId);
+          if (user) {
+               const orderLines = productData.map(({ productId, qty, price_unit }) => [
+                    0,
+                    0,
+                    {
+                         product_id: productId,
+                         product_uom_qty: qty,
+                         price_unit,
+                    },
+               ]);
+
+               // Ensure the products belong to the same company
+               // Update the products' company to match the sale order's company
+               const productIds = productData.map(({ productId }) => productId);
+               await Odoo.execute_kw("product.product", "write", [
+                    productIds,
+                    { company_id: companyId },
+               ]);
+
+               const orderData = {
+                    partner_id: user.partner_id,
+                    company_id: companyId,
+                    order_line: orderLines,
+               };
+
+               // console.log("orderData", orderData);
+               const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
+               console.log("Order created successfully. Order ID:", orderId);
+
+               return res.status(201).json({ orderId, status: true });
+          }
      } catch (error) {
-          console.log("error", error);
+          console.log("Error", error);
           res.status(400).json({ error, status: false });
+     }
+};
+
+exports.addProductToOrder = async (req, res) => {
+     try {
+          await Odoo.connect();
+
+          const orderId = req.body.orderId;
+          const productId = req.body.productId;
+          const qty = req.body.qty;
+          const companyId = req.body.companyId;
+
+          const orderLineId = await Odoo.execute_kw("sale.order.line", "create", [
+               {
+                    order_id: orderId,
+                    product_id: productId,
+                    product_uom_qty: qty,
+                    company_id: companyId,
+                    price_unit: req.body.price_unit,
+               },
+          ]);
+
+          return res.status(201).json({ orderId, orderLineId, status: true });
+     } catch (error) {
+          console.log("Error", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.removeProductFromOrderLine = async (req, res) => {
+     try {
+          await Odoo.connect();
+
+          const orderLineIdToRemove = +req.params.id; // Replace with the actual order line ID to remove
+          console.log("orderline", orderLineIdToRemove);
+          // Delete the order line associated with the product
+          const result = await Odoo.execute_kw("sale.order.line", "unlink", [
+               [orderLineIdToRemove],
+          ]);
+
+          if (result) {
+               console.log("Order line removed successfully.");
+               res.status(200).json({ status: true, message: "Order line removed successfully." });
+          } else {
+               console.error("Failed to remove order line.");
+               res.status(500).json({ status: false, message: "Failed to remove order line." });
+          }
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.updateProductToOrderLine = async (req, res) => {
+     try {
+          await Odoo.connect();
+
+          const orderLineIdToUpdate = +req.params.id; // Replace with the actual order line ID to update
+          const newQuantity = req.body.qty; // Replace with the new quantity for the product
+
+          // Update the product quantity for the order line
+          const result = await Odoo.execute_kw("sale.order.line", "write", [
+               [orderLineIdToUpdate],
+               { product_uom_qty: +newQuantity },
+          ]);
+
+          console.log("result", result, req.body.qty);
+
+          if (result) {
+               console.log("Product quantity updated successfully.");
+               res.status(200).json({
+                    status: true,
+                    message: "Product quantity updated successfully.",
+               });
+          } else {
+               console.error("Failed to update product quantity.");
+               res.status(500).json({
+                    status: false,
+                    message: "Failed to update product quantity.",
+               });
+          }
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.changeOrderStatus = async (req, res) => {
+     try {
+          const { orderId, newStatus } = req.body;
+
+          if (!orderId || !newStatus) {
+               return res.status(400).json({ error: "Invalid input data", status: false });
+          }
+
+          // Connect to Odoo
+          await Odoo.connect();
+
+          // Update the order status
+          const result = await Odoo.execute_kw("sale.order", "write", [
+               [+orderId],
+               { state: newStatus },
+          ]);
+
+          if (result) {
+               console.log("Order status updated successfully. Order ID:", orderId);
+               return res
+                    .status(200)
+                    .json({ status: true, message: "Order status updated successfully." });
+          } else {
+               console.error("Failed to update order status.");
+               return res
+                    .status(500)
+                    .json({ status: false, message: "Failed to update order status." });
+          }
+     } catch (error) {
+          console.error("Error changing order status:", error.message);
+          return res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };

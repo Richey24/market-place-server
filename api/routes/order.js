@@ -4,7 +4,13 @@ const auth = require("../../config/auth");
 
 const orderController = require("../controllers/orderController");
 
-router.get("/", orderController.getOrders);
-router.post("/", orderController.createOrder);
+router.get("/company", auth, orderController.getOrders);
+router.get("/customer/:customerId", orderController.getOrdersByPartner);
+router.get("/customer/history/:customerId", orderController.getOrderHistoryByPartner);
+router.post("/create", orderController.createOrder);
+router.post("/product", orderController.addProductToOrder);
+router.delete("/product/:id", orderController.removeProductFromOrderLine);
+router.put("/product/qty/:id", orderController.updateProductToOrderLine);
+router.put("/status", orderController.changeOrderStatus);
 
 module.exports = router;

@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
           if (req.body.domain) {
                company = await Company.findOne({ subdomain: req.body.domain });
           }
-
+          console.log("company", company);
           let partner_id;
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
