@@ -73,7 +73,7 @@ const addProduct = async (params) => {
           // Create the product
           const productData = {
                base_unit_count: params.product.qty,
-               categ_id: params.product.category_id,
+               // categ_id: params.product.category_id,
                list_price: params.product.list_price,
                standard_price: params.product.standard_price,
                name: params.product.name,
@@ -81,17 +81,22 @@ const addProduct = async (params) => {
                display_name: params.product.name,
                website_published: params.product.published,
                company_id: params.product.company_id,
-               // product_tag_ids: [1, 5, 4, 6],
+               x_color: params.product.color,
+               x_subcategory: params.product.subcategory,
+               x_size: params.product.size,
+               x_weight: params.product.weight,
+               x_dimension: params.product.dimension,
+               product_tag_ids: params.product.product_tag_ids ? params.product.product_tag_ids : [],
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
                productData,
           ]);
 
-          if (JSON.parse(params.product.product_tag_ids).length > 0) {
+          if (params.product.product_tag_ids?.length > 0) {
                await params.odoo.execute_kw("product.template", "write", [
                     [productId],
-                    { product_tag_ids: JSON.parse(params.product.product_tag_ids) },
+                    { product_tag_ids: params.product.product_tag_ids },
                ]);
           }
           // // Write the images if provided
@@ -114,7 +119,7 @@ const addProduct = async (params) => {
                ]);
 
                console.log("Image saved with ID:", recordId);
-     
+
           }
 
           // saveImageToOdoo(base64Images[0].base64);
@@ -243,7 +248,7 @@ const updateProduct = async (params) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => {};
+const deleteProduct = async (params) => { };
 
 // const getProductImageUrl = async (params) => {
 
