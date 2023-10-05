@@ -71,6 +71,7 @@ const addProduct = async (params) => {
 
           // Connect to Odoo instance
           await params.odoo.connect();
+          console.log(params.product);
 
           // Create the product
           const productData = {
@@ -88,18 +89,20 @@ const addProduct = async (params) => {
                x_size: params.product.size,
                x_weight: params.product.weight,
                x_dimension: params.product.dimension,
-               product_tag_ids: params.product.product_tag_ids ? params.product.product_tag_ids : [],
+               product_tag_ids: params.product.product_tag_ids ? JSON.parse(params.product.product_tag_ids) : [],
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
                productData,
           ]);
 
-          if (params.product.product_tag_ids?.length > 0) {
-               await params.odoo.execute_kw("product.template", "write", [
-                    [productId],
-                    { product_tag_ids: params.product.product_tag_ids },
-               ]);
+          if (params.product.product_tag_ids) {
+               if (JSON.parse(params.product.product_tag_ids)?.length > 0) {
+                    await params.odoo.execute_kw("product.template", "write", [
+                         [productId],
+                         { product_tag_ids: JSON.parse(params.product.product_tag_ids) },
+                    ]);
+               }
           }
           // // Write the images if provided
           for (const base64Image of base64Images) {
@@ -161,7 +164,7 @@ const updateProduct = async (params) => {
                x_size: params.product.size,
                x_weight: params.product.weight,
                x_dimension: params.product.dimension,
-               product_tag_ids: params.product.product_tag_ids ? params.product.product_tag_ids : [],
+               product_tag_ids: params.product.product_tag_ids ? JSON.parse(params.product.product_tag_ids) : [],
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
