@@ -17,4 +17,7 @@ router.get("/details/:id", productController.productDetails);
 router.get("/filter", productController.filterProducts);
 router.get("/site/:companyId", productController.getProductbyCompanyId);
 
+router.post("/wishlist", productController.createWishlistRecord);
+router.get("/wishlist/:userId", productController.fetchWishlist);
+
 module.exports = router;
