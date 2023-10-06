@@ -20,4 +20,6 @@ router.get("/site/:companyId", productController.getProductbyCompanyId);
 router.post("/wishlist", productController.createWishlistRecord);
 router.get("/wishlist/:userId", productController.fetchWishlist);
 
+router.get("/best-selling/:companyId", productController.getBestSellingProducts);
+
 module.exports = router;

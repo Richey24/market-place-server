@@ -138,27 +138,8 @@ exports.listShipping = async (req, res) => {
 
 (exports.addBillingAddress = async (req, res) => {
      console.log("adding biilling");
-
-     const bill = new Billing({
-          firstname: req.body.firstname,
-          lastname: req.body.lastname,
-          country: req.body.country,
-          state: req.body.state,
-          city: req.body.city,
-          street: req.body.street,
-          phone: req.body.phone,
-          zipcode: req.body.zipcode,
-          email: req.body.email,
-          userId: req.userData._id,
-     });
-
-     let data = await bill.save();
-     return res.status(201).json({ data });
-}),
-     (exports.addShippingAddress = async (req, res) => {
-          console.log("adding shipping");
-
-          const shipping = new Shipping({
+     try {
+          const bill = new Billing({
                firstname: req.body.firstname,
                lastname: req.body.lastname,
                country: req.body.country,
@@ -167,13 +148,38 @@ exports.listShipping = async (req, res) => {
                street: req.body.street,
                phone: req.body.phone,
                zipcode: req.body.zipcode,
-               company: reg.body.company,
                email: req.body.email,
                userId: req.userData._id,
           });
 
-          let data = await shipping.save();
-          return res.status(201).json({ data });
+          let data = await bill.save();
+          return res.status(201).json({ data, status: true });
+     } catch (error) {
+          res.status(400).json({ error, status: false });
+     }
+}),
+     (exports.addShippingAddress = async (req, res) => {
+          console.log("adding shipping");
+          try {
+               const shipping = new Shipping({
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname,
+                    country: req.body.country,
+                    state: req.body.state,
+                    city: req.body.city,
+                    street: req.body.street,
+                    phone: req.body.phone,
+                    zipcode: req.body.zipcode,
+                    company: reg.body.company,
+                    email: req.body.email,
+                    userId: req.userData._id,
+               });
+
+               let data = await shipping.save();
+               return res.status(201).json({ data, status: true });
+          } catch (error) {
+               res.status(400).json({ error, status: false });
+          }
      });
 
 (exports.editBillingAddress = async (req, res) => {

@@ -276,3 +276,24 @@ exports.createMultipleProducts = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
+
+exports.getBestSellingProducts = async (req, res) => {
+     console.log("GET /api/best-selling-products");
+
+     try {
+          await Odoo.connect();
+          console.log("Connected to Odoo XML-RPC - getBestSellingProducts");
+          const companyId = [+req.params.companyId];
+
+          // Fetch best-selling products based on your criteria (e.g., sales count)
+          const products = await Odoo.execute_kw("product.product", "search_read", [
+               [["company_id", "=", companyId]],
+               {   limit: 3 },
+          ]);
+
+          res.status(200).json({ bestSellingProducts: products, status: true });
+     } catch (error) {
+          console.error("Error when trying to fetch best-selling products.", error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
