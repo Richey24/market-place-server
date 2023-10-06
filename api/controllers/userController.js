@@ -149,12 +149,13 @@ exports.listShipping = async (req, res) => {
                phone: req.body.phone,
                zipcode: req.body.zipcode,
                email: req.body.email,
-               userId: req.userData._id,
+               userId: req?.userData?._id ?? req?.body?.userId,
           });
 
           let data = await bill.save();
           return res.status(201).json({ data, status: true });
      } catch (error) {
+          console.log("error", error);
           res.status(400).json({ error, status: false });
      }
 }),
