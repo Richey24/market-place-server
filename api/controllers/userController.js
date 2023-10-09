@@ -22,7 +22,7 @@ exports.register = async (req, res) => {
           if (req.body.domain) {
                company = await Company.findOne({ subdomain: req.body.domain });
           }
-          console.log("company", company);
+
           let partner_id;
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
@@ -138,27 +138,8 @@ exports.listShipping = async (req, res) => {
 
 (exports.addBillingAddress = async (req, res) => {
      console.log("adding biilling");
-
-     const bill = new Billing({
-          firstname: req.body.firstname,
-          lastname: req.body.lastname,
-          country: req.body.country,
-          state: req.body.state,
-          city: req.body.city,
-          street: req.body.street,
-          phone: req.body.phone,
-          zipcode: req.body.zipcode,
-          email: req.body.email,
-          userId: req.userData._id,
-     });
-
-     let data = await bill.save();
-     return res.status(201).json({ data });
-}),
-     (exports.addShippingAddress = async (req, res) => {
-          console.log("adding shipping");
-
-          const shipping = new Shipping({
+     try {
+          const bill = new Billing({
                firstname: req.body.firstname,
                lastname: req.body.lastname,
                country: req.body.country,
@@ -167,13 +148,39 @@ exports.listShipping = async (req, res) => {
                street: req.body.street,
                phone: req.body.phone,
                zipcode: req.body.zipcode,
-               company: reg.body.company,
                email: req.body.email,
-               userId: req.userData._id,
+               userId: req?.userData?._id ?? req?.body?.userId,
           });
 
-          let data = await shipping.save();
-          return res.status(201).json({ data });
+          let data = await bill.save();
+          return res.status(201).json({ data, status: true });
+     } catch (error) {
+          console.log("error", error);
+          res.status(400).json({ error, status: false });
+     }
+}),
+     (exports.addShippingAddress = async (req, res) => {
+          console.log("adding shipping");
+          try {
+               const shipping = new Shipping({
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname,
+                    country: req.body.country,
+                    state: req.body.state,
+                    city: req.body.city,
+                    street: req.body.street,
+                    phone: req.body.phone,
+                    zipcode: req.body.zipcode,
+                    company: reg.body.company,
+                    email: req.body.email,
+                    userId: req.userData._id,
+               });
+
+               let data = await shipping.save();
+               return res.status(201).json({ data, status: true });
+          } catch (error) {
+               res.status(400).json({ error, status: false });
+          }
      });
 
 (exports.editBillingAddress = async (req, res) => {
@@ -230,6 +237,48 @@ exports.listShipping = async (req, res) => {
                },
           );
      });
+
+exports.updateUserDetails = async (req, res) => {
+     try {
+          const updatedUserData = {
+               firstname: req.body.firstname,
+               lastname: req.body.lastname,
+               email: req.body.email,
+               phone: req.body.phone,
+          };
+
+          // Assuming you have a User model and a method like `updateUserById` to update a user by ID
+          const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
+               new: true,
+          });
+
+          const company = await Company.findByIdAndUpdate(
+               updatedUser?.company,
+               {
+                    phone: req.body.phone,
+                    ...(req.body.companyName && { company_name: req.body.companyName }),
+               },
+               {
+                    new: true,
+               },
+          );
+
+          // Omit password from the updated user object before sending the response
+          const userWithoutPassword = {
+               _id: updatedUser._id,
+               firstname: updatedUser.firstname,
+               lastname: updatedUser.lastname,
+               email: updatedUser.email,
+               role: updatedUser.role,
+               company: updatedUser.company,
+          };
+
+          res.status(200).json({ user: userWithoutPassword, company, status: true });
+     } catch (error) {
+          console.log("Error updating user details:", error);
+          res.status(400).json({ error, status: false });
+     }
+};
 
 exports.getUserDetails = async (req, res) => {
      console.log(req.userData);
