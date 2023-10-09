@@ -8,6 +8,7 @@ const {
      addMultipleProducts,
      getProductById,
      updateProduct,
+     searchProducts,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -215,3 +216,21 @@ exports.createMultipleProducts = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
+
+
+exports.searchProduct = async (req, res) => {
+     try {
+          const body = req.body
+          console.log(body);
+          const keys = Object.keys(body)
+          const arr = []
+          keys.forEach((key) => {
+               arr.push([key, "=", body[key]])
+          })
+          console.log(arr);
+          const products = await searchProducts(arr)
+          res.status(200).json({ products, status: true });
+     } catch (err) {
+          res.status(400).json({ err, status: false });
+     }
+}

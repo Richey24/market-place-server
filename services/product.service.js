@@ -57,6 +57,26 @@ const getFeaturedProducts = async (params) => {
           console.error("Error when try connect Odoo XML-RPC.", e);
      }
 };
+const searchProducts = async (params) => {
+     console.log("GET /api/products/search");
+     try {
+          await Odoo.connect();
+          const products = await Odoo.execute_kw(
+               "product.template",
+               "search_read",
+               [
+                    [
+                         ...params
+                    ],
+               ],
+
+               {},
+          );
+          return products;
+     } catch (e) {
+          console.error("Error when try connect Odoo XML-RPC.", e);
+     }
+};
 
 const addProduct = async (params) => {
      try {
@@ -346,4 +366,5 @@ module.exports = {
      getProductDetails,
      addMultipleProducts,
      updateProduct,
+     searchProducts
 };
