@@ -288,7 +288,7 @@ exports.updatePassword = async (req, res) => {
           };
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
-          const updatedUser = await User.findByIdAndUpdate(req.body.id, updatedUserData, {
+          const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
                new: true,
           });
 

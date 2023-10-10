@@ -11,7 +11,7 @@ router.post("/logout", asyncHandler(userController.logoutUser));
 
 router.get("/me", auth, userController.getUserDetails);
 router.put("/me", auth, userController.updateUserDetails);
-router.put("/update/password", userController.updatePassword);
+router.put("/update/password", auth, userController.updatePassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 
 //billing
