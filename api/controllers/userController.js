@@ -49,6 +49,7 @@ exports.register = async (req, res) => {
           });
 
           let data = await newUser.save();
+          console.log(data);
 
           // Omit password from the user object before sending the response
           const userWithoutPassword = {
@@ -77,7 +78,6 @@ exports.loginUser = async (req, res) => {
           console.log("logging user in");
           const email = req.body.email;
           const password = req.body.password;
-
           const user = await User.findByCredentials(email, password);
 
           const userWithoutPassword = {
@@ -282,12 +282,13 @@ exports.updateUserDetails = async (req, res) => {
 
 exports.updatePassword = async (req, res) => {
      try {
+          const password = await bcrypt.hash(req.body.password, 8);
           const updatedUserData = {
-               password: req.body.password,
+               password: password,
           };
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
-          const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
+          const updatedUser = await User.findByIdAndUpdate(req.body.id, updatedUserData, {
                new: true,
           });
 
@@ -301,7 +302,7 @@ exports.updatePassword = async (req, res) => {
                company: updatedUser.company,
           };
 
-          res.status(200).json({ user: userWithoutPassword, company, status: true });
+          res.status(200).json({ user: userWithoutPassword, status: true });
      } catch (error) {
           console.log("Error updating user details:", error);
           res.status(400).json({ error, status: false });
