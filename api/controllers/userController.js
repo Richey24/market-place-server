@@ -280,6 +280,34 @@ exports.updateUserDetails = async (req, res) => {
      }
 };
 
+exports.updatePassword = async (req, res) => {
+     try {
+          const updatedUserData = {
+               password: req.body.password,
+          };
+
+          // Assuming you have a User model and a method like `updateUserById` to update a user by ID
+          const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
+               new: true,
+          });
+
+          // Omit password from the updated user object before sending the response
+          const userWithoutPassword = {
+               _id: updatedUser._id,
+               firstname: updatedUser.firstname,
+               lastname: updatedUser.lastname,
+               email: updatedUser.email,
+               role: updatedUser.role,
+               company: updatedUser.company,
+          };
+
+          res.status(200).json({ user: userWithoutPassword, company, status: true });
+     } catch (error) {
+          console.log("Error updating user details:", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
 exports.getUserDetails = async (req, res) => {
      console.log(req.userData);
      try {
