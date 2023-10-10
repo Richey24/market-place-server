@@ -49,6 +49,7 @@ exports.register = async (req, res) => {
           });
 
           let data = await newUser.save();
+          console.log(data);
 
           // Omit password from the user object before sending the response
           const userWithoutPassword = {
@@ -77,7 +78,6 @@ exports.loginUser = async (req, res) => {
           console.log("logging user in");
           const email = req.body.email;
           const password = req.body.password;
-
           const user = await User.findByCredentials(email, password);
 
           const userWithoutPassword = {
@@ -274,6 +274,42 @@ exports.updateUserDetails = async (req, res) => {
           };
 
           res.status(200).json({ user: userWithoutPassword, company, status: true });
+     } catch (error) {
+          console.log("Error updating user details:", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.updatePassword = async (req, res) => {
+     try {
+
+          const user = await User.findById(req.userData._id)
+          const isPasswordMatch = await bcrypt.compare(req.body.oldPassword, user.password);
+          if (!isPasswordMatch) {
+               return res.status(401).json({ message: "wrong old password" });
+          }
+
+          const password = await bcrypt.hash(req.body.password, 8);
+          const updatedUserData = {
+               password: password,
+          };
+
+          // Assuming you have a User model and a method like `updateUserById` to update a user by ID
+          const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
+               new: true,
+          });
+
+          // Omit password from the updated user object before sending the response
+          const userWithoutPassword = {
+               _id: updatedUser._id,
+               firstname: updatedUser.firstname,
+               lastname: updatedUser.lastname,
+               email: updatedUser.email,
+               role: updatedUser.role,
+               company: updatedUser.company,
+          };
+
+          res.status(200).json({ user: userWithoutPassword, status: true });
      } catch (error) {
           console.log("Error updating user details:", error);
           res.status(400).json({ error, status: false });
