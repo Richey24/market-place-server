@@ -4,7 +4,7 @@ const auth = require("../../config/auth");
 
 const orderController = require("../controllers/orderController");
 
-router.get("/company/companyId", orderController.getOrdersByCompanyId);
+router.get("/company/:companyId", auth, orderController.getOrdersByCompanyId);
 router.get("/customer/:customerId", orderController.getOrdersByPartner);
 router.get("/customer/history/:customerId", orderController.getOrderHistoryByPartner);
 router.post("/create", orderController.createOrder);

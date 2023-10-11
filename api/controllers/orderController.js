@@ -6,7 +6,7 @@ const { addOrder } = require("../../services/order.service");
 exports.getOrdersByCompanyId = async (req, res) => {
      console.log("GET /api/orders");
      // let user = req.userData;
-     const companyId = req.params.companyId;
+     const companyId = +req.params.companyId;
      // console.log("user", user);
      try {
           await Odoo.connect();
