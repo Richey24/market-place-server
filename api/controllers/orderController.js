@@ -3,17 +3,17 @@ const Odoo = require("../../config/odoo.connection");
 const User = require("../../model/User");
 const { addOrder } = require("../../services/order.service");
 
-exports.getOrders = async (req, res) => {
+exports.getOrdersByCompanyId = async (req, res) => {
      console.log("GET /api/orders");
-     let user = req.userData;
-     const partnerId = 163;
-
+     // let user = req.userData;
+     const companyId = +req.params.companyId;
+     // console.log("user", user);
      try {
           await Odoo.connect();
           const orderIds = await Odoo.execute_kw(
                "sale.order",
                "search",
-               [[["partner_id", "=", partnerId]]],
+               [[["company_id", "=", companyId]]],
                {
                     fields: ["name", "partner_id"],
                },
