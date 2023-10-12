@@ -3,7 +3,7 @@ const Billing = require("../../model/Billing");
 const Shipping = require("../../model/Shipping");
 const Company = require("../../model/Company");
 const bcrypt = require("bcrypt");
-const { sendWelcomeEmail } = require("../../config/helpers");
+const { sendWelcomeEmail, sendForgotPasswordEmail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 
 exports.register = async (req, res) => {
@@ -312,9 +312,24 @@ exports.updatePassword = async (req, res) => {
           res.status(200).json({ user: userWithoutPassword, status: true });
      } catch (error) {
           console.log("Error updating user details:", error);
-          res.status(400).json({ error, status: false });
+          res.status(500).json({ error, status: false });
      }
 };
+
+exports.forgotPassword = async (req, res) => {
+     try {
+          const email = req.body.email
+          const check = User.find({ email: email })
+          if (!check) {
+               return res.status(400).json({ message: "No user found with email", status: false });
+          }
+          const token = await newUser.generateAuthToken();
+          sendForgotPasswordEmail(email, check.name, token, url)
+          res.status(200).json({ message: "Reset Password Emaill Sent", status: true });
+     } catch (error) {
+          res.status(500).json({ error, status: false });
+     }
+}
 
 exports.getUserDetails = async (req, res) => {
      console.log(req.userData);
