@@ -23,7 +23,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                await Odoo.connect();
                console.log("Connect to Odoo XML-RPC - api/products");
 
-               const products = await Odoo.execute_kw(
+               const theProducts = await Odoo.execute_kw(
                     "product.template",
                     "search_read",
                     [
@@ -34,7 +34,23 @@ exports.getProductbyCompanyId = async (req, res) => {
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
-
+               const products = theProducts.map((product) => {
+                    product.id,
+                         product.website_url,
+                         product.name,
+                         product.description,
+                         product.categ_id,
+                         product.list_price,
+                         product.standard_price,
+                         product.company_id,
+                         product.display_name,
+                         product.base_unit_count,
+                         product.x_subcategory,
+                         product.x_size,
+                         product.x_weight,
+                         product.x_color,
+                         product.x_dimension
+               })
                res.status(200).json({ products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
@@ -55,13 +71,29 @@ exports.getProductbyCategory = async (req, res) => {
                await Odoo.connect();
                console.log("Connect to Odoo XML-RPC - api/products");
 
-               const products = await Odoo.execute_kw(
+               const theProducts = await Odoo.execute_kw(
                     "product.public.category",
                     "search_read",
                     [[["name", "=", category]]],
                     { fields: ["name", "public_categ_ids"] },
                );
-
+               const products = theProducts.map((product) => {
+                    product.id,
+                         product.website_url,
+                         product.name,
+                         product.description,
+                         product.categ_id,
+                         product.list_price,
+                         product.standard_price,
+                         product.company_id,
+                         product.display_name,
+                         product.base_unit_count,
+                         product.x_subcategory,
+                         product.x_size,
+                         product.x_weight,
+                         product.x_color,
+                         product.x_dimension
+               })
                res.status(200).json({ products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Category", status: false });
@@ -84,7 +116,24 @@ exports.getFeaturedProducts = async (req, res) => {
           company_id,
      };
 
-     const products = await getFeaturedProducts(params);
+     const theProducts = await getFeaturedProducts(params);
+     const products = theProducts.map((product) => {
+          product.id,
+               product.website_url,
+               product.name,
+               product.description,
+               product.categ_id,
+               product.list_price,
+               product.standard_price,
+               product.company_id,
+               product.display_name,
+               product.base_unit_count,
+               product.x_subcategory,
+               product.x_size,
+               product.x_weight,
+               product.x_color,
+               product.x_dimension
+     })
      res.status(201).json({ products });
 };
 
@@ -97,7 +146,7 @@ exports.filterProducts = async (req, res) => {
           await Odoo.connect();
 
           if (category === null) {
-               let products = await Odoo.execute_kw("product.product", "search_read", [
+               let theProducts = await Odoo.execute_kw("product.product", "search_read", [
                     [["type", "=", "consu"]],
                     [
                          "name",
@@ -113,9 +162,26 @@ exports.filterProducts = async (req, res) => {
                     0,
                     5, // Offset, Limit
                ]);
+               const products = theProducts.map((product) => {
+                    product.id,
+                         product.website_url,
+                         product.name,
+                         product.description,
+                         product.categ_id,
+                         product.list_price,
+                         product.standard_price,
+                         product.company_id,
+                         product.display_name,
+                         product.base_unit_count,
+                         product.x_subcategory,
+                         product.x_size,
+                         product.x_weight,
+                         product.x_color,
+                         product.x_dimension
+               })
                res.status(201).json({ products });
           } else {
-               let products = await Odoo.execute_kw("product.product", "search_read", [
+               let theProducts = await Odoo.execute_kw("product.product", "search_read", [
                     [["type", "=", "consu"]],
                     // [['type', '=', 'consu'], ['public_categ_ids', '=', Number(category)]]
                     [
@@ -132,7 +198,23 @@ exports.filterProducts = async (req, res) => {
                     0,
                     5, // Offset, Limit
                ]);
-
+               const products = theProducts.map((product) => {
+                    product.id,
+                         product.website_url,
+                         product.name,
+                         product.description,
+                         product.categ_id,
+                         product.list_price,
+                         product.standard_price,
+                         product.company_id,
+                         product.display_name,
+                         product.base_unit_count,
+                         product.x_subcategory,
+                         product.x_size,
+                         product.x_weight,
+                         product.x_color,
+                         product.x_dimension
+               })
                res.status(201).json(products);
           }
      } catch (e) {
@@ -145,7 +227,24 @@ exports.productDetails = async (req, res) => {
 
      const details = await getProductById(productId);
      // console.log("product", details);
-     res.status(201).json({ details });
+     const product = details.map((product) => {
+          product.id,
+               product.website_url,
+               product.name,
+               product.description,
+               product.categ_id,
+               product.list_price,
+               product.standard_price,
+               product.company_id,
+               product.display_name,
+               product.base_unit_count,
+               product.x_subcategory,
+               product.x_size,
+               product.x_weight,
+               product.x_color,
+               product.x_dimension
+     })
+     res.status(201).json({ product });
 };
 
 exports.wishlistProduct = async (req, res) => {
@@ -237,8 +336,24 @@ exports.createProduct = async (req, res) => {
                // user: user
           };
 
-          const product = await addProduct({ ...params });
-
+          const theProduct = await addProduct({ ...params });
+          const product = theProduct.map((product) => {
+               product.id,
+                    product.website_url,
+                    product.name,
+                    product.description,
+                    product.categ_id,
+                    product.list_price,
+                    product.standard_price,
+                    product.company_id,
+                    product.display_name,
+                    product.base_unit_count,
+                    product.x_subcategory,
+                    product.x_size,
+                    product.x_weight,
+                    product.x_color,
+                    product.x_dimension
+          })
           res.status(201).json({ product: product, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
@@ -255,8 +370,24 @@ exports.updateProduct = async (req, res) => {
                productId: req.params?.id,
           };
 
-          const product = await updateProduct({ ...params });
-
+          const theProduct = await updateProduct({ ...params });
+          const product = theProduct.map((product) => {
+               product.id,
+                    product.website_url,
+                    product.name,
+                    product.description,
+                    product.categ_id,
+                    product.list_price,
+                    product.standard_price,
+                    product.company_id,
+                    product.display_name,
+                    product.base_unit_count,
+                    product.x_subcategory,
+                    product.x_size,
+                    product.x_weight,
+                    product.x_color,
+                    product.x_dimension
+          })
           res.status(201).json({ product: product, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
@@ -270,8 +401,24 @@ exports.createMultipleProducts = async (req, res) => {
                products: initProducts,
           };
 
-          const products = await addMultipleProducts({ ...params });
-
+          const theProducts = await addMultipleProducts({ ...params });
+          const products = theProducts.map((product) => {
+               product.id,
+                    product.website_url,
+                    product.name,
+                    product.description,
+                    product.categ_id,
+                    product.list_price,
+                    product.standard_price,
+                    product.company_id,
+                    product.display_name,
+                    product.base_unit_count,
+                    product.x_subcategory,
+                    product.x_size,
+                    product.x_weight,
+                    product.x_color,
+                    product.x_dimension
+          })
           res.status(201).json({ products, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
@@ -289,7 +436,24 @@ exports.searchProduct = async (req, res) => {
                arr.push([key, "=", body[key]])
           })
           console.log(arr);
-          const products = await searchProducts(arr)
+          const theProducts = await searchProducts(arr)
+          const products = theProducts.map((product) => {
+               product.id,
+                    product.website_url,
+                    product.name,
+                    product.description,
+                    product.categ_id,
+                    product.list_price,
+                    product.standard_price,
+                    product.company_id,
+                    product.display_name,
+                    product.base_unit_count,
+                    product.x_subcategory,
+                    product.x_size,
+                    product.x_weight,
+                    product.x_color,
+                    product.x_dimension
+          })
           res.status(200).json({ products, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
@@ -304,11 +468,27 @@ exports.getBestSellingProducts = async (req, res) => {
           const companyId = [+req.params.companyId];
 
           // Fetch best-selling products based on your criteria (e.g., sales count)
-          const products = await Odoo.execute_kw("product.product", "search_read", [
+          const theProducts = await Odoo.execute_kw("product.product", "search_read", [
                [["company_id", "=", companyId]],
                { limit: 3 },
           ]);
-
+          const products = theProducts.map((product) => {
+               product.id,
+                    product.website_url,
+                    product.name,
+                    product.description,
+                    product.categ_id,
+                    product.list_price,
+                    product.standard_price,
+                    product.company_id,
+                    product.display_name,
+                    product.base_unit_count,
+                    product.x_subcategory,
+                    product.x_size,
+                    product.x_weight,
+                    product.x_color,
+                    product.x_dimension
+          })
           res.status(200).json({ bestSellingProducts: products, status: true });
      } catch (error) {
           console.error("Error when trying to fetch best-selling products.", error);
