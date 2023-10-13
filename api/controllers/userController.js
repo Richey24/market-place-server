@@ -282,61 +282,60 @@ exports.updateUserDetails = async (req, res) => {
 };
 
 exports.updatePassword = async (req, res) => {
-     // try {
+     try {
 
-     const user = await User.findById(req.userData._id)
-     if (req.body.oldPassword && !req.body.reset) {
-          const isPasswordMatch = await bcrypt.compare(req.body.oldPassword, user.password);
-          if (!isPasswordMatch) {
-               return res.status(401).json({ message: "wrong old password" });
+          const user = await User.findById(req.userData._id)
+          if (req.body.oldPassword && !req.body.reset) {
+               const isPasswordMatch = await bcrypt.compare(req.body.oldPassword, user.password);
+               if (!isPasswordMatch) {
+                    return res.status(401).json({ message: "wrong old password" });
+               }
           }
+          const password = await bcrypt.hash(req.body.password, 8);
+          const updatedUserData = {
+               password: password,
+          };
+          // Assuming you have a User model and a method like `updateUserById` to update a user by ID
+          const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
+               new: true,
+          });
+
+          // Omit password from the updated user object before sending the response
+          const userWithoutPassword = {
+               _id: updatedUser._id,
+               firstname: updatedUser.firstname,
+               lastname: updatedUser.lastname,
+               email: updatedUser.email,
+               role: updatedUser.role,
+               company: updatedUser.company,
+          };
+
+          res.status(200).json({ user: userWithoutPassword, status: true });
+     } catch (error) {
+          console.log("Error updating user details:", error);
+          res.status(500).json({ error, status: false });
      }
-
-     const password = await bcrypt.hash(req.body.password, 8);
-     const updatedUserData = {
-          password: password,
-     };
-     // Assuming you have a User model and a method like `updateUserById` to update a user by ID
-     const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
-          new: true,
-     });
-
-     // Omit password from the updated user object before sending the response
-     const userWithoutPassword = {
-          _id: updatedUser._id,
-          firstname: updatedUser.firstname,
-          lastname: updatedUser.lastname,
-          email: updatedUser.email,
-          role: updatedUser.role,
-          company: updatedUser.company,
-     };
-
-     res.status(200).json({ user: userWithoutPassword, status: true });
-     // } catch (error) {
-     //      console.log("Error updating user details:", error);
-     //      res.status(500).json({ error, status: false });
-     // }
 };
 
 exports.forgotPassword = async (req, res) => {
-     // try {
-     const email = req.body.email
-     const url = req.body.url
-     const check = await User.findOne({ email: email })
-     if (!check) {
-          return res.status(201).json({ message: "No user found with email", status: false });
+     try {
+          const email = req.body.email
+          const url = req.body.url
+          const check = await User.findOne({ email: email })
+          if (!check) {
+               return res.status(201).json({ message: "No user found with email", status: false });
+          }
+          const token = jwt.sign(
+               {
+                    _id: check._id,
+               },
+               "secret",
+          );
+          sendForgotPasswordEmail(email, check.name, token, url)
+          res.status(200).json({ message: "Reset Password Emaill Sent", status: true });
+     } catch (error) {
+          res.status(500).json({ error, status: false });
      }
-     const token = jwt.sign(
-          {
-               _id: check._id,
-          },
-          "secret",
-     );
-     sendForgotPasswordEmail(email, check.name, token, url)
-     res.status(200).json({ message: "Reset Password Emaill Sent", status: true });
-     // } catch (error) {
-     //      res.status(500).json({ error, status: false });
-     // }
 }
 
 exports.getUserDetails = async (req, res) => {
