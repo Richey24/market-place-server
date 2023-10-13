@@ -838,7 +838,7 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
   const mailOptions = {
     from: "info@israelbiblecamp.com",
     to: email,
-    subject: "FREE Ads Code: Supercharge Your Sales Today!",
+    subject: "Reset Password",
     html: `
       <!DOCTYPE html>
       <html>
