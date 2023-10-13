@@ -35,7 +35,8 @@ exports.getProductbyCompanyId = async (req, res) => {
                     { fields: ["name", "public_categ_ids"] },
                );
                const products = theProducts.map((product) => {
-                    product.id,
+                    return (
+                         product.id,
                          product.website_url,
                          product.name,
                          product.description,
@@ -50,6 +51,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                          product.x_weight,
                          product.x_color,
                          product.x_dimension
+                    )
                })
                res.status(200).json({ products, status: true });
           } else {
@@ -78,7 +80,8 @@ exports.getProductbyCategory = async (req, res) => {
                     { fields: ["name", "public_categ_ids"] },
                );
                const products = theProducts.map((product) => {
-                    product.id,
+                    return (
+                         product.id,
                          product.website_url,
                          product.name,
                          product.description,
@@ -93,6 +96,7 @@ exports.getProductbyCategory = async (req, res) => {
                          product.x_weight,
                          product.x_color,
                          product.x_dimension
+                    )
                })
                res.status(200).json({ products, status: true });
           } else {
@@ -118,7 +122,8 @@ exports.getFeaturedProducts = async (req, res) => {
 
      const theProducts = await getFeaturedProducts(params);
      const products = theProducts.map((product) => {
-          product.id,
+          return (
+               product.id,
                product.website_url,
                product.name,
                product.description,
@@ -133,6 +138,7 @@ exports.getFeaturedProducts = async (req, res) => {
                product.x_weight,
                product.x_color,
                product.x_dimension
+          )
      })
      res.status(201).json({ products });
 };
@@ -163,7 +169,8 @@ exports.filterProducts = async (req, res) => {
                     5, // Offset, Limit
                ]);
                const products = theProducts.map((product) => {
-                    product.id,
+                    return (
+                         product.id,
                          product.website_url,
                          product.name,
                          product.description,
@@ -178,6 +185,7 @@ exports.filterProducts = async (req, res) => {
                          product.x_weight,
                          product.x_color,
                          product.x_dimension
+                    )
                })
                res.status(201).json({ products });
           } else {
@@ -199,7 +207,8 @@ exports.filterProducts = async (req, res) => {
                     5, // Offset, Limit
                ]);
                const products = theProducts.map((product) => {
-                    product.id,
+                    return (
+                         product.id,
                          product.website_url,
                          product.name,
                          product.description,
@@ -214,6 +223,7 @@ exports.filterProducts = async (req, res) => {
                          product.x_weight,
                          product.x_color,
                          product.x_dimension
+                    )
                })
                res.status(201).json(products);
           }
@@ -228,7 +238,8 @@ exports.productDetails = async (req, res) => {
      const details = await getProductById(productId);
      // console.log("product", details);
      const product = details.map((product) => {
-          product.id,
+          return (
+               product.id,
                product.website_url,
                product.name,
                product.description,
@@ -243,6 +254,7 @@ exports.productDetails = async (req, res) => {
                product.x_weight,
                product.x_color,
                product.x_dimension
+          )
      })
      res.status(201).json({ product });
 };
@@ -338,7 +350,8 @@ exports.createProduct = async (req, res) => {
 
           const theProduct = await addProduct({ ...params });
           const product = theProduct.map((product) => {
-               product.id,
+               return (
+                    product.id,
                     product.website_url,
                     product.name,
                     product.description,
@@ -353,6 +366,7 @@ exports.createProduct = async (req, res) => {
                     product.x_weight,
                     product.x_color,
                     product.x_dimension
+               )
           })
           res.status(201).json({ product: product, status: true });
      } catch (err) {
@@ -372,7 +386,8 @@ exports.updateProduct = async (req, res) => {
 
           const theProduct = await updateProduct({ ...params });
           const product = theProduct.map((product) => {
-               product.id,
+               return (
+                    product.id,
                     product.website_url,
                     product.name,
                     product.description,
@@ -387,6 +402,7 @@ exports.updateProduct = async (req, res) => {
                     product.x_weight,
                     product.x_color,
                     product.x_dimension
+               )
           })
           res.status(201).json({ product: product, status: true });
      } catch (err) {
@@ -403,7 +419,8 @@ exports.createMultipleProducts = async (req, res) => {
 
           const theProducts = await addMultipleProducts({ ...params });
           const products = theProducts.map((product) => {
-               product.id,
+               return (
+                    product.id,
                     product.website_url,
                     product.name,
                     product.description,
@@ -418,6 +435,7 @@ exports.createMultipleProducts = async (req, res) => {
                     product.x_weight,
                     product.x_color,
                     product.x_dimension
+               )
           })
           res.status(201).json({ products, status: true });
      } catch (err) {
@@ -438,7 +456,8 @@ exports.searchProduct = async (req, res) => {
           console.log(arr);
           const theProducts = await searchProducts(arr)
           const products = theProducts.map((product) => {
-               product.id,
+               return (
+                    product.id,
                     product.website_url,
                     product.name,
                     product.description,
@@ -453,6 +472,7 @@ exports.searchProduct = async (req, res) => {
                     product.x_weight,
                     product.x_color,
                     product.x_dimension
+               )
           })
           res.status(200).json({ products, status: true });
      } catch (err) {
@@ -473,7 +493,8 @@ exports.getBestSellingProducts = async (req, res) => {
                { limit: 3 },
           ]);
           const products = theProducts.map((product) => {
-               product.id,
+               return (
+                    product.id,
                     product.website_url,
                     product.name,
                     product.description,
@@ -488,6 +509,7 @@ exports.getBestSellingProducts = async (req, res) => {
                     product.x_weight,
                     product.x_color,
                     product.x_dimension
+               )
           })
           res.status(200).json({ bestSellingProducts: products, status: true });
      } catch (error) {
