@@ -35,23 +35,23 @@ exports.getProductbyCompanyId = async (req, res) => {
                     { fields: ["name", "public_categ_ids"] },
                );
                const products = theProducts.map((product) => {
-                    return (
-                         product.id,
-                         product.website_url,
-                         product.name,
-                         product.description,
-                         product.categ_id,
-                         product.list_price,
-                         product.standard_price,
-                         product.company_id,
-                         product.display_name,
-                         product.base_unit_count,
-                         product.x_subcategory,
-                         product.x_size,
-                         product.x_weight,
-                         product.x_color,
-                         product.x_dimension
-                    )
+                    return {
+                         id: product.id,
+                         website_url: product.website_url,
+                         name: product.name,
+                         description: product.description,
+                         categ_id: product.categ_id,
+                         list_price: product.list_price,
+                         standard_price: product.standard_price,
+                         company_id: product.company_id,
+                         display_name: product.display_name,
+                         base_unit_count: product.base_unit_count,
+                         x_subcategory: product.x_subcategory,
+                         x_size: product.x_size,
+                         x_weight: product.x_weight,
+                         x_color: product.x_color,
+                         x_dimension: product.x_dimension
+                    }
                })
                res.status(200).json({ products, status: true });
           } else {
@@ -80,23 +80,23 @@ exports.getProductbyCategory = async (req, res) => {
                     { fields: ["name", "public_categ_ids"] },
                );
                const products = theProducts.map((product) => {
-                    return (
-                         product.id,
-                         product.website_url,
-                         product.name,
-                         product.description,
-                         product.categ_id,
-                         product.list_price,
-                         product.standard_price,
-                         product.company_id,
-                         product.display_name,
-                         product.base_unit_count,
-                         product.x_subcategory,
-                         product.x_size,
-                         product.x_weight,
-                         product.x_color,
-                         product.x_dimension
-                    )
+                    return {
+                         id: product.id,
+                         website_url: product.website_url,
+                         name: product.name,
+                         description: product.description,
+                         categ_id: product.categ_id,
+                         list_price: product.list_price,
+                         standard_price: product.standard_price,
+                         company_id: product.company_id,
+                         display_name: product.display_name,
+                         base_unit_count: product.base_unit_count,
+                         x_subcategory: product.x_subcategory,
+                         x_size: product.x_size,
+                         x_weight: product.x_weight,
+                         x_color: product.x_color,
+                         x_dimension: product.x_dimension
+                    }
                })
                res.status(200).json({ products, status: true });
           } else {
@@ -122,23 +122,23 @@ exports.getFeaturedProducts = async (req, res) => {
 
      const theProducts = await getFeaturedProducts(params);
      const products = theProducts.map((product) => {
-          return (
-               product.id,
-               product.website_url,
-               product.name,
-               product.description,
-               product.categ_id,
-               product.list_price,
-               product.standard_price,
-               product.company_id,
-               product.display_name,
-               product.base_unit_count,
-               product.x_subcategory,
-               product.x_size,
-               product.x_weight,
-               product.x_color,
-               product.x_dimension
-          )
+          return {
+               id: product.id,
+               website_url: product.website_url,
+               name: product.name,
+               description: product.description,
+               categ_id: product.categ_id,
+               list_price: product.list_price,
+               standard_price: product.standard_price,
+               company_id: product.company_id,
+               display_name: product.display_name,
+               base_unit_count: product.base_unit_count,
+               x_subcategory: product.x_subcategory,
+               x_size: product.x_size,
+               x_weight: product.x_weight,
+               x_color: product.x_color,
+               x_dimension: product.x_dimension
+          }
      })
      res.status(201).json({ products });
 };
@@ -169,23 +169,23 @@ exports.filterProducts = async (req, res) => {
                     5, // Offset, Limit
                ]);
                const products = theProducts.map((product) => {
-                    return (
-                         product.id,
-                         product.website_url,
-                         product.name,
-                         product.description,
-                         product.categ_id,
-                         product.list_price,
-                         product.standard_price,
-                         product.company_id,
-                         product.display_name,
-                         product.base_unit_count,
-                         product.x_subcategory,
-                         product.x_size,
-                         product.x_weight,
-                         product.x_color,
-                         product.x_dimension
-                    )
+                    return {
+                         id: product.id,
+                         website_url: product.website_url,
+                         name: product.name,
+                         description: product.description,
+                         categ_id: product.categ_id,
+                         list_price: product.list_price,
+                         standard_price: product.standard_price,
+                         company_id: product.company_id,
+                         display_name: product.display_name,
+                         base_unit_count: product.base_unit_count,
+                         x_subcategory: product.x_subcategory,
+                         x_size: product.x_size,
+                         x_weight: product.x_weight,
+                         x_color: product.x_color,
+                         x_dimension: product.x_dimension
+                    }
                })
                res.status(201).json({ products });
           } else {
@@ -207,23 +207,23 @@ exports.filterProducts = async (req, res) => {
                     5, // Offset, Limit
                ]);
                const products = theProducts.map((product) => {
-                    return (
-                         product.id,
-                         product.website_url,
-                         product.name,
-                         product.description,
-                         product.categ_id,
-                         product.list_price,
-                         product.standard_price,
-                         product.company_id,
-                         product.display_name,
-                         product.base_unit_count,
-                         product.x_subcategory,
-                         product.x_size,
-                         product.x_weight,
-                         product.x_color,
-                         product.x_dimension
-                    )
+                    return {
+                         id: product.id,
+                         website_url: product.website_url,
+                         name: product.name,
+                         description: product.description,
+                         categ_id: product.categ_id,
+                         list_price: product.list_price,
+                         standard_price: product.standard_price,
+                         company_id: product.company_id,
+                         display_name: product.display_name,
+                         base_unit_count: product.base_unit_count,
+                         x_subcategory: product.x_subcategory,
+                         x_size: product.x_size,
+                         x_weight: product.x_weight,
+                         x_color: product.x_color,
+                         x_dimension: product.x_dimension
+                    }
                })
                res.status(201).json(products);
           }
@@ -238,23 +238,23 @@ exports.productDetails = async (req, res) => {
      const details = await getProductById(productId);
      // console.log("product", details);
      const product = details.map((product) => {
-          return (
-               product.id,
-               product.website_url,
-               product.name,
-               product.description,
-               product.categ_id,
-               product.list_price,
-               product.standard_price,
-               product.company_id,
-               product.display_name,
-               product.base_unit_count,
-               product.x_subcategory,
-               product.x_size,
-               product.x_weight,
-               product.x_color,
-               product.x_dimension
-          )
+          return {
+               id: product.id,
+               website_url: product.website_url,
+               name: product.name,
+               description: product.description,
+               categ_id: product.categ_id,
+               list_price: product.list_price,
+               standard_price: product.standard_price,
+               company_id: product.company_id,
+               display_name: product.display_name,
+               base_unit_count: product.base_unit_count,
+               x_subcategory: product.x_subcategory,
+               x_size: product.x_size,
+               x_weight: product.x_weight,
+               x_color: product.x_color,
+               x_dimension: product.x_dimension
+          }
      })
      res.status(201).json({ product });
 };
@@ -350,23 +350,23 @@ exports.createProduct = async (req, res) => {
 
           const theProduct = await addProduct({ ...params });
           const product = theProduct.map((product) => {
-               return (
-                    product.id,
-                    product.website_url,
-                    product.name,
-                    product.description,
-                    product.categ_id,
-                    product.list_price,
-                    product.standard_price,
-                    product.company_id,
-                    product.display_name,
-                    product.base_unit_count,
-                    product.x_subcategory,
-                    product.x_size,
-                    product.x_weight,
-                    product.x_color,
-                    product.x_dimension
-               )
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    x_dimension: product.x_dimension
+               }
           })
           res.status(201).json({ product: product, status: true });
      } catch (err) {
@@ -386,23 +386,23 @@ exports.updateProduct = async (req, res) => {
 
           const theProduct = await updateProduct({ ...params });
           const product = theProduct.map((product) => {
-               return (
-                    product.id,
-                    product.website_url,
-                    product.name,
-                    product.description,
-                    product.categ_id,
-                    product.list_price,
-                    product.standard_price,
-                    product.company_id,
-                    product.display_name,
-                    product.base_unit_count,
-                    product.x_subcategory,
-                    product.x_size,
-                    product.x_weight,
-                    product.x_color,
-                    product.x_dimension
-               )
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    x_dimension: product.x_dimension
+               }
           })
           res.status(201).json({ product: product, status: true });
      } catch (err) {
@@ -419,23 +419,23 @@ exports.createMultipleProducts = async (req, res) => {
 
           const theProducts = await addMultipleProducts({ ...params });
           const products = theProducts.map((product) => {
-               return (
-                    product.id,
-                    product.website_url,
-                    product.name,
-                    product.description,
-                    product.categ_id,
-                    product.list_price,
-                    product.standard_price,
-                    product.company_id,
-                    product.display_name,
-                    product.base_unit_count,
-                    product.x_subcategory,
-                    product.x_size,
-                    product.x_weight,
-                    product.x_color,
-                    product.x_dimension
-               )
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    x_dimension: product.x_dimension
+               }
           })
           res.status(201).json({ products, status: true });
      } catch (err) {
@@ -456,23 +456,23 @@ exports.searchProduct = async (req, res) => {
           console.log(arr);
           const theProducts = await searchProducts(arr)
           const products = theProducts.map((product) => {
-               return (
-                    product.id,
-                    product.website_url,
-                    product.name,
-                    product.description,
-                    product.categ_id,
-                    product.list_price,
-                    product.standard_price,
-                    product.company_id,
-                    product.display_name,
-                    product.base_unit_count,
-                    product.x_subcategory,
-                    product.x_size,
-                    product.x_weight,
-                    product.x_color,
-                    product.x_dimension
-               )
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    x_dimension: product.x_dimension
+               }
           })
           res.status(200).json({ products, status: true });
      } catch (err) {
@@ -493,23 +493,23 @@ exports.getBestSellingProducts = async (req, res) => {
                { limit: 3 },
           ]);
           const products = theProducts.map((product) => {
-               return (
-                    product.id,
-                    product.website_url,
-                    product.name,
-                    product.description,
-                    product.categ_id,
-                    product.list_price,
-                    product.standard_price,
-                    product.company_id,
-                    product.display_name,
-                    product.base_unit_count,
-                    product.x_subcategory,
-                    product.x_size,
-                    product.x_weight,
-                    product.x_color,
-                    product.x_dimension
-               )
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    x_dimension: product.x_dimension
+               }
           })
           res.status(200).json({ bestSellingProducts: products, status: true });
      } catch (error) {
