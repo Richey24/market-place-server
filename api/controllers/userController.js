@@ -331,7 +331,7 @@ exports.forgotPassword = async (req, res) => {
                },
                "secret",
           );
-          sendForgotPasswordEmail(email, check.name, token, url)
+          sendForgotPasswordEmail(email, check.firstname, token, url)
           res.status(200).json({ message: "Reset Password Emaill Sent", status: true });
      } catch (error) {
           res.status(500).json({ error, status: false });
