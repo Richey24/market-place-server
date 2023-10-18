@@ -11,7 +11,7 @@ const companySchema = mongoose.Schema({
      },
      company_id: {
           type: Number,
-          required: [true, "Company id is required"],
+          // required: [true, "Company id is required"],
      },
      company_name: {
           type: String,
@@ -62,6 +62,12 @@ const companySchema = mongoose.Schema({
           default: false,
      },
      trial_end_date: {
+          type: String,
+     },
+     type: {
+          type: String,
+     },
+     serviceType: {
           type: String,
      },
 });

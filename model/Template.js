@@ -12,6 +12,9 @@ const templateSchema = new mongoose.Schema({
           type: String,
           required: [true, "Name id is required"],
      },
+     type: {
+          type: String,
+     },
 });
 const VendorTemplate = mongoose.model("VendorTemplate", templateSchema);
 module.exports = VendorTemplate;

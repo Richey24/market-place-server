@@ -10,8 +10,11 @@ router.post("/login", asyncHandler(userController.loginUser));
 router.post("/logout", asyncHandler(userController.logoutUser));
 
 router.get("/me", auth, userController.getUserDetails);
+router.get("/me/customer/:id", userController.getUserDetails);
 router.put("/me", auth, userController.updateUserDetails);
+router.put("/me/customer", userController.updateUserDetails);
 router.put("/update/password", auth, userController.updatePassword);
+router.put("/update/password/customer", userController.updatePassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 
 //billing
@@ -21,7 +24,7 @@ router.get("/billing", auth, userController.listBilling);
 
 //shipping
 router.post("/add-shipping-address", userController.addShippingAddress);
-router.post("/edit-shipping-address/:id", auth, userController.editShippingAddress);
-router.get("/shipping", auth, userController.listShipping);
+router.post("/edit-shipping-address/:id", userController.editShippingAddress);
+router.get("/shipping/:userId", userController.listShipping);
 
 module.exports = router;

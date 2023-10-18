@@ -268,6 +268,7 @@ exports.postOnboarding = async (req, res) => {
      let trial_End_Date = formattedTrialEndDate;
      const { firstname, email, _id } = req.userData;
      const categories = req.body.categories;
+     const type = req?.body?.type;
 
      try {
           var odoo = new Odoo({
@@ -279,92 +280,138 @@ exports.postOnboarding = async (req, res) => {
           });
 
           await odoo.connect();
-          console.log("Connected to Odoo XML-RPC");
+          console.log("Connected to Odoo XML-RPC", type);
 
-          let partner = await odoo.execute_kw("res.partner", "create", [
-               { is_company: true, is_published: true, is_public: true, name: company_name },
-          ]);
+          if (type !== "service") {
+               let partner = await odoo.execute_kw("res.partner", "create", [
+                    { is_company: true, is_published: true, is_public: true, name: company_name },
+               ]);
 
-          let domain = req.body.domain + "." + "imarketplace.world";
-          let company_id = await odoo.execute_kw("res.company", "create", [
-               {
-                    account_opening_date: date,
-                    active: true,
-                    name: req.body.company_name,
-                    partner_id: partner,
-                    website: domain,
-                    email,
-                    phone: "80911223344",
-                    currency_id: 1,
-               },
-          ]);
+               let domain = req.body.domain + "." + "imarketplace.world";
+               let company_id = await odoo.execute_kw("res.company", "create", [
+                    {
+                         account_opening_date: date,
+                         active: true,
+                         name: req.body.company_name,
+                         partner_id: partner,
+                         website: domain,
+                         email,
+                         phone: "80911223344",
+                         currency_id: 1,
+                    },
+               ]);
 
-          // HANDLE CREATE CATEOGIES
-          const categoryIds = [];
-          if (company_id)
-               try {
-                    for (const category of categories) {
-                         const id = await odoo.execute_kw("product.public.category", "create", [
-                              { name: category.name },
-                         ]);
-                         categoryIds.push(id);
+               // HANDLE CREATE CATEOGIES
+               const categoryIds = [];
+               if (company_id)
+                    try {
+                         for (const category of categories) {
+                              const id = await odoo.execute_kw(
+                                   "product.public.category",
+                                   "create",
+                                   [{ name: category.name }],
+                              );
+                              categoryIds.push(id);
+                         }
+                    } catch (err) {
+                         console.log("failed catgories", err);
                     }
-               } catch (err) {
-                    console.log("failed catgories", err);
-               }
 
-          const save_company = new Company({
-               user_id: _id,
-               company_id: company_id,
-               company_name: company_name,
-               company_type: company_type,
-               subdomain: tenantname,
-               theme: theme,
-               phone: "09033442211",
-               logo: req.body.logo,
-               brandcolor: brandcolor,
-               subscription: subscription,
-               subscribed: subscribed,
-               account_opening_date: date,
-               trial_end_date: trial_End_Date,
-               country: req.body.country,
-               city: req.body.city,
-               state: req.body.state,
-               categories: categoryIds || [],
-          });
-
-          let company_data = await save_company.save();
-
-          try {
-               const save_site = new Site(site(theme));
-               const site_data = await save_site.save();
-               await Company.findByIdAndUpdate(company_data?._id, {
-                    $set: { site: site_data?._id },
+               const save_company = new Company({
+                    user_id: _id,
+                    company_id: company_id,
+                    company_name: company_name,
+                    company_type: company_type,
+                    subdomain: tenantname,
+                    theme: theme,
+                    phone: "09033442211",
+                    logo: req.body.logo,
+                    brandcolor: brandcolor,
+                    subscription: subscription,
+                    subscribed: subscribed,
+                    account_opening_date: date,
+                    trial_end_date: trial_End_Date,
+                    country: req.body.country,
+                    city: req.body.city,
+                    state: req.body.state,
+                    categories: categoryIds || [],
+                    type,
                });
-          } catch (err) {
-               console.log("error creatting site", err);
-          }
 
-          // HANDLE CREATE PRODUCTS
-          let params = {
-               odoo,
-               products: initProducts(company_id),
-          };
-          if (company_id)
+               let company_data = await save_company.save();
+
                try {
-                    await addMultipleProducts({ ...params });
+                    const save_site = new Site(site(theme));
+                    const site_data = await save_site.save();
+                    await Company.findByIdAndUpdate(company_data?._id, {
+                         $set: { site: site_data?._id },
+                    });
                } catch (err) {
-                    console.log("failed products", err);
+                    console.log("error creatting site", err);
                }
 
-          sendOnboardingEmail(email, firstname);
+               // HANDLE CREATE PRODUCTS
+               let params = {
+                    odoo,
+                    products: initProducts(company_id),
+               };
+               if (company_id)
+                    try {
+                         await addMultipleProducts({ ...params });
+                    } catch (err) {
+                         console.log("failed products", err);
+                    }
 
-          reminderJob.start();
-          await User.findByIdAndUpdate(_id, {
-               $set: { onboarded: true, company: company_data?._id },
-          });
+               sendOnboardingEmail(email, firstname);
 
-          res.status(201).json({ company: company_data, status: true });
+               reminderJob.start();
+               await User.findByIdAndUpdate(_id, {
+                    $set: { onboarded: true, company: company_data?._id },
+               });
+
+               res.status(201).json({ company: company_data, status: true });
+          } else {
+               const save_company = new Company({
+                    user_id: _id,
+                    company_id: null,
+                    company_name: company_name,
+                    company_type: company_type,
+                    subdomain: tenantname,
+                    theme: theme,
+                    phone: "09033442211",
+                    logo: req.body.logo,
+                    brandcolor: brandcolor,
+                    subscription: subscription,
+                    subscribed: subscribed,
+                    account_opening_date: date,
+                    trial_end_date: trial_End_Date,
+                    country: req.body.country,
+                    city: req.body.city,
+                    state: req.body.state,
+                    categories: null,
+                    type,
+                    serviceType: req?.body?.categories,
+               });
+
+               let company_data = await save_company.save();
+
+               try {
+                    const save_site = new Site(site(theme));
+                    const site_data = await save_site.save();
+                    await Company.findByIdAndUpdate(company_data?._id, {
+                         $set: { site: site_data?._id },
+                    });
+               } catch (err) {
+                    console.log("error creatting site", err);
+               }
+
+               sendOnboardingEmail(email, firstname);
+               reminderJob.start();
+               await User.findByIdAndUpdate(_id, {
+                    $set: { onboarded: true, company: company_data?._id },
+               });
+               res.status(201).json({ company: company_data, status: true });
+          }
      } catch (error) {
           console.log("err", error);
           const faultCode = error?.faultCode;

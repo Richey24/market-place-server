@@ -45,6 +45,7 @@ exports.register = async (req, res) => {
                password: req.body.password,
                phone: req.body.phone,
                partner_id: partner_id,
+               currentSiteType: req.body.currentSiteType,
                ...(company && { company: company._id }),
           });
 
@@ -128,12 +129,16 @@ exports.listBilling = async (req, res) => {
 };
 
 exports.listShipping = async (req, res) => {
-     console.log("list billing information");
-     let user = req.userData;
-     console.log(user);
+     console.log("list shipping information");
+     try {
+          let userId = req.params.userId;
+          console.log(userId);
 
-     let shipping = await Shipping.find({ userId: user._id });
-     return res.status(200).json(shipping);
+          let shippings = await Shipping.find({ userId: userId });
+          return res.status(200).json({ data: shippings, status: true });
+     } catch (error) {
+          res.status(400).json({ error, status: false });
+     }
 };
 
 (exports.addBillingAddress = async (req, res) => {
@@ -171,14 +176,15 @@ exports.listShipping = async (req, res) => {
                     street: req.body.street,
                     phone: req.body.phone,
                     zipcode: req.body.zipcode,
-                    company: reg.body.company,
+                    company: req.body.company,
                     email: req.body.email,
-                    userId: req.userData._id,
+                    userId: req?.userData?._id ?? req?.body?.userId,
                });
 
                let data = await shipping.save();
                return res.status(201).json({ data, status: true });
           } catch (error) {
+               console.log("err", error);
                res.status(400).json({ error, status: false });
           }
      });
@@ -226,7 +232,7 @@ exports.listShipping = async (req, res) => {
                     phone: req.body.phone,
                     zipcode: req.body.zipcode,
                     email: req.body.email,
-                    userId: req.userData._id,
+                    userId: eq?.userData?._id ?? req?.body?.userId,
                },
                (err, data) => {
                     if (err) {
@@ -241,27 +247,33 @@ exports.listShipping = async (req, res) => {
 exports.updateUserDetails = async (req, res) => {
      try {
           const updatedUserData = {
-               firstname: req.body.firstname,
+               firstname: req.body?.firstname,
                lastname: req.body.lastname,
                email: req.body.email,
-               phone: req.body.phone,
+               phone: req.body?.phone,
           };
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
-          const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
-               new: true,
-          });
-
-          const company = await Company.findByIdAndUpdate(
-               updatedUser?.company,
-               {
-                    phone: req.body.phone,
-                    ...(req.body.companyName && { company_name: req.body.companyName }),
-               },
+          const updatedUser = await User.findByIdAndUpdate(
+               req?.userData?._id ?? req.body.userId,
+               updatedUserData,
                {
                     new: true,
                },
           );
+
+          let company;
+          if (updatedUser?.company)
+               company = await Company.findByIdAndUpdate(
+                    updatedUser?.company,
+                    {
+                         phone: req.body.phone,
+                         ...(req.body.companyName && { company_name: req.body.companyName }),
+                    },
+                    {
+                         new: true,
+                    },
+               );
 
           // Omit password from the updated user object before sending the response
           const userWithoutPassword = {
@@ -282,8 +294,7 @@ exports.updateUserDetails = async (req, res) => {
 
 exports.updatePassword = async (req, res) => {
      try {
-
-          const user = await User.findById(req.userData._id)
+          const user = await User.findById(req?.userData?._id ?? req.body?.userId);
           const isPasswordMatch = await bcrypt.compare(req.body.oldPassword, user.password);
           if (!isPasswordMatch) {
                return res.status(401).json({ message: "wrong old password" });
@@ -319,7 +330,7 @@ exports.updatePassword = async (req, res) => {
 exports.getUserDetails = async (req, res) => {
      console.log(req.userData);
      try {
-          const user = await User.findById(req.userData._id).populate({
+          const user = await User.findById(req?.userData?._id ?? req.params.id).populate({
                path: "company",
                options: { virtuals: true },
           });
@@ -328,10 +339,10 @@ exports.getUserDetails = async (req, res) => {
                return res.status(404).json({ message: "User not found.", status: false });
           }
 
-          res.status(200).json({ user, company: null });
+          res.status(200).json({ user, company: null, status: true });
      } catch (error) {
           console.error("Error fetching user:", error);
-          res.status(500).json({ message: "Internal server error." });
+          res.status(500).json({ message: "Internal server error.", status: false });
      }
 };
 

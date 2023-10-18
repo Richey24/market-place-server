@@ -21,6 +21,10 @@ const userSchema = mongoose.Schema({
           required: [true, "Please Include your email"],
      },
 
+     currentSiteType: {
+          type: String,
+     },
+
      status: {
           type: Boolean,
           default: 1,
