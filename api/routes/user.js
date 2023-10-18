@@ -14,7 +14,11 @@ router.get("/me/customer/:id", userController.getUserDetails);
 router.put("/me", auth, userController.updateUserDetails);
 router.put("/me/customer", userController.updateUserDetails);
 router.put("/update/password", auth, userController.updatePassword);
+<<<<<<< HEAD
 router.put("/update/password/customer", userController.updatePassword);
+=======
+router.post("/forgot/password", userController.forgotPassword);
+>>>>>>> 42b3587e6d2f1f1145a2638880421db763659600
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 
 //billing

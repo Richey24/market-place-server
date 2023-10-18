@@ -4,26 +4,26 @@ const cron = require("node-cron");
 const User = require("../model/User");
 
 const sendOnboardingEmail = (email, name) => {
-     const startDate = new Date();
-     const endDate = new Date();
-     endDate.setDate(endDate.getDate() + 14);
-     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+  const startDate = new Date();
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 14);
+  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: "Welcome to Our IsrealB Marketplace - Your Free Trial Period!",
-          html: `
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "Welcome to Our IsrealB Marketplace - Your Free Trial Period!",
+    html: `
          <!DOCTYPE html>
          <html>
          <head>
@@ -93,8 +93,8 @@ const sendOnboardingEmail = (email, name) => {
                <p>Here are some key details regarding your free trial period:</p>
                <ul>
                  <li><span class="highlight">Trial Start Date:</span> ${formattedDate(
-                      startDate,
-                 )}</li>
+      startDate,
+    )}</li>
                  <li><span class="highlight">Trial End Date:</span> ${formattedDate(endDate)}</li>
                </ul>
              </div>
@@ -125,37 +125,37 @@ const sendOnboardingEmail = (email, name) => {
          </body>
          </html>
        `,
-     };
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Email sent: " + info.response);
-               // do something useful
-          }
-     });
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
 };
 
 const sendWelcomeEmail = (email, name) => {
-     const endDate = new Date();
-     endDate.setDate(endDate.getDate() + 14);
-     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 14);
+  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: "Welcome to Our IsrealB Marketplace",
-          html: `
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "Welcome to Our IsrealB Marketplace",
+    html: `
        <!DOCTYPE html>
        <html>
        <head>
@@ -242,37 +242,37 @@ const sendWelcomeEmail = (email, name) => {
        </body>
        </html>       
     `,
-     };
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Email sent: " + info.response);
-               // do something useful
-          }
-     });
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
 };
 
 const sendTrialEndReminderEmail = (email, name) => {
-     const endDate = new Date();
-     endDate.setDate(endDate.getDate() + 14);
-     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 14);
+  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: "Reminder: Your Trial Period Ends Soon",
-          html: `
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "Reminder: Your Trial Period Ends Soon",
+    html: `
           <!DOCTYPE html>
           <html>
           <head>
@@ -351,37 +351,37 @@ const sendTrialEndReminderEmail = (email, name) => {
           </body>
           </html>                   
        `,
-     };
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Email sent: " + info.response);
-               // do something useful
-          }
-     });
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
 };
 
 const sendTrialExtensionEmail = (email, name, trialEndDate) => {
-     const endDate = new Date();
-     endDate.setDate(endDate.getDate() + 14);
-     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 14);
+  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: "Your Free Trial Period Has Been Extended!",
-          html: `
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "Your Free Trial Period Has Been Extended!",
+    html: `
          <!DOCTYPE html>
          <html>
          <head>
@@ -450,8 +450,8 @@ const sendTrialExtensionEmail = (email, name, trialEndDate) => {
                <p>Please note the updated trial end date:</p>
                <ul>
                  <li><span class="highlight">Trial End Date:</span> ${formattedDate(
-                      trialEndDate,
-                 )}</li>
+      trialEndDate,
+    )}</li>
                </ul>
              </div>
              <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
@@ -481,32 +481,32 @@ const sendTrialExtensionEmail = (email, name, trialEndDate) => {
          </body>
          </html>        
     `,
-     };
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Email sent: " + info.response);
-               // do something useful
-          }
-     });
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
 };
 
 const sendSubscriptionEmail = (email, name) => {
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: "Thank You for Subscribing to Our Service",
-          html: `
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "Thank You for Subscribing to Our Service",
+    html: `
     <!DOCTYPE html>
     <html>
     <head>
@@ -590,32 +590,32 @@ const sendSubscriptionEmail = (email, name) => {
     </body>
     </html>       
  `,
-     };
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Email sent: " + info.response);
-               // do something useful
-          }
-     });
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
 };
 
 const sendSubscriptionExpiredEmail = (email, name) => {
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: "Subscription Expired or Canceled",
-          html: `
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "Subscription Expired or Canceled",
+    html: `
     <!DOCTYPE html>
     <html>
     <head>
@@ -695,33 +695,33 @@ const sendSubscriptionExpiredEmail = (email, name) => {
     </body>
     </html>       
  `,
-     };
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Email sent: " + info.response);
-               // do something useful
-          }
-     });
+  };
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
 };
 
 const sendCouponEmail = (email, name) => {
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
 
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: "FREE Ads Code: Supercharge Your Sales Today!",
-          html: `
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "FREE Ads Code: Supercharge Your Sales Today!",
+    html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -812,56 +812,163 @@ const sendCouponEmail = (email, name) => {
       </body>
       </html>
     `,
-     };
+  };
 
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Email sent: " + info.response);
-               // do something useful
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
+
+const sendForgotPasswordEmail = (email, name, token, url) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: "Reset Password",
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
           }
-     });
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">Reset Password Request</h1>
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            <p>You requested to reset the password to your account.</p>
+            <p>Click on the button below to reset your password</p>
+          </div>
+          <div class="message">
+            <a class="cta-button" href="${url}/reset-password/${token}">Reset Password</a>
+            <p>Ignore this email if this was not requested by you.</p>
+            <p>If you need any assistance, our dedicated support team is here to help. Contact us at [support email/phone number].</p>
+          </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
 };
 
 const formatDate = (date) => {
-     const year = date.getFullYear();
-     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-     const day = String(date.getDate()).padStart(2, "0");
-     const formattedDate = `${year}-${month}-${day}`;
-     return formattedDate;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, "0");
+  const formattedDate = `${year}-${month}-${day}`;
+  return formattedDate;
 };
 
 const reminderJob = cron.schedule("0 9 * * *", () => {
-     const currentDate = formatDate(new Date());
+  const currentDate = formatDate(new Date());
 
-     Company.find({ trial_end_date: currentDate }, (err, companies) => {
-          if (err) {
-               console.error(err);
-               return;
-          }
+  Company.find({ trial_end_date: currentDate }, (err, companies) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
 
-          companies.forEach(async (company) => {
-               try {
-                    const user = await User.findById(company.user_id);
-                    if (user) {
-                         sendTrialEndReminderEmail(user.email, user.firstname);
-                    }
-               } catch (error) {
-                    console.error(error);
-               }
-          });
-     });
+    companies.forEach(async (company) => {
+      try {
+        const user = await User.findById(company.user_id);
+        if (user) {
+          sendTrialEndReminderEmail(user.email, user.firstname);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    });
+  });
 });
 
 module.exports = {
-     sendOnboardingEmail,
-     sendTrialEndReminderEmail,
-     sendTrialExtensionEmail,
-     sendSubscriptionEmail,
-     sendSubscriptionExpiredEmail,
-     sendCouponEmail,
-     formatDate,
-     reminderJob,
-     sendWelcomeEmail,
+  sendOnboardingEmail,
+  sendTrialEndReminderEmail,
+  sendTrialExtensionEmail,
+  sendSubscriptionEmail,
+  sendSubscriptionExpiredEmail,
+  sendCouponEmail,
+  formatDate,
+  reminderJob,
+  sendWelcomeEmail,
+  sendForgotPasswordEmail
 };
