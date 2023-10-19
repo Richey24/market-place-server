@@ -23,12 +23,12 @@ const getErrorMessage = (faultCode) => {
 
 const site = (theme) => {
      return {
-          theme,
+          theme: theme?.name,
           topAds: {
                name: "topAds",
                content: "",
                component: {
-                    theme,
+                    theme: theme?.name,
                     name: "",
                     props: {
                          static: {
@@ -44,10 +44,12 @@ const site = (theme) => {
                name: "footer",
                content: "",
                component: {
-                    theme,
+                    theme: theme?.name,
                     name: "",
                     props: {
                          static: {
+                              description:
+                                   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis consectetur auctor elit.",
                               customerService: [
                                    { name: "Help & Faq", link: "/" },
                                    { name: "Order Tracking", link: "/" },
@@ -67,6 +69,11 @@ const site = (theme) => {
                                    { name: "Sports", link: "/" },
                                    { name: "Sweater", link: "/" },
                               ],
+                              businessHours: [
+                                   "Monday - Friday 9am to 5pm",
+                                   "Saturday - 9am to 2pm",
+                                   "Sunday - Closed",
+                              ],
                          },
                     },
                },
@@ -75,7 +82,7 @@ const site = (theme) => {
                name: "header",
                content: "",
                component: {
-                    theme,
+                    theme: theme?.name,
                     props: {
                          company: {},
                          static: {
@@ -116,9 +123,11 @@ const site = (theme) => {
                               name: "home",
                               content: "",
                               component: {
-                                   theme,
+                                   theme: theme?.name,
                                    props: {
                                         static: {
+                                             brochures:
+                                                  "View our 2020 financial prospectus brochure for an easy to read guide on all of the services offer.",
                                              promotion: {
                                                   enabled: true,
                                                   promotion: {},
@@ -128,16 +137,105 @@ const site = (theme) => {
                                                   money: "",
                                                   support: "",
                                              },
+                                             serviceDetails: {
+                                                  label: "Home - Service Details.",
+                                                  image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/hand.jpg",
+                                                  subImage:
+                                                       "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/workers.jpg",
+                                                  title: "International Business Opportunities.",
+                                                  description:
+                                                       "There are many variations of passages of Lorem Ipsum available, but the majority have suffered altera tion in some form, by injected humour, or randomised words which don’t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn’t anything embarrassing hidden. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.",
+                                                  list: [
+                                                       {
+                                                            title: "Seed do eiusmod tempor incididunt ut",
+                                                       },
+                                                       {
+                                                            title: "Exercitation ullamco laboris nis.",
+                                                       },
+                                                       {
+                                                            title: "Quis nostrud exerc citation.",
+                                                       },
+                                                       {
+                                                            title: "Andomised words which don't look",
+                                                       },
+                                                       {
+                                                            title: "Commodo consequat duis autex.",
+                                                       },
+                                                       {
+                                                            title: "Andomised words which don't look",
+                                                       },
+                                                       {
+                                                            title: "Andomised words which don't look",
+                                                       },
+                                                  ],
+                                             },
+                                             categories: [
+                                                  {
+                                                       title: "Finance Management",
+                                                  },
+                                                  {
+                                                       title: "Banking Investigation",
+                                                  },
+                                                  {
+                                                       title: "Business Insurance",
+                                                  },
+                                                  {
+                                                       title: "Car Insurance",
+                                                  },
+                                                  {
+                                                       title: "Market Research",
+                                                  },
+                                                  {
+                                                       title: "Home Insurance",
+                                                  },
+                                                  {
+                                                       title: "Life Insurance",
+                                                  },
+                                                  {
+                                                       title: "Health Insurance",
+                                                  },
+                                             ],
+                                             midSection: {
+                                                  audit: {
+                                                       description:
+                                                            "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet",
+                                                  },
+                                                  strategy: {
+                                                       image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/female.jpg",
+                                                       title: "International Business Opportunities.",
+                                                       description:
+                                                            "Adipisicing elit, sed do eiusmod tempor incididunt ul labore et dolore magna aliqua",
+                                                       list: [
+                                                            {
+                                                                 title: "research beyond the business plan",
+                                                            },
+                                                            {
+                                                                 title: "marketing options and rates.",
+                                                            },
+                                                            {
+                                                                 title: "the ability to turnaround consulting.",
+                                                            },
+                                                       ],
+                                                  },
+                                                  sustainability: {
+                                                       title: "Project Results.",
+                                                       image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/graph.png",
+                                                       description:
+                                                            "There are many variations of passages of Lorem ipsum available, but the majority have suffered altera tion in some form, by injected, Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. eu fugiat nulla pariatur. Enim minim veniam quis nostrud. exercitation ullamco laboris nisi aliquip",
+                                                  },
+                                             },
                                              banner: [
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl: bannerImages[theme].banner1,
+                                                       imageUrl:
+                                                            bannerImages?.[theme?.name]?.banner1,
                                                   },
                                                   {
                                                        title: "",
                                                        text: "",
-                                                       imageUrl: bannerImages[theme].banner2,
+                                                       imageUrl:
+                                                            bannerImages?.[theme?.name]?.banner2,
                                                   },
                                              ],
                                              dealsBanner: [
@@ -177,7 +275,7 @@ const site = (theme) => {
                               name: "about_us",
                               content: "",
                               component: {
-                                   theme,
+                                   theme: theme?.name,
                                    props: {
                                         static: {
                                              history: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. desktop publishing software like Aldus PageMaker including versions. was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently",
@@ -207,7 +305,7 @@ const site = (theme) => {
                               name: "contact_us",
                               content: "",
                               component: {
-                                   theme,
+                                   theme: theme?.name,
                                    props: {
                                         static: {
                                              contact_email: "example@gmail.com",
@@ -323,7 +421,7 @@ exports.postOnboarding = async (req, res) => {
                     company_name: company_name,
                     company_type: company_type,
                     subdomain: tenantname,
-                    theme: theme,
+                    theme: theme?.name,
                     phone: "09033442211",
                     logo: req.body.logo,
                     brandcolor: brandcolor,
@@ -377,7 +475,7 @@ exports.postOnboarding = async (req, res) => {
                     company_name: company_name,
                     company_type: company_type,
                     subdomain: tenantname,
-                    theme: theme,
+                    theme: theme?.name,
                     phone: "09033442211",
                     logo: req.body.logo,
                     brandcolor: brandcolor,
@@ -402,7 +500,7 @@ exports.postOnboarding = async (req, res) => {
                          $set: { site: site_data?._id },
                     });
                } catch (err) {
-                    console.log("error creatting site", err);
+                    throw ("error creatting site", err);
                }
 
                sendOnboardingEmail(email, firstname);
