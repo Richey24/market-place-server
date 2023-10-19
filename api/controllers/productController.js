@@ -1,3 +1,4 @@
+const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
 const User = require("../../model/User");
@@ -465,13 +466,11 @@ exports.createMultipleProducts = async (req, res) => {
 exports.searchProduct = async (req, res) => {
      try {
           const body = req.body
-          console.log(body);
           const keys = Object.keys(body)
           const arr = []
           keys.forEach((key) => {
                arr.push([key, "=", body[key]])
           })
-          console.log(arr);
           const theProducts = await searchProducts(arr)
           const products = theProducts.map((product) => {
                return {
@@ -539,3 +538,16 @@ exports.getBestSellingProducts = async (req, res) => {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };
+
+exports.sendRateMail = async (req, res) => {
+     try {
+          const { product, email, url, name } = req.body
+          if (!product || !email || !url, !name) {
+               res.status(400).json({ message: "Send all required parameters", status: false });
+          }
+          sendRatingMail(email, name, url, product)
+          res.status(200).json({ message: "Rating Mail Sent Successfully", status: true });
+     } catch (error) {
+          res.status(500).json({ err, status: false });
+     }
+}

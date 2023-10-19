@@ -16,6 +16,7 @@ router.get("/:companyId/featured", productController.getFeaturedProducts);
 router.get("/details/:id", productController.productDetails);
 router.get("/filter", productController.filterProducts);
 router.get("/site/:companyId", productController.getProductbyCompanyId);
+router.post("/rating/mail", productController.sendRateMail)
 
 router.post("/wishlist", productController.createWishlistRecord);
 router.get("/wishlist/:userId", productController.fetchWishlist);

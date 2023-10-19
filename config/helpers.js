@@ -929,6 +929,136 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
     }
   });
 };
+const sendRatingMail = (email, name, url, product) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: `Your Order ${product._id} - Please rate the products you purchased!`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            padding: 10px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+          .reviewBtn {
+            font-weight: bold;
+            color: white;
+            border-radius: 8px;
+            padding: 10px 20px;
+            background-color: white;
+            border: 1px solid blue;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            <p>Thank you for your purchase on ${url}.</p>
+            <p>Please help us improve our service and give all Jumia customers a better understanding about the product(s) you ordered by rating them from very poor to very good</p>
+          </div>
+          <div class="message">
+            <div>
+            <img class="logo" src="${product.image_1920}" alt="product">
+            <div>
+              <p>${product.name}</p>
+              <a class="reviewBtn" href="https://${url}/dashboard/pending-review/${product._id}">Rate this product</a>
+            </div>
+            </div>
+            <p>If the link to rate the product is not working, no worries. You can still share your feedback by following these steps:</p>
+            <span>On your computer:</span>
+            <ul>
+              <li>Log in to your ${url} account.</li>
+              <li>From your dashboard go to the "Pending Reviews" section.</li>
+              <li>Click on Rate this product button</li>
+            </ul>
+          </div>
+          <div class="footer">
+          <p>
+          If you're not happy with your purchase, you can return it to us with ease. ${url} offers a simple return and quick refund process. Click here to <a href="https://${url}/faq">learn more</a>.  
+            </p>
+            <p>
+            You can return an item within 7 days of delivery if it is not as expected (wrong, defective, or damaged). In most cases, you can also return an item if you change your mind. To request a return, go to the <a href="https://${url}/dashboard/order">Order page</a>.
+            </p>
+            <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
 
 const formatDate = (date) => {
   const year = date.getFullYear();
@@ -967,6 +1097,7 @@ module.exports = {
   sendSubscriptionEmail,
   sendSubscriptionExpiredEmail,
   sendCouponEmail,
+  sendRatingMail,
   formatDate,
   reminderJob,
   sendWelcomeEmail,
