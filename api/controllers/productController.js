@@ -52,9 +52,9 @@ exports.getProductbyCompanyId = async (req, res) => {
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
-                         x_dimension: product.x_dimension
-                    }
-               })
+                         x_dimension: product.x_dimension,
+                    };
+               });
                res.status(200).json({ products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
@@ -99,9 +99,9 @@ exports.getProductbyCategory = async (req, res) => {
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
-                         x_dimension: product.x_dimension
-                    }
-               })
+                         x_dimension: product.x_dimension,
+                    };
+               });
                res.status(200).json({ products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Category", status: false });
@@ -143,9 +143,9 @@ exports.getFeaturedProducts = async (req, res) => {
                x_size: product.x_size,
                x_weight: product.x_weight,
                x_color: product.x_color,
-               x_dimension: product.x_dimension
-          }
-     })
+               x_dimension: product.x_dimension,
+          };
+     });
      res.status(201).json({ products });
 };
 
@@ -192,9 +192,9 @@ exports.filterProducts = async (req, res) => {
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
-                         x_dimension: product.x_dimension
-                    }
-               })
+                         x_dimension: product.x_dimension,
+                    };
+               });
                res.status(201).json({ products });
           } else {
                let theProducts = await Odoo.execute_kw("product.product", "search_read", [
@@ -232,9 +232,9 @@ exports.filterProducts = async (req, res) => {
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
-                         x_dimension: product.x_dimension
-                    }
-               })
+                         x_dimension: product.x_dimension,
+                    };
+               });
                res.status(201).json(products);
           }
      } catch (e) {
@@ -265,9 +265,9 @@ exports.productDetails = async (req, res) => {
                x_size: product.x_size,
                x_weight: product.x_weight,
                x_color: product.x_color,
-               x_dimension: product.x_dimension
-          }
-     })
+               x_dimension: product.x_dimension,
+          };
+     });
      res.status(201).json({ product });
 };
 
@@ -379,9 +379,9 @@ exports.createProduct = async (req, res) => {
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
-                    x_dimension: product.x_dimension
-               }
-          })
+                    x_dimension: product.x_dimension,
+               };
+          });
           res.status(201).json({ product: product, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
@@ -417,9 +417,9 @@ exports.updateProduct = async (req, res) => {
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
-                    x_dimension: product.x_dimension
-               }
-          })
+                    x_dimension: product.x_dimension,
+               };
+          });
           res.status(201).json({ product: product, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
@@ -452,27 +452,26 @@ exports.createMultipleProducts = async (req, res) => {
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
-                    x_dimension: product.x_dimension
-               }
-          })
+                    x_dimension: product.x_dimension,
+               };
+          });
           res.status(201).json({ products, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
      }
 };
 
-
 exports.searchProduct = async (req, res) => {
      try {
-          const body = req.body
+          const body = req.body;
           console.log(body);
-          const keys = Object.keys(body)
-          const arr = []
+          const keys = Object.keys(body);
+          const arr = [];
           keys.forEach((key) => {
-               arr.push([key, "=", body[key]])
-          })
+               arr.push([key, "=", body[key]]);
+          });
           console.log(arr);
-          const theProducts = await searchProducts(arr)
+          const theProducts = await searchProducts(arr);
           const products = theProducts.map((product) => {
                return {
                     id: product.id,
@@ -491,14 +490,14 @@ exports.searchProduct = async (req, res) => {
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
-                    x_dimension: product.x_dimension
-               }
-          })
+                    x_dimension: product.x_dimension,
+               };
+          });
           res.status(200).json({ products, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
      }
-}
+};
 exports.getBestSellingProducts = async (req, res) => {
      console.log("GET /api/best-selling-products");
 
@@ -508,32 +507,50 @@ exports.getBestSellingProducts = async (req, res) => {
           const companyId = [+req.params.companyId];
 
           // Fetch best-selling products based on your criteria (e.g., sales count)
-          const theProducts = await Odoo.execute_kw("product.product", "search_read", [
-               [["company_id", "=", companyId]],
-               { limit: 3 },
-          ]);
-          const products = theProducts.map((product) => {
-               return {
-                    id: product.id,
-                    website_url: product.website_url,
-                    name: product.name,
-                    description: product.description,
-                    categ_id: product.categ_id,
-                    list_price: product.list_price,
-                    standard_price: product.standard_price,
-                    company_id: product.company_id,
-                    display_name: product.display_name,
-                    base_unit_count: product.base_unit_count,
-                    image_1920: product.image_1920,
-                    image_1024: product.image_1024,
-                    x_subcategory: product.x_subcategory,
-                    x_size: product.x_size,
-                    x_weight: product.x_weight,
-                    x_color: product.x_color,
-                    x_dimension: product.x_dimension
-               }
-          })
-          res.status(200).json({ bestSellingProducts: products, status: true });
+          const theProducts = await Odoo.execute_kw(
+               "product.product",
+               "search_read",
+               [
+                    [
+                         ["sale_ok", "=", true],
+                         ["company_id", "=", companyId],
+                    ],
+
+                    ["name", "list_price", "sales_count", "write_date", "standard_price"],
+                    // null,
+                    null,
+                    null,
+               ],
+               // { fields: ["name"], offset: 0, limit: 5 },
+          );
+
+          // const products = theProducts.map((product) => {
+          //      return {
+          //           id: product.id,
+          //           website_url: product.website_url,
+          //           name: product.name,
+          //           description: product.description,
+          //           categ_id: product.categ_id,
+          //           list_price: product.list_price,
+          //           standard_price: product.standard_price,
+          //           company_id: product.company_id,
+          //           display_name: product.display_name,
+          //           base_unit_count: product.base_unit_count,
+          //           image_1920: product.image_1920,
+          //           image_1024: product.image_1024,
+          //           x_subcategory: product.x_subcategory,
+          //           x_size: product.x_size,
+          //           x_weight: product.x_weight,
+          //           x_color: product.x_color,
+          //           x_dimension: product.x_dimension,
+          //      };
+          // });
+          res.status(200).json({
+               bestSellingProducts: theProducts
+                    ?.sort((a, b) => b?.sales_count - a?.sales_count)
+                    ?.filter((_, idx) => idx < 3),
+               status: true,
+          });
      } catch (error) {
           console.error("Error when trying to fetch best-selling products.", error);
           res.status(500).json({ error: "Internal Server Error", status: false });

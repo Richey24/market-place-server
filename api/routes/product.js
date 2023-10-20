@@ -11,7 +11,7 @@ router.get("/category/:category", auth, productController.getProductbyCategory);
 router.post("/", auth, multer().any("images"), productController.createProduct);
 router.put("/:id", auth, multer().any("images"), productController.updateProduct);
 router.post("/multiple", productController.createMultipleProducts);
-router.post("/search", productController.searchProduct)
+router.post("/search", productController.searchProduct);
 router.get("/:companyId/featured", productController.getFeaturedProducts);
 router.get("/details/:id", productController.productDetails);
 router.get("/filter", productController.filterProducts);
