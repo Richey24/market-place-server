@@ -1017,14 +1017,14 @@ const sendRatingMail = (email, name, url, product) => {
           <div class="message">
             <p>Dear ${name},</p>
             <p>Thank you for your purchase on ${url}.</p>
-            <p>Please help us improve our service and give all Jumia customers a better understanding about the product(s) you ordered by rating them from very poor to very good</p>
+            <p>Please help us improve our service and give all ${url} customers a better understanding about the product(s) you ordered by rating them from very poor to very good</p>
           </div>
           <div class="message">
             <div>
             <img class="logo" src="${product.image_1920}" alt="product">
             <div>
               <p>${product.name}</p>
-              <a class="cta-button" href="https://${url}/dashboard/pending-review/${product._id}">Rate this product</a>
+              <a class="reviewBtn" href="https://${url}/dashboard/pending-review/${product._id}">Rate this product</a>
             </div>
             </div>
             <p>If the link to rate the product is not working, no worries. You can still share your feedback by following these steps:</p>
