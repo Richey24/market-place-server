@@ -1024,7 +1024,7 @@ const sendRatingMail = (email, name, url, product) => {
             <img class="logo" src="${product.image_1920}" alt="product">
             <div>
               <p>${product.name}</p>
-              <a class="reviewBtn" href="https://${url}/dashboard/pending-review/${product._id}">Rate this product</a>
+              <a class="cta-button" href="https://${url}/dashboard/pending-review/${product._id}">Rate this product</a>
             </div>
             </div>
             <p>If the link to rate the product is not working, no worries. You can still share your feedback by following these steps:</p>
