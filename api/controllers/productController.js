@@ -572,9 +572,9 @@ exports.rateProduct = async (req, res) => {
                return res.status(400).json({ message: "Send all required parameters", status: false });
           }
           const user = await User.findById(userId)
-          // if (user.rated.includes(productId)) {
-          //      return res.status(400).json({ message: "User already rated this product", status: false });
-          // }
+          if (user.rated.includes(productId)) {
+               return res.status(400).json({ message: "User already rated this product", status: false });
+          }
           const rateObj = {
                productId: productId,
                ratings:
