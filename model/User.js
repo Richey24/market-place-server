@@ -46,6 +46,10 @@ const userSchema = mongoose.Schema({
      phone: {
           type: Number,
      },
+     rated: {
+          type: Array,
+          default: []
+     },
      partner_id: {
           type: Number,
      },

@@ -366,5 +366,5 @@ module.exports = {
      getProductDetails,
      addMultipleProducts,
      updateProduct,
-     searchProducts
+     searchProducts,
 };
