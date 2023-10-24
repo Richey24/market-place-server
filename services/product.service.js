@@ -40,18 +40,29 @@ const getFeaturedProducts = async (params) => {
           await Odoo.connect();
 
           const tagName = "Featured Product";
-          const products = await Odoo.execute_kw(
-               "product.product",
-               "search_read",
+          const products = await Odoo.execute_kw("product.product", "search_read", [
                [
-                    [
-                         ["product_tag_ids.name", "=", tagName],
-                         ["company_id", "=", params.company_id],
-                    ],
+                    ["product_tag_ids.name", "=", tagName],
+                    ["company_id", "=", params.company_id],
                ],
-
-               {},
-          );
+               [
+                    "id",
+                    "name",
+                    "display_name",
+                    "list_price",
+                    // "image_1920",
+                    "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "rating_count",
+                    "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
+               ],
+               // null,
+               0,
+               10,
+          ]);
           return products;
      } catch (e) {
           console.error("Error when try connect Odoo XML-RPC.", e);
@@ -64,11 +75,7 @@ const searchProducts = async (params) => {
           const products = await Odoo.execute_kw(
                "product.template",
                "search_read",
-               [
-                    [
-                         ...params
-                    ],
-               ],
+               [[...params]],
 
                {},
           );
@@ -109,7 +116,9 @@ const addProduct = async (params) => {
                x_size: params.product.size,
                x_weight: params.product.weight,
                x_dimension: params.product.dimension,
-               product_tag_ids: params.product.product_tag_ids ? JSON.parse(params.product.product_tag_ids) : [],
+               product_tag_ids: params.product.product_tag_ids
+                    ? JSON.parse(params.product.product_tag_ids)
+                    : [],
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -184,7 +193,9 @@ const updateProduct = async (params) => {
                x_size: params.product.size,
                x_weight: params.product.weight,
                x_dimension: params.product.dimension,
-               product_tag_ids: params.product.product_tag_ids ? JSON.parse(params.product.product_tag_ids) : [],
+               product_tag_ids: params.product.product_tag_ids
+                    ? JSON.parse(params.product.product_tag_ids)
+                    : [],
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
@@ -345,7 +356,7 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => { };
+const deleteProduct = async (params) => {};
 
 // const getProductImageUrl = async (params) => {
 

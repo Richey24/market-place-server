@@ -33,20 +33,21 @@ exports.getProductbyCompanyId = async (req, res) => {
                               ["type", "=", "consu"],
                               ["company_id", "=", companyId],
                          ],
-                         // [
-                         //      "id",
-                         //      "name",
-                         //      "list_price",
-                         //      // "image_1920",
-                         //      "standard_price",
-                         //      "categ_id",
-                         //      "rating_avg",
-                         //      "rating_count",
-                         //      "website_url",
-                         //      "public_categ_ids",
-                         //      "website_meta_keywords",
-                         // ],
-                         null,
+                         [
+                              "id",
+                              "name",
+                              "display_name",
+                              "list_price",
+                              // "image_1920",
+                              "standard_price",
+                              "categ_id",
+                              "rating_avg",
+                              "rating_count",
+                              "website_url",
+                              "public_categ_ids",
+                              "website_meta_keywords",
+                         ],
+                         // null,
                          0,
                          10,
                     ],
@@ -130,7 +131,7 @@ exports.getProductImage = async (req, res) => {
                ["image_1920", "image_1024"],
           ]);
 
-          res.status(200).json({ image: theProducts, status: true });
+          res.status(200).json({ image: theProducts?.[0], status: true });
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
           res.status(500).json({ error: "Internal Server Error", status: false });
@@ -544,13 +545,26 @@ exports.getBestSellingProducts = async (req, res) => {
                     ["company_id", "=", companyId],
                ],
 
-               ["name", "list_price", "sales_count", "write_date", "standard_price"],
+               [
+                    "id",
+                    "name",
+                    "display_name",
+                    "list_price",
+                    // "image_1920",
+                    "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "rating_count",
+                    "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
+               ],
                // null,
                null,
                null,
           ]);
           res.status(200).json({
-               bestSellingProducts: theProducts
+               products: theProducts
                     ?.sort((a, b) => b?.sales_count - a?.sales_count)
                     ?.filter((_, idx) => idx < 3),
                status: true,
