@@ -603,7 +603,7 @@ exports.rateProduct = async (req, res) => {
           await User.findByIdAndUpdate(userId, { "$push": { "rated": productId } })
           res.status(200).json({ ratingAvg: ratingAvg, theRate, result, status: true })
      } catch (error) {
-          res.status(500).json({ error: "Internal Server Error", status: false });
+          res.status(500).json({ message: "Internal Server Error", status: false });
      }
 }
 
