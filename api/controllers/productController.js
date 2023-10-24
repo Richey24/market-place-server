@@ -1,3 +1,4 @@
+const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
 const User = require("../../model/User");
@@ -18,7 +19,6 @@ exports.getProductbyCompanyId = async (req, res) => {
 
      try {
           const companyId = [+req.params.companyId];
-          console.log("companyId", companyId);
           if (req.params.companyId) {
                await Odoo.connect();
                console.log("Connect to Odoo XML-RPC - api/products");
@@ -31,6 +31,22 @@ exports.getProductbyCompanyId = async (req, res) => {
                               ["type", "=", "consu"],
                               ["company_id", "=", companyId],
                          ],
+                         // [
+                         //      "id",
+                         //      "name",
+                         //      "list_price",
+                         //      // "image_1920",
+                         //      "standard_price",
+                         //      "categ_id",
+                         //      "rating_avg",
+                         //      "rating_count",
+                         //      "website_url",
+                         //      "public_categ_ids",
+                         //      "website_meta_keywords",
+                         // ],
+                         null,
+                         0,
+                         10,
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
@@ -69,43 +85,49 @@ exports.getProductbyCategory = async (req, res) => {
      console.log("GET /api/products");
 
      try {
-          const category = req.params.category;
-          console.log("category", category);
-          if (req.params.category) {
+          const categoryId = +req.params.categoryId;
+          const companyId = [+req.params.companyId];
+
+          if (!req.params.category) {
                await Odoo.connect();
                console.log("Connect to Odoo XML-RPC - api/products");
 
-               const theProducts = await Odoo.execute_kw(
-                    "product.public.category",
-                    "search_read",
-                    [[["name", "=", category]]],
-                    { fields: ["name", "public_categ_ids"] },
-               );
-               const products = theProducts.map((product) => {
-                    return {
-                         id: product.id,
-                         website_url: product.website_url,
-                         name: product.name,
-                         description: product.description,
-                         categ_id: product.categ_id,
-                         list_price: product.list_price,
-                         standard_price: product.standard_price,
-                         company_id: product.company_id,
-                         display_name: product.display_name,
-                         base_unit_count: product.base_unit_count,
-                         image_1920: product.image_1920,
-                         image_1024: product.image_1024,
-                         x_subcategory: product.x_subcategory,
-                         x_size: product.x_size,
-                         x_weight: product.x_weight,
-                         x_color: product.x_color,
-                         x_dimension: product.x_dimension,
-                    };
-               });
-               res.status(200).json({ products, status: true });
+               const theProducts = await Odoo.execute_kw("product.template", "search_read", [
+                    [
+                         ["categ_id", "=", categoryId], // Replace "categ_id" with the actual field name for the category
+                         ["type", "=", "consu"],
+                         ["company_id", "=", companyId], // If you want to filter by company
+                    ],
+                    ["name", "list_price"],
+               ]);
+
+               res.status(200).json({ products: theProducts, status: true });
           } else {
                res.status(404).json({ error: "Invalid Category", status: false });
           }
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.getProductImage = async (req, res) => {
+     console.log("GET /api/products");
+
+     try {
+          const productId = +req.params.productId;
+
+          await Odoo.connect();
+          console.log("Connect to Odoo XML-RPC - api/products");
+
+          const theProducts = await Odoo.execute_kw("product.template", "search_read", [
+               [
+                    ["id", "=", productId], // If you want to filter by company
+               ],
+               ["image_1920", "image_1024"],
+          ]);
+
+          res.status(200).json({ image: theProducts, status: true });
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
           res.status(500).json({ error: "Internal Server Error", status: false });
@@ -170,7 +192,7 @@ exports.filterProducts = async (req, res) => {
                          "website_url",
                          "public_categ_ids",
                          "website_meta_keywords",
-                    ], // Fields
+                    ],
                     0,
                     5, // Offset, Limit
                ]);
@@ -464,13 +486,11 @@ exports.createMultipleProducts = async (req, res) => {
 exports.searchProduct = async (req, res) => {
      try {
           const body = req.body;
-          console.log(body);
           const keys = Object.keys(body);
           const arr = [];
           keys.forEach((key) => {
                arr.push([key, "=", body[key]]);
           });
-          console.log(arr);
           const theProducts = await searchProducts(arr);
           const products = theProducts.map((product) => {
                return {
@@ -507,44 +527,17 @@ exports.getBestSellingProducts = async (req, res) => {
           const companyId = [+req.params.companyId];
 
           // Fetch best-selling products based on your criteria (e.g., sales count)
-          const theProducts = await Odoo.execute_kw(
-               "product.product",
-               "search_read",
+          const theProducts = await Odoo.execute_kw("product.product", "search_read", [
                [
-                    [
-                         ["sale_ok", "=", true],
-                         ["company_id", "=", companyId],
-                    ],
-
-                    ["name", "list_price", "sales_count", "write_date", "standard_price"],
-                    // null,
-                    null,
-                    null,
+                    ["sale_ok", "=", true],
+                    ["company_id", "=", companyId],
                ],
-               // { fields: ["name"], offset: 0, limit: 5 },
-          );
 
-          // const products = theProducts.map((product) => {
-          //      return {
-          //           id: product.id,
-          //           website_url: product.website_url,
-          //           name: product.name,
-          //           description: product.description,
-          //           categ_id: product.categ_id,
-          //           list_price: product.list_price,
-          //           standard_price: product.standard_price,
-          //           company_id: product.company_id,
-          //           display_name: product.display_name,
-          //           base_unit_count: product.base_unit_count,
-          //           image_1920: product.image_1920,
-          //           image_1024: product.image_1024,
-          //           x_subcategory: product.x_subcategory,
-          //           x_size: product.x_size,
-          //           x_weight: product.x_weight,
-          //           x_color: product.x_color,
-          //           x_dimension: product.x_dimension,
-          //      };
-          // });
+               ["name", "list_price", "sales_count", "write_date", "standard_price"],
+               // null,
+               null,
+               null,
+          ]);
           res.status(200).json({
                bestSellingProducts: theProducts
                     ?.sort((a, b) => b?.sales_count - a?.sales_count)
@@ -554,5 +547,18 @@ exports.getBestSellingProducts = async (req, res) => {
      } catch (error) {
           console.error("Error when trying to fetch best-selling products.", error);
           res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.sendRateMail = async (req, res) => {
+     try {
+          const { product, email, url, name } = req.body;
+          if ((!product || !email || !url, !name)) {
+               res.status(400).json({ message: "Send all required parameters", status: false });
+          }
+          sendRatingMail(email, name, url, product);
+          res.status(200).json({ message: "Rating Mail Sent Successfully", status: true });
+     } catch (error) {
+          res.status(500).json({ err, status: false });
      }
 };

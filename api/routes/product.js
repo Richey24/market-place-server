@@ -7,7 +7,7 @@ const productController = require("../controllers/productController");
 router.get("/:companyId", auth, productController.getProductbyCompanyId);
 // router.get("/:companyId/:productId", productController.getProductById);
 
-router.get("/category/:category", auth, productController.getProductbyCategory);
+router.get("/category/:companyId/:categoryId", productController.getProductbyCategory);
 router.post("/", auth, multer().any("images"), productController.createProduct);
 router.put("/:id", auth, multer().any("images"), productController.updateProduct);
 router.post("/multiple", productController.createMultipleProducts);
@@ -16,6 +16,8 @@ router.get("/:companyId/featured", productController.getFeaturedProducts);
 router.get("/details/:id", productController.productDetails);
 router.get("/filter", productController.filterProducts);
 router.get("/site/:companyId", productController.getProductbyCompanyId);
+router.get("/image/:productId", productController.getProductImage);
+router.post("/rating/mail", productController.sendRateMail);
 
 router.post("/wishlist", productController.createWishlistRecord);
 router.get("/wishlist/:userId", productController.fetchWishlist);
