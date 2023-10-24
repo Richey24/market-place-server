@@ -18,6 +18,9 @@ router.get("/filter", productController.filterProducts);
 router.get("/site/:companyId", productController.getProductbyCompanyId);
 router.get("/image/:productId", productController.getProductImage);
 router.post("/rating/mail", productController.sendRateMail);
+router.post("/rate", productController.rateProduct);
+router.get("/rate/:id", productController.getProductRating);
+router.delete("/rate/:id", productController.deleteProductRating);
 
 router.post("/wishlist", productController.createWishlistRecord);
 router.get("/wishlist/:userId", productController.fetchWishlist);

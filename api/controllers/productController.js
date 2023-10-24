@@ -1,6 +1,7 @@
 const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
+const Rating = require("../../model/Rating");
 const User = require("../../model/User");
 
 const {
@@ -11,6 +12,7 @@ const {
      getProductById,
      updateProduct,
      searchProducts,
+     rateProduct,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -64,6 +66,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                          base_unit_count: product.base_unit_count,
                          image_1920: product.image_1920,
                          image_1024: product.image_1024,
+                         x_rating: product.x_rating,
                          x_subcategory: product.x_subcategory,
                          x_size: product.x_size,
                          x_weight: product.x_weight,
@@ -161,6 +164,7 @@ exports.getFeaturedProducts = async (req, res) => {
                base_unit_count: product.base_unit_count,
                image_1920: product.image_1920,
                image_1024: product.image_1024,
+               x_rating: product.x_rating,
                x_subcategory: product.x_subcategory,
                x_size: product.x_size,
                x_weight: product.x_weight,
@@ -187,7 +191,7 @@ exports.filterProducts = async (req, res) => {
                          "list_price",
                          "image_512",
                          "categ_id",
-                         "rating_avg",
+                         "x_rating",
                          "rating_count",
                          "website_url",
                          "public_categ_ids",
@@ -210,6 +214,7 @@ exports.filterProducts = async (req, res) => {
                          base_unit_count: product.base_unit_count,
                          image_1920: product.image_1920,
                          image_1024: product.image_1024,
+                         x_rating: product.x_rating,
                          x_subcategory: product.x_subcategory,
                          x_size: product.x_size,
                          x_weight: product.x_weight,
@@ -227,7 +232,7 @@ exports.filterProducts = async (req, res) => {
                          "list_price",
                          "image_512",
                          "categ_id",
-                         "rating_avg",
+                         "x_rating",
                          "rating_count",
                          "website_url",
                          "public_categ_ids",
@@ -250,6 +255,7 @@ exports.filterProducts = async (req, res) => {
                          base_unit_count: product.base_unit_count,
                          image_1920: product.image_1920,
                          image_1024: product.image_1024,
+                         x_rating: product.x_rating,
                          x_subcategory: product.x_subcategory,
                          x_size: product.x_size,
                          x_weight: product.x_weight,
@@ -283,6 +289,7 @@ exports.productDetails = async (req, res) => {
                base_unit_count: product.base_unit_count,
                image_1920: product.image_1920,
                image_1024: product.image_1024,
+               x_rating: product.x_rating,
                x_subcategory: product.x_subcategory,
                x_size: product.x_size,
                x_weight: product.x_weight,
@@ -397,6 +404,7 @@ exports.createProduct = async (req, res) => {
                     base_unit_count: product.base_unit_count,
                     image_1920: product.image_1920,
                     image_1024: product.image_1024,
+                    x_rating: product.x_rating,
                     x_subcategory: product.x_subcategory,
                     x_size: product.x_size,
                     x_weight: product.x_weight,
@@ -435,6 +443,7 @@ exports.updateProduct = async (req, res) => {
                     base_unit_count: product.base_unit_count,
                     image_1920: product.image_1920,
                     image_1024: product.image_1024,
+                    x_rating: product.x_rating,
                     x_subcategory: product.x_subcategory,
                     x_size: product.x_size,
                     x_weight: product.x_weight,
@@ -470,6 +479,7 @@ exports.createMultipleProducts = async (req, res) => {
                     base_unit_count: product.base_unit_count,
                     image_1920: product.image_1920,
                     image_1024: product.image_1024,
+                    x_rating: product.x_rating,
                     x_subcategory: product.x_subcategory,
                     x_size: product.x_size,
                     x_weight: product.x_weight,
@@ -506,6 +516,7 @@ exports.searchProduct = async (req, res) => {
                     base_unit_count: product.base_unit_count,
                     image_1920: product.image_1920,
                     image_1024: product.image_1024,
+                    x_rating: product.x_rating,
                     x_subcategory: product.x_subcategory,
                     x_size: product.x_size,
                     x_weight: product.x_weight,
@@ -538,12 +549,38 @@ exports.getBestSellingProducts = async (req, res) => {
                null,
                null,
           ]);
+<<<<<<< HEAD
           res.status(200).json({
                bestSellingProducts: theProducts
                     ?.sort((a, b) => b?.sales_count - a?.sales_count)
                     ?.filter((_, idx) => idx < 3),
                status: true,
           });
+=======
+          const products = theProducts.map((product) => {
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    image_1920: product.image_1920,
+                    image_1024: product.image_1024,
+                    x_rating: product.x_rating,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    x_dimension: product.x_dimension
+               }
+          })
+          res.status(200).json({ bestSellingProducts: products, status: true });
+>>>>>>> 51ffbc78f3e43f004b784bad291935c4eddd706d
      } catch (error) {
           console.error("Error when trying to fetch best-selling products.", error);
           res.status(500).json({ error: "Internal Server Error", status: false });
@@ -552,13 +589,87 @@ exports.getBestSellingProducts = async (req, res) => {
 
 exports.sendRateMail = async (req, res) => {
      try {
+<<<<<<< HEAD
           const { product, email, url, name } = req.body;
           if ((!product || !email || !url, !name)) {
                res.status(400).json({ message: "Send all required parameters", status: false });
+=======
+          const { product, email, url, name } = req.body
+          if (!product || !email || !url, !name) {
+               return res.status(400).json({ message: "Send all required parameters", status: false });
+>>>>>>> 51ffbc78f3e43f004b784bad291935c4eddd706d
           }
           sendRatingMail(email, name, url, product);
           res.status(200).json({ message: "Rating Mail Sent Successfully", status: true });
      } catch (error) {
-          res.status(500).json({ err, status: false });
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+}
+
+exports.rateProduct = async (req, res) => {
+     try {
+          const { productId, userId, title, name, detail, rating } = req.body
+          if (!productId || !title || !userId || !name || !rating) {
+               return res.status(400).json({ message: "Send all required parameters", status: false });
+          }
+          const user = await User.findById(userId)
+          if (user.rated.includes(productId)) {
+               return res.status(400).json({ message: "User already rated this product", status: false });
+          }
+          const rateObj = {
+               productId: productId,
+               ratings:
+               {
+                    title: title,
+                    name: name,
+                    detail: detail,
+                    rating: rating
+               }
+
+          }
+          const rate = await Rating.findOne({ productId: productId })
+          let theRate;
+          if (rate) {
+               theRate = await Rating.findOneAndUpdate({ productId: productId }, { "$push": { "ratings": rateObj.ratings } }, { new: true })
+          } else {
+               theRate = await Rating.create(rateObj)
+          }
+          const mapNum = theRate.ratings.map((ra) => ra.rating)
+          const ratingAvg = mapNum.reduce((a, b) => Number(a) + Number(b)) / mapNum.length
+          await Odoo.connect()
+          const result = await Odoo.execute_kw("product.template", "write", [
+               [+productId],
+               { x_rating: ratingAvg },
+          ]);
+          await User.findByIdAndUpdate(userId, { "$push": { "rated": productId } })
+          res.status(200).json({ ratingAvg: ratingAvg, theRate, result, status: true })
+     } catch (error) {
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+}
+
+exports.getProductRating = async (req, res) => {
+     try {
+          const productId = req.params.id
+          if (!productId) {
+               return res.status(400).json({ message: "Send all required parameters", status: false });
+          }
+          const rating = await Rating.findOne({ productId: productId })
+          res.status(200).json({ message: rating, status: true })
+     } catch (error) {
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+}
+
+exports.deleteProductRating = async (req, res) => {
+     try {
+          const productId = req.params.id
+          if (!productId) {
+               return res.status(400).json({ message: "Send all required parameters", status: false });
+          }
+          await Rating.findOneAndDelete({ productId: productId })
+          res.status(200).json({ message: "deleted", status: true })
+     } catch (error) {
+          res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };
