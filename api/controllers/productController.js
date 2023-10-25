@@ -611,6 +611,7 @@ exports.rateProduct = async (req, res) => {
                     name: name,
                     detail: detail,
                     rating: rating,
+                    date: Date.now()
                },
           };
           const rate = await Rating.findOne({ productId: productId });

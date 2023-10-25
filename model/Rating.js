@@ -8,10 +8,6 @@ const ratingSchema = mongoose.Schema({
         unique: true,
         required: [true, "Please include first name"]
     },
-    date: {
-        type: Date,
-        default: Date.now()
-    },
     ratings: {
         type: Array
     }
