@@ -221,6 +221,56 @@ exports.createOrder = async (req, res) => {
      }
 };
 
+exports.getOrderById = async (req, res) => {
+     try {
+          await Odoo.connect();
+          const orderId = +req.params.orderId;
+
+          // Fetch the order data by calling the 'sale.order' model and 'read' method with the order ID.
+          // const orderData = await Odoo.execute_kw("sale.order", "read", [[["id", "=", orderId]]]);
+          // console.log("orderData", orderData);
+
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderId,
+               [
+                    "id",
+                    "partner_id",
+                    "order_line",
+                    "company_id",
+                    "name",
+                    "state",
+                    "amount_total",
+                    "date_order",
+               ],
+          ]);
+
+          const ordersWithDetails = await Promise.all(
+               orders.map(async (order) => {
+                    const orderLines = await Odoo.execute_kw(
+                         "sale.order.line",
+                         "search_read",
+                         [[["order_id", "=", order.id]]],
+                         {
+                              fields: ["product_id", "product_uom_qty", "price_unit"],
+                         },
+                    );
+                    order.order_lines = orderLines;
+                    return order;
+               }),
+          );
+
+          if (orders.length > 0) {
+               return res.status(200).json({ order: ordersWithDetails, status: true });
+          } else {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
+     } catch (error) {
+          // Handle any errors that may occur during the process.
+          console.log("Error", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
 exports.addProductToOrder = async (req, res) => {
      try {
           await Odoo.connect();

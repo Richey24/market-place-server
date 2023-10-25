@@ -8,6 +8,7 @@ router.get("/company/:companyId", auth, orderController.getOrdersByCompanyId);
 router.get("/customer/:customerId", orderController.getOrdersByPartner);
 router.get("/customer/history/:customerId", orderController.getOrderHistoryByPartner);
 router.post("/create", orderController.createOrder);
+router.get("/:orderId", orderController.getOrderById);
 router.post("/product", orderController.addProductToOrder);
 router.delete("/product/:id", orderController.removeProductFromOrderLine);
 router.put("/product/qty/:id", orderController.updateProductToOrderLine);
