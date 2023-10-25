@@ -648,7 +648,7 @@ exports.getProductRating = async (req, res) => {
                     .json({ message: "Send all required parameters", status: false });
           }
           const rating = await Rating.findOne({ productId: productId });
-          res.status(200).json({ message: rating, status: true });
+          res.status(200).json({ rating, status: true });
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
