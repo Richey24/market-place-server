@@ -668,3 +668,19 @@ exports.deleteProductRating = async (req, res) => {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };
+
+exports.getUnratedProducts = async (req, res) => {
+     try {
+          const userId = req.params.id;
+          const user = await User.findById(userId)
+          if (!user) {
+               return res
+                    .status(400)
+                    .json({ message: "Send all required parameters", status: false });
+          }
+          const unratedProducts = user.order_products.filter((order) => !user.rated.includes(order.id))
+          res.status(200).json({ unratedProducts, status: true });
+     } catch (error) {
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+}

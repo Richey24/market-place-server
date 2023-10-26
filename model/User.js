@@ -50,6 +50,10 @@ const userSchema = mongoose.Schema({
           type: Array,
           default: []
      },
+     order_products: {
+          type: Array,
+          default: []
+     },
      partner_id: {
           type: Number,
      },

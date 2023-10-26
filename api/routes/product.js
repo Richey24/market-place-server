@@ -20,6 +20,7 @@ router.get("/image/:productId", productController.getProductImage);
 router.post("/rating/mail", productController.sendRateMail);
 router.post("/rate", productController.rateProduct);
 router.get("/rate/:id", productController.getProductRating);
+router.get("/unrated/:id", productController.getUnratedProducts);
 router.delete("/rate/:id", productController.deleteProductRating);
 
 router.post("/wishlist", productController.createWishlistRecord);
