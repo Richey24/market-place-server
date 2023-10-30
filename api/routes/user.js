@@ -12,6 +12,7 @@ router.post("/logout", asyncHandler(userController.logoutUser));
 router.get("/me", auth, userController.getUserDetails);
 router.get("/me/customer/:id", userController.getUserDetails);
 router.put("/me", auth, userController.updateUserDetails);
+router.delete("/me", auth, userController.deleteAccount);
 router.put("/me/customer", userController.updateUserDetails);
 router.put("/update/password", auth, userController.updatePassword);
 router.put("/update/password/customer", userController.updatePassword);
