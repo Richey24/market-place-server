@@ -2,41 +2,41 @@ const Company = require("../../model/Company");
 const User = require("../../model/User");
 const { sendTrialExtensionEmail } = require("../../config/helpers");
 
+const sentTrialExtensions = new Set();
+
 exports.extendTrial = async (req, res) => {
-     const companyId = req.params.companyId;
+     const companyId = req.query.companyId;
 
-     Company.findById(companyId)
-          .then((company) => {
-               if (!company) {
-                    console.log("Company not found");
-                    return;
-               }
+     try {
+          if (sentTrialExtensions.has(companyId)) {
+               return res.status(400).json({ error: "Trial already extended for this company" });
+          }
 
-               // Retrieve the trial end date from the company
-               const trialEndDate = company.trial_end_date;
+          const company = await Company.findById(companyId);
 
-               // Add 7 days to the trial end date
-               const newTrialEndDate = new Date(trialEndDate);
-               newTrialEndDate.setDate(newTrialEndDate.getDate() + 7);
+          if (!company) {
+               return res.status(404).json({ error: "Company not found" });
+          }
 
-               // Update the trial_end_date field in the company model
-               company.trial_end_date = newTrialEndDate;
+          const trialEndDate = company.trial_end_date;
+          const newTrialEndDate = new Date(trialEndDate);
+          newTrialEndDate.setDate(newTrialEndDate.getDate() + 7);
 
-               // Save the updated company document
-               company.save();
-               
-               // get the user and send the trial extension email
-               const user = User.findById(company.user_id);
+          company.trial_end_date = newTrialEndDate;
+          await company.save();
+
+          const user = await User.findById(company.user_id);
+
+          if (user) {
                sendTrialExtensionEmail(user.name, user.email, newTrialEndDate);
+          }
 
-               res.status(201).json({ new_trial_end_date: newTrialEndDate });
-          })
-          .then((updatedCompany) => {
-               if (updatedCompany) {
-                    console.log("Company trial end date updated:", updatedCompany);
-               }
-          })
-          .catch((error) => {
-               console.error("Error updating company:", error);
-          });
+          // Mark the extension as sent for this company
+          sentTrialExtensions.add(companyId);
+
+          return res.status(201).json({ new_trial_end_date: newTrialEndDate });
+     } catch (error) {
+          console.error("Error extending trial:", error);
+          return res.status(500).json({ error: "Internal server error" });
+     }
 };
