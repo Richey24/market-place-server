@@ -1383,7 +1383,7 @@ const reminderJob = () => {
      });
 };
 
-const scheduleUserDisablingCronJob = async function scheduleUserDisablingCronJob() {
+const scheduleUserDisablingCronJob = async () => {
      // Calculate the date for 12:00 AM the next day
      const nextDay = calculateNextDay();
 

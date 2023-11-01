@@ -6,6 +6,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
+const { reminderJob, scheduleUserDisablingCronJob } = require("./config/helpers");
 
 //configure database and mongoose
 mongoose
@@ -35,6 +36,9 @@ app.get("/", (req, res) => {
      console.log("Hello MEVN Soldier");
      res.status(201).json({ message: "working" });
 });
+
+reminderJob.start();
+scheduleUserDisablingCronJob.start();
 
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
