@@ -2,6 +2,8 @@ const User = require("../../model/User");
 const Billing = require("../../model/Billing");
 const Shipping = require("../../model/Shipping");
 const Company = require("../../model/Company");
+const Advert = require("../../model/Advert");
+const Site = require("../../model/Site");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sendWelcomeEmail, sendForgotPasswordEmail } = require("../../config/helpers");
@@ -386,5 +388,46 @@ exports.getCustomersByCompanyId = async (req, res) => {
      } catch (error) {
           console.error("Error fetching users:", error);
           res.status(500).json({ message: "Internal server error.", status: true });
+     }
+};
+
+exports.deleteAccount = async (req, res) => {
+     try {
+          const userId = req.userData._id;
+          const companyId = req.userData.company._id;
+          const siteId = req.userData.company.site;
+
+          // Step 1: Find the user
+          const user = await User.findById(userId);
+
+          if (!user) {
+               return res.status(404).json({ message: "User not found", status: false });
+          }
+
+          // Step 2: Delete associated advertisements (adverts) by their _id values
+          if (siteId) {
+               await Advert.deleteMany({ _id: { $in: siteId } });
+          }
+
+          // Step 3: Find and delete the user's associated site if it exists
+          if (siteId) {
+               await Site.findByIdAndRemove(siteId);
+          }
+
+          // Step 4: Find and delete the user's associated company if it exists
+          if (companyId) {
+               await Company.findByIdAndRemove(companyId);
+          }
+
+          // Step 5: Delete the user account
+          await User.findByIdAndRemove(userId);
+
+          res.status(200).json({
+               message: "Account, associated site, company, advertisements, and data deleted successfully",
+               status: true,
+          });
+     } catch (error) {
+          console.error("Error deleting account:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
      }
 };
