@@ -37,8 +37,8 @@ app.get("/", (req, res) => {
      res.status(201).json({ message: "working" });
 });
 
-reminderJob.start();
-scheduleUserDisablingCronJob.start();
+reminderJob();
+scheduleUserDisablingCronJob();
 
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");

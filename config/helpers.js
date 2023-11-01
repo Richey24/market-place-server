@@ -1428,7 +1428,7 @@ const calculateNextDay = () => {
 
 const calculateThreeWeeksLater = (nextDay) => {
      const threeWeeksLater = new Date(nextDay);
-     threeWeeksLater.setDate(nextDay.getDate() + 21);
+     threeWeeksLater.setDate(nextDay?.getDate() + 21);
      return threeWeeksLater;
 };
 
