@@ -22,7 +22,7 @@ router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 //billing
 router.post("/add-billing-address", userController.addBillingAddress);
 router.post("/edit-billing-address/:id", auth, userController.editBillingAddress);
-router.get("/billing", auth, userController.listBilling);
+router.get("/billing", userController.listBilling);
 
 //shipping
 router.post("/add-shipping-address", userController.addShippingAddress);

@@ -13,5 +13,6 @@ router.post("/product", orderController.addProductToOrder);
 router.delete("/product/:id", orderController.removeProductFromOrderLine);
 router.put("/product/qty/:id", orderController.updateProductToOrderLine);
 router.put("/status", orderController.changeOrderStatus);
+router.put("/delivery", orderController.addDeliveryDetailsToOrder);
 
 module.exports = router;

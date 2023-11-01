@@ -123,23 +123,93 @@ exports.logoutUser = async (req, res) => {
 };
 
 exports.listBilling = async (req, res) => {
-     console.log("list billing information");
-     let user = req.userData;
-     console.log(user);
+     try {
+          await Odoo.connect();
+          const shippingAddresses = [
+               {
+                    street: "123 Main St",
+                    city: "Shipping City 1",
+                    zip: "12345",
+                    country_id: req.body.shippingCountryId1,
+                    state_id: req.body.shippingStateId1,
+                    type: "delivery", // Optional: You can specify the address type
+               },
+               {
+                    street: "456 Elm St",
+                    city: "Shipping City 2",
+                    zip: "67890",
+                    country_id: req.body.shippingCountryId2,
+                    state_id: req.body.shippingStateId2,
+                    type: "delivery", // Optional: You can specify the address type
+               },
+               // Add more shipping addresses as needed
+          ];
 
-     let billing = await Billing.findOne({ userId: user._id });
-     return res.status(200).json(billing);
+          // await Odoo.execute_kw("res.partner", "write", [[164], { active: false }]);
+
+          // Create the shipping addresses using a different API endpoint
+          // await Odoo.execute_kw("res.partner", "write", [
+          //      [164],
+          //      {
+          //           child_ids: [
+          //                [
+          //                     0,
+          //                     0,
+          //                     {
+          //                          street: "123 Main St",
+          //                          city: "Shipping City 1",
+          //                          zip: "12345",
+          //                          country_id: "NGA",
+          //                          state_id: 456,
+          //                          type: "delivery",
+          //                     },
+          //                ],
+          //           ],
+          //      },
+          // ]);
+
+          const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
+               [
+                    ["parent_id", "=", 164], // Filter by the parent partner (change 'parent_id' to the actual field name)
+               ],
+               ["name", "street", "city", "zip", "country_id", "state_id", "type", "phone"], // Fields you want to retrieve
+          ]);
+
+          return res.status(201).json({ status: true, partnerAddresses });
+     } catch (err) {
+          res.status(400).json({ error: err, status: false });
+     }
 };
 
 exports.listShipping = async (req, res) => {
      console.log("list shipping information");
      try {
-          let userId = req.params.userId;
-          console.log(userId);
+          let user = await User.findById(req.params.userId);
 
-          let shippings = await Shipping.find({ userId: userId });
-          return res.status(200).json({ data: shippings, status: true });
+          if (user) {
+               const partnerId = +user?.partner_id;
+               console.log("partnerId", partnerId);
+               const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
+                    [["parent_id", "=", 164]],
+                    [
+                         "name",
+                         "street",
+                         "city",
+                         "zip",
+                         "country_id",
+                         "state_id",
+                         "type",
+                         "phone",
+                         "email",
+                    ], // Fields you want to retrieve
+               ]);
+
+               return res.status(200).json({ data: partnerAddresses, status: true });
+          }
+
+          res.status(400).json({ status: false, message: "partner not found" });
      } catch (error) {
+          console.log("error", error);
           res.status(400).json({ error, status: false });
      }
 };
@@ -170,25 +240,65 @@ exports.listShipping = async (req, res) => {
      (exports.addShippingAddress = async (req, res) => {
           console.log("adding shipping");
           try {
-               const shipping = new Shipping({
-                    firstname: req.body.firstname,
-                    lastname: req.body.lastname,
-                    country: req.body.country,
-                    state: req.body.state,
-                    city: req.body.city,
-                    street: req.body.street,
-                    phone: req.body.phone,
-                    zipcode: req.body.zipcode,
-                    company: req.body.company,
-                    email: req.body.email,
-                    userId: req?.userData?._id ?? req?.body?.userId,
-               });
+               await Odoo.connect();
+               let user = await User.findById(req.body.userId);
 
-               let data = await shipping.save();
-               return res.status(201).json({ data, status: true });
+               if (user) {
+                    const partnerId = +user?.partner_id;
+                    // Get country_id based on the provided country name
+                    const countryName = req.body.country; // Assuming the country name is in the request
+                    const countryId = await Odoo.execute_kw("res.country", "search", [
+                         [["name", "=", countryName]],
+                    ]);
+                    console.log("countryId", countryId);
+                    if (!countryId || countryId.length === 0) {
+                         return res.status(400).json({ error: "Country not found", status: false });
+                    }
+
+                    // Get state_id based on the provided state name
+                    const stateName = req.body.state; // Assuming the state name is in the request
+                    const stateId = await Odoo.execute_kw("res.country.state", "search", [
+                         [["name", "=", stateName]],
+                    ]);
+
+                    console.log("stateId", stateId);
+                    // if (!stateId || stateId.length === 0) {
+                    //      return res.status(400).json({ error: "State not found", status: false });
+                    // }
+
+                    // Now, update the address with the retrieved country_id and state_id
+                    await Odoo.execute_kw("res.partner", "write", [
+                         [partnerId],
+                         {
+                              child_ids: [
+                                   [
+                                        0,
+                                        0,
+                                        {
+                                             name: `${req.body.firstname} ${req.body.lastname}`,
+                                             street: req.body.street,
+                                             city: req.body.city,
+                                             email: req.body.email,
+                                             zip: req.body.zipcode,
+                                             phone: req.body.phone,
+                                             country_id: countryId[0], // Use the first match
+                                             state_id: stateId?.[0] ?? false, // Use the first match
+                                             type: "delivery",
+                                        },
+                                   ],
+                              ],
+                         },
+                    ]);
+
+                    return res
+                         .status(201)
+                         .json({ message: "Shipping address added", status: true });
+                    // return res.status(201).json({ order: ordersWithDetails[0], status: true });
+               }
+               res.status(400).json({ status: false, message: "partner not found" });
           } catch (error) {
                console.log("err", error);
-               res.status(400).json({ error, status: false });
+               res.status(400).json({ error: error.message, status: false });
           }
      });
 

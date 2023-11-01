@@ -21,7 +21,7 @@ const getErrorMessage = (faultCode) => {
      }
 };
 
-const site = (theme) => {
+const site = (theme, services) => {
      return theme.type === "service"
           ? {
                  theme: theme?.name,
@@ -162,32 +162,7 @@ const site = (theme) => {
                                                               },
                                                          ],
                                                     },
-                                                    services: [
-                                                         {
-                                                              title: "Finance Management",
-                                                         },
-                                                         {
-                                                              title: "Banking Investigation",
-                                                         },
-                                                         {
-                                                              title: "Business Insurance",
-                                                         },
-                                                         {
-                                                              title: "Car Insurance",
-                                                         },
-                                                         {
-                                                              title: "Market Research",
-                                                         },
-                                                         {
-                                                              title: "Home Insurance",
-                                                         },
-                                                         {
-                                                              title: "Life Insurance",
-                                                         },
-                                                         {
-                                                              title: "Health Insurance",
-                                                         },
-                                                    ],
+                                                    services,
                                                     midSection: {
                                                          audit: {
                                                               description:
@@ -705,7 +680,8 @@ exports.postOnboarding = async (req, res) => {
                let company_data = await save_company.save();
 
                try {
-                    const save_site = new Site(site(theme));
+                    console.log("services,", req.body.services);
+                    const save_site = new Site(site(theme, req.body.services));
                     const site_data = await save_site.save();
                     await Company.findByIdAndUpdate(company_data?._id, {
                          $set: { site: site_data?._id },

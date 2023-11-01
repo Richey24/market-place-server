@@ -268,6 +268,10 @@ exports.getOrderById = async (req, res) => {
                     "state",
                     "amount_total",
                     "date_order",
+                    "partner_id",
+                    // "shipping_address_field1",
+                    // "shipping_address",
+                    // "delivery_method",
                ],
           ]);
 
@@ -412,6 +416,42 @@ exports.changeOrderStatus = async (req, res) => {
           }
      } catch (error) {
           console.error("Error changing order status:", error.message);
+          return res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.addDeliveryDetailsToOrder = async (req, res) => {
+     try {
+          const { orderId, deliveryPartnerId } = req.body;
+
+          if (!orderId || !deliveryPartnerId) {
+               return res.status(400).json({ error: "Invalid input data", status: false });
+          }
+
+          // Connect to Odoo
+          await Odoo.connect();
+
+          // Update the order's partner_shipping_id to set the delivery details
+          const result = await Odoo.execute_kw("sale.order", "write", [
+               [+orderId],
+               { partner_shipping_id: +deliveryPartnerId },
+          ]);
+
+          if (result) {
+               console.log("Delivery details added to the order successfully. Order ID:", orderId);
+               return res.status(200).json({
+                    status: true,
+                    message: "Delivery details added to the order successfully.",
+               });
+          } else {
+               console.error("Failed to update delivery details for the order.");
+               return res.status(500).json({
+                    status: false,
+                    message: "Failed to update delivery details for the order.",
+               });
+          }
+     } catch (error) {
+          console.error("Error adding delivery details to the order:", error);
           return res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };
