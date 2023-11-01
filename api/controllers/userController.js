@@ -145,29 +145,6 @@ exports.listBilling = async (req, res) => {
                // Add more shipping addresses as needed
           ];
 
-          // await Odoo.execute_kw("res.partner", "write", [[164], { active: false }]);
-
-          // Create the shipping addresses using a different API endpoint
-          // await Odoo.execute_kw("res.partner", "write", [
-          //      [164],
-          //      {
-          //           child_ids: [
-          //                [
-          //                     0,
-          //                     0,
-          //                     {
-          //                          street: "123 Main St",
-          //                          city: "Shipping City 1",
-          //                          zip: "12345",
-          //                          country_id: "NGA",
-          //                          state_id: 456,
-          //                          type: "delivery",
-          //                     },
-          //                ],
-          //           ],
-          //      },
-          // ]);
-
           const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
                [
                     ["parent_id", "=", 164], // Filter by the parent partner (change 'parent_id' to the actual field name)
@@ -245,12 +222,11 @@ exports.listShipping = async (req, res) => {
 
                if (user) {
                     const partnerId = +user?.partner_id;
-                    // Get country_id based on the provided country name
                     const countryName = req.body.country; // Assuming the country name is in the request
                     const countryId = await Odoo.execute_kw("res.country", "search", [
                          [["name", "=", countryName]],
                     ]);
-                    console.log("countryId", countryId);
+
                     if (!countryId || countryId.length === 0) {
                          return res.status(400).json({ error: "Country not found", status: false });
                     }
@@ -260,11 +236,6 @@ exports.listShipping = async (req, res) => {
                     const stateId = await Odoo.execute_kw("res.country.state", "search", [
                          [["name", "=", stateName]],
                     ]);
-
-                    console.log("stateId", stateId);
-                    // if (!stateId || stateId.length === 0) {
-                    //      return res.status(400).json({ error: "State not found", status: false });
-                    // }
 
                     // Now, update the address with the retrieved country_id and state_id
                     await Odoo.execute_kw("res.partner", "write", [

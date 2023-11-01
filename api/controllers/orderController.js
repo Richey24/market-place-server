@@ -239,7 +239,7 @@ exports.createOrder = async (req, res) => {
                          };
                     });
                     await User.findByIdAndUpdate(userId, { $push: { order_products: product[0] } });
-               })
+               });
                return res.status(201).json({ orderId, status: true });
           }
      } catch (error) {
@@ -333,7 +333,6 @@ exports.removeProductFromOrderLine = async (req, res) => {
           await Odoo.connect();
 
           const orderLineIdToRemove = +req.params.id; // Replace with the actual order line ID to remove
-          console.log("orderline", orderLineIdToRemove);
           // Delete the order line associated with the product
           const result = await Odoo.execute_kw("sale.order.line", "unlink", [
                [orderLineIdToRemove],
