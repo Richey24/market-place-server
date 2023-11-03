@@ -167,7 +167,7 @@ exports.listShipping = async (req, res) => {
                const partnerId = +user?.partner_id;
                console.log("partnerId", partnerId);
                const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
-                    [["parent_id", "=", 164]],
+                    [["parent_id", "=", 164]],      
                     [
                          "name",
                          "street",
