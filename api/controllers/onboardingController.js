@@ -691,7 +691,7 @@ exports.postOnboarding = async (req, res) => {
                }
 
                sendOnboardingEmail(email, firstname);
-               reminderJob.start();
+               // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
                     $set: { onboarded: true, company: company_data?._id },
                });
