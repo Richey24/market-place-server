@@ -54,6 +54,12 @@ const getFeaturedProducts = async (params) => {
                     "standard_price",
                     "categ_id",
                     "rating_avg",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
+                    "x_rating",
                     "rating_count",
                     "website_url",
                     "public_categ_ids",
@@ -356,7 +362,7 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => {};
+const deleteProduct = async (params) => { };
 
 // const getProductImageUrl = async (params) => {
 
