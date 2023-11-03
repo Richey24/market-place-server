@@ -163,6 +163,53 @@ const site = (theme, services) => {
                                                          ],
                                                     },
                                                     services,
+                                                    howItWorks: {
+                                                         description:
+                                                              "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best and why they should hire them for their security. Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                         list: [
+                                                              {
+                                                                   title: "Wait! What is VPN Service?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
+
+                                                              {
+                                                                   title: "Why you need security service before start a new business?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
+                                                              {
+                                                                   title: "How to be more benighted on business now-a-days?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
+                                                              {
+                                                                   title: "Our business is protecting yours?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
+                                                         ],
+                                                    },
+                                                    midList: {
+                                                         title: "Gigabit Service, Fastest Always",
+                                                         list: [
+                                                              {
+                                                                   title: "The result of employees, over detailers and engineers",
+                                                              },
+                                                              {
+                                                                   title: "All coming together to solve problem before.",
+                                                              },
+                                                              {
+                                                                   title: "Teamwork it demonstrates both internally and externally",
+                                                              },
+                                                              {
+                                                                   title: "Outstanding in the creation of landmark buildings",
+                                                              },
+                                                              {
+                                                                   title: "The result of employees, over detailers and engineers",
+                                                              },
+                                                         ],
+                                                    },
                                                     midSection: {
                                                          audit: {
                                                               description:
