@@ -664,6 +664,10 @@ exports.rateProduct = async (req, res) => {
                [+productId],
                { x_rating: ratingAvg },
           ]);
+          await Odoo.execute_kw("product.product", "write", [
+               [+productId],
+               { x_rating: ratingAvg },
+          ]);
           await User.findByIdAndUpdate(userId, { $push: { rated: productId } });
           res.status(200).json({ ratingAvg: ratingAvg, theRate, result, status: true, message: "Rated Successfully" });
      } catch (error) {
