@@ -50,7 +50,7 @@ const getFeaturedProducts = async (params) => {
                     "name",
                     "display_name",
                     "list_price",
-                    "image_1920",
+                    // "image_1920",
                     "standard_price",
                     "categ_id",
                     "rating_avg",
