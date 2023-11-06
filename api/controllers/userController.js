@@ -125,30 +125,9 @@ exports.logoutUser = async (req, res) => {
 exports.listBilling = async (req, res) => {
      try {
           await Odoo.connect();
-          const shippingAddresses = [
-               {
-                    street: "123 Main St",
-                    city: "Shipping City 1",
-                    zip: "12345",
-                    country_id: req.body.shippingCountryId1,
-                    state_id: req.body.shippingStateId1,
-                    type: "delivery", // Optional: You can specify the address type
-               },
-               {
-                    street: "456 Elm St",
-                    city: "Shipping City 2",
-                    zip: "67890",
-                    country_id: req.body.shippingCountryId2,
-                    state_id: req.body.shippingStateId2,
-                    type: "delivery", // Optional: You can specify the address type
-               },
-               // Add more shipping addresses as needed
-          ];
 
           const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
-               [
-                    ["parent_id", "=", 164], // Filter by the parent partner (change 'parent_id' to the actual field name)
-               ],
+               [["parent_id", "=", 164]],
                ["name", "street", "city", "zip", "country_id", "state_id", "type", "phone"], // Fields you want to retrieve
           ]);
 
@@ -167,7 +146,7 @@ exports.listShipping = async (req, res) => {
                const partnerId = +user?.partner_id;
                console.log("partnerId", partnerId);
                const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
-                    [["parent_id", "=", 164]],      
+                    [["parent_id", "=", partnerId]],
                     [
                          "name",
                          "street",
