@@ -26,7 +26,8 @@ router.get("/billing", userController.listBilling);
 
 //shipping
 router.post("/add-shipping-address", userController.addShippingAddress);
-router.post("/edit-shipping-address/:id", userController.editShippingAddress);
+router.put("/edit-shipping-address", userController.updateShippingAddress);
 router.get("/shipping/:userId", userController.listShipping);
+router.delete("/shipping/:addressId", userController.deleteShippingAddress);
 
 module.exports = router;

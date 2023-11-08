@@ -252,7 +252,81 @@ exports.listShipping = async (req, res) => {
           }
      });
 
-(exports.editBillingAddress = async (req, res) => {
+exports.updateShippingAddress = async (req, res) => {
+     console.log("Updating shipping address");
+     try {
+          const user = await User.findById(req.body.userId);
+
+          if (!user) {
+               return res.status(404).json({ error: "User not found", status: false });
+          }
+          const partnerId = +user.partner_id;
+
+          const existingAddressId = req.body.addressId;
+
+          // Update the shipping address details
+          const updatedAddress = {
+               name: `${req.body.firstname} ${req.body.lastname}`,
+               street: req.body.street,
+               city: req.body.city,
+               email: req.body.email,
+               zip: req.body.zipcode,
+               phone: req.body.phone,
+               // Update other address details as needed
+          };
+
+          // Assuming you have the Odoo API to update the address
+          await Odoo.execute_kw("res.partner", "write", [
+               [partnerId],
+               {
+                    child_ids: [
+                         [1, existingAddressId, updatedAddress], // Use 1 to update an existing record
+                    ],
+               },
+          ]);
+
+          return res.status(200).json({ message: "Shipping address updated", status: true });
+     } catch (error) {
+          console.error("Error:", error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.deleteShippingAddress = async (req, res) => {
+     console.log("Deleting shipping address");
+     try {
+          // Assuming you have established a connection to your Odoo instance (e.g., await Odoo.connect();)
+
+          // Fetch the user based on the provided user ID
+          const user = await User.findById(req.body.userId);
+
+          if (!user) {
+               return res.status(404).json({ error: "User not found", status: false });
+          }
+
+          const partnerId = +user.partner_id;
+
+          // Fetch the address ID you want to delete (e.g., from request parameters)
+          const addressIdToDelete = req.params.addressId; // Assuming you pass the address ID in the URL parameters
+
+          // Assuming you have the Odoo API to delete the address
+          await Odoo.execute_kw("res.partner", "write", [
+               [partnerId],
+               {
+                    child_ids: [
+                         [2, addressIdToDelete, false], // Use 2 to delete an existing record
+                    ],
+               },
+          ]);
+
+          return res.status(204).send(); // No content is sent upon successful deletion
+     } catch (error) {
+          console.error("Error:", error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.editBillingAddress = async (req, res) => {
      console.log("Edit Billing address");
 
      await Billing.findByIdAndUpdate(
@@ -278,34 +352,7 @@ exports.listShipping = async (req, res) => {
                }
           },
      );
-}),
-     (exports.editShippingAddress = async (req, res) => {
-          console.log("Edit Shipping address");
-
-          await Shipping.findByIdAndUpdate(
-               req.params.id,
-               {
-                    firstname: req.body.firstname,
-                    lastname: req.body.lastname,
-                    country: req.body.country,
-                    state: req.body.state,
-                    city: req.body.city,
-                    company: req.body.company,
-                    street: req.body.street,
-                    phone: req.body.phone,
-                    zipcode: req.body.zipcode,
-                    email: req.body.email,
-                    userId: eq?.userData?._id ?? req?.body?.userId,
-               },
-               (err, data) => {
-                    if (err) {
-                         return res.status(201).json({ message: "Something went wrong" });
-                    } else {
-                         return res.status(201).json({ message: "Shipping Updated", status: true });
-                    }
-               },
-          );
-     });
+};
 
 exports.updateUserDetails = async (req, res) => {
      try {
