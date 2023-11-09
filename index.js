@@ -54,6 +54,7 @@ const imageRouter = require("./api/routes/image");
 const siteRouter = require("./api/routes/site");
 const tagRouter = require("./api/routes/tag");
 const orderRouter = require("./api/routes/order");
+const mainCategoryRouter = require("./api/routes/mainCategory");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -77,6 +78,7 @@ app.use("/api/promotions", promotionRouter);
 app.use("/api/themes", themeRouter);
 app.use("/api/advert", advertRouter);
 app.use("/api/contact-us", contactUsRouter);
+app.use("/api/main/category", mainCategoryRouter)
 app.use("/image", imageRouter);
 
 app.listen(PORT, () => {
