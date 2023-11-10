@@ -262,7 +262,7 @@ exports.updateShippingAddress = async (req, res) => {
           }
           const partnerId = +user.partner_id;
 
-          const existingAddressId = req.body.addressId;
+          const existingAddressId = +req.body.addressId;
 
           // Update the shipping address details
           const updatedAddress = {
@@ -298,7 +298,7 @@ exports.deleteShippingAddress = async (req, res) => {
           // Assuming you have established a connection to your Odoo instance (e.g., await Odoo.connect();)
 
           // Fetch the user based on the provided user ID
-          const user = await User.findById(req.body.userId);
+          const user = await User.findById(req.params.userId);
 
           if (!user) {
                return res.status(404).json({ error: "User not found", status: false });
@@ -307,7 +307,7 @@ exports.deleteShippingAddress = async (req, res) => {
           const partnerId = +user.partner_id;
 
           // Fetch the address ID you want to delete (e.g., from request parameters)
-          const addressIdToDelete = req.params.addressId; // Assuming you pass the address ID in the URL parameters
+          const addressIdToDelete = +req.params.addressId; // Assuming you pass the address ID in the URL parameters
 
           // Assuming you have the Odoo API to delete the address
           await Odoo.execute_kw("res.partner", "write", [
@@ -319,7 +319,7 @@ exports.deleteShippingAddress = async (req, res) => {
                },
           ]);
 
-          return res.status(204).send(); // No content is sent upon successful deletion
+          return res.status(204).json({ status: true }); //No content is sent upon successful deletion
      } catch (error) {
           console.error("Error:", error);
           res.status(500).json({ error: "Internal Server Error", status: false });

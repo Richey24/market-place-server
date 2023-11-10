@@ -412,31 +412,9 @@ exports.createProduct = async (req, res) => {
                // user: user
           };
 
-          const theProduct = await addProduct({ ...params });
-          const product = theProduct.map((product) => {
-               return {
-                    id: product.id,
-                    website_url: product.website_url,
-                    name: product.name,
-                    description: product.description,
-                    categ_id: product.categ_id,
-                    list_price: product.list_price,
-                    standard_price: product.standard_price,
-                    company_id: product.company_id,
-                    display_name: product.display_name,
-                    base_unit_count: product.base_unit_count,
-                    image_1920: product.image_1920,
-                    image_1024: product.image_1024,
-                    x_rating: product.x_rating,
-                    create_date: product.create_date,
-                    x_subcategory: product.x_subcategory,
-                    x_size: product.x_size,
-                    x_weight: product.x_weight,
-                    x_color: product.x_color,
-                    x_dimension: product.x_dimension,
-               };
-          });
-          res.status(201).json({ product: product, status: true });
+          const productId = await addProduct({ ...params });
+
+          res.status(201).json({ productId, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
      }
@@ -643,7 +621,7 @@ exports.rateProduct = async (req, res) => {
                     name: name,
                     detail: detail,
                     rating: rating,
-                    date: Date.now()
+                    date: Date.now(),
                },
           };
           const rate = await Rating.findOne({ productId: productId });
@@ -669,7 +647,13 @@ exports.rateProduct = async (req, res) => {
                { x_rating: ratingAvg },
           ]);
           await User.findByIdAndUpdate(userId, { $push: { rated: productId } });
-          res.status(200).json({ ratingAvg: ratingAvg, theRate, result, status: true, message: "Rated Successfully" });
+          res.status(200).json({
+               ratingAvg: ratingAvg,
+               theRate,
+               result,
+               status: true,
+               message: "Rated Successfully",
+          });
      } catch (error) {
           res.status(500).json({ message: "Something went wrong, try again", status: false });
      }
@@ -708,13 +692,15 @@ exports.deleteProductRating = async (req, res) => {
 exports.getUnratedProducts = async (req, res) => {
      try {
           const userId = req.params.id;
-          const user = await User.findById(userId)
+          const user = await User.findById(userId);
           if (!user) {
                return res
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });
           }
-          const unratedProducts = user.order_products.filter((order) => !user.rated.includes(order.id))
+          const unratedProducts = user.order_products.filter(
+               (order) => !user.rated.includes(order.id),
+          );
           res.status(200).json({ unratedProducts, status: true });
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
