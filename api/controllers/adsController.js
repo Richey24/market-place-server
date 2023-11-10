@@ -1,4 +1,5 @@
 const advertService = require("../../services/advert.service");
+const Odoo = require("../../config/odoo.connection");
 const { successResponder, errorResponder } = require("../../utils/http_responder");
 class AdvertController {
      async createAdvertType(req, res) {
@@ -11,7 +12,15 @@ class AdvertController {
           const advertType = await advertService.findAdvertType(req.body.advertType);
 
           const advert = await advertService.create({ ...req.body, advertType: advertType._id });
-
+          await Odoo.connect();
+          await Odoo.execute_kw("product.template", "write", [
+               [+productId],
+               { x_ads_num: "1" },
+          ]);
+          await Odoo.execute_kw("product.product", "write", [
+               [+productId],
+               { x_ads_num: "1" },
+          ]);
           return successResponder(res, advert, 201, "Advert created successFully");
      }
 

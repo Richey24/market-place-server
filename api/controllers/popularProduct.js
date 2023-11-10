@@ -40,7 +40,13 @@ exports.createPopular = async (req, res) => {
 
 exports.getAllPopular = async (req, res) => {
     try {
-        const product = await PopularProduct.find({})
+        const type = req.query.type
+        if (!type) {
+            return res
+                .status(400)
+                .json({ message: "Send type", status: false });
+        }
+        const product = await PopularProduct.find({ type: type })
         res.status(200).json(product)
     } catch (error) {
         res.status(500).json({ error: "Internal Server Error", status: false });
