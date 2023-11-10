@@ -104,12 +104,11 @@ const addProduct = async (params) => {
 
           // Connect to Odoo instance
           await params.odoo.connect();
-          console.log(params.product);
 
           // Create the product
           const productData = {
                base_unit_count: params.product.qty,
-               // categ_id: params.product.category_id,
+               // categ_id: +params.product.category_id,
                list_price: params.product.list_price,
                standard_price: params.product.standard_price,
                name: params.product.name,
@@ -362,7 +361,7 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => { };
+const deleteProduct = async (params) => {};
 
 // const getProductImageUrl = async (params) => {
 

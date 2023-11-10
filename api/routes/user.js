@@ -28,6 +28,6 @@ router.get("/billing", userController.listBilling);
 router.post("/add-shipping-address", userController.addShippingAddress);
 router.put("/edit-shipping-address", userController.updateShippingAddress);
 router.get("/shipping/:userId", userController.listShipping);
-router.delete("/shipping/:addressId", userController.deleteShippingAddress);
+router.delete("/shipping/:addressId/:userId", userController.deleteShippingAddress);
 
 module.exports = router;
