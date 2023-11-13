@@ -108,7 +108,7 @@ const addProduct = async (params) => {
           // Create the product
           const productData = {
                base_unit_count: params.product.qty,
-               // categ_id: +params.product.category_id,
+               public_categ_ids: [+params.product.category_id],
                list_price: params.product.list_price,
                standard_price: params.product.standard_price,
                name: params.product.name,

@@ -35,6 +35,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                          ],
                          [
                               "id",
+                              "public_categ_ids",
                               "name",
                               "display_name",
                               "list_price",
@@ -50,7 +51,6 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "x_weight",
                               "x_rating",
                               "website_url",
-                              "public_categ_ids",
                               "website_meta_keywords",
                          ],
                          // null,
@@ -59,30 +59,8 @@ exports.getProductbyCompanyId = async (req, res) => {
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
-               const products = theProducts.map((product) => {
-                    return {
-                         id: product.id,
-                         website_url: product.website_url,
-                         name: product.name,
-                         description: product.description,
-                         categ_id: product.categ_id,
-                         list_price: product.list_price,
-                         standard_price: product.standard_price,
-                         company_id: product.company_id,
-                         display_name: product.display_name,
-                         base_unit_count: product.base_unit_count,
-                         image_1920: product.image_1920,
-                         image_1024: product.image_1024,
-                         x_rating: product.x_rating,
-                         create_date: product.create_date,
-                         x_subcategory: product.x_subcategory,
-                         x_size: product.x_size,
-                         x_weight: product.x_weight,
-                         x_color: product.x_color,
-                         x_dimension: product.x_dimension,
-                    };
-               });
-               res.status(200).json({ products, status: true });
+
+               res.status(200).json({ products: theProducts, status: true });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
           }
@@ -403,7 +381,7 @@ exports.fetchWishlist = async (req, res) => {
      }
 };
 
-exports. createProduct = async (req, res) => {
+exports.createProduct = async (req, res) => {
      // let user = req.userData;
      try {
           let params = {
