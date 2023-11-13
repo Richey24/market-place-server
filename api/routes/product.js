@@ -23,6 +23,7 @@ router.get("/rate/:id", productController.getProductRating);
 router.get("/unrated/:id", productController.getUnratedProducts);
 router.delete("/rate/:id", productController.deleteProductRating);
 
+router.get("/ads/product", productController.getAdsProduct)
 router.post("/wishlist", productController.createWishlistRecord);
 router.get("/wishlist/:userId", productController.fetchWishlist);
 

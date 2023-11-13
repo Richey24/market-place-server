@@ -683,4 +683,39 @@ exports.getUnratedProducts = async (req, res) => {
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
-};
+}
+
+exports.getAdsProduct = async (req, res) => {
+     try {
+          await Odoo.connect();
+          console.log("Connect to Odoo XML-RPC - api/products");
+          const name = req.body.name;
+          if (!name) {
+               return res
+                    .status(400)
+                    .json({ message: "Send product name", status: false });
+          }
+          const theProducts = await Odoo.execute_kw("product.template", "search_read", [
+               [
+                    ["name", "=", name]
+               ],
+               [
+                    "name",
+                    "display_name",
+                    "list_price",
+                    "standard_price",
+                    "x_rating",
+                    "website_url",
+                    "x_ads_num"
+               ],
+          ]);
+          const adsProduct = theProducts?.filter((pro) => pro.x_ads_num !== false)
+          const notAdsProduct = theProducts?.filter((pro) => pro.x_ads_num === false)
+
+          const finalArr = [...adsProduct, ...notAdsProduct]
+
+          res.status(200).json({ finalArr, status: true });
+     } catch (error) {
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+}
