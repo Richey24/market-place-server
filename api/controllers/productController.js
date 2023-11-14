@@ -83,11 +83,30 @@ exports.getProductbyCategory = async (req, res) => {
 
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
-                         ["categ_id", "=", categoryId], // Replace "categ_id" with the actual field name for the category
+                         ["public_categ_ids", "=", categoryId], // Replace "categ_id" with the actual field name for the category
                          ["type", "=", "consu"],
                          ["company_id", "=", companyId], // If you want to filter by company
                     ],
-                    ["name", "list_price"],
+                    [
+                         "id",
+                         "public_categ_ids",
+                         "name",
+                         "display_name",
+                         "list_price",
+                         // "image_1920",
+                         "standard_price",
+                         "categ_id",
+                         "rating_avg",
+                         "rating_count",
+                         "x_color",
+                         "x_dimension",
+                         "x_size",
+                         "x_subcategory",
+                         "x_weight",
+                         "x_rating",
+                         "website_url",
+                         "website_meta_keywords",
+                    ],
                ]);
 
                res.status(200).json({ products: theProducts, status: true });
@@ -683,7 +702,7 @@ exports.getUnratedProducts = async (req, res) => {
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
-}
+};
 
 exports.getAdsProduct = async (req, res) => {
      try {
@@ -691,14 +710,10 @@ exports.getAdsProduct = async (req, res) => {
           console.log("Connect to Odoo XML-RPC - api/products");
           const name = req.body.name;
           if (!name) {
-               return res
-                    .status(400)
-                    .json({ message: "Send product name", status: false });
+               return res.status(400).json({ message: "Send product name", status: false });
           }
           const theProducts = await Odoo.execute_kw("product.template", "search_read", [
-               [
-                    ["name", "=", name]
-               ],
+               [["name", "=", name]],
                [
                     "name",
                     "display_name",
@@ -706,16 +721,16 @@ exports.getAdsProduct = async (req, res) => {
                     "standard_price",
                     "x_rating",
                     "website_url",
-                    "x_ads_num"
+                    "x_ads_num",
                ],
           ]);
-          const adsProduct = theProducts?.filter((pro) => pro.x_ads_num !== false)
-          const notAdsProduct = theProducts?.filter((pro) => pro.x_ads_num === false)
+          const adsProduct = theProducts?.filter((pro) => pro.x_ads_num !== false);
+          const notAdsProduct = theProducts?.filter((pro) => pro.x_ads_num === false);
 
-          const finalArr = [...adsProduct, ...notAdsProduct]
+          const finalArr = [...adsProduct, ...notAdsProduct];
 
           res.status(200).json({ finalArr, status: true });
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
-}
+};
