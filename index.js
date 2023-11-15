@@ -56,6 +56,7 @@ const tagRouter = require("./api/routes/tag");
 const orderRouter = require("./api/routes/order");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
+const serviceRoute = require("./api/routes/service");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -81,6 +82,7 @@ app.use("/api/advert", advertRouter);
 app.use("/api/contact-us", contactUsRouter);
 app.use("/api/main/category", mainCategoryRouter)
 app.use("/api/main/popular", popularProduct)
+app.use("/api/service", serviceRoute)
 app.use("/image", imageRouter);
 
 app.listen(PORT, () => {

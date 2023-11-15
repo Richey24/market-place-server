@@ -2,6 +2,7 @@ const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
 const Rating = require("../../model/Rating");
+const algoliasearch = require('algoliasearch')
 const User = require("../../model/User");
 
 const {
@@ -406,14 +407,17 @@ exports.fetchWishlist = async (req, res) => {
 exports.createProduct = async (req, res) => {
      // let user = req.userData;
      try {
+          const client = algoliasearch('CM2FP8NI0T', 'daeb45e2c3fb98833358aba5e0c962c6')
+          const index = client.initIndex('market-product')
           let params = {
                odoo: Odoo,
                product: { ...req.body, images: req.files },
                // user: user
           };
-
           const productId = await addProduct({ ...params });
-
+          await index.saveObject(req.body, {
+               autoGenerateObjectIDIfNotExist: true,
+          })
           res.status(201).json({ productId, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
