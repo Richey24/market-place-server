@@ -44,15 +44,16 @@ class CategoryController {
           try {
                const { name } = req.body;
                const user = await UserService.findById(req.userData._id);
-               // const company = await CompanyService.updateCategories(user.company._id, id);
+
                console.log("company_id", user?.company?.company_id);
 
                await Odoo.connect();
                let id = await Odoo.execute_kw("product.public.category", "create", [
                     { name: name },
                ]);
+               const company = await CompanyService.updateCategories(user.company._id, id);
 
-               res.status(201).json({ id });
+               res.status(201).json({ id, status: true, company });
           } catch (e) {
                res.status(500).json(e);
                console.error("Error when trying to connect odoo xml-rpc", e);
