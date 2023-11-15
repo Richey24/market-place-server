@@ -8,6 +8,21 @@ class CategoryController {
      async findAll(req, res) {
           try {
                await Odoo.connect();
+
+               let categories = await Odoo.execute_kw("product.public.category", "search_read", [
+                    [],
+               ]);
+
+               res.status(200).json({ categories, status: true });
+          } catch (e) {
+               res.status(500).json({ error: e, status: false });
+               // console.error("Error when trying to connect odoo xml-rpc", e);
+          }
+     }
+
+     async getCategoriesByCompanyId(req, res) {
+          try {
+               await Odoo.connect();
                const company = await CompanyService.findById(req.params.companyId);
 
                let categories = await Odoo.execute_kw(
@@ -42,18 +57,21 @@ class CategoryController {
 
      async create(req, res) {
           try {
-               const { name } = req.body;
+               await Odoo.connect();
+               const { name, categ_Id } = req.body;
                const user = await UserService.findById(req.userData._id);
 
                console.log("company_id", user?.company?.company_id);
+               if (name) {
+                    let id = await Odoo.execute_kw("product.public.category", "create", [
+                         { name: name },
+                    ]);
+                    await CompanyService.updateCategories(user.company._id, id);
+               } else if (categ_Id) {
+                    await CompanyService.updateCategories(user.company._id, categ_Id);
+               }
 
-               await Odoo.connect();
-               let id = await Odoo.execute_kw("product.public.category", "create", [
-                    { name: name },
-               ]);
-               const company = await CompanyService.updateCategories(user.company._id, id);
-
-               res.status(201).json({ id, status: true, company });
+               res.status(201).json({ status: true, message: "Created Successfullly" });
           } catch (e) {
                res.status(500).json(e);
                console.error("Error when trying to connect odoo xml-rpc", e);
