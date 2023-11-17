@@ -412,8 +412,12 @@ exports.createProduct = async (req, res) => {
                // user: user
           };
           const productId = await addProduct({ ...params });
-          await index.saveObject(req.body, {
-               autoGenerateObjectIDIfNotExist: true,
+          index.getObjects(params.product.name).then(async ({ results }) => {
+               if (results.length < 1) {
+                    await index.saveObject(req.body, {
+                         autoGenerateObjectIDIfNotExist: true,
+                    })
+               }
           })
           res.status(201).json({ productId, status: true });
      } catch (err) {
