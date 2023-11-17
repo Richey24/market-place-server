@@ -10,7 +10,8 @@ const {
 const categoryController = require("../controllers/categoryController");
 
 router.get("/:id", categoryController.findOne);
-router.get("/company/:companyId", categoryController.findAll);
+router.get("/company/:companyId", categoryController.getCategoriesByCompanyId);
+router.get("/", categoryController.findAll);
 router.post("/", auth, categoryController.create);
 router.post("/multiple", categoryController.createMultiple);
 router.patch("/:id", auth, categoryController.update);

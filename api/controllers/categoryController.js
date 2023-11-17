@@ -8,7 +8,23 @@ class CategoryController {
      async findAll(req, res) {
           try {
                await Odoo.connect();
+
+               let categories = await Odoo.execute_kw("product.public.category", "search_read", [
+                    [],
+               ]);
+
+               res.status(200).json({ categories, status: true });
+          } catch (e) {
+               res.status(500).json({ error: e, status: false });
+               // console.error("Error when trying to connect odoo xml-rpc", e);
+          }
+     }
+
+     async getCategoriesByCompanyId(req, res) {
+          try {
+               await Odoo.connect();
                const company = await CompanyService.findById(req.params.companyId);
+               console.log("company", company.categories);
 
                let categories = await Odoo.execute_kw(
                     "product.public.category",
@@ -42,18 +58,23 @@ class CategoryController {
 
      async create(req, res) {
           try {
-               const { name } = req.body;
+               await Odoo.connect();
+               const { name, categ_id } = req.body;
                const user = await UserService.findById(req.userData._id);
 
-               console.log("company_id", user?.company?.company_id);
+               console.log("company", name, categ_id);
+               if (name) {
+                    let id = await Odoo.execute_kw("product.public.category", "create", [
+                         { name: name },
+                    ]);
+                    await CompanyService.updateCategories(user.company._id, id);
+               } else if (categ_id) {
+                    await CompanyService.updateCategories(user.company._id, categ_id);
+               } else {
+                    throw "Invalid Category";
+               }
 
-               await Odoo.connect();
-               let id = await Odoo.execute_kw("product.public.category", "create", [
-                    { name: name },
-               ]);
-               const company = await CompanyService.updateCategories(user.company._id, id);
-
-               res.status(201).json({ id, status: true, company });
+               res.status(201).json({ status: true, message: "Created Successfullly" });
           } catch (e) {
                res.status(500).json(e);
                console.error("Error when trying to connect odoo xml-rpc", e);
