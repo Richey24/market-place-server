@@ -412,8 +412,8 @@ exports.createProduct = async (req, res) => {
                // user: user
           };
           const productId = await addProduct({ ...params });
-          index.getObjects(params.product.name).then(async ({ results }) => {
-               if (results.length < 1) {
+          index.search(params.product.name).then(async ({ hits }) => {
+               if (hits.length < 1) {
                     await index.saveObject(req.body, {
                          autoGenerateObjectIDIfNotExist: true,
                     })
