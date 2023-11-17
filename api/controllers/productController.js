@@ -717,19 +717,27 @@ exports.getAdsProduct = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connect to Odoo XML-RPC - api/products");
-          const name = req.body.name;
-          if (!name) {
-               return res.status(400).json({ message: "Send product name", status: false });
-          }
           const theProducts = await Odoo.execute_kw("product.template", "search_read", [
-               [["name", "=", name]],
+               [["x_ads_num", "=", "1"]],
                [
+                    "id",
                     "name",
                     "display_name",
                     "list_price",
+                    // "image_1920",
                     "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "rating_count",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
                     "x_rating",
                     "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
                     "x_ads_num",
                ],
           ]);
