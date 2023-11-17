@@ -153,6 +153,7 @@ exports.getFeaturedProducts = async (req, res) => {
           promo: req.body,
           user: user,
           company_id,
+          page: req.query.page
      };
 
      const theProducts = await getFeaturedProducts(params);

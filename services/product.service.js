@@ -66,8 +66,8 @@ const getFeaturedProducts = async (params) => {
                     "website_meta_keywords",
                ],
                // null,
-               0,
-               10,
+               params.page ? params.page * 10 - 10 : 0,
+               params.page ? params.page * 10 : 10,
           ]);
           return products;
      } catch (e) {
@@ -361,7 +361,7 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => {};
+const deleteProduct = async (params) => { };
 
 // const getProductImageUrl = async (params) => {
 
