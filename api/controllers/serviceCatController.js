@@ -33,7 +33,7 @@ const getCat = async (req, res) => {
         for (let i = 0; i < result.length; i++) {
             const secondCat = await ServiceSecondCat.find({ firstCat: result[i].name })
             for (let j = 0; j < secondCat.length; j++) {
-                const thirdCat = await ServiceThirdCat.find({ secondCat: secondCat[j].name });
+                const thirdCat = await ServiceThirdCat.find({ secondCat: secondCat[j].name }).select("name");
                 const subObj = {
                     subName: secondCat[j].name,
                     subCat: thirdCat
