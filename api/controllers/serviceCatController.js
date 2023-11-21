@@ -46,6 +46,7 @@ const getCat = async (req, res) => {
                 firstSub: secondArr
             }
             arr.push(obj)
+            secondArr = []
         }
         res.status(201).json(arr)
     } catch (error) {
