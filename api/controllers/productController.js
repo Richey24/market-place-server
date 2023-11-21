@@ -157,6 +157,15 @@ exports.getFeaturedProducts = async (req, res) => {
      };
 
      const theProducts = await getFeaturedProducts(params);
+     const productsLength = await Odoo.execute_kw("product.product", "search_read", [
+          [
+               ["product_tag_ids.name", "=", "Featured Product"],
+               ["company_id", "=", params.company_id],
+          ],
+          [
+               "id"
+          ]
+     ]);
      const products = theProducts.map((product) => {
           return {
                id: product.id,
@@ -180,7 +189,7 @@ exports.getFeaturedProducts = async (req, res) => {
                x_dimension: product.x_dimension,
           };
      });
-     res.status(201).json({ products });
+     res.status(201).json({ products, count: productsLength.length });
 };
 
 exports.filterProducts = async (req, res) => {
