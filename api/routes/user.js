@@ -6,6 +6,7 @@ const userController = require("../controllers/userController");
 const asyncHandler = require("../../config/asyncHandler");
 
 router.post("/register", asyncHandler(userController.register));
+router.post("/confirm", asyncHandler(userController.confirmEmail));
 router.post("/login", asyncHandler(userController.loginUser));
 router.post("/logout", asyncHandler(userController.logoutUser));
 
@@ -27,7 +28,7 @@ router.get("/billing", userController.listBilling);
 //shipping
 router.post("/add-shipping-address", userController.addShippingAddress);
 router.put("/edit-shipping-address", userController.updateShippingAddress);
-router.get("/shipping/:userId", userController.listShipping);
+router.get("/shipping/:partner_id", userController.listShipping);
 router.delete("/shipping/:addressId/:userId", userController.deleteShippingAddress);
 
 module.exports = router;

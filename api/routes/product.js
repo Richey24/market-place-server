@@ -23,9 +23,9 @@ router.get("/rate/:id", productController.getProductRating);
 router.get("/unrated/:id", productController.getUnratedProducts);
 router.delete("/rate/:id", productController.deleteProductRating);
 
-router.get("/ads/product", productController.getAdsProduct)
+router.get("/ads/product", productController.getAdsProduct);
 router.post("/wishlist", productController.createWishlistRecord);
-router.get("/wishlist/:userId", productController.fetchWishlist);
+router.get("/wishlist/:partner_id", productController.fetchWishlist);
 
 router.get("/best-selling/:companyId", productController.getBestSellingProducts);
 

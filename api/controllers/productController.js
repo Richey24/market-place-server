@@ -2,7 +2,7 @@ const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
 const Rating = require("../../model/Rating");
-const algoliasearch = require('algoliasearch')
+const algoliasearch = require("algoliasearch");
 const User = require("../../model/User");
 
 const {
@@ -345,26 +345,22 @@ exports.createWishlistRecord = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connected to Odoo XML-RPC - createWishlistRecord", req.body);
-          let user = await User.findById(req.body.userId);
-          if (user) {
-               const wishlistRecord = {
-                    partner_id: user.partner_id,
-                    product_id: req.body.productId,
-                    website_id: 1,
-                    price: req.body.price,
-                    display_name: req.body.display_name,
-               };
 
-               // Create a new record in the wishlist model
-               const createdWishlistRecord = await Odoo.execute_kw("product.wishlist", "create", [
-                    wishlistRecord,
-               ]);
+          const wishlistRecord = {
+               partner_id: req.body.partner_id,
+               product_id: req.body.productId,
+               website_id: 1,
+               price: req.body.price,
+               display_name: req.body.display_name,
+          };
 
-               console.log("Wishlist record created:", createdWishlistRecord);
-               res.status(200).json({ wishlist: createdWishlistRecord, status: true });
-          } else {
-               throw "User Doesnt Exist";
-          }
+          // Create a new record in the wishlist model
+          const createdWishlistRecord = await Odoo.execute_kw("product.wishlist", "create", [
+               wishlistRecord,
+          ]);
+
+          console.log("Wishlist record created:", createdWishlistRecord);
+          res.status(200).json({ wishlist: createdWishlistRecord, status: true });
      } catch (error) {
           console.error("Error when trying to create wishlist record.", error);
           res.status(404).json({ error, status: false });
@@ -375,26 +371,16 @@ exports.fetchWishlist = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connected to Odoo XML-RPC - fetchWishlist");
-          let user = await User.findById(req.params.userId);
-          // Search for wishlist records based on the user ID
-          if (user) {
-               const wishlistRecords = await Odoo.execute_kw(
-                    "product.wishlist",
-                    "search_read",
-                    [[["partner_id", "=", +user.partner_id]]],
-                    { fields: ["user_id", "product_id"] },
-               );
 
-               console.log(
-                    "Wishlist records for user",
-                    +req.params.partnerId,
-                    ":",
-                    wishlistRecords,
-               );
-               res.status(200).json({ wishlist: wishlistRecords, status: true });
-          } else {
-               throw "User Doesnt Exist";
-          }
+          const wishlistRecords = await Odoo.execute_kw(
+               "product.wishlist",
+               "search_read",
+               [[["partner_id", "=", +req.params.partner_id]]],
+               { fields: ["user_id", "product_id"] },
+          );
+
+          console.log("Wishlist records for user", +req.params.partnerId, ":", wishlistRecords);
+          res.status(200).json({ wishlist: wishlistRecords, status: true });
      } catch (error) {
           console.error("Error when trying to fetch wishlist records.", error);
           res.status(404).json({ error, status: false });
@@ -404,8 +390,8 @@ exports.fetchWishlist = async (req, res) => {
 exports.createProduct = async (req, res) => {
      // let user = req.userData;
      try {
-          const client = algoliasearch('CM2FP8NI0T', 'daeb45e2c3fb98833358aba5e0c962c6')
-          const index = client.initIndex('market-product')
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("market-product");
           let params = {
                odoo: Odoo,
                product: { ...req.body, images: req.files },
@@ -414,7 +400,7 @@ exports.createProduct = async (req, res) => {
           const productId = await addProduct({ ...params });
           await index.saveObject(req.body, {
                autoGenerateObjectIDIfNotExist: true,
-          })
+          });
           res.status(201).json({ productId, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
