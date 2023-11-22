@@ -3,6 +3,7 @@ const { BlobServiceClient } = require("@azure/storage-blob")
 const fs = require("fs");
 const User = require("../../model/User");
 const Rating = require("../../model/Rating");
+const { ServiceThirdCat } = require("../../model/ServiceCategory");
 const blobClient = BlobServiceClient.fromConnectionString("DefaultEndpointsProtocol=https;AccountName=absa7kzimnaf;AccountKey=8sH4dhZjJa8cMyunmS1iDmwve5hZKLo5kaA1M9ubZScLCJ2oEsuSvWT46P2t+ouKoCwFENosnC4m+AStWRQ+rQ==;EndpointSuffix=core.windows.net")
 const containerClient = blobClient.getContainerClient("newcontainer")
 
@@ -36,7 +37,7 @@ exports.createService = async (req, res) => {
             body.image = `https://absa7kzimnaf.blob.core.windows.net/newcontainer/${file.filename}`
         }
         const result = await Service.create(req.body)
-
+        await ServiceThirdCat.findOneAndUpdate({ name: serviceType }, { $inc: { count: 1 } })
         res.status(201).json({ result, status: true });
     } catch (err) {
         res.status(500).json({ err, status: false });
