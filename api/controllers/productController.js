@@ -438,6 +438,7 @@ exports.createProduct = async (req, res) => {
           });
           res.status(201).json({ product: product, status: true });
      } catch (err) {
+          console.log("error", err);
           res.status(400).json({ err, status: false });
      }
 };
@@ -643,7 +644,7 @@ exports.rateProduct = async (req, res) => {
                     name: name,
                     detail: detail,
                     rating: rating,
-                    date: Date.now()
+                    date: Date.now(),
                },
           };
           const rate = await Rating.findOne({ productId: productId });
@@ -669,7 +670,13 @@ exports.rateProduct = async (req, res) => {
                { x_rating: ratingAvg },
           ]);
           await User.findByIdAndUpdate(userId, { $push: { rated: productId } });
-          res.status(200).json({ ratingAvg: ratingAvg, theRate, result, status: true, message: "Rated Successfully" });
+          res.status(200).json({
+               ratingAvg: ratingAvg,
+               theRate,
+               result,
+               status: true,
+               message: "Rated Successfully",
+          });
      } catch (error) {
           res.status(500).json({ message: "Something went wrong, try again", status: false });
      }
@@ -708,15 +715,17 @@ exports.deleteProductRating = async (req, res) => {
 exports.getUnratedProducts = async (req, res) => {
      try {
           const userId = req.params.id;
-          const user = await User.findById(userId)
+          const user = await User.findById(userId);
           if (!user) {
                return res
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });
           }
-          const unratedProducts = user.order_products.filter((order) => !user.rated.includes(order.id))
+          const unratedProducts = user.order_products.filter(
+               (order) => !user.rated.includes(order.id),
+          );
           res.status(200).json({ unratedProducts, status: true });
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
-}
+};

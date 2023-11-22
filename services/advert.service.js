@@ -19,7 +19,7 @@ class CompanyService {
       * @param {Object} payload - The payload containing advert data.
       * @returns {Promise<AdvertDocument>} The created advert object.
       */
-     async create(payload) {
+     async createAdvert(payload) {
           return await advertModel.create(payload);
      }
 
