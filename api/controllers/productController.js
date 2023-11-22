@@ -153,9 +153,19 @@ exports.getFeaturedProducts = async (req, res) => {
           promo: req.body,
           user: user,
           company_id,
+          page: req.query.page
      };
 
      const theProducts = await getFeaturedProducts(params);
+     const productsLength = await Odoo.execute_kw("product.product", "search_read", [
+          [
+               ["product_tag_ids.name", "=", "Featured Product"],
+               ["company_id", "=", params.company_id],
+          ],
+          [
+               "id"
+          ]
+     ]);
      const products = theProducts.map((product) => {
           return {
                id: product.id,
@@ -179,7 +189,7 @@ exports.getFeaturedProducts = async (req, res) => {
                x_dimension: product.x_dimension,
           };
      });
-     res.status(201).json({ products });
+     res.status(201).json({ products, count: productsLength.length });
 };
 
 exports.filterProducts = async (req, res) => {
@@ -398,9 +408,13 @@ exports.createProduct = async (req, res) => {
                // user: user
           };
           const productId = await addProduct({ ...params });
-          await index.saveObject(req.body, {
-               autoGenerateObjectIDIfNotExist: true,
-          });
+          index.search(params.product.name).then(async ({ hits }) => {
+               if (hits.length < 1) {
+                    await index.saveObject(req.body, {
+                         autoGenerateObjectIDIfNotExist: true,
+                    })
+               }
+          })
           res.status(201).json({ productId, status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
@@ -698,19 +712,27 @@ exports.getAdsProduct = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connect to Odoo XML-RPC - api/products");
-          const name = req.body.name;
-          if (!name) {
-               return res.status(400).json({ message: "Send product name", status: false });
-          }
           const theProducts = await Odoo.execute_kw("product.template", "search_read", [
-               [["name", "=", name]],
+               [["x_ads_num", "=", "1"]],
                [
+                    "id",
                     "name",
                     "display_name",
                     "list_price",
+                    // "image_1920",
                     "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "rating_count",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
                     "x_rating",
                     "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
                     "x_ads_num",
                ],
           ]);
