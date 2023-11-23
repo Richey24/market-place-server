@@ -417,6 +417,7 @@ exports.createProduct = async (req, res) => {
           })
           res.status(201).json({ productId, status: true });
      } catch (err) {
+          console.log("error", err);
           res.status(400).json({ err, status: false });
      }
 };
