@@ -153,7 +153,7 @@ exports.getFeaturedProducts = async (req, res) => {
           promo: req.body,
           user: user,
           company_id,
-          page: req.query.page
+          page: req.query.page,
      };
 
      const theProducts = await getFeaturedProducts(params);
@@ -162,9 +162,7 @@ exports.getFeaturedProducts = async (req, res) => {
                ["product_tag_ids.name", "=", "Featured Product"],
                ["company_id", "=", params.company_id],
           ],
-          [
-               "id"
-          ]
+          ["id"],
      ]);
      const products = theProducts.map((product) => {
           return {
@@ -412,9 +410,9 @@ exports.createProduct = async (req, res) => {
                if (hits.length < 1) {
                     await index.saveObject(req.body, {
                          autoGenerateObjectIDIfNotExist: true,
-                    })
+                    });
                }
-          })
+          });
           res.status(201).json({ productId, status: true });
      } catch (err) {
           console.log("error", err);
@@ -536,6 +534,7 @@ exports.searchProduct = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
+
 exports.getBestSellingProducts = async (req, res) => {
      console.log("GET /api/best-selling-products");
 
@@ -745,5 +744,77 @@ exports.getAdsProduct = async (req, res) => {
           res.status(200).json({ finalArr, status: true });
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+const getOdooSuggestions = async (query) => {
+     try {
+          await Odoo.connect();
+          // Fetch category suggestions from Odoo
+          const categorySuggestions = await Odoo.execute_kw(
+               "product.public.category",
+               "search_read",
+               [[["name", "ilike", query]], ["name"]],
+          );
+
+          // Fetch product suggestions from Odoo
+          const productSuggestions = await Odoo.execute_kw("product.template", "search_read", [
+               [["name", "ilike", query]],
+               ["name"],
+          ]);
+
+          // Extract names and add type information
+          const categoryNames = categorySuggestions.map((category) => ({
+               name: category.name,
+               type: "category",
+          }));
+          const productNames = productSuggestions.map((product) => ({
+               name: product.name,
+               type: "product",
+          }));
+
+          const allSuggestions = categoryNames.concat(productNames);
+          const uniqueSuggestions = allSuggestions.reduce((acc, suggestion) => {
+               const existingSuggestion = acc.find(
+                    (s) => s.name === suggestion.name && s.type === suggestion.type,
+               );
+               if (!existingSuggestion) {
+                    acc.push(suggestion);
+               }
+               return acc;
+          }, []);
+
+          if (uniqueSuggestions?.length > 5) {
+               const filtered = uniqueSuggestions.filter((sug) =>
+                    sug.name?.toLowerCase().startsWith(query?.toLowerCase()),
+               );
+               if (filtered?.length > 0) {
+                    return filtered;
+               } else {
+                    return uniqueSuggestions;
+               }
+          }
+
+          return uniqueSuggestions;
+     } catch (error) {
+          console.error("Error fetching Odoo suggestions:", error.message);
+          return [];
+     }
+};
+
+exports.searchProductsAndcateg = async (req, res) => {
+     try {
+          const query = req.query.q || "";
+          console.log("req.query.q", req.query.q);
+          // Fetch suggestions from Odoo
+          const odooSuggestions = await getOdooSuggestions(query);
+
+          // You can add additional sources and logic as needed
+
+          // Combine and return the suggestions
+          res.json({ suggestions: odooSuggestions });
+     } catch (err) {
+          console.log("error", err);
+          res.status(500).json({ error: err, status: false });
      }
 };
