@@ -66,8 +66,8 @@ const getFeaturedProducts = async (params) => {
                     "website_meta_keywords",
                ],
                // null,
-               0,
-               10,
+               params.page ? params.page * 10 - 10 : 0,
+               params.page ? params.page * 10 : 10,
           ]);
           return products;
      } catch (e) {
@@ -104,12 +104,11 @@ const addProduct = async (params) => {
 
           // Connect to Odoo instance
           await params.odoo.connect();
-          console.log(params.product);
 
           // Create the product
           const productData = {
                base_unit_count: params.product.qty,
-               // categ_id: params.product.category_id,
+               public_categ_ids: [+params.product.category_id],
                list_price: params.product.list_price,
                standard_price: params.product.standard_price,
                name: params.product.name,

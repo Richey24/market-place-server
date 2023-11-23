@@ -598,7 +598,7 @@ exports.postOnboarding = async (req, res) => {
      let subscribed = false;
      let trial_End_Date = formattedTrialEndDate;
      const { firstname, email, _id } = req.userData;
-     const categories = req.body.categories;
+     const categ_ids = req.body.categ_ids;
      const type = req?.body?.type;
 
      try {
@@ -633,20 +633,20 @@ exports.postOnboarding = async (req, res) => {
                ]);
 
                // HANDLE CREATE CATEOGIES
-               const categoryIds = [];
-               if (company_id)
-                    try {
-                         for (const category of categories) {
-                              const id = await odoo.execute_kw(
-                                   "product.public.category",
-                                   "create",
-                                   [{ name: category.name }],
-                              );
-                              categoryIds.push(id);
-                         }
-                    } catch (err) {
-                         console.log("failed catgories", err);
-                    }
+               // const categoryIds = [];
+               // if (company_id)
+               //      try {
+               //           for (const category of categories) {
+               //                const id = await odoo.execute_kw(
+               //                     "product.public.category",
+               //                     "create",
+               //                     [{ name: category.name }],
+               //                );
+               //                categoryIds.push(id);
+               //           }
+               //      } catch (err) {
+               //           console.log("failed catgories", err);
+               //      }
 
                const save_company = new Company({
                     user_id: _id,
@@ -665,7 +665,7 @@ exports.postOnboarding = async (req, res) => {
                     country: req.body.country,
                     city: req.body.city,
                     state: req.body.state,
-                    categories: categoryIds || [],
+                    categories: categ_ids || [],
                     type,
                });
 
@@ -695,7 +695,7 @@ exports.postOnboarding = async (req, res) => {
 
                sendOnboardingEmail(email, firstname);
 
-               reminderJob.start();
+               // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
                     $set: { onboarded: true, company: company_data?._id },
                });

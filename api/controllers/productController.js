@@ -2,6 +2,7 @@ const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
 const Rating = require("../../model/Rating");
+const algoliasearch = require('algoliasearch')
 const User = require("../../model/User");
 
 const {
@@ -35,6 +36,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                          ],
                          [
                               "id",
+                              "public_categ_ids",
                               "name",
                               "display_name",
                               "list_price",
@@ -50,7 +52,6 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "x_weight",
                               "x_rating",
                               "website_url",
-                              "public_categ_ids",
                               "website_meta_keywords",
                          ],
                          // null,
@@ -59,30 +60,8 @@ exports.getProductbyCompanyId = async (req, res) => {
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
-               const products = theProducts.map((product) => {
-                    return {
-                         id: product.id,
-                         website_url: product.website_url,
-                         name: product.name,
-                         description: product.description,
-                         categ_id: product.categ_id,
-                         list_price: product.list_price,
-                         standard_price: product.standard_price,
-                         company_id: product.company_id,
-                         display_name: product.display_name,
-                         base_unit_count: product.base_unit_count,
-                         image_1920: product.image_1920,
-                         image_1024: product.image_1024,
-                         x_rating: product.x_rating,
-                         create_date: product.create_date,
-                         x_subcategory: product.x_subcategory,
-                         x_size: product.x_size,
-                         x_weight: product.x_weight,
-                         x_color: product.x_color,
-                         x_dimension: product.x_dimension,
-                    };
-               });
-               res.status(200).json({ products, status: true });
+
+               res.status(200).json({ products: theProducts, status: true });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
           }
@@ -105,11 +84,30 @@ exports.getProductbyCategory = async (req, res) => {
 
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
-                         ["categ_id", "=", categoryId], // Replace "categ_id" with the actual field name for the category
+                         ["public_categ_ids", "=", categoryId], // Replace "categ_id" with the actual field name for the category
                          ["type", "=", "consu"],
                          ["company_id", "=", companyId], // If you want to filter by company
                     ],
-                    ["name", "list_price"],
+                    [
+                         "id",
+                         "public_categ_ids",
+                         "name",
+                         "display_name",
+                         "list_price",
+                         // "image_1920",
+                         "standard_price",
+                         "categ_id",
+                         "rating_avg",
+                         "rating_count",
+                         "x_color",
+                         "x_dimension",
+                         "x_size",
+                         "x_subcategory",
+                         "x_weight",
+                         "x_rating",
+                         "website_url",
+                         "website_meta_keywords",
+                    ],
                ]);
 
                res.status(200).json({ products: theProducts, status: true });
@@ -155,9 +153,19 @@ exports.getFeaturedProducts = async (req, res) => {
           promo: req.body,
           user: user,
           company_id,
+          page: req.query.page
      };
 
      const theProducts = await getFeaturedProducts(params);
+     const productsLength = await Odoo.execute_kw("product.product", "search_read", [
+          [
+               ["product_tag_ids.name", "=", "Featured Product"],
+               ["company_id", "=", params.company_id],
+          ],
+          [
+               "id"
+          ]
+     ]);
      const products = theProducts.map((product) => {
           return {
                id: product.id,
@@ -181,7 +189,7 @@ exports.getFeaturedProducts = async (req, res) => {
                x_dimension: product.x_dimension,
           };
      });
-     res.status(201).json({ products });
+     res.status(201).json({ products, count: productsLength.length });
 };
 
 exports.filterProducts = async (req, res) => {
@@ -406,37 +414,22 @@ exports.fetchWishlist = async (req, res) => {
 exports.createProduct = async (req, res) => {
      // let user = req.userData;
      try {
+          const client = algoliasearch('CM2FP8NI0T', 'daeb45e2c3fb98833358aba5e0c962c6')
+          const index = client.initIndex('market-product')
           let params = {
                odoo: Odoo,
                product: { ...req.body, images: req.files },
                // user: user
           };
-
-          const theProduct = await addProduct({ ...params });
-          const product = theProduct.map((product) => {
-               return {
-                    id: product.id,
-                    website_url: product.website_url,
-                    name: product.name,
-                    description: product.description,
-                    categ_id: product.categ_id,
-                    list_price: product.list_price,
-                    standard_price: product.standard_price,
-                    company_id: product.company_id,
-                    display_name: product.display_name,
-                    base_unit_count: product.base_unit_count,
-                    image_1920: product.image_1920,
-                    image_1024: product.image_1024,
-                    x_rating: product.x_rating,
-                    create_date: product.create_date,
-                    x_subcategory: product.x_subcategory,
-                    x_size: product.x_size,
-                    x_weight: product.x_weight,
-                    x_color: product.x_color,
-                    x_dimension: product.x_dimension,
-               };
-          });
-          res.status(201).json({ product: product, status: true });
+          const productId = await addProduct({ ...params });
+          index.search(params.product.name).then(async ({ hits }) => {
+               if (hits.length < 1) {
+                    await index.saveObject(req.body, {
+                         autoGenerateObjectIDIfNotExist: true,
+                    })
+               }
+          })
+          res.status(201).json({ productId, status: true });
      } catch (err) {
           console.log("error", err);
           res.status(400).json({ err, status: false });
@@ -725,6 +718,45 @@ exports.getUnratedProducts = async (req, res) => {
                (order) => !user.rated.includes(order.id),
           );
           res.status(200).json({ unratedProducts, status: true });
+     } catch (error) {
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.getAdsProduct = async (req, res) => {
+     try {
+          await Odoo.connect();
+          console.log("Connect to Odoo XML-RPC - api/products");
+          const theProducts = await Odoo.execute_kw("product.template", "search_read", [
+               [["x_ads_num", "=", "1"]],
+               [
+                    "id",
+                    "name",
+                    "display_name",
+                    "list_price",
+                    // "image_1920",
+                    "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "rating_count",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
+                    "x_rating",
+                    "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
+                    "x_ads_num",
+               ],
+          ]);
+          const adsProduct = theProducts?.filter((pro) => pro.x_ads_num !== false);
+          const notAdsProduct = theProducts?.filter((pro) => pro.x_ads_num === false);
+
+          const finalArr = [...adsProduct, ...notAdsProduct];
+
+          res.status(200).json({ finalArr, status: true });
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
