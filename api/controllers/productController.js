@@ -773,29 +773,8 @@ const getOdooSuggestions = async (query) => {
                type: "product",
           }));
 
-          const allSuggestions = categoryNames.concat(productNames);
-          const uniqueSuggestions = allSuggestions.reduce((acc, suggestion) => {
-               const existingSuggestion = acc.find(
-                    (s) => s.name === suggestion.name && s.type === suggestion.type,
-               );
-               if (!existingSuggestion) {
-                    acc.push(suggestion);
-               }
-               return acc;
-          }, []);
-
-          if (uniqueSuggestions?.length > 5) {
-               const filtered = uniqueSuggestions.filter((sug) =>
-                    sug.name?.toLowerCase().startsWith(query?.toLowerCase()),
-               );
-               if (filtered?.length > 0) {
-                    return filtered;
-               } else {
-                    return uniqueSuggestions;
-               }
-          }
-
-          return uniqueSuggestions;
+          // Combine and return the suggestions
+          return categoryNames.concat(productNames);
      } catch (error) {
           console.error("Error fetching Odoo suggestions:", error.message);
           return [];
