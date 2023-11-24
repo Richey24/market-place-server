@@ -760,7 +760,14 @@ const getOdooSuggestions = async (query) => {
           // Fetch product suggestions from Odoo
           const productSuggestions = await Odoo.execute_kw("product.template", "search_read", [
                [["name", "ilike", query]],
-               ["name"],
+               [
+                    "name",
+                    "standard_price",
+                    "public_categ_ids",
+                    "x_size",
+                    "description",
+                    "list_price",
+               ],
           ]);
 
           // Extract names and add type information
