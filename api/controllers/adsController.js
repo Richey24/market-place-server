@@ -12,7 +12,7 @@ class AdvertController {
      async create(req, res) {
           try {
                const advertType = await advertService.findAdvertType(req.body.advertType);
-
+               console.log(req.body);
                let targetUrl;
 
                if (req.body.target === "landing") {
@@ -39,15 +39,15 @@ class AdvertController {
                };
 
                const createdAdvert = await advertService.createAdvert(payload);
-               await Odoo.connect();
-               await Odoo.execute_kw("product.template", "write", [
-                    [+productId],
-                    { x_ads_num: "1" },
-               ]);
-               await Odoo.execute_kw("product.product", "write", [
-                    [+productId],
-                    { x_ads_num: "1" },
-               ]);
+               // await Odoo.connect();
+               // await Odoo.execute_kw("product.template", "write", [
+               //      [+productId],
+               //      { x_ads_num: "1" },
+               // ]);
+               // await Odoo.execute_kw("product.product", "write", [
+               //      [+productId],
+               //      { x_ads_num: "1" },
+               // ]);
                return successResponder(res, createdAdvert, 201, "Advert created successfully");
           } catch (error) {
                // Handle any errors that may occur during the creation process
