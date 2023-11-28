@@ -29,6 +29,8 @@ const createAdvertSchema = {
           company_id: Joi.string().required(),
           status: Joi.string(),
           target: Joi.string().valid("landing", "product").required(),
+          discountType: Joi.string(),
+          discountValue: Joi.number(),
      }),
 };
 

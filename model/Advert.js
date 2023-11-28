@@ -24,6 +24,12 @@ const AdvertSchema = mongoose.Schema(
                type: String,
                required: true,
           },
+          discountType: {
+               type: String,
+          },
+          discountValue: {
+               type: Number,
+          },
           status: {
                type: String,
                default: ADVERT_STATUS.DISABLED,

@@ -94,6 +94,7 @@ class AdvertController {
           const advertsWithDetails = await Promise.all(
                adverts.map(async (advert) => {
                     const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
+                    console.log("=======>", details);
                     return { ...advert, details };
                }),
           );
