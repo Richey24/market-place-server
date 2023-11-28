@@ -2,6 +2,7 @@ const advertService = require("../../services/advert.service");
 const companyModel = require("../../model/Company");
 const Odoo = require("../../config/odoo.connection");
 const { successResponder, errorResponder } = require("../../utils/http_responder");
+const { getProductById } = require("../../services/product.service");
 class AdvertController {
      async createAdvertType(req, res) {
           const type = await advertService.createAdvertType(req.body);
@@ -81,15 +82,23 @@ class AdvertController {
      }
 
      async findAll(req, res) {
+          let adverts;
+
           if (req.query.type) {
-               const adverts = await advertService.findByType(req.query.type);
-
-               return successResponder(res, adverts);
+               adverts = await advertService.findByType(req.query.type);
           } else {
-               const adverts = await advertService.findAll();
-
-               return successResponder(res, adverts);
+               adverts = await advertService.findAll();
           }
+
+          // Fetch details for each advertisement
+          const advertsWithDetails = await Promise.all(
+               adverts.map(async (advert) => {
+                    const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
+                    return { ...advert, details };
+               }),
+          );
+
+          return successResponder(res, advertsWithDetails);
      }
 
      async updateOne(req, res) {
