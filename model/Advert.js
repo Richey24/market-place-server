@@ -24,6 +24,9 @@ const AdvertSchema = mongoose.Schema(
                type: String,
                required: true,
           },
+          description: {
+               type: String,
+          },
           discountType: {
                type: String,
           },
