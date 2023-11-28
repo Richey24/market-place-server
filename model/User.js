@@ -10,7 +10,9 @@ const userSchema = mongoose.Schema({
           type: String,
           required: [true, "Please Include your first name"],
      },
-
+     tour: {
+          type: String,
+     },
      lastname: {
           type: String,
           required: [true, "Please include your last Name"],

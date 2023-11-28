@@ -64,6 +64,7 @@ exports.register = async (req, res) => {
                     lastname: req.body.lastname,
                     email: req.body.email,
                     role: req.body.role,
+                    tour: req.body?.tour ?? "",
                     password: req.body.password,
                     phone: req.body.phone,
                     partner_ids: [{ id: partner_id, domain: req.body.domain }],
@@ -580,6 +581,34 @@ exports.deleteAccount = async (req, res) => {
           res.status(200).json({
                message: "Account, associated site, company, advertisements, and data deleted successfully",
                status: true,
+          });
+     } catch (error) {
+          console.error("Error deleting account:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+};
+
+exports.updateTour = async (req, res) => {
+     try {
+          const userId = req.userData._id;
+          const tour = req.body.tour;
+
+          const user = await User.findByIdAndUpdate(
+               userId,
+               {
+                    $set: {
+                         tour,
+                    },
+               },
+               { new: true },
+          ).populate({
+               path: "company",
+               options: { virtuals: true },
+          });
+
+          res.status(200).json({
+               status: true,
+               user: user,
           });
      } catch (error) {
           console.error("Error deleting account:", error);
