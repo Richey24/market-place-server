@@ -25,10 +25,13 @@ const createAdvertSchema = {
           advertType: Joi.string().required(),
           imageUrl: Joi.string().required(),
           productId: Joi.number(),
+          description: Joi.string(),
           categoryId: Joi.string(),
           company_id: Joi.string().required(),
           status: Joi.string(),
           target: Joi.string().valid("landing", "product").required(),
+          discountType: Joi.string(),
+          discountValue: Joi.number(),
      }),
 };
 

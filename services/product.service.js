@@ -23,6 +23,27 @@ const getProductById = async (id) => {
           await Odoo.connect();
           const productData = await Odoo.execute_kw("product.template", "search_read", [
                [["id", "=", productId]],
+               [
+                    "id",
+                    "public_categ_ids",
+                    "name",
+                    "display_name",
+                    "list_price",
+                    "image_1920",
+                    "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "rating_count",
+                    "description",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
+                    "x_rating",
+                    "website_url",
+                    "website_meta_keywords",
+               ],
           ]);
           return productData;
      } catch (e) {
@@ -361,7 +382,7 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => { };
+const deleteProduct = async (params) => {};
 
 // const getProductImageUrl = async (params) => {
 

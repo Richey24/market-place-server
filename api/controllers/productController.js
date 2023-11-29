@@ -2,7 +2,7 @@ const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
 const Rating = require("../../model/Rating");
-const algoliasearch = require('algoliasearch')
+const algoliasearch = require("algoliasearch");
 const User = require("../../model/User");
 
 const {
@@ -153,7 +153,7 @@ exports.getFeaturedProducts = async (req, res) => {
           promo: req.body,
           user: user,
           company_id,
-          page: req.query.page
+          page: req.query.page,
      };
 
      const theProducts = await getFeaturedProducts(params);
@@ -162,9 +162,7 @@ exports.getFeaturedProducts = async (req, res) => {
                ["product_tag_ids.name", "=", "Featured Product"],
                ["company_id", "=", params.company_id],
           ],
-          [
-               "id"
-          ]
+          ["id"],
      ]);
      const products = theProducts.map((product) => {
           return {
@@ -355,26 +353,22 @@ exports.createWishlistRecord = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connected to Odoo XML-RPC - createWishlistRecord", req.body);
-          let user = await User.findById(req.body.userId);
-          if (user) {
-               const wishlistRecord = {
-                    partner_id: user.partner_id,
-                    product_id: req.body.productId,
-                    website_id: 1,
-                    price: req.body.price,
-                    display_name: req.body.display_name,
-               };
 
-               // Create a new record in the wishlist model
-               const createdWishlistRecord = await Odoo.execute_kw("product.wishlist", "create", [
-                    wishlistRecord,
-               ]);
+          const wishlistRecord = {
+               partner_id: req.body.partner_id,
+               product_id: req.body.productId,
+               website_id: 1,
+               price: req.body.price,
+               display_name: req.body.display_name,
+          };
 
-               console.log("Wishlist record created:", createdWishlistRecord);
-               res.status(200).json({ wishlist: createdWishlistRecord, status: true });
-          } else {
-               throw "User Doesnt Exist";
-          }
+          // Create a new record in the wishlist model
+          const createdWishlistRecord = await Odoo.execute_kw("product.wishlist", "create", [
+               wishlistRecord,
+          ]);
+
+          console.log("Wishlist record created:", createdWishlistRecord);
+          res.status(200).json({ wishlist: createdWishlistRecord, status: true });
      } catch (error) {
           console.error("Error when trying to create wishlist record.", error);
           res.status(404).json({ error, status: false });
@@ -385,26 +379,16 @@ exports.fetchWishlist = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connected to Odoo XML-RPC - fetchWishlist");
-          let user = await User.findById(req.params.userId);
-          // Search for wishlist records based on the user ID
-          if (user) {
-               const wishlistRecords = await Odoo.execute_kw(
-                    "product.wishlist",
-                    "search_read",
-                    [[["partner_id", "=", +user.partner_id]]],
-                    { fields: ["user_id", "product_id"] },
-               );
 
-               console.log(
-                    "Wishlist records for user",
-                    +req.params.partnerId,
-                    ":",
-                    wishlistRecords,
-               );
-               res.status(200).json({ wishlist: wishlistRecords, status: true });
-          } else {
-               throw "User Doesnt Exist";
-          }
+          const wishlistRecords = await Odoo.execute_kw(
+               "product.wishlist",
+               "search_read",
+               [[["partner_id", "=", +req.params.partner_id]]],
+               { fields: ["user_id", "product_id"] },
+          );
+
+          console.log("Wishlist records for user", +req.params.partnerId, ":", wishlistRecords);
+          res.status(200).json({ wishlist: wishlistRecords, status: true });
      } catch (error) {
           console.error("Error when trying to fetch wishlist records.", error);
           res.status(404).json({ error, status: false });
@@ -414,8 +398,8 @@ exports.fetchWishlist = async (req, res) => {
 exports.createProduct = async (req, res) => {
      // let user = req.userData;
      try {
-          const client = algoliasearch('CM2FP8NI0T', 'daeb45e2c3fb98833358aba5e0c962c6')
-          const index = client.initIndex('market-product')
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("market-product");
           let params = {
                odoo: Odoo,
                product: { ...req.body, images: req.files },
@@ -426,9 +410,9 @@ exports.createProduct = async (req, res) => {
                if (hits.length < 1) {
                     await index.saveObject(req.body, {
                          autoGenerateObjectIDIfNotExist: true,
-                    })
+                    });
                }
-          })
+          });
           res.status(201).json({ productId, status: true });
      } catch (err) {
           console.log("error", err);
@@ -550,6 +534,7 @@ exports.searchProduct = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
+
 exports.getBestSellingProducts = async (req, res) => {
      console.log("GET /api/best-selling-products");
 
@@ -759,5 +744,63 @@ exports.getAdsProduct = async (req, res) => {
           res.status(200).json({ finalArr, status: true });
      } catch (error) {
           res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+const getOdooSuggestions = async (query) => {
+     try {
+          await Odoo.connect();
+          // Fetch category suggestions from Odoo
+          const categorySuggestions = await Odoo.execute_kw(
+               "product.public.category",
+               "search_read",
+               [[["name", "ilike", query]], ["name"]],
+          );
+
+          // Fetch product suggestions from Odoo
+          const productSuggestions = await Odoo.execute_kw("product.template", "search_read", [
+               [["name", "ilike", query]],
+               [
+                    "name",
+                    "standard_price",
+                    "public_categ_ids",
+                    "x_size",
+                    "description",
+                    "list_price",
+               ],
+          ]);
+
+          // Extract names and add type information
+          const categoryNames = categorySuggestions.map((category) => ({
+               name: category.name,
+               type: "category",
+          }));
+          const productNames = productSuggestions.map((product) => ({
+               name: product.name,
+               type: "product",
+          }));
+
+          // Combine and return the suggestions
+          return categoryNames.concat(productNames);
+     } catch (error) {
+          console.error("Error fetching Odoo suggestions:", error.message);
+          return [];
+     }
+};
+
+exports.searchProductsAndcateg = async (req, res) => {
+     try {
+          const query = req.query.q || "";
+          console.log("req.query.q", req.query.q);
+          // Fetch suggestions from Odoo
+          const odooSuggestions = await getOdooSuggestions(query);
+
+          // You can add additional sources and logic as needed
+
+          // Combine and return the suggestions
+          res.json({ suggestions: odooSuggestions });
+     } catch (err) {
+          console.log("error", err);
+          res.status(500).json({ error: err, status: false });
      }
 };

@@ -57,7 +57,7 @@ const companySchema = mongoose.Schema({
           type: Array,
           required: false,
      },
-     subscibed: {
+     subscribed: {
           type: Boolean,
           default: false,
      },

@@ -2,6 +2,7 @@ const advertService = require("../../services/advert.service");
 const companyModel = require("../../model/Company");
 const Odoo = require("../../config/odoo.connection");
 const { successResponder, errorResponder } = require("../../utils/http_responder");
+const { getProductById } = require("../../services/product.service");
 class AdvertController {
      async createAdvertType(req, res) {
           const type = await advertService.createAdvertType(req.body);
@@ -12,7 +13,7 @@ class AdvertController {
      async create(req, res) {
           try {
                const advertType = await advertService.findAdvertType(req.body.advertType);
-
+               console.log(req.body);
                let targetUrl;
 
                if (req.body.target === "landing") {
@@ -28,7 +29,7 @@ class AdvertController {
                     const company_name = company ? company.company_name : "unknown";
 
                     // Construct targetUrl for product
-                    targetUrl = `https://${company_name}/ishop.black/${req.body.productId}`;
+                    targetUrl = `https://${company_name}.ishop.black/${req.body.productId}`;
                }
 
                // Update the payload with the correct targetUrl
@@ -39,15 +40,15 @@ class AdvertController {
                };
 
                const createdAdvert = await advertService.createAdvert(payload);
-               await Odoo.connect();
-               await Odoo.execute_kw("product.template", "write", [
-                    [+productId],
-                    { x_ads_num: "1" },
-               ]);
-               await Odoo.execute_kw("product.product", "write", [
-                    [+productId],
-                    { x_ads_num: "1" },
-               ]);
+               // await Odoo.connect();
+               // await Odoo.execute_kw("product.template", "write", [
+               //      [+productId],
+               //      { x_ads_num: "1" },
+               // ]);
+               // await Odoo.execute_kw("product.product", "write", [
+               //      [+productId],
+               //      { x_ads_num: "1" },
+               // ]);
                return successResponder(res, createdAdvert, 201, "Advert created successfully");
           } catch (error) {
                // Handle any errors that may occur during the creation process
@@ -81,15 +82,23 @@ class AdvertController {
      }
 
      async findAll(req, res) {
+          let adverts;
+
           if (req.query.type) {
-               const adverts = await advertService.findByType(req.query.type);
-
-               return successResponder(res, adverts);
+               adverts = await advertService.findByType(req.query.type);
           } else {
-               const adverts = await advertService.findAll();
-
-               return successResponder(res, adverts);
+               adverts = await advertService.findAll();
           }
+
+          // Fetch details for each advertisement
+          const advertsWithDetails = await Promise.all(
+               adverts.map(async (advert) => {
+                    const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
+                    return { ...advert, details };
+               }),
+          );
+
+          return successResponder(res, advertsWithDetails);
      }
 
      async updateOne(req, res) {

@@ -15,12 +15,26 @@ exports.register = async (req, res) => {
           await Odoo.connect();
           // TODO: add tenant id to verify
           let user = await User.findOne({ email: req.body.email });
-
-          if (user) {
+          // console.log("user", user);
+          if (req.body.role && user) {
                return res.status(409).json({
                     message: "email already in use",
+                    status: false,
                });
           }
+
+          const domainExists = await User.findOne({
+               "partner_ids.domain": req.body.domain,
+               email: req.body.email,
+          });
+
+          if (domainExists) {
+               return res.status(409).json({
+                    message: "Account Already Exist for this Site",
+                    status: false,
+               });
+          }
+
           let company;
           if (req.body.domain) {
                company = await Company.findOne({ subdomain: req.body.domain });
@@ -30,9 +44,11 @@ exports.register = async (req, res) => {
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname} ${req.body.lastname}`,
-                         email: req.body.email,
-                         phone: req.body.phone,
+                         name: `${req.body.firstname ?? user?.firstname} ${
+                              req.body.lastname ?? user?.lastname
+                         }`,
+                         email: req.body.email ?? user?.email,
+                         phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
                          is_published: true,
                     },
@@ -40,37 +56,91 @@ exports.register = async (req, res) => {
                console.log("Partner created successfully. Partner ID:", partner_id);
           }
 
-          const newUser = new User({
-               firstname: req.body.firstname,
-               lastname: req.body.lastname,
-               email: req.body.email,
-               role: req.body.role,
-               password: req.body.password,
-               phone: req.body.phone,
-               partner_id: partner_id,
-               currentSiteType: req.body.currentSiteType,
-               ...(company && { company: company._id }),
-          });
-
-          let data = await newUser.save();
-          console.log(data);
+          let data;
+          let token;
+          if (!user) {
+               const newUser = new User({
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname,
+                    email: req.body.email,
+                    role: req.body.role,
+                    tour: req.body?.tour ?? "",
+                    password: req.body.password,
+                    phone: req.body.phone,
+                    partner_ids: [{ id: partner_id, domain: req.body.domain }],
+                    currentSiteType: req.body.currentSiteType,
+                    ...(company && { company: company._id }),
+               });
+               data = await newUser.save();
+               token = await newUser.generateAuthToken(req.body.domain);
+          } else {
+               user = await User.findByIdAndUpdate(user?._id, {
+                    $set: {
+                         partner_ids: [
+                              ...user?.partner_ids,
+                              { id: partner_id, domain: req.body.domain },
+                         ],
+                    },
+               });
+               token = await user.generateAuthToken(req.body.domain);
+          }
 
           // Omit password from the user object before sending the response
-          const userWithoutPassword = {
-               _id: data._id,
-               firstname: data.firstname,
-               lastname: data.lastname,
-               email: data.email,
-               role: data.role,
-               company: data.company,
-          };
+          let userWithoutPassword;
+          if (!user)
+               userWithoutPassword = {
+                    _id: data._id,
+                    firstname: data.firstname,
+                    lastname: data.lastname,
+                    email: data.email,
+                    role: data.role,
+                    company: data.company,
+               };
 
-          const token = await newUser.generateAuthToken();
-          sendWelcomeEmail(req.body.email, req.body.firstname);
-          res.status(201).json({ user: userWithoutPassword, token, status: true });
+          sendWelcomeEmail(
+               req.body?.email ?? user?.firstname,
+               req.body?.firstname ?? user?.lastname,
+          );
+
+          res.status(201).json({ user: userWithoutPassword ?? user, token, status: true });
      } catch (error) {
           console.log("errpr", error);
-          res.status(400).json({ error, status: true });
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.confirmEmail = async (req, res) => {
+     try {
+          console.log("POST registering user");
+          await Odoo.connect();
+          // TODO: add tenant id to verify
+          let user = await User.findOne({ email: req.body.email });
+          const domainExists = await User.findOne({
+               "partner_ids.domain": req.body.domain,
+               email: req.body.email,
+          });
+          console.log("domainExists", domainExists, req.body);
+          if (domainExists) {
+               return res.status(409).json({
+                    message: "Account Already Exist for this Site",
+                    status: false,
+               });
+          }
+
+          if (user && !domainExists) {
+               return res.status(201).json({
+                    exists: true,
+                    status: true,
+               });
+          } else {
+               return res.status(201).json({
+                    exists: false,
+                    status: true,
+               });
+          }
+     } catch (error) {
+          console.log("error", error);
+          res.status(400).json({ error, status: false });
      }
 };
 
@@ -82,7 +152,14 @@ exports.loginUser = async (req, res) => {
           console.log("logging user in");
           const email = req.body.email;
           const password = req.body.password;
+          const domain = req.body.domain;
           const user = await User.findByCredentials(email, password);
+
+          if (!user) {
+               return res
+                    .status(401)
+                    .json({ error: "Login failed! Check authenthication credentails" });
+          }
 
           const userWithoutPassword = {
                _id: user._id,
@@ -91,16 +168,11 @@ exports.loginUser = async (req, res) => {
                email: user.email,
                role: user.role,
                onboarded: user.onboarded,
+               partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
                subscribed: user.subscribed,
           };
 
-          if (!user) {
-               return res
-                    .status(401)
-                    .json({ error: "Login failed! Check authenthication credentails" });
-          }
-
-          const token = await user.generateAuthToken();
+          const token = await user.generateAuthToken(domain);
           res.status(201).json({ user: userWithoutPassword, token });
      } catch (error) {
           res.status(400).json(error);
@@ -140,30 +212,24 @@ exports.listBilling = async (req, res) => {
 exports.listShipping = async (req, res) => {
      console.log("list shipping information");
      try {
-          let user = await User.findById(req.params.userId);
+          const partnerId = +req.params?.partner_id;
 
-          if (user) {
-               const partnerId = +user?.partner_id;
-               console.log("partnerId", partnerId);
-               const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
-                    [["parent_id", "=", partnerId]],
-                    [
-                         "name",
-                         "street",
-                         "city",
-                         "zip",
-                         "country_id",
-                         "state_id",
-                         "type",
-                         "phone",
-                         "email",
-                    ], // Fields you want to retrieve
-               ]);
+          const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
+               [["parent_id", "=", partnerId]],
+               [
+                    "name",
+                    "street",
+                    "city",
+                    "zip",
+                    "country_id",
+                    "state_id",
+                    "type",
+                    "phone",
+                    "email",
+               ], // Fields you want to retrieve
+          ]);
 
-               return res.status(200).json({ data: partnerAddresses, status: true });
-          }
-
-          res.status(400).json({ status: false, message: "partner not found" });
+          return res.status(200).json({ data: partnerAddresses, status: true });
      } catch (error) {
           console.log("error", error);
           res.status(400).json({ error, status: false });
@@ -197,55 +263,50 @@ exports.listShipping = async (req, res) => {
           console.log("adding shipping");
           try {
                await Odoo.connect();
-               let user = await User.findById(req.body.userId);
 
-               if (user) {
-                    const partnerId = +user?.partner_id;
-                    const countryName = req.body.country; // Assuming the country name is in the request
-                    const countryId = await Odoo.execute_kw("res.country", "search", [
-                         [["name", "=", countryName]],
-                    ]);
+               const partnerId = +req.body?.partner_id;
+               const countryName = req.body.country; // Assuming the country name is in the request
+               const countryId = await Odoo.execute_kw("res.country", "search", [
+                    [["name", "=", countryName]],
+               ]);
 
-                    if (!countryId || countryId.length === 0) {
-                         return res.status(400).json({ error: "Country not found", status: false });
-                    }
-
-                    // Get state_id based on the provided state name
-                    const stateName = req.body.state; // Assuming the state name is in the request
-                    const stateId = await Odoo.execute_kw("res.country.state", "search", [
-                         [["name", "=", stateName]],
-                    ]);
-
-                    // Now, update the address with the retrieved country_id and state_id
-                    await Odoo.execute_kw("res.partner", "write", [
-                         [partnerId],
-                         {
-                              child_ids: [
-                                   [
-                                        0,
-                                        0,
-                                        {
-                                             name: `${req.body.firstname} ${req.body.lastname}`,
-                                             street: req.body.street,
-                                             city: req.body.city,
-                                             email: req.body.email,
-                                             zip: req.body.zipcode,
-                                             phone: req.body.phone,
-                                             country_id: countryId[0], // Use the first match
-                                             state_id: stateId?.[0] ?? false, // Use the first match
-                                             type: "delivery",
-                                        },
-                                   ],
-                              ],
-                         },
-                    ]);
-
-                    return res
-                         .status(201)
-                         .json({ message: "Shipping address added", status: true });
-                    // return res.status(201).json({ order: ordersWithDetails[0], status: true });
+               console.log("partnerId", partnerId);
+               if (!countryId || countryId.length === 0) {
+                    return res.status(400).json({ error: "Country not found", status: false });
                }
-               res.status(400).json({ status: false, message: "partner not found" });
+
+               // Get state_id based on the provided state name
+               const stateName = req.body.state; // Assuming the state name is in the request
+               const stateId = await Odoo.execute_kw("res.country.state", "search", [
+                    [["name", "=", stateName]],
+               ]);
+
+               // Now, update the address with the retrieved country_id and state_id
+               await Odoo.execute_kw("res.partner", "write", [
+                    [partnerId],
+                    {
+                         child_ids: [
+                              [
+                                   0,
+                                   0,
+                                   {
+                                        name: `${req.body.firstname} ${req.body.lastname}`,
+                                        street: req.body.street,
+                                        city: req.body.city,
+                                        email: req.body.email,
+                                        zip: req.body.zipcode,
+                                        phone: req.body.phone,
+                                        country_id: countryId[0], // Use the first match
+                                        state_id: stateId?.[0] ?? false, // Use the first match
+                                        type: "delivery",
+                                   },
+                              ],
+                         ],
+                    },
+               ]);
+
+               return res.status(201).json({ message: "Shipping address added", status: true });
+               // return res.status(201).json({ order: ordersWithDetails[0], status: true });
           } catch (error) {
                console.log("err", error);
                res.status(400).json({ error: error.message, status: false });
@@ -255,12 +316,7 @@ exports.listShipping = async (req, res) => {
 exports.updateShippingAddress = async (req, res) => {
      console.log("Updating shipping address");
      try {
-          const user = await User.findById(req.body.userId);
-
-          if (!user) {
-               return res.status(404).json({ error: "User not found", status: false });
-          }
-          const partnerId = +user.partner_id;
+          const partnerId = +req.body.partner_id;
 
           const existingAddressId = +req.body.addressId;
 
@@ -297,14 +353,7 @@ exports.deleteShippingAddress = async (req, res) => {
      try {
           // Assuming you have established a connection to your Odoo instance (e.g., await Odoo.connect();)
 
-          // Fetch the user based on the provided user ID
-          const user = await User.findById(req.params.userId);
-
-          if (!user) {
-               return res.status(404).json({ error: "User not found", status: false });
-          }
-
-          const partnerId = +user.partner_id;
+          const partnerId = +req.params.partner_id;
 
           // Fetch the address ID you want to delete (e.g., from request parameters)
           const addressIdToDelete = +req.params.addressId; // Assuming you pass the address ID in the URL parameters
@@ -532,6 +581,34 @@ exports.deleteAccount = async (req, res) => {
           res.status(200).json({
                message: "Account, associated site, company, advertisements, and data deleted successfully",
                status: true,
+          });
+     } catch (error) {
+          console.error("Error deleting account:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+};
+
+exports.updateTour = async (req, res) => {
+     try {
+          const userId = req.userData._id;
+          const tour = req.body.tour;
+
+          const user = await User.findByIdAndUpdate(
+               userId,
+               {
+                    $set: {
+                         tour,
+                    },
+               },
+               { new: true },
+          ).populate({
+               path: "company",
+               options: { virtuals: true },
+          });
+
+          res.status(200).json({
+               status: true,
+               user: user,
           });
      } catch (error) {
           console.error("Error deleting account:", error);
