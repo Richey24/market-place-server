@@ -67,9 +67,43 @@ const getCat = async (req, res) => {
     }
 }
 
+const getMainCategory = async (req, res) => {
+    try {
+        const result = await ServiceFirstCat.find({})
+        res.status(201).json(result)
+    } catch (error) {
+        res.status(500).json({ error, status: false });
+    }
+}
+
+const getFirstSubCategory = async (req, res) => {
+    try {
+        const sub = req.body
+        const result = await ServiceSecondCat.find({ firstCat: sub })
+        res.status(201).json(result)
+    } catch (error) {
+        res.status(500).json({ error, status: false });
+    }
+}
+
+const getSecondSubCategory = async (req, res) => {
+    try {
+        const sub = req.body
+        const result = await ServiceThirdCat.find({ secondCat: sub })
+        res.status(201).json(result)
+    } catch (error) {
+        res.status(500).json({ error, status: false });
+    }
+}
+
+
+
 module.exports = {
     addFirstCat,
     addSecondCat,
     addThirdCat,
-    getCat
+    getCat,
+    getMainCategory,
+    getFirstSubCategory,
+    getSecondSubCategory
 }
