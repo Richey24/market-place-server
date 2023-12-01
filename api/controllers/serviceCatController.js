@@ -78,7 +78,7 @@ const getMainCategory = async (req, res) => {
 
 const getFirstSubCategory = async (req, res) => {
     try {
-        const sub = req.body
+        const { sub } = req.body
         const result = await ServiceSecondCat.find({ firstCat: sub })
         res.status(201).json(result)
     } catch (error) {
@@ -88,7 +88,7 @@ const getFirstSubCategory = async (req, res) => {
 
 const getSecondSubCategory = async (req, res) => {
     try {
-        const sub = req.body
+        const { sub } = req.body
         const result = await ServiceThirdCat.find({ secondCat: sub })
         res.status(201).json(result)
     } catch (error) {
