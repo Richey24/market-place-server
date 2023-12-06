@@ -21,6 +21,11 @@ router.post("/forgot/password", userController.forgotPassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 router.put("/tour/update", auth, userController.updateTour);
 
+// ban user
+router.get("/users", userController.getAllUsers);
+router.put("/user/ban/:userId", auth, userController.banUser);
+router.put("/user/suspend/:userId", userController.suspendUser);
+
 //billing
 router.post("/add-billing-address", userController.addBillingAddress);
 router.post("/edit-billing-address/:id", auth, userController.editBillingAddress);
