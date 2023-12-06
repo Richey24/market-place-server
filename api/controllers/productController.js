@@ -14,6 +14,7 @@ const {
      updateProduct,
      searchProducts,
      rateProduct,
+     addProductVariant,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -34,27 +35,27 @@ exports.getProductbyCompanyId = async (req, res) => {
                               ["type", "=", "consu"],
                               ["company_id", "=", companyId],
                          ],
-                         [
-                              "id",
-                              "public_categ_ids",
-                              "name",
-                              "display_name",
-                              "list_price",
-                              // "image_1920",
-                              "standard_price",
-                              "categ_id",
-                              "rating_avg",
-                              "rating_count",
-                              "x_color",
-                              "x_dimension",
-                              "x_size",
-                              "x_subcategory",
-                              "x_weight",
-                              "x_rating",
-                              "website_url",
-                              "website_meta_keywords",
-                         ],
-                         // null,
+                         // [
+                         //      "id",
+                         //      "public_categ_ids",
+                         //      "name",
+                         //      "display_name",
+                         //      "list_price",
+                         //      // "image_1920",
+                         //      "standard_price",
+                         //      "categ_id",
+                         //      "rating_avg",
+                         //      "rating_count",
+                         //      "x_color",
+                         //      "x_dimension",
+                         //      "x_size",
+                         //      "x_subcategory",
+                         //      "x_weight",
+                         //      "x_rating",
+                         //      "website_url",
+                         //      "website_meta_keywords",
+                         // ],
+                         null,
                          0,
                          10,
                     ],
@@ -299,34 +300,38 @@ exports.filterProducts = async (req, res) => {
 };
 
 exports.productDetails = async (req, res) => {
+     await Odoo.connect();
      const productId = req.params.id;
 
      const details = await getProductById(productId);
-     // console.log("product", details);
-     const product = details.map((product) => {
-          return {
-               id: product.id,
-               website_url: product.website_url,
-               name: product.name,
-               description: product.description,
-               categ_id: product.categ_id,
-               list_price: product.list_price,
-               standard_price: product.standard_price,
-               company_id: product.company_id,
-               display_name: product.display_name,
-               base_unit_count: product.base_unit_count,
-               image_1920: product.image_1920,
-               image_1024: product.image_1024,
-               x_rating: product.x_rating,
-               create_date: product.create_date,
-               x_subcategory: product.x_subcategory,
-               x_size: product.x_size,
-               x_weight: product.x_weight,
-               x_color: product.x_color,
-               x_dimension: product.x_dimension,
-          };
-     });
-     res.status(201).json({ product });
+
+     // Retrieve attribute_line_ids from the product template data
+     // const attributeLineIds = productTemplateData[0].attribute_line_ids || [];
+     // // console.log("product", details);
+     // const product = details.map((product) => {
+     //      return {
+     //           id: product.id,
+     //           website_url: product.website_url,
+     //           name: product.name,
+     //           description: product.description,
+     //           categ_id: product.categ_id,
+     //           list_price: product.list_price,
+     //           standard_price: product.standard_price,
+     //           company_id: product.company_id,
+     //           display_name: product.display_name,
+     //           base_unit_count: product.base_unit_count,
+     //           image_1920: product.image_1920,
+     //           image_1024: product.image_1024,
+     //           x_rating: product.x_rating,
+     //           create_date: product.create_date,
+     //           x_subcategory: product.x_subcategory,
+     //           x_size: product.x_size,
+     //           x_weight: product.x_weight,
+     //           x_color: product.x_color,
+     //           x_dimension: product.x_dimension,
+     //      };
+     // });
+     res.status(201).json({ product: details });
 };
 
 exports.wishlistProduct = async (req, res) => {
@@ -414,6 +419,41 @@ exports.createProduct = async (req, res) => {
                }
           });
           res.status(201).json({ productId, status: true });
+     } catch (err) {
+          console.log("error", err);
+          res.status(400).json({ err, status: false });
+     }
+};
+
+exports.createProductWithVariant = async (req, res) => {
+     // let user = req.userData;
+     try {
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("market-product");
+          let params = {
+               odoo: Odoo,
+               product: {
+                    ...{
+                         ...req.body,
+                         variants: JSON.parse(
+                              '[[{"attributeId":3,"value":"423","price_extra":5},{"attributeId":1,"value":"666","price_extra":21},{"attributeId":1,"value":"888","price_extra":5},{"attributeId":1,"value":"211","price_extra":15}],[{"attributeId":3,"value":"444","price_extra":5},{"attributeId":3,"value":"999","price_extra":15},{"attributeId":3,"value":"801","price_extra":5}]]',
+                         ),
+                    },
+                    images: req.files,
+                    is_variant: true,
+               },
+               // user: user
+          };
+          console.log("pro", params.product);
+          const productId = await addProductVariant({ ...params });
+          // index.search(params.product.name).then(async ({ hits }) => {
+          //      if (hits.length < 1) {
+          //           await index.saveObject(req.body, {
+          //                autoGenerateObjectIDIfNotExist: true,
+          //           });
+          //      }
+          // });
+          res.status(201).json({ productId: productId, status: true });
      } catch (err) {
           console.log("error", err);
           res.status(400).json({ err, status: false });
@@ -802,5 +842,37 @@ exports.searchProductsAndcateg = async (req, res) => {
      } catch (err) {
           console.log("error", err);
           res.status(500).json({ error: err, status: false });
+     }
+};
+
+exports.createProductAttributes = async (req, res) => {
+     try {
+          await Odoo.connect();
+          // Create the attribute
+          const attributeData = {
+               name: req.body.name,
+               display_name: req.body.name, // You can customize this
+               // display_type: req.body.type ?? "selection", // Example type, change as needed
+          };
+
+          const attributeId = await Odoo.execute_kw("product.attribute", "create", [attributeData]);
+
+          res.status(200).json({ attributeId, status: true });
+     } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.fetchProductAttributes = async (req, res) => {
+     try {
+          await Odoo.connect();
+          const attributeIds = await Odoo.execute_kw("product.attribute", "search", [[]]);
+          const attributes = await Odoo.execute_kw("product.attribute", "read", [attributeIds, []]);
+
+          res.status(200).json({ attributes, status: true });
+     } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };
