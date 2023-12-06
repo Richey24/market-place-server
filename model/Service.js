@@ -12,14 +12,14 @@ const serviceSchema = mongoose.Schema({
     serviceEmail: {
         type: String,
     },
-    itemTitle: {
+    serviceTitle: {
         type: String,
     },
     serviceType: {
         type: String,
     },
     tags: {
-        type: String,
+        type: Array,
     },
     price: {
         type: String,
@@ -35,9 +35,8 @@ const serviceSchema = mongoose.Schema({
         type: Date,
         default: Date.now()
     },
-    active: {
-        type: Boolean,
-        default: true
+    visibility: {
+        type: String,
     },
     serviceDuration: {
         type: String,
@@ -52,6 +51,9 @@ const serviceSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    variants: {
+        type: Array
+    }
 })
 
 

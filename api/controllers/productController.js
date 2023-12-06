@@ -733,6 +733,7 @@ exports.deleteProductRating = async (req, res) => {
 exports.getUnratedProducts = async (req, res) => {
      try {
           const userId = req.params.id;
+          const companyId = req.params.companyId
           const user = await User.findById(userId);
           if (!user) {
                return res
@@ -740,7 +741,7 @@ exports.getUnratedProducts = async (req, res) => {
                     .json({ message: "Send all required parameters", status: false });
           }
           const unratedProducts = user.order_products.filter(
-               (order) => !user.rated.includes(order.id),
+               (order) => !user.rated.includes(order.id) && order.company_id === companyId,
           );
           res.status(200).json({ unratedProducts, status: true });
      } catch (error) {
