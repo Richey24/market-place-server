@@ -64,6 +64,7 @@ exports.register = async (req, res) => {
                     lastname: req.body.lastname,
                     email: req.body.email,
                     role: req.body.role,
+                    chatID: req.body.chatID ?? "",
                     tour: req.body?.tour ?? "",
                     password: req.body.password,
                     phone: req.body.phone,
@@ -97,7 +98,6 @@ exports.register = async (req, res) => {
                     chatID: data.chatID,
                     company: data.company,
                };
-
           sendWelcomeEmail(
                req.body?.email ?? user?.firstname,
                req.body?.firstname ?? user?.lastname,
@@ -173,7 +173,6 @@ exports.loginUser = async (req, res) => {
                partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
                subscribed: user.subscribed,
           };
-
           const token = await user.generateAuthToken(domain);
           res.status(201).json({ user: userWithoutPassword, token });
      } catch (error) {
