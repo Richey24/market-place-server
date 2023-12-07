@@ -23,27 +23,7 @@ const getProductById = async (id) => {
           await Odoo.connect();
           const productData = await Odoo.execute_kw("product.template", "search_read", [
                [["id", "=", productId]],
-               [
-                    // "id",
-                    // "public_categ_ids",
-                    // "name",
-                    // "display_name",
-                    // "list_price",
-                    // "image_1920",
-                    // "standard_price",
-                    // "categ_id",
-                    // "rating_avg",
-                    // "rating_count",
-                    // "description",
-                    // "x_color",
-                    // "x_dimension",
-                    // "x_size",
-                    // "x_subcategory",
-                    // "x_weight",
-                    // "x_rating",
-                    // "website_url",
-                    // "website_meta_keywords",
-               ],
+               [],
           ]);
 
           let attributeLineIds = productData[0].attribute_line_ids || [];
@@ -146,6 +126,7 @@ const getFeaturedProducts = async (params) => {
           console.error("Error when try connect Odoo XML-RPC.", e);
      }
 };
+
 const searchProducts = async (params) => {
      console.log("GET /api/products/search");
      try {
@@ -333,18 +314,25 @@ const addProductVariant = async (params) => {
           if (params?.product?.variants && params?.product?.variants.length > 0) {
                await params?.product?.variants?.forEach(async (container) => {
                     await container.forEach(async (variant, idx) => {
-                         console.log("variant", variant);
-                         const attributeValueData = {
-                              name: variant?.value, // Replace with the actual value
-                              attribute_id: variant?.attributeId,
-                              sequence: 1, // Optional: Display sequence
-                         };
+                         // console.log("variant", variant);
 
-                         const attributeValueId = await params.odoo.execute_kw(
-                              "product.attribute.value",
-                              "create",
-                              [attributeValueData],
-                         );
+                         let attributeValueId;
+
+                         if (!variant?.valueId) {
+                              const attributeValueData = {
+                                   name: variant?.value, // Replace with the actual value
+                                   attribute_id: variant?.attributeId,
+                                   sequence: 1, // Optional: Display sequence
+                              };
+
+                              attributeValueId = await params.odoo.execute_kw(
+                                   "product.attribute.value",
+                                   "create",
+                                   [attributeValueData],
+                              );
+                         } else {
+                              attributeValueId = variant?.valueId;
+                         }
 
                          const attributeLineData = {
                               product_tmpl_id: templateId,
@@ -382,30 +370,36 @@ const addProductVariant = async (params) => {
                });
           }
 
-          // for (let i = 0; i < Math.min(params.product.variants.length, 5); i++) {
-          //      console.log("here");
-          //      const variantData = {
-          //           // Example: Provide a meaningful name for the variant
-          //           // default_code: "RS001", // Example: Replace with the actual product code
-          //           // barcode: `1234${Math.random(1000) * 5}${i}`, // Example: Replace with the actual barcode
-          //           // Add other necessary properties based on your requirements
-          //           // For example:
-          //           product_tmpl_id: templateId,
-          //           product_template_value_ids: [[6, 0, [4]]],
-          //           // standard_price: 14.99,     // Example: Replace with the actual standard price
-          //           // weight: 0.5,               // Example: Replace with the actual weight
-          //           // ...
+          const images = params.product?.images || [];
+          // Convert each image buffer to base64
+          const base64Images = images.map((image) => {
+               return {
+                    ...image,
+                    base64: image.buffer.toString("base64"),
+               };
+          });
 
-          //           // If there are specific attributes or attribute values associated with this variant,
-          //           // include them as needed. For example:
-          //           // attribute_value_ids: [
-          //           //     [6, false, attributeValueId1],  // ID(s) of attribute values (replace with actual IDs)
-          //           //     [6, false, attributeValueId2],
-          //           //     // ...
-          //           // ],
-          //      };
-          //      await createProductVariant(params, templateId, variantData);
-          // }
+          // // Write the images if provided
+          for (const base64Image of base64Images) {
+               await params.odoo.execute_kw("product.template", "write", [
+                    [templateId],
+                    { image_1920: base64Image.base64 },
+               ]);
+
+               const recordId = await Odoo.execute_kw("ir.attachment", "create", [
+                    {
+                         name: "productId.png",
+                         datas: base64Image.base64,
+                         res_model: "ir.ui.view",
+                         res_id: templateId,
+                         res_field: "product_images",
+                         public: true,
+                         company_id: params.product.company_id,
+                    },
+               ]);
+
+               console.log("Image saved with ID:", recordId);
+          }
 
           return templateId;
      } else {

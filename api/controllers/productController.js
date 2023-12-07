@@ -304,33 +304,6 @@ exports.productDetails = async (req, res) => {
      const productId = req.params.id;
 
      const details = await getProductById(productId);
-
-     // Retrieve attribute_line_ids from the product template data
-     // const attributeLineIds = productTemplateData[0].attribute_line_ids || [];
-     // // console.log("product", details);
-     // const product = details.map((product) => {
-     //      return {
-     //           id: product.id,
-     //           website_url: product.website_url,
-     //           name: product.name,
-     //           description: product.description,
-     //           categ_id: product.categ_id,
-     //           list_price: product.list_price,
-     //           standard_price: product.standard_price,
-     //           company_id: product.company_id,
-     //           display_name: product.display_name,
-     //           base_unit_count: product.base_unit_count,
-     //           image_1920: product.image_1920,
-     //           image_1024: product.image_1024,
-     //           x_rating: product.x_rating,
-     //           create_date: product.create_date,
-     //           x_subcategory: product.x_subcategory,
-     //           x_size: product.x_size,
-     //           x_weight: product.x_weight,
-     //           x_color: product.x_color,
-     //           x_dimension: product.x_dimension,
-     //      };
-     // });
      res.status(201).json({ product: details });
 };
 
@@ -435,24 +408,24 @@ exports.createProductWithVariant = async (req, res) => {
                product: {
                     ...{
                          ...req.body,
-                         variants: JSON.parse(
-                              '[[{"attributeId":3,"value":"423","price_extra":5},{"attributeId":1,"value":"666","price_extra":21},{"attributeId":1,"value":"888","price_extra":5},{"attributeId":1,"value":"211","price_extra":15}],[{"attributeId":3,"value":"444","price_extra":5},{"attributeId":3,"value":"999","price_extra":15},{"attributeId":3,"value":"801","price_extra":5}]]',
-                         ),
+                         // variants: JSON.parse(
+                         //      '[[{"attributeId":3,"value":"423","price_extra":5},{"attributeId":1,"value":"666","price_extra":21},{"attributeId":1,"value":"888","price_extra":5},{"attributeId":1,"value":"211","price_extra":15}],[{"attributeId":3,"value":"444","price_extra":5},{"attributeId":3,"value":"999","price_extra":15},{"attributeId":3,"value":"801","price_extra":5}]]',
+                         // ),
                     },
                     images: req.files,
                     is_variant: true,
                },
                // user: user
           };
-          console.log("pro", params.product);
+          // console.log("pro", params.product);
           const productId = await addProductVariant({ ...params });
-          // index.search(params.product.name).then(async ({ hits }) => {
-          //      if (hits.length < 1) {
-          //           await index.saveObject(req.body, {
-          //                autoGenerateObjectIDIfNotExist: true,
-          //           });
-          //      }
-          // });
+          index.search(params.product.name).then(async ({ hits }) => {
+               if (hits.length < 1) {
+                    await index.saveObject(req.body, {
+                         autoGenerateObjectIDIfNotExist: true,
+                    });
+               }
+          });
           res.status(201).json({ productId: productId, status: true });
      } catch (err) {
           console.log("error", err);
@@ -649,6 +622,7 @@ exports.rateProduct = async (req, res) => {
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });
           }
+          
           const user = await User.findById(userId);
           if (user.rated.includes(productId)) {
                return res
@@ -733,7 +707,7 @@ exports.deleteProductRating = async (req, res) => {
 exports.getUnratedProducts = async (req, res) => {
      try {
           const userId = req.params.id;
-          const companyId = req.params.companyId
+          const companyId = req.params.companyId;
           const user = await User.findById(userId);
           if (!user) {
                return res
@@ -872,6 +846,25 @@ exports.fetchProductAttributes = async (req, res) => {
           const attributes = await Odoo.execute_kw("product.attribute", "read", [attributeIds, []]);
 
           res.status(200).json({ attributes, status: true });
+     } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.fetchProductAttributeValues = async (req, res) => {
+     try {
+          await Odoo.connect();
+          const attributeId = +req.params.attributeId;
+
+          const attributeValues = await Odoo.execute_kw("product.attribute.value", "search_read", [
+               [["attribute_id", "=", attributeId]],
+               ["name", "display_name", "attribute_id"],
+          ]);
+
+          console.log(`Attribute Values for Attribute ID ${attributeId}:`, attributeValues);
+
+          res.status(200).json({ values: attributeValues, status: true });
      } catch (error) {
           console.log(error);
           res.status(500).json({ error: "Internal Server Error", status: false });
