@@ -6,7 +6,6 @@ const USER_ROLE = Object.freeze({
      ADMIN: "ADMIN",
 });
 
-
 module.exports = {
      USER_ROLE
 };

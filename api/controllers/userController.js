@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sendWelcomeEmail, sendForgotPasswordEmail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
+const moment = require("moment");
 
 exports.register = async (req, res) => {
      try {
@@ -612,6 +613,87 @@ exports.updateTour = async (req, res) => {
           });
      } catch (error) {
           console.error("Error deleting account:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+};
+
+exports.banUser = async (req, res) => {
+     try {
+          // Assuming you have a User model with a `status` field indicating the user's active/inactive status
+          const userIdToBan = req.params.userId; // Assuming the user ID is passed as a parameter in the request
+
+          // Find the user by ID and update the status to false (banned)
+          const bannedUser = await User.findByIdAndUpdate(
+               userIdToBan,
+               { status: "banned" },
+               { new: true },
+          );
+
+          if (!bannedUser) {
+               return res.status(404).json({ message: "User not found", status: false });
+          }
+
+          res.status(200).json({ message: "User banned successfully", status: true });
+     } catch (error) {
+          console.log("Error banning user:", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
+exports.suspendUser = async (req, res) => {
+     try {
+          const userIdToSuspend = req.params.userId; // Assuming the user ID is passed as a parameter in the request
+          const { suspensionDuration, suspensionUnit } = req.body;
+
+          // Fetch the user by ID
+          const userToSuspend = await User.findById(userIdToSuspend);
+
+          // Check criteria for suspension
+          if (!userToSuspend) {
+               return res.status(404).json({ message: "User not found", status: "suspended" });
+          }
+
+          // Additional criteria for suspension (modify based on your requirements)
+          if (userToSuspend.role === "admin") {
+               return res
+                    .status(403)
+                    .json({ message: "Admin users cannot be suspended", status: false });
+          }
+
+          // Calculate the suspension end date
+          const suspensionEndDate = moment().add(suspensionDuration, suspensionUnit);
+
+          // Update the user with the suspension details
+          const suspendedUser = await User.findByIdAndUpdate(
+               userIdToSuspend,
+               {
+                    status: "suspended",
+                    suspensionEndDate: suspensionEndDate.toDate(),
+               },
+               { new: true },
+          );
+
+          res.status(200).json({
+               message: `User suspended successfully until ${suspensionEndDate.format(
+                    "YYYY-MM-DD",
+               )}`,
+               status: true,
+          });
+     } catch (error) {
+          console.log("Error suspending user:", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
+exports.getAllUsers = async (req, res) => {
+     try {
+          const users = await User.find();
+          res.status(200).json({
+               status: true,
+               users: users,
+          });
+     } catch (error) {
+          console.error("Error fetching users:", error);
           res.status(500).json({ message: "Internal server error", status: false });
      }
 };
