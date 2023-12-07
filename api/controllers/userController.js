@@ -90,6 +90,7 @@ exports.loginUser = async (req, res) => {
                lastname: user.lastname,
                email: user.email,
                role: user.role,
+               chatID: user.chatID,
                onboarded: user.onboarded,
                subscribed: user.subscribed,
           };
