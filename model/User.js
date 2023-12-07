@@ -26,15 +26,19 @@ const userSchema = mongoose.Schema({
      currentSiteType: {
           type: String,
      },
-
      status: {
-          type: Boolean,
-          default: 1,
+          type: String,
+          enum: ["active", "suspended", "banned"],
+          default: "active",
+     },
+     suspensionEndDate: {
+          type: Date,
+          default: null,
      },
      role: {
           type: String,
           default: USER_ROLE.USER,
-          enum: [USER_ROLE.USER, USER_ROLE.ADMIN],
+          enum: [USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.VENDOR],
           required: [true, "Please include user role"],
      },
      password: {
