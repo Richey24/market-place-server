@@ -26,6 +26,11 @@ const userSchema = mongoose.Schema({
      currentSiteType: {
           type: String,
      },
+
+     chatID: {
+          type: String,
+     },
+
      status: {
           type: String,
           enum: ["active", "suspended", "banned"],
