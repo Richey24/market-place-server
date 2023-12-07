@@ -6,9 +6,8 @@ const ADVERT_STATUS = Object.freeze({
 });
 
 const ADVERT_TYPE = Object.freeze({
-     BANNER: "BANNER",
+     SERVICE: "SERVICE",
      PRODUCT: "PRODUCT",
-     PIN: "PIN",
 });
 
 const newAdvertTypeSchema = {
@@ -26,10 +25,13 @@ const createAdvertSchema = {
           advertType: Joi.string().required(),
           imageUrl: Joi.string().required(),
           productId: Joi.number(),
+          description: Joi.string(),
           categoryId: Joi.string(),
           company_id: Joi.string().required(),
           status: Joi.string(),
-          merits: Joi.number(),
+          target: Joi.string().valid("landing", "product").required(),
+          discountType: Joi.string(),
+          discountValue: Joi.number(),
      }),
 };
 

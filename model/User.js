@@ -10,7 +10,9 @@ const userSchema = mongoose.Schema({
           type: String,
           required: [true, "Please Include your first name"],
      },
-
+     tour: {
+          type: String,
+     },
      lastname: {
           type: String,
           required: [true, "Please include your last Name"],
@@ -25,14 +27,23 @@ const userSchema = mongoose.Schema({
           type: String,
      },
 
+     chatID: {
+          type: String,
+     },
+
      status: {
-          type: Boolean,
-          default: 1,
+          type: String,
+          enum: ["active", "suspended", "banned"],
+          default: "active",
+     },
+     suspensionEndDate: {
+          type: Date,
+          default: null,
      },
      role: {
           type: String,
           default: USER_ROLE.USER,
-          enum: [USER_ROLE.USER, USER_ROLE.ADMIN],
+          enum: [USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.VENDOR],
           required: [true, "Please include user role"],
      },
      password: {
@@ -48,15 +59,18 @@ const userSchema = mongoose.Schema({
      },
      rated: {
           type: Array,
-          default: []
+          default: [],
      },
      order_products: {
           type: Array,
-          default: []
+          default: [],
      },
-     partner_id: {
-          type: Number,
-     },
+     partner_ids: [
+          {
+               id: { type: Number },
+               domain: { type: String },
+          },
+     ],
      created_at: {
           type: Date,
           default: Date.now,
@@ -91,7 +105,7 @@ userSchema.pre("save", async function () {
 });
 
 //this function generates an auth token for the user
-userSchema.methods.generateAuthToken = async function () {
+userSchema.methods.generateAuthToken = async function (domain) {
      const user = this;
      var token = jwt.sign(
           {
@@ -100,6 +114,7 @@ userSchema.methods.generateAuthToken = async function () {
                lastname: user.lastname,
                email: user.email,
                onboarded: user.onboarded,
+               partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
           },
           "secret",
      );

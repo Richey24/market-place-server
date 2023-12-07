@@ -2,7 +2,7 @@ const { sendRatingMail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const Company = require("../../model/Company");
 const Rating = require("../../model/Rating");
-const algoliasearch = require('algoliasearch')
+const algoliasearch = require("algoliasearch");
 const User = require("../../model/User");
 
 const {
@@ -14,6 +14,7 @@ const {
      updateProduct,
      searchProducts,
      rateProduct,
+     addProductVariant,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -34,27 +35,27 @@ exports.getProductbyCompanyId = async (req, res) => {
                               ["type", "=", "consu"],
                               ["company_id", "=", companyId],
                          ],
-                         [
-                              "id",
-                              "public_categ_ids",
-                              "name",
-                              "display_name",
-                              "list_price",
-                              // "image_1920",
-                              "standard_price",
-                              "categ_id",
-                              "rating_avg",
-                              "rating_count",
-                              "x_color",
-                              "x_dimension",
-                              "x_size",
-                              "x_subcategory",
-                              "x_weight",
-                              "x_rating",
-                              "website_url",
-                              "website_meta_keywords",
-                         ],
-                         // null,
+                         // [
+                         //      "id",
+                         //      "public_categ_ids",
+                         //      "name",
+                         //      "display_name",
+                         //      "list_price",
+                         //      // "image_1920",
+                         //      "standard_price",
+                         //      "categ_id",
+                         //      "rating_avg",
+                         //      "rating_count",
+                         //      "x_color",
+                         //      "x_dimension",
+                         //      "x_size",
+                         //      "x_subcategory",
+                         //      "x_weight",
+                         //      "x_rating",
+                         //      "website_url",
+                         //      "website_meta_keywords",
+                         // ],
+                         null,
                          0,
                          10,
                     ],
@@ -153,7 +154,7 @@ exports.getFeaturedProducts = async (req, res) => {
           promo: req.body,
           user: user,
           company_id,
-          page: req.query.page
+          page: req.query.page,
      };
 
      const theProducts = await getFeaturedProducts(params);
@@ -162,9 +163,7 @@ exports.getFeaturedProducts = async (req, res) => {
                ["product_tag_ids.name", "=", "Featured Product"],
                ["company_id", "=", params.company_id],
           ],
-          [
-               "id"
-          ]
+          ["id"],
      ]);
      const products = theProducts.map((product) => {
           return {
@@ -301,34 +300,11 @@ exports.filterProducts = async (req, res) => {
 };
 
 exports.productDetails = async (req, res) => {
+     await Odoo.connect();
      const productId = req.params.id;
 
      const details = await getProductById(productId);
-     // console.log("product", details);
-     const product = details.map((product) => {
-          return {
-               id: product.id,
-               website_url: product.website_url,
-               name: product.name,
-               description: product.description,
-               categ_id: product.categ_id,
-               list_price: product.list_price,
-               standard_price: product.standard_price,
-               company_id: product.company_id,
-               display_name: product.display_name,
-               base_unit_count: product.base_unit_count,
-               image_1920: product.image_1920,
-               image_1024: product.image_1024,
-               x_rating: product.x_rating,
-               create_date: product.create_date,
-               x_subcategory: product.x_subcategory,
-               x_size: product.x_size,
-               x_weight: product.x_weight,
-               x_color: product.x_color,
-               x_dimension: product.x_dimension,
-          };
-     });
-     res.status(201).json({ product });
+     res.status(201).json({ product: details });
 };
 
 exports.wishlistProduct = async (req, res) => {
@@ -355,26 +331,22 @@ exports.createWishlistRecord = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connected to Odoo XML-RPC - createWishlistRecord", req.body);
-          let user = await User.findById(req.body.userId);
-          if (user) {
-               const wishlistRecord = {
-                    partner_id: user.partner_id,
-                    product_id: req.body.productId,
-                    website_id: 1,
-                    price: req.body.price,
-                    display_name: req.body.display_name,
-               };
 
-               // Create a new record in the wishlist model
-               const createdWishlistRecord = await Odoo.execute_kw("product.wishlist", "create", [
-                    wishlistRecord,
-               ]);
+          const wishlistRecord = {
+               partner_id: req.body.partner_id,
+               product_id: req.body.productId,
+               website_id: 1,
+               price: req.body.price,
+               display_name: req.body.display_name,
+          };
 
-               console.log("Wishlist record created:", createdWishlistRecord);
-               res.status(200).json({ wishlist: createdWishlistRecord, status: true });
-          } else {
-               throw "User Doesnt Exist";
-          }
+          // Create a new record in the wishlist model
+          const createdWishlistRecord = await Odoo.execute_kw("product.wishlist", "create", [
+               wishlistRecord,
+          ]);
+
+          console.log("Wishlist record created:", createdWishlistRecord);
+          res.status(200).json({ wishlist: createdWishlistRecord, status: true });
      } catch (error) {
           console.error("Error when trying to create wishlist record.", error);
           res.status(404).json({ error, status: false });
@@ -385,26 +357,16 @@ exports.fetchWishlist = async (req, res) => {
      try {
           await Odoo.connect();
           console.log("Connected to Odoo XML-RPC - fetchWishlist");
-          let user = await User.findById(req.params.userId);
-          // Search for wishlist records based on the user ID
-          if (user) {
-               const wishlistRecords = await Odoo.execute_kw(
-                    "product.wishlist",
-                    "search_read",
-                    [[["partner_id", "=", +user.partner_id]]],
-                    { fields: ["user_id", "product_id"] },
-               );
 
-               console.log(
-                    "Wishlist records for user",
-                    +req.params.partnerId,
-                    ":",
-                    wishlistRecords,
-               );
-               res.status(200).json({ wishlist: wishlistRecords, status: true });
-          } else {
-               throw "User Doesnt Exist";
-          }
+          const wishlistRecords = await Odoo.execute_kw(
+               "product.wishlist",
+               "search_read",
+               [[["partner_id", "=", +req.params.partner_id]]],
+               { fields: ["user_id", "product_id"] },
+          );
+
+          console.log("Wishlist records for user", +req.params.partnerId, ":", wishlistRecords);
+          res.status(200).json({ wishlist: wishlistRecords, status: true });
      } catch (error) {
           console.error("Error when trying to fetch wishlist records.", error);
           res.status(404).json({ error, status: false });
@@ -414,8 +376,8 @@ exports.fetchWishlist = async (req, res) => {
 exports.createProduct = async (req, res) => {
      // let user = req.userData;
      try {
-          const client = algoliasearch('CM2FP8NI0T', 'daeb45e2c3fb98833358aba5e0c962c6')
-          const index = client.initIndex('market-product')
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("market-product");
           let params = {
                odoo: Odoo,
                product: { ...req.body, images: req.files },
@@ -426,11 +388,47 @@ exports.createProduct = async (req, res) => {
                if (hits.length < 1) {
                     await index.saveObject(req.body, {
                          autoGenerateObjectIDIfNotExist: true,
-                    })
+                    });
                }
-          })
+          });
           res.status(201).json({ productId, status: true });
      } catch (err) {
+          console.log("error", err);
+          res.status(400).json({ err, status: false });
+     }
+};
+
+exports.createProductWithVariant = async (req, res) => {
+     // let user = req.userData;
+     try {
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("market-product");
+          let params = {
+               odoo: Odoo,
+               product: {
+                    ...{
+                         ...req.body,
+                         // variants: JSON.parse(
+                         //      '[[{"attributeId":3,"value":"423","price_extra":5},{"attributeId":1,"value":"666","price_extra":21},{"attributeId":1,"value":"888","price_extra":5},{"attributeId":1,"value":"211","price_extra":15}],[{"attributeId":3,"value":"444","price_extra":5},{"attributeId":3,"value":"999","price_extra":15},{"attributeId":3,"value":"801","price_extra":5}]]',
+                         // ),
+                    },
+                    images: req.files,
+                    is_variant: true,
+               },
+               // user: user
+          };
+          // console.log("pro", params.product);
+          const productId = await addProductVariant({ ...params });
+          index.search(params.product.name).then(async ({ hits }) => {
+               if (hits.length < 1) {
+                    await index.saveObject(req.body, {
+                         autoGenerateObjectIDIfNotExist: true,
+                    });
+               }
+          });
+          res.status(201).json({ productId: productId, status: true });
+     } catch (err) {
+          console.log("error", err);
           res.status(400).json({ err, status: false });
      }
 };
@@ -549,6 +547,7 @@ exports.searchProduct = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
+
 exports.getBestSellingProducts = async (req, res) => {
      console.log("GET /api/best-selling-products");
 
@@ -623,6 +622,7 @@ exports.rateProduct = async (req, res) => {
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });
           }
+          
           const user = await User.findById(userId);
           if (user.rated.includes(productId)) {
                return res
@@ -707,6 +707,7 @@ exports.deleteProductRating = async (req, res) => {
 exports.getUnratedProducts = async (req, res) => {
      try {
           const userId = req.params.id;
+          const companyId = req.params.companyId;
           const user = await User.findById(userId);
           if (!user) {
                return res
@@ -714,7 +715,7 @@ exports.getUnratedProducts = async (req, res) => {
                     .json({ message: "Send all required parameters", status: false });
           }
           const unratedProducts = user.order_products.filter(
-               (order) => !user.rated.includes(order.id),
+               (order) => !user.rated.includes(order.id) && order.company_id === companyId,
           );
           res.status(200).json({ unratedProducts, status: true });
      } catch (error) {
@@ -757,6 +758,115 @@ exports.getAdsProduct = async (req, res) => {
 
           res.status(200).json({ finalArr, status: true });
      } catch (error) {
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+const getOdooSuggestions = async (query) => {
+     try {
+          await Odoo.connect();
+          // Fetch category suggestions from Odoo
+          const categorySuggestions = await Odoo.execute_kw(
+               "product.public.category",
+               "search_read",
+               [[["name", "ilike", query]], ["name"]],
+          );
+
+          // Fetch product suggestions from Odoo
+          const productSuggestions = await Odoo.execute_kw("product.template", "search_read", [
+               [["name", "ilike", query]],
+               [
+                    "name",
+                    "standard_price",
+                    "public_categ_ids",
+                    "x_size",
+                    "description",
+                    "list_price",
+               ],
+          ]);
+
+          // Extract names and add type information
+          const categoryNames = categorySuggestions.map((category) => ({
+               name: category.name,
+               type: "category",
+          }));
+          const productNames = productSuggestions.map((product) => ({
+               name: product.name,
+               type: "product",
+          }));
+
+          // Combine and return the suggestions
+          return categoryNames.concat(productNames);
+     } catch (error) {
+          console.error("Error fetching Odoo suggestions:", error.message);
+          return [];
+     }
+};
+
+exports.searchProductsAndcateg = async (req, res) => {
+     try {
+          const query = req.query.q || "";
+          console.log("req.query.q", req.query.q);
+          // Fetch suggestions from Odoo
+          const odooSuggestions = await getOdooSuggestions(query);
+
+          // You can add additional sources and logic as needed
+
+          // Combine and return the suggestions
+          res.json({ suggestions: odooSuggestions });
+     } catch (err) {
+          console.log("error", err);
+          res.status(500).json({ error: err, status: false });
+     }
+};
+
+exports.createProductAttributes = async (req, res) => {
+     try {
+          await Odoo.connect();
+          // Create the attribute
+          const attributeData = {
+               name: req.body.name,
+               display_name: req.body.name, // You can customize this
+               // display_type: req.body.type ?? "selection", // Example type, change as needed
+          };
+
+          const attributeId = await Odoo.execute_kw("product.attribute", "create", [attributeData]);
+
+          res.status(200).json({ attributeId, status: true });
+     } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.fetchProductAttributes = async (req, res) => {
+     try {
+          await Odoo.connect();
+          const attributeIds = await Odoo.execute_kw("product.attribute", "search", [[]]);
+          const attributes = await Odoo.execute_kw("product.attribute", "read", [attributeIds, []]);
+
+          res.status(200).json({ attributes, status: true });
+     } catch (error) {
+          console.log(error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.fetchProductAttributeValues = async (req, res) => {
+     try {
+          await Odoo.connect();
+          const attributeId = +req.params.attributeId;
+
+          const attributeValues = await Odoo.execute_kw("product.attribute.value", "search_read", [
+               [["attribute_id", "=", attributeId]],
+               ["name", "display_name", "attribute_id"],
+          ]);
+
+          console.log(`Attribute Values for Attribute ID ${attributeId}:`, attributeValues);
+
+          res.status(200).json({ values: attributeValues, status: true });
+     } catch (error) {
+          console.log(error);
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };

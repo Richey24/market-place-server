@@ -27,6 +27,18 @@ const addThirdCat = async (req, res) => {
 
 const getCat = async (req, res) => {
     try {
+        const imgArr = [
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/GraphicDesign.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/ProgrammingTech.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/DigitalMarket.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/videoadnanimation.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/WritingTranslation.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/MusicAudio.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/Business.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/Data.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/Photography.png",
+            "https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/categories/AI%20Service.png"
+        ]
         let arr = []
         let secondArr = []
         const result = await ServiceFirstCat.find({})
@@ -43,7 +55,8 @@ const getCat = async (req, res) => {
 
             const obj = {
                 name: result[i].name,
-                firstSub: secondArr
+                image: imgArr[i],
+                firstSub: secondArr,
             }
             arr.push(obj)
             secondArr = []
@@ -54,9 +67,43 @@ const getCat = async (req, res) => {
     }
 }
 
+const getMainCategory = async (req, res) => {
+    try {
+        const result = await ServiceFirstCat.find({})
+        res.status(201).json(result)
+    } catch (error) {
+        res.status(500).json({ error, status: false });
+    }
+}
+
+const getFirstSubCategory = async (req, res) => {
+    try {
+        const { sub } = req.body
+        const result = await ServiceSecondCat.find({ firstCat: sub })
+        res.status(201).json(result)
+    } catch (error) {
+        res.status(500).json({ error, status: false });
+    }
+}
+
+const getSecondSubCategory = async (req, res) => {
+    try {
+        const { sub } = req.body
+        const result = await ServiceThirdCat.find({ secondCat: sub })
+        res.status(201).json(result)
+    } catch (error) {
+        res.status(500).json({ error, status: false });
+    }
+}
+
+
+
 module.exports = {
     addFirstCat,
     addSecondCat,
     addThirdCat,
-    getCat
+    getCat,
+    getMainCategory,
+    getFirstSubCategory,
+    getSecondSubCategory
 }

@@ -20,6 +20,19 @@ const AdvertSchema = mongoose.Schema(
                type: String,
                required: true,
           },
+          targetUrl: {
+               type: String,
+               required: true,
+          },
+          description: {
+               type: String,
+          },
+          discountType: {
+               type: String,
+          },
+          discountValue: {
+               type: Number,
+          },
           status: {
                type: String,
                default: ADVERT_STATUS.DISABLED,
@@ -27,10 +40,6 @@ const AdvertSchema = mongoose.Schema(
                required: true,
           },
           productId: {
-               type: Number,
-               required: false,
-          },
-          merits: {
                type: Number,
                required: false,
           },

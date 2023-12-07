@@ -6,6 +6,7 @@ const userController = require("../controllers/userController");
 const asyncHandler = require("../../config/asyncHandler");
 
 router.post("/register", asyncHandler(userController.register));
+router.post("/confirm", asyncHandler(userController.confirmEmail));
 router.post("/login", asyncHandler(userController.loginUser));
 router.post("/logout", asyncHandler(userController.logoutUser));
 
@@ -18,6 +19,12 @@ router.put("/update/password", auth, userController.updatePassword);
 router.put("/update/password/customer", userController.updatePassword);
 router.post("/forgot/password", userController.forgotPassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
+router.put("/tour/update", auth, userController.updateTour);
+
+// ban user
+router.get("/users", userController.getAllUsers);
+router.put("/user/ban/:userId", auth, userController.banUser);
+router.put("/user/suspend/:userId", userController.suspendUser);
 
 //billing
 router.post("/add-billing-address", userController.addBillingAddress);
@@ -27,7 +34,7 @@ router.get("/billing", userController.listBilling);
 //shipping
 router.post("/add-shipping-address", userController.addShippingAddress);
 router.put("/edit-shipping-address", userController.updateShippingAddress);
-router.get("/shipping/:userId", userController.listShipping);
+router.get("/shipping/:partner_id", userController.listShipping);
 router.delete("/shipping/:addressId/:userId", userController.deleteShippingAddress);
 
 module.exports = router;

@@ -60,55 +60,50 @@ exports.getOrdersByPartner = async (req, res) => {
      try {
           await Odoo.connect();
 
-          let user = await User.findById(req.params.customerId);
+          const partnerId = +req.params?.partner_id;
 
-          if (user) {
-               const partnerId = user?.partner_id;
-
-               const orderIds = await Odoo.execute_kw(
-                    "sale.order",
-                    "search",
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [
                     [
-                         [
-                              ["partner_id", "=", partnerId],
-                              ["state", "=", "draft"],
-                         ],
+                         ["partner_id", "=", partnerId],
+                         ["state", "=", "draft"],
                     ],
-                    {
-                         fields: ["name", "partner_id"],
-                    },
-               );
-               const orders = await Odoo.execute_kw("sale.order", "read", [
-                    orderIds,
-                    [
-                         "id",
-                         "partner_id",
-                         "order_line",
-                         "company_id",
-                         "name",
-                         "state",
-                         "amount_total",
-                         "date_order",
-                    ],
-               ]);
-               const ordersWithDetails = await Promise.all(
-                    orders.map(async (order) => {
-                         const orderLines = await Odoo.execute_kw(
-                              "sale.order.line",
-                              "search_read",
-                              [[["order_id", "=", order.id]]],
-                              {
-                                   fields: ["product_id", "product_uom_qty", "price_unit"],
-                              },
-                         );
-                         order.order_lines = orderLines;
-                         return order;
-                    }),
-               );
+               ],
+               {
+                    fields: ["name", "partner_id"],
+               },
+          );
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               [
+                    "id",
+                    "partner_id",
+                    "order_line",
+                    "company_id",
+                    "name",
+                    "state",
+                    "amount_total",
+                    "date_order",
+               ],
+          ]);
+          const ordersWithDetails = await Promise.all(
+               orders.map(async (order) => {
+                    const orderLines = await Odoo.execute_kw(
+                         "sale.order.line",
+                         "search_read",
+                         [[["order_id", "=", order.id]]],
+                         {
+                              fields: ["product_id", "product_uom_qty", "price_unit"],
+                         },
+                    );
+                    order.order_lines = orderLines;
+                    return order;
+               }),
+          );
 
-               return res.status(201).json({ order: ordersWithDetails[0], status: true });
-          }
-          res.status(201).json({ orders: null, status: true });
+          return res.status(201).json({ order: ordersWithDetails[0], status: true });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
@@ -121,55 +116,50 @@ exports.getOrderHistoryByPartner = async (req, res) => {
      try {
           await Odoo.connect();
 
-          let user = await User.findById(req.params.customerId);
+          const partnerId = +req.params?.partner_id;
 
-          if (user) {
-               const partnerId = user?.partner_id;
-
-               const orderIds = await Odoo.execute_kw(
-                    "sale.order",
-                    "search",
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [
                     [
-                         [
-                              ["partner_id", "=", partnerId],
-                              // ["state", "=", "draft"],
-                         ],
+                         ["partner_id", "=", partnerId],
+                         // ["state", "=", "draft"],
                     ],
-                    {
-                         fields: ["name", "partner_id"],
-                    },
-               );
-               const orders = await Odoo.execute_kw("sale.order", "read", [
-                    orderIds,
-                    [
-                         "id",
-                         "partner_id",
-                         "order_line",
-                         "company_id",
-                         "name",
-                         "state",
-                         "amount_total",
-                         "date_order",
-                    ],
-               ]);
-               const ordersWithDetails = await Promise.all(
-                    orders.map(async (order) => {
-                         const orderLines = await Odoo.execute_kw(
-                              "sale.order.line",
-                              "search_read",
-                              [[["order_id", "=", order.id]]],
-                              {
-                                   fields: ["product_id", "product_uom_qty", "price_unit"],
-                              },
-                         );
-                         order.order_lines = orderLines;
-                         return order;
-                    }),
-               );
+               ],
+               {
+                    fields: ["name", "partner_id"],
+               },
+          );
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               [
+                    "id",
+                    "partner_id",
+                    "order_line",
+                    "company_id",
+                    "name",
+                    "state",
+                    "amount_total",
+                    "date_order",
+               ],
+          ]);
+          const ordersWithDetails = await Promise.all(
+               orders.map(async (order) => {
+                    const orderLines = await Odoo.execute_kw(
+                         "sale.order.line",
+                         "search_read",
+                         [[["order_id", "=", order.id]]],
+                         {
+                              fields: ["product_id", "product_uom_qty", "price_unit"],
+                         },
+                    );
+                    order.order_lines = orderLines;
+                    return order;
+               }),
+          );
 
-               return res.status(201).json({ orders: ordersWithDetails, status: true });
-          }
-          res.status(201).json({ orders: null, status: true });
+          return res.status(201).json({ orders: ordersWithDetails, status: true });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
@@ -181,67 +171,64 @@ exports.createOrder = async (req, res) => {
           await Odoo.connect();
 
           const productData = req.body.products;
-          const userId = req.body.userId;
+          const partner_id = +req.body.partner_id;
           const companyId = req.body.companyId;
 
-          let user = await User.findById(userId);
-          if (user) {
-               const orderLines = productData.map(({ productId, qty, price_unit }) => [
-                    0,
-                    0,
-                    {
-                         product_id: productId,
-                         product_uom_qty: qty,
-                         price_unit,
-                    },
-               ]);
+          const orderLines = productData.map(({ productId, qty, price_unit }) => [
+               0,
+               0,
+               {
+                    product_id: productId,
+                    product_uom_qty: qty,
+                    price_unit,
+               },
+          ]);
 
-               // Ensure the products belong to the same company
-               // Update the products' company to match the sale order's company
-               const productIds = productData.map(({ productId }) => productId);
-               await Odoo.execute_kw("product.product", "write", [
-                    productIds,
-                    { company_id: companyId },
-               ]);
+          // Ensure the products belong to the same company
+          // Update the products' company to match the sale order's company
+          const productIds = productData.map(({ productId }) => productId);
+          await Odoo.execute_kw("product.product", "write", [
+               productIds,
+               { company_id: companyId },
+          ]);
 
-               const orderData = {
-                    partner_id: user.partner_id,
-                    company_id: companyId,
-                    order_line: orderLines,
-               };
+          const orderData = {
+               partner_id,
+               company_id: companyId,
+               order_line: orderLines,
+          };
 
-               // console.log("orderData", orderData);
-               const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
-               console.log("Order created successfully. Order ID:", orderId);
-               productData.forEach(async ({ productId }) => {
-                    const details = await getProductById(productId);
-                    // console.log("product", details);
-                    const product = details.map((product) => {
-                         return {
-                              id: product.id,
-                              website_url: product.website_url,
-                              name: product.name,
-                              description: product.description,
-                              categ_id: product.categ_id,
-                              list_price: product.list_price,
-                              standard_price: product.standard_price,
-                              company_id: product.company_id,
-                              display_name: product.display_name,
-                              base_unit_count: product.base_unit_count,
-                              image_1920: product.image_1920,
-                              image_1024: product.image_1024,
-                              x_rating: product.x_rating,
-                              x_subcategory: product.x_subcategory,
-                              x_size: product.x_size,
-                              x_weight: product.x_weight,
-                              x_color: product.x_color,
-                              x_dimension: product.x_dimension,
-                         };
-                    });
-                    await User.findByIdAndUpdate(userId, { $push: { order_products: product[0] } });
+          // console.log("orderData", orderData);
+          const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
+          console.log("Order created successfully. Order ID:", orderId);
+          productData.forEach(async ({ productId }) => {
+               const details = await getProductById(productId);
+               // console.log("product", details);
+               const product = details.map((product) => {
+                    return {
+                         id: product.id,
+                         website_url: product.website_url,
+                         name: product.name,
+                         description: product.description,
+                         categ_id: product.categ_id,
+                         list_price: product.list_price,
+                         standard_price: product.standard_price,
+                         company_id: product.company_id,
+                         display_name: product.display_name,
+                         base_unit_count: product.base_unit_count,
+                         image_1920: product.image_1920,
+                         image_1024: product.image_1024,
+                         x_rating: product.x_rating,
+                         x_subcategory: product.x_subcategory,
+                         x_size: product.x_size,
+                         x_weight: product.x_weight,
+                         x_color: product.x_color,
+                         x_dimension: product.x_dimension,
+                    };
                });
-               return res.status(201).json({ orderId, status: true });
-          }
+               await User.findByIdAndUpdate(userId, { $push: { order_products: product[0] } });
+          });
+          return res.status(201).json({ orderId, status: true });
      } catch (error) {
           console.log("Error", error);
           res.status(400).json({ error, status: false });
