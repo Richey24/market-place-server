@@ -45,9 +45,8 @@ exports.register = async (req, res) => {
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${
-                              req.body.lastname ?? user?.lastname
-                         }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
+                              }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -95,6 +94,7 @@ exports.register = async (req, res) => {
                     lastname: data.lastname,
                     email: data.email,
                     role: data.role,
+                    chatID: data.chatID,
                     company: data.company,
                };
 
