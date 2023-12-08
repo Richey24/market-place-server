@@ -22,7 +22,6 @@ const userSchema = mongoose.Schema({
           type: String,
           required: [true, "Please Include your email"],
      },
-
      currentSiteType: {
           type: String,
      },
@@ -58,6 +57,17 @@ const userSchema = mongoose.Schema({
      },
      order_products: {
           type: Array,
+          default: [],
+     },
+     suspensionCount: {
+          type: Number,
+          default: 0,
+     },
+     banReason: {
+          type: String,
+     },
+     suspensionReasons: {
+          type: [String],
           default: [],
      },
      partner_ids: [
