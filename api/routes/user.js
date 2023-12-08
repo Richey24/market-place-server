@@ -23,8 +23,10 @@ router.put("/tour/update", auth, userController.updateTour);
 
 // ban user
 router.get("/users", userController.getAllUsers);
-router.put("/user/ban/:userId", auth, userController.banUser);
-router.put("/user/suspend/:userId", userController.suspendUser);
+router.post("/ban", userController.banUser);
+router.patch("/unban", userController.unbanUser);
+router.post("/suspend", userController.suspendUser);
+router.patch("/liftSuspension", userController.liftSuspension);
 
 //billing
 router.post("/add-billing-address", userController.addBillingAddress);

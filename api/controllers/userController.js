@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const { sendWelcomeEmail, sendForgotPasswordEmail } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
+const mongoose = require("mongoose");
 
 exports.register = async (req, res) => {
      try {
@@ -619,13 +620,17 @@ exports.updateTour = async (req, res) => {
 
 exports.banUser = async (req, res) => {
      try {
-          // Assuming you have a User model with a `status` field indicating the user's active/inactive status
-          const userIdToBan = req.params.userId; // Assuming the user ID is passed as a parameter in the request
+          const { userId, reason } = req.body;
 
-          // Find the user by ID and update the status to false (banned)
+          const existingBannedUser = await User.findOne({ _id: userId, status: "banned" });
+
+          if (existingBannedUser) {
+               throw new Error("User is already banned");
+          }
+
           const bannedUser = await User.findByIdAndUpdate(
-               userIdToBan,
-               { status: "banned" },
+               userId,
+               { status: "banned", banReason: reason },
                { new: true },
           );
 
@@ -635,40 +640,67 @@ exports.banUser = async (req, res) => {
 
           res.status(200).json({ message: "User banned successfully", status: true });
      } catch (error) {
-          console.log("Error banning user:", error);
+          console.error("Error banning user:", error);
+          res.status(400).json({ message: error.message, status: false });
+     }
+};
+
+exports.unbanUser = async (req, res) => {
+     try {
+          const { userId } = req.body;
+
+          const unbannedUser = await User.findByIdAndUpdate(
+               userId,
+               { status: "active", banReason: null }, // Reset the banReason when unbanning
+               { new: true },
+          );
+
+          if (!unbannedUser) {
+               return res.status(404).json({ message: "User not found", status: false });
+          }
+
+          res.status(200).json({ message: "User unbanned successfully", status: true });
+     } catch (error) {
+          console.log("Error unbanning user:", error);
           res.status(500).json({ error, status: false });
      }
 };
 
 exports.suspendUser = async (req, res) => {
      try {
-          const userIdToSuspend = req.params.userId; // Assuming the user ID is passed as a parameter in the request
-          const { suspensionDuration, suspensionUnit } = req.body;
+          const { suspensionDuration, suspensionUnit, userId, suspensionReason } = req.body;
+          const userIdToSuspend = userId;
 
-          // Fetch the user by ID
-          const userToSuspend = await User.findById(userIdToSuspend);
+          const isUserSuspended = await User.exists({
+               _id: userIdToSuspend,
+               status: "suspended",
+          });
 
-          // Check criteria for suspension
-          if (!userToSuspend) {
-               return res.status(404).json({ message: "User not found", status: "suspended" });
+          if (isUserSuspended) {
+               return res.status(400).json({ message: "User is already suspended", status: false });
           }
 
-          // Additional criteria for suspension (modify based on your requirements)
+          const userToSuspend = await User.findById(userIdToSuspend);
+
+          if (!userToSuspend) {
+               return res.status(404).json({ message: "User not found", status: false });
+          }
+
           if (userToSuspend.role === "admin") {
                return res
                     .status(403)
                     .json({ message: "Admin users cannot be suspended", status: false });
           }
 
-          // Calculate the suspension end date
           const suspensionEndDate = moment().add(suspensionDuration, suspensionUnit);
 
-          // Update the user with the suspension details
           const suspendedUser = await User.findByIdAndUpdate(
                userIdToSuspend,
                {
                     status: "suspended",
                     suspensionEndDate: suspensionEndDate.toDate(),
+                    suspensionCount: userToSuspend.suspensionCount + 1,
+                    $push: { suspensionReasons: suspensionReason },
                },
                { new: true },
           );
@@ -682,6 +714,45 @@ exports.suspendUser = async (req, res) => {
      } catch (error) {
           console.log("Error suspending user:", error);
           res.status(500).json({ error, status: false });
+     }
+};
+
+exports.liftSuspension = async (req, res) => {
+     try {
+          const { userId } = req.body;
+          const userToLift = await User.findById(userId);
+
+          if (!userToLift) {
+               return res.status(404).json({ success: false, message: "User not found" });
+          }
+
+          if (userToLift.status !== "suspended") {
+               return res.status(400).json({
+                    success: false,
+                    message: "User is not suspended, so suspension cannot be lifted",
+               });
+          }
+
+          const suspensionReasons = userToLift.suspensionReasons;
+
+          const liftedUser = await User.findByIdAndUpdate(
+               userId,
+               {
+                    status: "active",
+                    suspensionEndDate: null,
+                    suspensionReasons: suspensionReasons, // The reasons remain
+               },
+               { new: true },
+          );
+
+          res.status(200).json({
+               success: true,
+               message: "Suspension lifted successfully",
+               data: liftedUser,
+          });
+     } catch (error) {
+          console.error("Error lifting suspension:", error);
+          res.status(500).json({ success: false, error: error.message });
      }
 };
 
