@@ -172,6 +172,7 @@ exports.loginUser = async (req, res) => {
                onboarded: user.onboarded,
                partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
                subscribed: user.subscribed,
+               status: user.status,
           };
 
           const token = await user.generateAuthToken(domain);

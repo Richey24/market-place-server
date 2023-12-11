@@ -12,6 +12,9 @@ exports.getSiteByDomain = async (req, res) => {
                     path: "site",
                })
                .populate({
+                    path: "status",
+               })
+               .populate({
                     path: "user_id",
                });
 
