@@ -20,6 +20,7 @@ router.put("/update/password/customer", userController.updatePassword);
 router.post("/forgot/password", userController.forgotPassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 router.put("/tour/update", auth, userController.updateTour);
+router.get("/vendors", userController.getAllVendors)
 
 // ban user
 router.get("/users", userController.getAllUsers);
