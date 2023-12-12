@@ -5,6 +5,10 @@ const companySchema = mongoose.Schema({
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",
      },
+     status: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+     },
      site: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Site",
