@@ -201,33 +201,33 @@ exports.createOrder = async (req, res) => {
           // console.log("orderData", orderData);
           const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
           console.log("Order created successfully. Order ID:", orderId);
-          productData.forEach(async ({ productId }) => {
-               const details = await getProductById(productId);
-               // console.log("product", details);
-               const product = details.map((product) => {
-                    return {
-                         id: product.id,
-                         website_url: product.website_url,
-                         name: product.name,
-                         description: product.description,
-                         categ_id: product.categ_id,
-                         list_price: product.list_price,
-                         standard_price: product.standard_price,
-                         company_id: product.company_id,
-                         display_name: product.display_name,
-                         base_unit_count: product.base_unit_count,
-                         image_1920: product.image_1920,
-                         image_1024: product.image_1024,
-                         x_rating: product.x_rating,
-                         x_subcategory: product.x_subcategory,
-                         x_size: product.x_size,
-                         x_weight: product.x_weight,
-                         x_color: product.x_color,
-                         x_dimension: product.x_dimension,
-                    };
-               });
-               await User.findByIdAndUpdate(userId, { $push: { order_products: product[0] } });
-          });
+          // productData.forEach(async ({ productId }) => {
+          //      const details = await getProductById(productId);
+          //      // console.log("product", details);
+          //      const product = details.map((product) => {
+          //           return {
+          //                id: product.id,
+          //                website_url: product.website_url,
+          //                name: product.name,
+          //                description: product.description,
+          //                categ_id: product.categ_id,
+          //                list_price: product.list_price,
+          //                standard_price: product.standard_price,
+          //                company_id: product.company_id,
+          //                display_name: product.display_name,
+          //                base_unit_count: product.base_unit_count,
+          //                image_1920: product.image_1920,
+          //                image_1024: product.image_1024,
+          //                x_rating: product.x_rating,
+          //                x_subcategory: product.x_subcategory,
+          //                x_size: product.x_size,
+          //                x_weight: product.x_weight,
+          //                x_color: product.x_color,
+          //                x_dimension: product.x_dimension,
+          //           };
+          //      });
+          //      // await User.findByIdAndUpdate(userId, { $push: { order_products: product[0] } });
+          // });
           return res.status(201).json({ orderId, status: true });
      } catch (error) {
           console.log("Error", error);
