@@ -6,10 +6,16 @@ const Advert = require("../../model/Advert");
 const Site = require("../../model/Site");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sendWelcomeEmail, sendForgotPasswordEmail } = require("../../config/helpers");
+const {
+     sendWelcomeEmail,
+     sendForgotPasswordEmail,
+     sendSuspensionEmail,
+     sendUnsuspensionEmail,
+     sendBanEmail,
+     sendUnbanEmail,
+} = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
-const mongoose = require("mongoose");
 
 exports.register = async (req, res) => {
      try {
@@ -638,7 +644,7 @@ exports.banUser = async (req, res) => {
           if (!bannedUser) {
                return res.status(404).json({ message: "User not found", status: false });
           }
-
+          sendBanEmail(bannedUser.email, bannedUser.name, reason);
           res.status(200).json({ message: "User banned successfully", status: true });
      } catch (error) {
           console.error("Error banning user:", error);
@@ -659,7 +665,7 @@ exports.unbanUser = async (req, res) => {
           if (!unbannedUser) {
                return res.status(404).json({ message: "User not found", status: false });
           }
-
+          sendUnbanEmail(bannedUser.email, bannedUser.name,)
           res.status(200).json({ message: "User unbanned successfully", status: true });
      } catch (error) {
           console.log("Error unbanning user:", error);
@@ -706,6 +712,8 @@ exports.suspendUser = async (req, res) => {
                { new: true },
           );
 
+          sendSuspensionEmail(userToSuspend.email, userToSuspend.name, suspensionReason);
+
           res.status(200).json({
                message: `User suspended successfully until ${suspensionEndDate.format(
                     "YYYY-MM-DD",
@@ -745,7 +753,7 @@ exports.liftSuspension = async (req, res) => {
                },
                { new: true },
           );
-
+          sendUnsuspensionEmail(userToLift.email, userToLift.name);
           res.status(200).json({
                success: true,
                message: "Suspension lifted successfully",

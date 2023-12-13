@@ -154,7 +154,7 @@ const sendWelcomeEmail = (email, name) => {
      const mailOptions = {
           from: "info@israelbiblecamp.com",
           to: email,
-          subject: "Welcome to Our IsrealB Marketplace",
+          subject: "Welcome to Our IMarketplace",
           html: `
        <!DOCTYPE html>
        <html>
@@ -352,6 +352,418 @@ const sendTrialEndReminderEmail = (email, name, company_id) => {
           </body>
           </html>                   
        `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
+const sendSuspensionEmail = (email, name, reason) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Account Suspension Notice",
+          html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        /* CSS styles for the email template */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    
+        body {
+          font-family: 'Montserrat', Arial, sans-serif;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f5f5f5;
+          border-radius: 5px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .message {
+          margin-bottom: 20px;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+        }
+        .highlight {
+          font-weight: bold;
+        }
+        .footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 12px;
+        }
+        .logo {
+          display: block;
+          margin: 0 auto;
+          max-width: 200px;
+        }
+        .cta-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #ff3333; /* Red color for emphasis on suspension */
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 5px;
+        }
+        .cta-button:hover {
+          background-color: #cc0000; /* Darker red on hover */
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <h1 style="color: #333333;">Account Suspension Notice</h1>
+        </div>
+        <div class="message">
+          <p>Dear ${name},</p>
+          <p>We regret to inform you that your account with IMarketplace has been temporarily suspended due to ${reason}.</p>
+          <p>Please review our terms of service to understand the specific violation that led to this action. If you believe this suspension is in error or if you have any questions, please contact our support team immediately.</p>
+        </div>
+        <div class="message">
+          <p>We take these matters seriously and aim to maintain a secure and fair marketplace for all users. Your cooperation in resolving this issue is appreciated.</p>
+          <a class="cta-button" href="https://example.com/contact">Contact Support</a>
+        </div>
+        <div class="footer">
+          <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+        </div>
+      </div>
+    </body>
+    </html>       
+ `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
+const sendUnsuspensionEmail = (email, name) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Account Unsuspension Notice",
+          html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        /* CSS styles for the email template */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    
+        body {
+          font-family: 'Montserrat', Arial, sans-serif;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f5f5f5;
+          border-radius: 5px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .message {
+          margin-bottom: 20px;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+        }
+        .highlight {
+          font-weight: bold;
+        }
+        .footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 12px;
+        }
+        .logo {
+          display: block;
+          margin: 0 auto;
+          max-width: 200px;
+        }
+        .cta-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #4caf50; /* Green color for emphasis on unsuspension */
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 5px;
+        }
+        .cta-button:hover {
+          background-color: #45a049; /* Darker green on hover */
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <h1 style="color: #333333;">Account Unsuspension Notice</h1>
+        </div>
+        <div class="message">
+          <p>Dear ${name},</p>
+          <p>We are pleased to inform you that your account with IMarketplace has been unsuspended.</p>
+          <p>Thank you for addressing the concerns that led to the suspension. We appreciate your cooperation in maintaining a secure and fair marketplace for all users.</p>
+        </div>
+        <div class="message">
+          <p>Your account is now fully restored, and you can resume using our platform as usual. If you have any further questions or concerns, please feel free to contact our support team.</p>
+          <a class="cta-button" href="https://example.com">Continue</a>
+        </div>
+        <div class="footer">
+          <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+        </div>
+      </div>
+    </body>
+    </html>       
+ `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
+const sendBanEmail = (email, name, banReason) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Account Ban Notice",
+          html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        /* CSS styles for the email template */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    
+        body {
+          font-family: 'Montserrat', Arial, sans-serif;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f5f5f5;
+          border-radius: 5px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .message {
+          margin-bottom: 20px;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+        }
+        .highlight {
+          font-weight: bold;
+        }
+        .footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 12px;
+        }
+        .logo {
+          display: block;
+          margin: 0 auto;
+          max-width: 200px;
+        }
+        .cta-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #ff3333; /* Red color for emphasis on ban */
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 5px;
+        }
+        .cta-button:hover {
+          background-color: #cc0000; /* Darker red on hover */
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <h1 style="color: #333333;">Account Ban Notice</h1>
+        </div>
+        <div class="message">
+          <p>Dear ${name},</p>
+          <p>We regret to inform you that your account with IMarketplace has been banned due to ${banReason}.</p>
+          <p>If you believe this ban is in error or if you have any questions, please contact our support team immediately.</p>
+        </div>
+        <div class="message">
+          <p>We take these matters seriously and aim to maintain a secure and fair marketplace for all users.</p>
+          <a class="cta-button" href="https://example.com/contact">Contact Support</a>
+        </div>
+        <div class="footer">
+          <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+        </div>
+      </div>
+    </body>
+    </html>       
+ `,
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
+
+const sendUnbanEmail = (email, name) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: "Account Unban Notice",
+          html: `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        /* CSS styles for the email template */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    
+        body {
+          font-family: 'Montserrat', Arial, sans-serif;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #f5f5f5;
+          border-radius: 5px;
+        }
+        .header {
+          text-align: center;
+          margin-bottom: 20px;
+        }
+        .message {
+          margin-bottom: 20px;
+          background-color: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+        }
+        .highlight {
+          font-weight: bold;
+        }
+        .footer {
+          margin-top: 20px;
+          text-align: center;
+          font-size: 12px;
+        }
+        .logo {
+          display: block;
+          margin: 0 auto;
+          max-width: 200px;
+        }
+        .cta-button {
+          display: inline-block;
+          margin-top: 20px;
+          padding: 10px 20px;
+          background-color: #4caf50; /* Green color for emphasis on unban */
+          color: #ffffff;
+          text-decoration: none;
+          border-radius: 5px;
+        }
+        .cta-button:hover {
+          background-color: #45a049; /* Darker green on hover */
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <h1 style="color: #333333;">Account Unban Notice</h1>
+        </div>
+        <div class="message">
+          <p>Dear ${name},</p>
+          <p>We are pleased to inform you that your account with IMarketplace has been unbanned.</p>
+          <p>Thank you for your cooperation. Your account is now fully restored, and you can resume using our platform as usual.</p>
+        </div>
+        <div class="message">
+          <p>If you have any further questions or concerns, please feel free to contact our support team.</p>
+          <a class="cta-button" href="https://example.com">Continue</a>
+        </div>
+        <div class="footer">
+          <p style="color: #777777;">This email was sent by Dreamtech Labs, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+        </div>
+      </div>
+    </body>
+    </html>       
+ `,
      };
      transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
@@ -1438,6 +1850,8 @@ module.exports = {
      sendTrialExtensionEmail,
      sendSubscriptionEmail,
      sendSubscriptionExpiredEmail,
+     sendSuspensionEmail,
+     sendUnsuspensionEmail,
      sendCouponEmail,
      sendRatingMail,
      formatDate,
@@ -1445,4 +1859,6 @@ module.exports = {
      scheduleUserDisablingCronJob,
      sendWelcomeEmail,
      sendForgotPasswordEmail,
+     sendBanEmail,
+     sendUnbanEmail,
 };
