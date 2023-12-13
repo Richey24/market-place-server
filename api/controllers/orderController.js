@@ -226,7 +226,7 @@ exports.createOrder = async (req, res) => {
                          x_dimension: product.x_dimension,
                     };
                });
-               await User.findByIdAndUpdate(userId, { $push: { order_products: product[0] } });
+               // await User.findByIdAndUpdate(userId, { $push: { order_products: product[0] } });
           });
           return res.status(201).json({ orderId, status: true });
      } catch (error) {
