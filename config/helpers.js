@@ -82,7 +82,7 @@ const sendOnboardingEmail = (email, name) => {
          <body>
            <div class="container">
              <div class="header">
-               <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+               <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
                <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
              </div>
              <div class="message">
@@ -214,7 +214,7 @@ const sendWelcomeEmail = (email, name) => {
        <body>
          <div class="container">
            <div class="header">
-             <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
              <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
            </div>
            <div class="message">
@@ -332,7 +332,7 @@ const sendTrialEndReminderEmail = (email, name, company_id) => {
           <body>
             <div class="container">
               <div class="header">
-                <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+                <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
                 <h1 style="color: #333333;">Trial End Reminder</h1>
               </div>
               <div class="message">
@@ -442,7 +442,7 @@ const sendTrialExtensionEmail = (email, name, trialEndDate) => {
          <body>
            <div class="container">
              <div class="header">
-               <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+               <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
                <h1 style="color: #333333;">Your Free Trial Period Has Been Extended!</h1>
              </div>
              <div class="message">
@@ -567,7 +567,7 @@ const sendSubscriptionEmail = (email, name) => {
     <body>
       <div class="container">
         <div class="header">
-          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
           <h1 style="color: #333333;">Thank You for Subscribing to Our Service!</h1>
         </div>
         <div class="message">
@@ -676,7 +676,7 @@ const sendSubscriptionExpiredEmail = (email, name) => {
     <body>
       <div class="container">
         <div class="header">
-          <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+          <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
           <h1 style="color: #333333;">Your Subscription Has Expired or Been Canceled</h1>
         </div>
         <div class="message">
@@ -782,7 +782,7 @@ const sendCouponEmail = (email, name) => {
       <body>
         <div class="container">
           <div class="header">
-            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
             <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
           </div>
           <div class="message">
@@ -900,7 +900,7 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
       <body>
         <div class="container">
           <div class="header">
-            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
             <h1 style="color: #333333;">Reset Password Request</h1>
           </div>
           <div class="message">
@@ -1011,7 +1011,7 @@ const sendSubscriptionReminderEmail = (email, name, trialEndDate) => {
       <body>
         <div class="container">
           <div class="header">
-            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
             <h1 style="color: #333333;">Subscription Reminder</h1>
           </div>
           <div class="message">
@@ -1136,7 +1136,7 @@ const sendAccountDisablingReminderEmail = (email, name, trialEndDate) => {
       <body>
         <div class="container">
           <div class "header">
-            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
             <h1 style="color: #333333;">Account Disabling Reminder</h1>
           </div>
           <div class="message">
@@ -1184,7 +1184,7 @@ const sendAdminMessage = (email, name, message) => {
   const mailOptions = {
     from: "info@israelbiblecamp.com",
     to: email,
-    subject: "Important: Your Account Will Be Disabled Tomorrow",
+    subject: "Important: New Message From Admin",
     html: `
       <!DOCTYPE html>
       <html>
@@ -1244,8 +1244,8 @@ const sendAdminMessage = (email, name, message) => {
       <body>
         <div class="container">
           <div class "header">
-            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Account Disabling Reminder</h1>
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">New Message From Admin</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
@@ -1353,7 +1353,7 @@ const sendRatingMail = (email, name, url, product) => {
       <body>
         <div class="container">
           <div class="header">
-            <img class="logo" src="https://example.com/logo.png" alt="Company Logo">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
           </div>
           <div class="message">
             <p>Dear ${name},</p>
