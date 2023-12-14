@@ -30,6 +30,10 @@ const userSchema = mongoose.Schema({
           type: String,
      },
 
+     image: {
+          type: String,
+     },
+
      status: {
           type: String,
           enum: ["active", "suspended", "banned"],

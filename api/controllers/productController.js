@@ -408,6 +408,7 @@ exports.createProductWithVariant = async (req, res) => {
                product: {
                     ...{
                          ...req.body,
+                         variants: req.body?.variants ? JSON.parse(req.body?.variants) : null,
                          // variants: JSON.parse(
                          //      '[[{"attributeId":3,"value":"423","price_extra":5},{"attributeId":1,"value":"666","price_extra":21},{"attributeId":1,"value":"888","price_extra":5},{"attributeId":1,"value":"211","price_extra":15}],[{"attributeId":3,"value":"444","price_extra":5},{"attributeId":3,"value":"999","price_extra":15},{"attributeId":3,"value":"801","price_extra":5}]]',
                          // ),
@@ -622,7 +623,7 @@ exports.rateProduct = async (req, res) => {
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });
           }
-          
+
           const user = await User.findById(userId);
           if (user.rated.includes(productId)) {
                return res

@@ -284,14 +284,6 @@ const createProductVariant = async (params, templateId, variantData) => {
 };
 
 const addProductVariant = async (params) => {
-     // ... (existing setup code)
-     const attributeValues = [
-          { attribute_id: 1, name: "Red" },
-          { attribute_id: 1, name: "Blue" },
-          { attribute_id: 2, name: "Small" },
-          { attribute_id: 2, name: "Medium" },
-          { attribute_id: 2, name: "Large" },
-     ];
 
      if (params.product.is_variant) {
           const templateData = {

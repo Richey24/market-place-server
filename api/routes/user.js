@@ -21,6 +21,7 @@ router.post("/forgot/password", userController.forgotPassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 router.put("/tour/update", auth, userController.updateTour);
 router.get("/vendors", userController.getAllVendors)
+router.post("/admin/mail", userController.sendAdminMail)
 
 // ban user
 router.get("/users", userController.getAllUsers);

@@ -54,6 +54,7 @@ const imageRouter = require("./api/routes/image");
 const siteRouter = require("./api/routes/site");
 const tagRouter = require("./api/routes/tag");
 const orderRouter = require("./api/routes/order");
+const dashboardRouter = require("./api/routes/dashbaord");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
@@ -69,6 +70,7 @@ app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
 app.use("/api/tags", tagRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/dashboard", dashboardRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -81,9 +83,9 @@ app.use("/api/promotions", promotionRouter);
 app.use("/api/themes", themeRouter);
 app.use("/api/advert", advertRouter);
 app.use("/api/contact-us", contactUsRouter);
-app.use("/api/main/category", mainCategoryRouter)
-app.use("/api/main/popular", popularProduct)
-app.use("/api/service", serviceRoute)
+app.use("/api/main/category", mainCategoryRouter);
+app.use("/api/main/popular", popularProduct);
+app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
 app.use("/image", imageRouter);
 
