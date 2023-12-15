@@ -7,6 +7,9 @@ const downloadStat = mongoose.Schema({
     browser: {
         type: String,
     },
+    ipAddress: {
+        type: String,
+    },
 }, {
     timestamps: true,
 });
