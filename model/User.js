@@ -148,7 +148,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
      }
 
      const isPasswordMatch = await bcrypt.compare(password, user.password);
-     console.log(isPasswordMatch);
+
      if (!isPasswordMatch) {
           return false;
      }
