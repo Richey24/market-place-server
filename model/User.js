@@ -142,12 +142,13 @@ userSchema.methods.generateAuthToken = async function (domain) {
 //this method search for a user by email and password.
 userSchema.statics.findByCredentials = async (email, password) => {
      const user = await User.findOne({ email });
-     // console.log(user);
+
      if (!user) {
           return false;
      }
 
      const isPasswordMatch = await bcrypt.compare(password, user.password);
+     console.log(isPasswordMatch);
      if (!isPasswordMatch) {
           return false;
      }

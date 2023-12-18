@@ -463,20 +463,14 @@ exports.updateUserDetails = async (req, res) => {
 exports.resetPassword = async (req, res) => {
      try {
           const { token, newPassword } = req.body;
-
-          // Verify the token
           const decoded = jwt.verify(token, "secret");
-
           const user = await User.findById(decoded._id);
 
           if (!user) {
                return res.status(404).json({ message: "User not found" });
           }
 
-          const hashedPassword = await bcrypt.hash(newPassword, 8);
-
-          user.password = hashedPassword;
-     
+          user.password = newPassword;
           await user.save();
 
           res.status(200).json({ message: "Password updated successfully", status: true });
