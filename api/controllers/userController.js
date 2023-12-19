@@ -455,6 +455,26 @@ exports.updateUserDetails = async (req, res) => {
      }
 };
 
+exports.resetPassword = async (req, res) => {
+     try {
+          const { token, newPassword } = req.body;
+          const decoded = jwt.verify(token, "secret");
+          const user = await User.findById(decoded._id);
+
+          if (!user) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+          user.password = newPassword;
+          await user.save();
+
+          res.status(200).json({ message: "Password updated successfully", status: true });
+     } catch (error) {
+          console.error("Error updating password:", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
 exports.updatePassword = async (req, res) => {
      try {
           const user = await User.findById(req.userData._id);
@@ -512,7 +532,6 @@ exports.forgotPassword = async (req, res) => {
 };
 
 exports.getUserDetails = async (req, res) => {
-     console.log(req.userData);
      try {
           const user = await User.findById(req?.userData?._id ?? req.params.id).populate({
                path: "company",
@@ -786,9 +805,9 @@ exports.getAllVendors = async (req, res) => {
 
 exports.sendAdminMail = async (req, res) => {
      try {
-          const { email, name, message } = req.body
-          sendAdminMessage(email, name, message)
-          res.status(200).json({ message: "Mail sent successfully" })
+          const { email, name, message } = req.body;
+          sendAdminMessage(email, name, message);
+          res.status(200).json({ message: "Mail sent successfully" });
      } catch (error) {
           console.error("Error fetching users:", error);
           res.status(500).json({ message: "Internal server error", status: false });

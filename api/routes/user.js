@@ -18,6 +18,7 @@ router.put("/me/customer", userController.updateUserDetails);
 router.put("/update/password", auth, userController.updatePassword);
 router.put("/update/password/customer", userController.updatePassword);
 router.post("/forgot/password", userController.forgotPassword);
+router.post("/reset/password", userController.resetPassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 router.put("/tour/update", auth, userController.updateTour);
 router.get("/vendors", userController.getAllVendors)
