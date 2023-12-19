@@ -6,7 +6,7 @@ const Advert = require("../../model/Advert");
 const Site = require("../../model/Site");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sendWelcomeEmail, sendForgotPasswordEmail, sendAdminMessage } = require("../../config/helpers");
+const { sendWelcomeEmail, sendForgotPasswordEmail, sendAdminMessage, sendVendorMessage } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
 const mongoose = require("mongoose");
@@ -791,6 +791,28 @@ exports.sendAdminMail = async (req, res) => {
           res.status(200).json({ message: "Mail sent successfully" })
      } catch (error) {
           console.error("Error fetching users:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+}
+
+exports.sendVendorMail = async (req, res) => {
+     try {
+          const { email, name, message, orderID } = req.body
+          sendVendorMessage(email, name, message, orderID)
+          res.status(200).json({ message: "Mail sent successfully" })
+     } catch (error) {
+          console.error("Error fetching users:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+}
+
+exports.getUserByPartnerID = async (req, res) => {
+     try {
+          const partner_id = req.params.id
+          console.log(partner_id);
+          const user = await User.findOne({ partner_id: partner_id })
+          res.status(200).json(user)
+     } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
      }
 }

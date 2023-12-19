@@ -1269,6 +1269,105 @@ const sendAdminMessage = (email, name, message) => {
     }
   });
 };
+const sendVendorMessage = (email, name, message, orderID) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: `Important: New Message Regarding Your Order: ${orderID}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px.
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class "header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">New Message Regarding Your Order: ${orderID}</h1>
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            <p>${message}</p>
+            </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
 
 const sendRatingMail = (email, name, url, product) => {
   const transporter = nodemailer.createTransport({
@@ -1544,5 +1643,6 @@ module.exports = {
   scheduleUserDisablingCronJob,
   sendWelcomeEmail,
   sendForgotPasswordEmail,
-  sendAdminMessage
+  sendAdminMessage,
+  sendVendorMessage
 };
