@@ -21,11 +21,13 @@ router.post("/forgot/password", userController.forgotPassword);
 router.post("/reset/password", userController.resetPassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);
 router.put("/tour/update", auth, userController.updateTour);
-router.get("/vendors", userController.getAllVendors);
-router.post("/admin/mail", userController.sendAdminMail);
+router.get("/vendors", userController.getAllVendors)
+router.post("/admin/mail", userController.sendAdminMail)
+router.post("/vendor/mail", userController.sendVendorMail)
 
 // ban user
 router.get("/users", userController.getAllUsers);
+router.get("/get/partner/:id", userController.getUserByPartnerID)
 router.post("/ban", userController.banUser);
 router.patch("/unban", userController.unbanUser);
 router.post("/suspend", userController.suspendUser);
