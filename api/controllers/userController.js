@@ -107,6 +107,7 @@ exports.register = async (req, res) => {
           sendWelcomeEmail(
                req.body?.email ?? user?.firstname,
                req.body?.firstname ?? user?.lastname,
+               req?.body.currentSiteType ?? user?.currentSiteType,
           );
 
           res.status(201).json({ user: userWithoutPassword ?? user, token, status: true });

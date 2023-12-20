@@ -737,7 +737,7 @@ exports.postOnboarding = async (req, res) => {
                     throw ("error creatting site", err);
                }
 
-               sendOnboardingEmail(email, firstname);
+               sendOnboardingEmail(email, firstname, req.body.type);
                // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
                     $set: { onboarded: true, company: company_data?._id },
