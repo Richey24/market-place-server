@@ -10,7 +10,7 @@ const complainSchema = mongoose.Schema({
     vendorID: {
         type: String,
     },
-    productID: {
+    companyID: {
         type: String,
     },
     topic: {
