@@ -829,8 +829,20 @@ exports.sendVendorMail = async (req, res) => {
 exports.getUserByPartnerID = async (req, res) => {
      try {
           const partner_id = req.params.id
-          console.log(partner_id);
           const user = await User.findOne({ partner_id: partner_id })
+          res.status(200).json(user)
+     } catch (error) {
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+}
+
+exports.getUserByCompanyID = async (req, res) => {
+     try {
+          const company_id = req.params.id
+          console.log(company_id);
+          const company = await Company.findOne({ company_id: company_id })
+          const user = await User.findById(company.user_id)
+          user.company = company
           res.status(200).json(user)
      } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
