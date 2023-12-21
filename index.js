@@ -88,7 +88,7 @@ app.use("/api/main/category", mainCategoryRouter);
 app.use("/api/main/popular", popularProduct);
 app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
-app.use("/complain", complainRoute)
+app.use("/api/complain", complainRoute)
 app.use("/image", imageRouter);
 
 app.listen(PORT, () => {
