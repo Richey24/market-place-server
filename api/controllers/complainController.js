@@ -31,7 +31,16 @@ const getComplainByCompanyID = async (req, res) => {
         if (!id) {
             return res.status(401).json({ message: "Send company ID" })
         }
-        const complains = Complain.find({ companyID: id })
+        const complains = Complain.find({ companyID: id, forVendor: true })
+        res.status(200).json(complains)
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", status: false });
+    }
+}
+
+const getAdminComplain = async (req, res) => {
+    try {
+        const complains = Complain.find({ forAdmin: true })
         res.status(200).json(complains)
     } catch (error) {
         res.status(500).json({ message: "Internal server error", status: false });
@@ -41,5 +50,6 @@ const getComplainByCompanyID = async (req, res) => {
 module.exports = {
     createComplain,
     getAllComplain,
-    getComplainByCompanyID
+    getComplainByCompanyID,
+    getAdminComplain
 }
