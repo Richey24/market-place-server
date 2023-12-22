@@ -48,20 +48,20 @@ const getAdminComplain = async (req, res) => {
 }
 
 const updateAdminStatus = async (req, res) => {
-    try {
-        const status = req.body.status
-        const id = res.params.id
-        await Complain.findByIdAndUpdate(id, { adminStatus: status, $push: { adminTrail: status } })
-        res.status(200).json({ message: "successful" })
-    } catch (error) {
-        res.status(500).json({ message: "Internal server error", status: false });
-    }
+    // try {
+    const status = req.body.status
+    const id = req.params.id
+    await Complain.findByIdAndUpdate(id, { adminStatus: status, $push: { adminTrail: status } })
+    res.status(200).json({ message: "successful" })
+    // } catch (error) {
+    //     res.status(500).json({ message: "Internal server error", status: false });
+    // }
 }
 
 const updateVendorStatus = async (req, res) => {
     try {
         const status = req.body.status
-        const id = res.params.id
+        const id = req.params.id
         await Complain.findByIdAndUpdate(id, { vendorStatus: status, $push: { vendorTrail: status } })
         res.status(200).json({ message: "successful" })
     } catch (error) {
