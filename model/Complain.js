@@ -19,6 +19,18 @@ const complainSchema = mongoose.Schema({
     siteUrl: {
         type: String,
     },
+    forAdmin: {
+        type: String,
+    },
+    forVendor: {
+        type: String,
+    },
+    adminStatus: {
+        type: String,
+    },
+    vendorStatus: {
+        type: String,
+    },
 })
 
 const Complain = mongoose.model('complain', complainSchema)
