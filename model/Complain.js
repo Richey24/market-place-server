@@ -27,9 +27,11 @@ const complainSchema = mongoose.Schema({
     },
     adminStatus: {
         type: String,
+        default: "Pending Review"
     },
     vendorStatus: {
         type: String,
+        default: "Pending Review"
     },
 })
 
