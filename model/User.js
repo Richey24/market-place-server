@@ -71,6 +71,10 @@ const userSchema = mongoose.Schema({
           type: Array,
           default: [],
      },
+     order_reported: {
+          type: Array,
+          default: [],
+     },
      suspensionCount: {
           type: Number,
           default: 0,
