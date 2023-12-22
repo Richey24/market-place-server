@@ -33,6 +33,14 @@ const complainSchema = mongoose.Schema({
         type: String,
         default: "Pending Review"
     },
+    adminTrail: {
+        type: Array,
+        default: []
+    },
+    vendorTrail: {
+        type: Array,
+        default: []
+    }
 })
 
 const Complain = mongoose.model('complain', complainSchema)
