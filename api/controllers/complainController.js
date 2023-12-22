@@ -50,7 +50,7 @@ const getAdminComplain = async (req, res) => {
 const updateAdminStatus = async (req, res) => {
     try {
         const status = req.body.status
-        const id = res.parans.id
+        const id = res.params.id
         await Complain.findByIdAndUpdate(id, { adminStatus: status, $push: { adminTrail: status } })
         res.status(200).json({ message: "successful" })
     } catch (error) {
@@ -61,7 +61,7 @@ const updateAdminStatus = async (req, res) => {
 const updateVendorStatus = async (req, res) => {
     try {
         const status = req.body.status
-        const id = res.parans.id
+        const id = res.params.id
         await Complain.findByIdAndUpdate(id, { vendorStatus: status, $push: { vendorTrail: status } })
         res.status(200).json({ message: "successful" })
     } catch (error) {
