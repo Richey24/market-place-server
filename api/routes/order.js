@@ -10,6 +10,7 @@ router.get("/customer/history/:partner_id", orderController.getOrderHistoryByPar
 router.post("/create", orderController.createOrder);
 router.get("/:orderId", orderController.getOrderById);
 router.post("/product", orderController.addProductToOrder);
+router.post("/tracking/update", orderController.updateOrderTrackingId);
 router.delete("/product/:id", orderController.removeProductFromOrderLine);
 router.put("/product/qty/:id", orderController.updateProductToOrderLine);
 router.put("/status", orderController.changeOrderStatus);

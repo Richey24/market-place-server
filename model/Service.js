@@ -1,60 +1,62 @@
 const mongoose = require("mongoose");
 
 const serviceSchema = mongoose.Schema({
-    userId: {
-        type: String,
-        required: [true, "Please include userid"]
-    },
-    serviceUrl: {
-        type: String,
-    },
-    serviceEmail: {
-        type: String,
-    },
-    serviceTitle: {
-        type: String,
-    },
-    serviceType: {
-        type: String,
-    },
-    tags: {
-        type: Array,
-    },
-    price: {
-        type: String,
-    },
-    description: {
-        type: String,
-    },
-    dateCreated: {
-        type: Date,
-        default: Date.now()
-    },
-    dateUpdated: {
-        type: Date,
-        default: Date.now()
-    },
-    visibility: {
-        type: String,
-    },
-    serviceDuration: {
-        type: String,
-    },
-    image: {
-        type: String,
-    },
-    rating: {
-        type: String,
-    },
-    numberOfPurchase: {
-        type: Number,
-        default: 0
-    },
-    variants: {
-        type: Array
-    }
-})
+     userId: {
+          type: String,
+          required: [true, "Please include userid"],
+     },
+     url: {
+          type: String,
+     },
+     email: {
+          type: String,
+     },
+     title: {
+          type: String,
+     },
+     type: {
+          type: String,
+     },
+     tags: {
+          type: Array,
+     },
+     price: {
+          type: String,
+     },
+     description: {
+          type: String,
+     },
+     dateCreated: {
+          type: Date,
+          default: Date.now(),
+     },
+     dateUpdated: {
+          type: Date,
+          default: Date.now(),
+     },
+     visibility: {
+          type: String,
+     },
+     duration: {
+          type: String,
+     },
+     durationType: {
+          type: String,
+     },
+     image: {
+          type: String,
+     },
+     rating: {
+          type: String,
+     },
+     numberOfPurchase: {
+          type: Number,
+          default: 0,
+     },
+     variants: {
+          type: Array,
+     },
+});
 
-
-const Service = mongoose.model('Service', serviceSchema);
+const Service = mongoose.model("Service", serviceSchema);
 module.exports = Service;

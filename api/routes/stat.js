@@ -1,5 +1,5 @@
 const express = require("express");
-const { createDownloadStat, getAllDownloadStat, getTopRatedProduct } = require("../controllers/StatController");
+const { createDownloadStat, getAllDownloadStat, getTopRatedProduct } = require("../controllers/statController");
 const router = express.Router();
 
 router.post("/download/create", createDownloadStat)
