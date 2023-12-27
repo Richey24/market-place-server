@@ -27,7 +27,7 @@ const getAllComplain = async (req, res) => {
 
 const getComplainByCompanyID = async (req, res) => {
     try {
-        const id = req.parans.id
+        const id = req.params.id
         if (!id) {
             return res.status(401).json({ message: "Send company ID" })
         }
