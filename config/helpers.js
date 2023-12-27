@@ -3,7 +3,7 @@ const Company = require("../model/Company");
 const cron = require("node-cron");
 const User = require("../model/User");
 
-const sendOnboardingEmail = (email, name) => {
+const sendOnboardingEmail = (email, name, type) => {
   const startDate = new Date();
   const endDate = new Date();
   endDate.setDate(endDate.getDate() + 14);
@@ -19,112 +19,140 @@ const sendOnboardingEmail = (email, name) => {
       pass: process.env.PASSWORD,
     },
   });
+
+  let subject, introMessage, benefitsMessage;
+
+  if (type === "ecommerce") {
+    subject = "Welcome to Our IMarketplace - Your Free Trial Period!";
+    introMessage = `
+            <p>We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.</p>
+            <p>We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way. That is why we are delighted to offer you a free two-week trial period to set up and review your ecommerce store.</p>
+            <p>During this trial period, you will have ample time to familiarize yourself with our platform, showcase your products, and ensure that your store is a true reflection of your brand.</p>
+       `;
+    benefitsMessage = `
+            <p><span class="highlight">Benefits of the Trial Period:</span></p>
+            <ul>
+              <li>Opportunity to create and customize your ecommerce store.</li>
+              <li>Full access to our suite of tools and features.</li>
+              <li>Upload and organize your products, descriptions, and images.</li>
+              <li>Familiarize yourself with our user-friendly interface.</li>
+              <li>Explore our robust marketing, promotional, and video training resources.</li>
+              <li>Evaluate the effectiveness of our platform for your business.</li>
+            </ul>
+       `;
+  } else if (type === "service") {
+    subject = "Welcome to ImarketPlace Service - Your Free Trial Period!";
+    introMessage = `
+            <p>We are thrilled to welcome you to ImarketPlace Service, your partner in success and empowerment.</p>
+            <p>Starting today, you have a free two-week trial period to explore the benefits of our consulting services. Take this time to set up your account, familiarize yourself with our expert consultants, and discover how Breaking Black can support and elevate your journey.</p>
+       `;
+    benefitsMessage = `
+            <p><span class="highlight">Benefits of Registering with ImarketPlace:</span></p>
+            <ul>
+              <li>Access to a team of experienced and diverse consultants.</li>
+              <li>Personalized consulting sessions tailored to your goals.</li>
+              <li>Guidance in areas such as business strategy, career development, and personal empowerment.</li>
+              <li>Exclusive access to workshops, webinars, and networking events.</li>
+              <li>Opportunity to connect with a community of like-minded individuals and professionals.</li>
+              <li>Regular updates on industry trends, diversity, and inclusion initiatives.</li>
+            </ul>
+       `;
+  }
+
   const mailOptions = {
     from: "info@israelbiblecamp.com",
     to: email,
-    subject: "Welcome to Our IsrealB Marketplace - Your Free Trial Period!",
+    subject: subject,
     html: `
-         <!DOCTYPE html>
-         <html>
-         <head>
-           <style>
-             /* CSS styles for the email template */
-             @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-     
-             body {
-               font-family: 'Montserrat', Arial, sans-serif;
-               line-height: 1.6;
-             }
-             .container {
-               max-width: 600px;
-               margin: 0 auto;
-               padding: 20px;
-               background-color: #f5f5f5;
-               border-radius: 5px;
-             }
-             .header {
-               text-align: center;
-               margin-bottom: 20px;
-             }
-             .message {
-               margin-bottom: 20px;
-               background-color: #ffffff;
-               padding: 20px;
-               border-radius: 5px;
-             }
-             .highlight {
-               font-weight: bold;
-             }
-             .footer {
-               margin-top: 20px;
-               text-align: center;
-               font-size: 12px;
-             }
-             .logo {
-               display: block;
-               margin: 0 auto;
-               max-width: 200px;
-             }
-             .cta-button {
-               display: inline-block;
-               margin-top: 20px;
-               padding: 10px 20px;
-               background-color: #007bff;
-               color: #ffffff;
-               text-decoration: none;
-               border-radius: 5px;
-             }
-             .cta-button:hover {
-               background-color: #0056b3;
-             }
-           </style>
-         </head>
-         <body>
-           <div class="container">
-             <div class="header">
-               <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-               <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
-             </div>
-             <div class="message">
-               <p>Dear ${name},</p>
-               <p>We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.</p>
-               <p>We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way. That is why we are delighted to offer you a free two-week trial period to set up and review your ecommerce store.</p>
-               <p>During this trial period, you will have ample time to familiarize yourself with our platform, showcase your products, and ensure that your store is a true reflection of your brand.</p>
-               <p>Here are some key details regarding your free trial period:</p>
-               <ul>
-                 <li><span class="highlight">Trial Start Date:</span> ${formattedDate(
-      startDate,
-    )}</li>
-                 <li><span class="highlight">Trial End Date:</span> ${formattedDate(endDate)}</li>
-               </ul>
-             </div>
-             <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
-             <div class="message">
-               <p><span class="highlight">Benefits of the Trial Period:</span></p>
-               <ul>
-                 <li>Opportunity to create and customize your ecommerce store.</li>
-                 <li>Full access to our suite of tools and features.</li>
-                 <li>Upload and organize your products, descriptions, and images.</li>
-                 <li>Familiarize yourself with our user-friendly interface.</li>
-                 <li>Explore our robust marketing, promotional, and video training resources.</li>
-                 <li>Evaluate the effectiveness of our platform for your business.</li>
-               </ul>
-             </div>
-             <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
-             <div class="message">
-               <p>We realize that we, as people of color, are stronger together, and when we stand together, our possibilities are limitless.</p>
-             </div>
-             <div class="message">
-               <p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
-               <a class="cta-button" href="https://example.com">Get Started</a>
-             </div>
-             <div class="footer">
-               <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
-             </div>
-           </div>
-         </body>
-         </html>
-       `,
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+  
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            ${introMessage}
+            <p>Here are some key details regarding your free trial period:</p>
+            <ul>
+              <li><span class="highlight">Trial Start Date:</span> ${formattedDate(startDate)}</li>
+              <li><span class="highlight">Trial End Date:</span> ${formattedDate(endDate)}</li>
+            </ul>
+          </div>
+          <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
+          <div class="message">
+            ${benefitsMessage}
+          </div>
+          <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
+          <div class="message">
+            <p>We realize that we, as people of color, are stronger together, and when we stand together, our possibilities are limitless.</p>
+          </div>
+          <div class="message">
+            <p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
+            <a class="cta-button" href="https://example.com">Get Started</a>
+          </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Imarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
   };
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
@@ -136,7 +164,7 @@ const sendOnboardingEmail = (email, name) => {
   });
 };
 
-const sendWelcomeEmail = (email, name) => {
+const sendWelcomeEmail = (email, name, type) => {
   const endDate = new Date();
   endDate.setDate(endDate.getDate() + 14);
   const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
@@ -151,10 +179,166 @@ const sendWelcomeEmail = (email, name) => {
       pass: process.env.PASSWORD,
     },
   });
+
+  let subject, introMessage;
+
+  if (type === "ecommerce") {
+    subject = "Welcome to Our IMarketplace";
+    introMessage = `
+      <p>We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.</p>
+      <p>We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way.</p>
+      <p>Here are some key benefits of joining our platform:</p>
+      <ul>
+        <li>Opportunity to create and customize your ecommerce store.</li>
+        <li>Full access to our suite of tools and features.</li>
+        <li>Upload and organize your products, descriptions, and images.</li>
+        <li>Familiarize yourself with our user-friendly interface.</li>
+        <li>Explore our robust marketing, promotional, and video training resources.</li>
+        <li>Evaluate the effectiveness of our platform for your business.</li>
+      </ul>
+    `;
+  } else if (type === "service") {
+    subject = "Welcome to Our ImarketPlace Service Platform";
+    introMessage = `
+      <p>We are excited to welcome you to our service platform, where talented individuals like yourself connect and collaborate on various projects.</p>
+      <p>As a member, you'll enjoy:</p>
+      <ul>
+        <li>Access to a diverse range of projects.</li>
+        <li>The flexibility to set your own schedule and rates.</li>
+        <li>A platform to showcase your skills and build your professional portfolio.</li>
+        <li>Secure and reliable payment processing for your completed projects.</li>
+        <li>A supportive community of freelancers and clients.</li>
+      </ul>
+    `;
+  }
+
   const mailOptions = {
     from: "info@israelbiblecamp.com",
     to: email,
-    subject: "Welcome to Our IsrealB Marketplace",
+    subject: subject,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">Welcome as a New ${type === "ecommerce" ? "Vendor" : "Member"
+      }!</h1>
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            ${introMessage}
+          </div>
+          <div class="message">
+            <p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
+            <a class="cta-button" href="https://example.com">Get Started</a>
+          </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>       
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
+
+const sendTrialEndReminderEmail = (email, name, company_id, type) => {
+  const endDate = new Date();
+  endDate.setDate(endDate.getDate() + 14);
+  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+  const extensionLink = `https://market-server.azurewebsites.net/api/trial?company_id=${company_id}`;
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  let subject, trialType, introMessage;
+
+  if (type === "ecommerce") {
+    subject = "Reminder: Your Trial Period Ends Soon";
+    trialType = "ecommerce marketplace";
+    introMessage = `<p>We wanted to remind you that your trial period on our vibrant and dynamic ${trialType} is ending soon.</p>`;
+  } else if (type === "service") {
+    subject = "Reminder: Your Trial Period Ends Soon";
+    trialType = "iMarketplace Service";
+    introMessage = `<p>We wanted to remind you that your trial period for our ${trialType} is ending soon.</p>`;
+  }
+
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: subject,
     html: `
        <!DOCTYPE html>
        <html>
@@ -215,32 +399,24 @@ const sendWelcomeEmail = (email, name) => {
          <div class="container">
            <div class="header">
              <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-             <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
+             <h1 style="color: #333333;">Trial End Reminder</h1>
            </div>
            <div class="message">
              <p>Dear ${name},</p>
-             <p>We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.</p>
-             <p>We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way.</p>
-             <p>Here are some key benefits of joining our platform:</p>
-             <ul>
-               <li>Opportunity to create and customize your ecommerce store.</li>
-               <li>Full access to our suite of tools and features.</li>
-               <li>Upload and organize your products, descriptions, and images.</li>
-               <li>Familiarize yourself with our user-friendly interface.</li>
-               <li>Explore our robust marketing, promotional, and video training resources.</li>
-               <li>Evaluate the effectiveness of our platform for your business.</li>
-             </ul>
-           </div>
-           <div class="message">
-             <p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
-             <a class="cta-button" href="https://example.com">Get Started</a>
+             ${introMessage}
+             <p>Your trial period will expire on ${formattedDate(endDate)}.</p>
+             <p>Please feel free to continue exploring and utilizing our ${trialType} during this trial period.</p>
+             <p>If you have any questions or need any assistance, our support team is ready to help.</p>
+             <p>Thank you for trying out our platform. We hope you've had a positive experience so far and consider continuing with our service.</p>
+             <p>If you need more time to explore our platform, we are happy to offer you a one-week extension for your trial period. To extend your trial, simply click the button below:</p>
+             <a href="${extensionLink}" class="cta-button">Extend Trial</a>
            </div>
            <div class="footer">
-             <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+             <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you have any questions, please <a href="mailto:info@example.com" style="color: #777777; text-decoration: underline;">contact us</a>.</p>
            </div>
          </div>
        </body>
-       </html>       
+       </html>                   
     `,
   };
   transporter.sendMail(mailOptions, function (error, info) {
@@ -253,117 +429,7 @@ const sendWelcomeEmail = (email, name) => {
   });
 };
 
-const sendTrialEndReminderEmail = (email, name, company_id) => {
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 14);
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
-  const extensionLink = `https://market-server.azurewebsites.net/api/trial?company_id=${company_id}`;
-
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Reminder: Your Trial Period Ends Soon",
-    html: `
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <style>
-              /* CSS styles for the email template */
-              @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-          
-              body {
-                font-family: 'Montserrat', Arial, sans-serif;
-                line-height: 1.6;
-              }
-              .container {
-                max-width: 600px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #f5f5f5;
-                border-radius: 5px;
-              }
-              .header {
-                text-align: center;
-                margin-bottom: 20px;
-              }
-              .message {
-                margin-bottom: 20px;
-                background-color: #ffffff;
-                padding: 20px;
-                border-radius: 5px;
-              }
-              .highlight {
-                font-weight: bold;
-              }
-              .footer {
-                margin-top: 20px;
-                text-align: center;
-                font-size: 12px;
-              }
-              .logo {
-                display: block;
-                margin: 0 auto;
-                max-width: 200px;
-              }
-              .cta-button {
-                display: inline-block;
-                margin-top: 20px;
-                padding: 10px 20px;
-                background-color: #007bff;
-                color: #ffffff;
-                text-decoration: none;
-                border-radius: 5px;
-              }
-              .cta-button:hover {
-                background-color: #0056b3;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="header">
-                <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-                <h1 style="color: #333333;">Trial End Reminder</h1>
-              </div>
-              <div class="message">
-                <p>Dear ${name},</p>
-                <p>We wanted to remind you that your trial period on our vibrant and dynamic ecommerce marketplace is ending soon.</p>
-                <p>Your trial period will expire on [Insert end date].</p>
-                <p>Please make sure to review your store, products, and settings before the trial ends.</p>
-                <p>If you have any questions or need any assistance, our support team is ready to help.</p>
-                <p>Thank you for trying out our platform. We hope you've had a positive experience so far and consider continuing with our service.</p>
-                <p>If you need more time to explore our platform, we are happy to offer you a one-week extension for your trial period. To extend your trial, simply click the button below:</p>
-                <a href="${extensionLink}" class="cta-button">Extend Trial</a>
-              </div>
-              <div class="footer">
-                <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you have any questions, please <a href="mailto:info@example.com" style="color: #777777; text-decoration: underline;">contact us</a>.</p>
-              </div>
-            </div>
-          </body>
-          </html>                   
-       `,
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
-};
-
-const sendTrialExtensionEmail = (email, name, trialEndDate) => {
+const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
   const endDate = new Date();
   endDate.setDate(endDate.getDate() + 14);
   const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
@@ -379,110 +445,141 @@ const sendTrialExtensionEmail = (email, name, trialEndDate) => {
     },
   });
 
+  let subject, introMessage, benefitsMessage;
+
+  if (type === "ecommerce") {
+    subject = "Your Free Trial Period Has Been Extended!";
+    introMessage = `
+            <p>We hope you're enjoying your trial period on our vibrant and dynamic ecommerce marketplace.</p>
+            <p>We're excited to inform you that your trial period has been extended by 7 days. You now have additional time to explore our platform, showcase your products, and familiarize yourself with all the features and tools we offer.</p>
+            <p>Please note the updated trial end date:</p>
+            <ul>
+              <li><span class="highlight">Trial End Date:</span> ${formattedDate(trialEndDate)}</li>
+            </ul>
+       `;
+    benefitsMessage = `
+            <p><span class="highlight">Benefits of the Extended Trial Period:</span></p>
+            <ul>
+              <li>Opportunity to create and customize your ecommerce store.</li>
+              <li>Full access to our suite of tools and features.</li>
+              <li>Upload and organize your products, descriptions, and images.</li>
+              <li>Familiarize yourself with our user-friendly interface.</li>
+              <li>Explore our robust marketing, promotional, and video training resources.</li>
+              <li>Evaluate the effectiveness of our platform for your business.</li>
+            </ul>
+       `;
+  } else if (type === "service") {
+    subject = "Your Free Trial Period Has Been Extended!";
+    introMessage = `
+            <p>We hope you're enjoying your trial period with iMarketplace Service, your partner in success and empowerment.</p>
+            <p>We're excited to inform you that your trial period has been extended by 7 days. You now have additional time to explore the benefits of our service, connect with our team, and make the most of the resources available to you.</p>
+            <p>Please note the updated trial end date:</p>
+            <ul>
+              <li><span class="highlight">Trial End Date:</span> ${formattedDate(trialEndDate)}</li>
+            </ul>
+       `;
+    benefitsMessage = `
+            <p><span class="highlight">Benefits of the Extended Trial Period with iMarketplace Service:</span></p>
+            <ul>
+              <li>Access to a team of experienced and dedicated professionals.</li>
+              <li>Personalized service sessions tailored to your goals.</li>
+              <li>Guidance in areas such as business strategy, marketing, and growth.</li>
+              <li>Exclusive access to workshops, webinars, and networking events.</li>
+              <li>Opportunity to connect with a community of like-minded individuals and businesses.</li>
+              <li>Regular updates on industry trends and business insights.</li>
+            </ul>
+       `;
+  }
+
   const mailOptions = {
     from: "info@israelbiblecamp.com",
     to: email,
-    subject: "Your Free Trial Period Has Been Extended!",
+    subject: subject,
     html: `
-         <!DOCTYPE html>
-         <html>
-         <head>
-           <style>
-             /* CSS styles for the email template */
-             @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-     
-             body {
-               font-family: 'Montserrat', Arial, sans-serif;
-               line-height: 1.6;
-             }
-             .container {
-               max-width: 600px;
-               margin: 0 auto;
-               padding: 20px;
-               background-color: #f5f5f5;
-               border-radius: 5px;
-             }
-             .header {
-               text-align: center;
-               margin-bottom: 20px;
-             }
-             .message {
-               margin-bottom: 20px;
-               background-color: #ffffff;
-               padding: 20px;
-               border-radius: 5px;
-             }
-             .highlight {
-               font-weight: bold;
-             }
-             .footer {
-               margin-top: 20px;
-               text-align: center;
-               font-size: 12px;
-             }
-             .logo {
-               display: block;
-               margin: 0 auto;
-               max-width: 200px;
-             }
-             .cta-button {
-               display: inline-block;
-               margin-top: 20px;
-               padding: 10px 20px;
-               background-color: #007bff;
-               color: #ffffff;
-               text-decoration: none;
-               border-radius: 5px;
-             }
-             .cta-button:hover {
-               background-color: #0056b3;
-             }
-           </style>
-         </head>
-         <body>
-           <div class="container">
-             <div class="header">
-               <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-               <h1 style="color: #333333;">Your Free Trial Period Has Been Extended!</h1>
-             </div>
-             <div class="message">
-               <p>Dear ${name},</p>
-               <p>We hope you're enjoying your trial period on our vibrant and dynamic ecommerce marketplace.</p>
-               <p>We're excited to inform you that your trial period has been extended by 7 days. You now have additional time to explore our platform, showcase your products, and familiarize yourself with all the features and tools we offer.</p>
-               <p>Please note the updated trial end date:</p>
-               <ul>
-                 <li><span class="highlight">Trial End Date:</span> ${formattedDate(
-      trialEndDate,
-    )}</li>
-               </ul>
-             </div>
-             <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
-             <div class="message">
-               <p><span class="highlight">Benefits of the Trial Period:</span></p>
-               <ul>
-                 <li>Opportunity to create and customize your ecommerce store.</li>
-                 <li>Full access to our suite of tools and features.</li>
-                 <li>Upload and organize your products, descriptions, and images.</li>
-                 <li>Familiarize yourself with our user-friendly interface.</li>
-                 <li>Explore our robust marketing, promotional, and video training resources.</li>
-                 <li>Evaluate the effectiveness of our platform for your business.</li>
-               </ul>
-             </div>
-             <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
-             <div class="message">
-               <p>We realize that we, as people of color, are stronger together, and when we stand together, our possibilities are limitless.</p>
-             </div>
-             <div class="message">
-               <p>Keep making the most of your extended trial period! If you have any questions or need further assistance, please don't hesitate to reach out to us. We're here to support you.</p>
-               <a class="cta-button" href="https://example.com">Get Started</a>
-             </div>
-             <div class="footer">
-               <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
-             </div>
-           </div>
-         </body>
-         </html>        
-    `,
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+  
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">Your Free Trial Period Has Been Extended!</h1>
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            ${introMessage}
+          </div>
+          <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
+          <div class="message">
+            ${benefitsMessage}
+          </div>
+          <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
+          <div class="message">
+            <p>We realize that we, as people of color, are stronger together, and when we stand together, our possibilities are limitless.</p>
+          </div>
+          <div class="message">
+            <p>Keep making the most of your extended trial period! If you have any questions or need further assistance, please don't hesitate to reach out to us. We're here to support you.</p>
+            <a class="cta-button" href="https://example.com">Get Started</a>
+          </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>        
+ `,
   };
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
@@ -1269,6 +1366,105 @@ const sendAdminMessage = (email, name, message) => {
     }
   });
 };
+const sendVendorMessage = (email, name, message, orderID) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: `Important: New Message Regarding Your Order: ${orderID}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px.
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class "header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">New Message Regarding Your Order: ${orderID}</h1>
+          </div>
+          <div class="message">
+            <p>Dear ${name},</p>
+            <p>${message}</p>
+            </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
 
 const sendRatingMail = (email, name, url, product) => {
   const transporter = nodemailer.createTransport({
@@ -1544,5 +1740,6 @@ module.exports = {
   scheduleUserDisablingCronJob,
   sendWelcomeEmail,
   sendForgotPasswordEmail,
-  sendAdminMessage
+  sendAdminMessage,
+  sendVendorMessage
 };

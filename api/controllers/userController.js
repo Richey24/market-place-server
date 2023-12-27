@@ -6,7 +6,7 @@ const Advert = require("../../model/Advert");
 const Site = require("../../model/Site");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sendWelcomeEmail, sendForgotPasswordEmail, sendAdminMessage } = require("../../config/helpers");
+const { sendWelcomeEmail, sendForgotPasswordEmail, sendAdminMessage, sendVendorMessage } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
 const mongoose = require("mongoose");
@@ -102,6 +102,7 @@ exports.register = async (req, res) => {
           sendWelcomeEmail(
                req.body?.email ?? user?.firstname,
                req.body?.firstname ?? user?.lastname,
+               req?.body.currentSiteType ?? user?.currentSiteType,
           );
 
           res.status(201).json({ user: userWithoutPassword ?? user, token, status: true });
@@ -455,6 +456,26 @@ exports.updateUserDetails = async (req, res) => {
      }
 };
 
+exports.resetPassword = async (req, res) => {
+     try {
+          const { token, newPassword } = req.body;
+          const decoded = jwt.verify(token, "secret");
+          const user = await User.findById(decoded._id);
+
+          if (!user) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+          user.password = newPassword;
+          await user.save();
+
+          res.status(200).json({ message: "Password updated successfully", status: true });
+     } catch (error) {
+          console.error("Error updating password:", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
 exports.updatePassword = async (req, res) => {
      try {
           const user = await User.findById(req.userData._id);
@@ -512,7 +533,6 @@ exports.forgotPassword = async (req, res) => {
 };
 
 exports.getUserDetails = async (req, res) => {
-     console.log(req.userData);
      try {
           const user = await User.findById(req?.userData?._id ?? req.params.id).populate({
                path: "company",
@@ -786,11 +806,45 @@ exports.getAllVendors = async (req, res) => {
 
 exports.sendAdminMail = async (req, res) => {
      try {
-          const { email, name, message } = req.body
-          sendAdminMessage(email, name, message)
+          const { email, name, message } = req.body;
+          sendAdminMessage(email, name, message);
+          res.status(200).json({ message: "Mail sent successfully" });
+     } catch (error) {
+          console.error("Error fetching users:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+}
+
+exports.sendVendorMail = async (req, res) => {
+     try {
+          const { email, name, message, orderID } = req.body
+          sendVendorMessage(email, name, message, orderID)
           res.status(200).json({ message: "Mail sent successfully" })
      } catch (error) {
           console.error("Error fetching users:", error);
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+}
+
+exports.getUserByPartnerID = async (req, res) => {
+     try {
+          const partner_id = req.params.id
+          const user = await User.findOne({ partner_id: partner_id })
+          res.status(200).json(user)
+     } catch (error) {
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+}
+
+exports.getUserByCompanyID = async (req, res) => {
+     try {
+          const company_id = req.params.id
+          console.log(company_id);
+          const company = await Company.findOne({ company_id: company_id })
+          const user = await User.findById(company.user_id)
+          user.company = company
+          res.status(200).json(user)
+     } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
      }
 }

@@ -60,6 +60,7 @@ const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
 const shipmentRoute = require("./api/routes/shipment");
 const statRoute = require("./api/routes/stat");
+const complainRoute = require("./api/routes/complain");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -89,6 +90,7 @@ app.use("/api/main/category", mainCategoryRouter);
 app.use("/api/main/popular", popularProduct);
 app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
+app.use("/api/complain", complainRoute)
 app.use("/image", imageRouter);
 
 app.listen(PORT, () => {

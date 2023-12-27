@@ -5,6 +5,7 @@ const Rating = require("../../model/Rating");
 
 const createDownloadStat = async (req, res) => {
     try {
+        req.body.ipAddress = req.socket.remoteAddress
         await DownloadStat.create(req.body)
         res.status(201).json({ message: "Created" })
     } catch (error) {
