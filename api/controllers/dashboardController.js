@@ -229,7 +229,7 @@ exports.getRevenueByCustomers = async (req, res) => {
      }
 };
 
-exports.getRevenueByCustomers = async (req, res) => {
+exports.getSalesByCategory = async (req, res) => {
      console.log("GET /api/getSalesReport");
 
      // let user = req.userData;
@@ -238,14 +238,41 @@ exports.getRevenueByCustomers = async (req, res) => {
      try {
           await Odoo.connect();
           // Fetch products that need to be reordered
-          const productsToReorder = await Odoo.execute_kw("product.product", "search_read", [
-               [["product_uom_qty", "<=", 0]],
-               // ["name", "product_uom_qty", "virtual_available"],
+          const saleOrderLines = await Odoo.execute_kw("sale.order.line", "search_read", [
+               [["company_id", "=", 122]],
+               ["order_id", "product_id"],
           ]);
 
+          // Extract product IDs
+          const productIds = saleOrderLines.map((line) => line.product_id[0]);
+
+          // Fetch product information, including the category
+          const products = await Odoo.execute_kw("product.product", "read", [productIds], {
+               fields: ["id", "name", "categ_id"],
+          });
+
+          // Group sales data by category and count sales
+          const salesByCategory = products.reduce((result, product) => {
+               const categoryKey = product.categ_id[0];
+               if (!result[categoryKey]) {
+                    result[categoryKey] = {
+                         categoryId: categoryKey,
+                         categoryName: product.categ_id[1], // Assuming the category name is in the second position of the tuple
+                         salesCount: 0,
+                    };
+               }
+               // Count sales only if the product is associated with a category
+               if (product.categ_id) {
+                    result[categoryKey].salesCount += 1;
+               }
+               return result;
+          }, {});
 
           res.status(201).json({
-               productsToReorder,
+               productsToReorder: Object.values(salesByCategory),
+               // flatSalesData,
+               saleOrderLines,
+               // result: Object.values(salesByCategory),
                status: true,
           });
      } catch (error) {

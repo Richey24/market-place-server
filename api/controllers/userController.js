@@ -6,7 +6,12 @@ const Advert = require("../../model/Advert");
 const Site = require("../../model/Site");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sendWelcomeEmail, sendForgotPasswordEmail, sendAdminMessage, sendVendorMessage } = require("../../config/helpers");
+const {
+     sendWelcomeEmail,
+     sendForgotPasswordEmail,
+     sendAdminMessage,
+     sendVendorMessage,
+} = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
 const mongoose = require("mongoose");
@@ -181,6 +186,135 @@ exports.loginUser = async (req, res) => {
           res.status(201).json({ user: userWithoutPassword, token });
      } catch (error) {
           res.status(400).json(error);
+     }
+};
+const socialLogin = async (req, res) => {
+     console.log("in login");
+     try {
+          const email = req.body.email;
+          const password = req.body.password;
+          const domain = req.body.domain;
+          const user = await User.findByCredentials(email, password);
+
+          if (!user) {
+               return res
+                    .status(401)
+                    .json({ error: "Login failed! Check authenthication credentails" });
+          }
+
+          const userWithoutPassword = {
+               _id: user._id,
+               firstname: user.firstname,
+               lastname: user.lastname,
+               email: user.email,
+               role: user.role,
+               chatID: user.chatID,
+               onboarded: user.onboarded,
+               partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
+               subscribed: user.subscribed,
+               status: user.status,
+          };
+          const token = await user.generateAuthToken(domain);
+          res.status(201).json({ user: userWithoutPassword, token });
+     } catch (error) {
+          res.status(400).json(error);
+     }
+};
+exports.socialRegister = async (req, res) => {
+     console.log("register");
+     try {
+          await Odoo.connect();
+          let user = await User.findOne({ email: req.body.email });
+          if (req.body.role && user) {
+               console.log("switching to login");
+               return socialLogin(req, res);
+          }
+          const domainExists = await User.findOne({
+               "partner_ids.domain": req.body.domain,
+               email: req.body.email,
+          });
+
+          if (domainExists) {
+               return res.status(409).json({
+                    message: "Account Already Exist for this Site",
+                    status: false,
+               });
+          }
+
+          let company;
+          if (req.body.domain) {
+               company = await Company.findOne({ subdomain: req.body.domain });
+          }
+
+          let partner_id;
+          if (!req.body.role) {
+               partner_id = await Odoo.execute_kw("res.partner", "create", [
+                    {
+                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
+                              }`,
+                         email: req.body.email ?? user?.email,
+                         phone: req.body.phone ?? user?.phone,
+                         company_id: company.company_id,
+                         is_published: true,
+                    },
+               ]);
+               console.log("Partner created successfully. Partner ID:", partner_id);
+          }
+          let data;
+          let token;
+
+          if (!user) {
+               const newUser = new User({
+                    firstname: req.body.firstname,
+                    lastname: req.body.lastname,
+                    email: req.body.email,
+                    role: req.body.role,
+                    chatID: req.body.chatID ?? "",
+                    tour: req.body?.tour ?? "",
+                    password: req.body.password,
+                    phone: req.body.phone,
+                    partner_ids: [{ id: partner_id, domain: req.body.domain }],
+                    currentSiteType: req.body.currentSiteType,
+                    ...(company && { company: company._id }),
+               });
+               data = await newUser.save();
+               token = await newUser.generateAuthToken(req.body.domain);
+          } else {
+               user = await User.findByIdAndUpdate(user?._id, {
+                    $set: {
+                         partner_ids: [
+                              ...user?.partner_ids,
+                              { id: partner_id, domain: req.body.domain },
+                         ],
+                    },
+               });
+               token = await user.generateAuthToken(req.body.domain);
+          }
+          let userWithoutPassword;
+          if (!user)
+               userWithoutPassword = {
+                    _id: data._id,
+                    firstname: data.firstname,
+                    lastname: data.lastname,
+                    email: data.email,
+                    role: data.role,
+                    chatID: data.chatID,
+                    company: data.company,
+               };
+          sendWelcomeEmail(
+               req.body?.email ?? user?.firstname,
+               req.body?.firstname ?? user?.lastname,
+               req?.body.currentSiteType ?? user?.currentSiteType,
+          );
+
+          res.status(201).json({
+               user: userWithoutPassword ?? user,
+               token,
+               status: true,
+          });
+     } catch (error) {
+          console.log("error", error);
+          res.status(400).json({ error, status: false });
      }
 };
 
@@ -814,37 +948,37 @@ exports.sendAdminMail = async (req, res) => {
           console.error("Error fetching users:", error);
           res.status(500).json({ message: "Internal server error", status: false });
      }
-}
+};
 
 exports.sendVendorMail = async (req, res) => {
      try {
-          const { email, name, message, orderID } = req.body
-          sendVendorMessage(email, name, message, orderID)
-          res.status(200).json({ message: "Mail sent successfully" })
+          const { email, name, message, orderID } = req.body;
+          sendVendorMessage(email, name, message, orderID);
+          res.status(200).json({ message: "Mail sent successfully" });
      } catch (error) {
           console.error("Error fetching users:", error);
           res.status(500).json({ message: "Internal server error", status: false });
      }
-}
+};
 
 exports.getUserByPartnerID = async (req, res) => {
      try {
-          const partner_id = req.params.id
-          const user = await User.findOne({ partner_id: partner_id })
-          res.status(200).json(user)
+          const partner_id = req.params.id;
+          const user = await User.findOne({ partner_id: partner_id });
+          res.status(200).json(user);
      } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
      }
-}
+};
 
 exports.getUserByCompanyID = async (req, res) => {
      try {
-          const company_id = req.params.id
+          const company_id = req.params.id;
           console.log(company_id);
-          const company = await Company.findOne({ company_id: company_id })
-          const user = await User.findById(company.user_id)
-          user.company = company
-          res.status(200).json(user)
+          const company = await Company.findOne({ company_id: company_id });
+          const user = await User.findById(company.user_id);
+          user.company = company;
+          res.status(200).json(user);
      } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
      }

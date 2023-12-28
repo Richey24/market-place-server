@@ -86,6 +86,7 @@ exports.getOrdersByPartner = async (req, res) => {
                     "state",
                     "amount_total",
                     "date_order",
+                    "x_tracking_id",
                ],
           ]);
           const ordersWithDetails = await Promise.all(
@@ -191,7 +192,7 @@ exports.createOrder = async (req, res) => {
           // Ensure the products belong to the same company
           // Update the products' company to match the sale order's company
           const productIds = productData.map(({ productId }) => productId);
-          await Odoo.execute_kw("product.product", "write", [
+          await Odoo.execute_kw("product.template", "write", [
                productIds,
                { company_id: companyId },
           ]);
@@ -275,6 +276,11 @@ exports.addProductToOrder = async (req, res) => {
           const productId = req.body.productId;
           const qty = req.body.qty;
           const companyId = req.body.companyId;
+
+          await Odoo.execute_kw("product.product", "write", [
+               productId,
+               { company_id: companyId },
+          ]);
 
           const orderLineId = await Odoo.execute_kw("sale.order.line", "create", [
                {
@@ -420,5 +426,43 @@ exports.addDeliveryDetailsToOrder = async (req, res) => {
      } catch (error) {
           console.error("Error adding delivery details to the order:", error);
           return res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.updateOrderTrackingId = async (req, res) => {
+     console.log("POST /api/updateOrderTrackingId");
+
+     try {
+          await Odoo.connect();
+
+          const orderId = req.body.orderId; // Assuming the order ID is sent in the request body
+          const trackingId = req.body.trackingId; // Assuming the new tracking ID is sent in the request body
+
+          // Check if orderId and trackingId are provided
+          if (!orderId || !trackingId) {
+               return res
+                    .status(400)
+                    .json({ error: "Order ID and tracking ID are required.", status: false });
+          }
+
+          // Update order with the new tracking ID
+          const updatedOrder = await Odoo.execute_kw("sale.order", "write", [
+               [orderId],
+               {
+                    x_tracking_id: trackingId,
+               },
+          ]);
+
+          if (updatedOrder) {
+               res.status(200).json({
+                    message: "Order tracking ID updated successfully.",
+                    status: true,
+               });
+          } else {
+               res.status(404).json({ error: "Order not found.", status: false });
+          }
+     } catch (error) {
+          console.error("Error when trying to connect Odoo XML-RPC.", error);
+          res.status(500).json({ error, status: false });
      }
 };

@@ -6,6 +6,7 @@ const userController = require("../controllers/userController");
 const asyncHandler = require("../../config/asyncHandler");
 
 router.post("/register", asyncHandler(userController.register));
+router.post("/social/register", asyncHandler(userController.socialRegister));
 router.post("/confirm", asyncHandler(userController.confirmEmail));
 router.post("/login", asyncHandler(userController.loginUser));
 router.post("/logout", asyncHandler(userController.logoutUser));
@@ -28,8 +29,8 @@ router.post("/notification", userController.sendNotification)
 
 // ban user
 router.get("/users", userController.getAllUsers);
-router.get("/get/partner/:id", userController.getUserByPartnerID)
-router.get("/get/company/:id", userController.getUserByCompanyID)
+router.get("/get/partner/:id", userController.getUserByPartnerID);
+router.get("/get/company/:id", userController.getUserByCompanyID);
 router.post("/ban", userController.banUser);
 router.patch("/unban", userController.unbanUser);
 router.post("/suspend", userController.suspendUser);

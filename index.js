@@ -66,6 +66,7 @@ const dashboardRouter = require("./api/routes/dashbaord");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
+const shipmentRoute = require("./api/routes/shipment");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 
@@ -80,6 +81,7 @@ app.use("/api/site", siteRouter);
 app.use("/api/tags", tagRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/shipment", shipmentRoute);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
