@@ -11,6 +11,7 @@ const {
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
 } = require("./config/helpers");
+const webpush = require("web-push");
 
 //configure database and mongoose
 mongoose
@@ -22,6 +23,13 @@ mongoose
           console.log({ database_error: err });
      });
 // db configuaration ends here
+
+const vapidKeys = {
+     privateKey: "DJW3lZPIc64kptJOrrwFIvoEPDoRlOUBi5zYBq2nexo",
+     publicKey:
+          "BNW__qlZf6FZ3zCZL8H_JzDe051M2dCs-yaXWT9lc1CreFNlQYJ0oLNihj0AgraCKrOLAltz8MX7E3jLt9xUnD4",
+};
+webpush.setVapidDetails("https://chat.ishop.black/", vapidKeys.publicKey, vapidKeys.privateKey);
 
 //registering cors
 app.use(cors());
