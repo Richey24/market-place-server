@@ -10,6 +10,7 @@ const { sendWelcomeEmail, sendForgotPasswordEmail, sendAdminMessage, sendVendorM
 const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
 const mongoose = require("mongoose");
+const webpush = require("web-push");
 
 exports.register = async (req, res) => {
      try {
@@ -847,4 +848,11 @@ exports.getUserByCompanyID = async (req, res) => {
      } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
      }
+}
+
+exports.sendNotification = async (req, res) => {
+     const pushNotification = req.body.pushNotification
+     const info = req.body.info
+     await webpush.sendNotification(pushNotification, JSON.stringify(info))
+     res.status(200).json({ message: "sent" })
 }
