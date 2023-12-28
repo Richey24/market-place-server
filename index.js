@@ -6,7 +6,11 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
-const { reminderJob, scheduleUserDisablingCronJob } = require("./config/helpers");
+const {
+     reminderJob,
+     scheduleUserDisablingCronJob,
+     publishServiceItemsCronJob,
+} = require("./config/helpers");
 
 //configure database and mongoose
 mongoose
@@ -39,6 +43,7 @@ app.get("/", (req, res) => {
 
 reminderJob();
 scheduleUserDisablingCronJob();
+publishServiceItemsCronJob();
 
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
@@ -90,7 +95,7 @@ app.use("/api/main/category", mainCategoryRouter);
 app.use("/api/main/popular", popularProduct);
 app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
-app.use("/api/complain", complainRoute)
+app.use("/api/complain", complainRoute);
 app.use("/image", imageRouter);
 
 app.listen(PORT, () => {

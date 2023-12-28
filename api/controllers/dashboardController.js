@@ -280,3 +280,128 @@ exports.getSalesByCategory = async (req, res) => {
           res.status(400).json({ error, status: false });
      }
 };
+
+exports.getAdminSalesReport = async (req, res) => {
+     console.log("GET /api/getSalesReport");
+
+     // let user = req.userData;
+     // const companyId = +req.params.companyId;
+     // console.log("user", user);
+     try {
+          await Odoo.connect();
+          const startDate = req.params.startDate;
+          const endDate = req.params.endDate;
+          let system_Items_Sold_Count = 0;
+          let system_Refunds_Amount = 0;
+
+          const result = await Odoo.execute_kw("sale.report", "search_read", [
+               ["&", ["state", "!=", "draft"], ["date", ">=", startDate], ["date", "<=", endDate]],
+          ]);
+
+          const totalRevenue = result?.map((re) => re.price_total).reduce((a, b) => a + b);
+
+          // console.log("result", result);
+          system_Items_Sold_Count = result
+               ?.map((re) => re.product_uom_qty)
+               .reduce((a, b) => a + b, 0);
+
+          system_Refunds_Amount = result
+               ?.filter((re) => re.refund_amount) // Adjust based on your actual field name
+               .reduce((total, re) => total + re.refund_amount, 0);
+
+          res.status(201).json({
+               totalSales: result?.length,
+               totalRevenue,
+               itemsSoldCount: system_Items_Sold_Count,
+               averageOrderSpend: totalRevenue / result?.length,
+               totalRefundsAmount: system_Refunds_Amount,
+               status: true,
+          });
+     } catch (error) {
+          console.error("Error when try connect Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.getAdminTopProducts = async (req, res) => {
+     console.log("GET /api/getSalesReport");
+
+     // let user = req.userData;
+     // const companyId = +req.params.companyId;
+     // console.log("user", user);
+     try {
+          await Odoo.connect();
+          const startDate = req.params.startDate;
+          const endDate = req.params.endDate;
+
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [
+                    [
+                         ["date_order", ">=", startDate],
+                         ["date_order", "<=", endDate],
+                    ],
+               ],
+               {
+                    fields: ["name", "partner_id"],
+               },
+          );
+
+          if (!orderIds.length) {
+               res.status(201).json({
+                    // result,
+                    // orders,
+                    products: [],
+                    status: true,
+               });
+          }
+
+          // const orderIds = orders.map((order) => order.id);
+          const lines = await Odoo.execute_kw("sale.order.line", "search_read", [
+               [["order_id", "in", orderIds]],
+               ["product_uom_qty", "product_id", "price_total"],
+          ]);
+
+          // Create a map to store product quantities
+          const productQuantities = new Map();
+
+          // Iterate through sales order lines
+          lines.forEach((line) => {
+               const productId = line.product_id[0];
+               const productName = line.product_id[1];
+               const quantity = line.product_uom_qty;
+               price = line.price_total;
+
+               // Update product quantity in the map
+               if (productQuantities.has(productId)) {
+                    productQuantities.set(productId, {
+                         quantity: productQuantities.get(productId)?.quantity + quantity,
+                         productName,
+                         price: productQuantities.get(productId)?.price + price,
+                    });
+               } else {
+                    productQuantities.set(productId, { quantity, productName, price });
+               }
+          });
+
+          // Convert the map to an array of objects
+          const bestSellingProducts = Array.from(productQuantities, ([productId, details]) => ({
+               productId,
+               quantity: details?.quantity,
+               productName: details.productName,
+               price: details?.price,
+          }));
+
+          // Sort the array by quantity in descending order
+          bestSellingProducts.sort((a, b) => b.quantity - a.quantity);
+
+          res.status(201).json({
+               bestSellingProducts,
+               status: true,
+          });
+     } catch (error) {
+          console.error("Error when try connect Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
+     }
+};

@@ -9,4 +9,7 @@ router.get("/total-orders/:startDate/:endDate", dashboardController.getOrdersByC
 router.get("/customers-revenue/:startDate/:endDate", dashboardController.getRevenueByCustomers);
 router.get("/reorder", dashboardController.getSalesByCategory);
 
+router.get("/admin/sales-report/:startDate/:endDate", dashboardController.getAdminSalesReport);
+router.get("/admin/top-products/:startDate/:endDate", dashboardController.getAdminTopProducts);
+
 module.exports = router;
