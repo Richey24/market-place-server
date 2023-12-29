@@ -67,6 +67,28 @@ exports.updateService = async (req, res) => {
      }
 };
 
+exports.toggleServiceAvailability = async (req, res) => {
+     try {
+          const { serviceId } = req.params;
+          const service = await Service.findById(serviceId);
+
+          if (!service) {
+               return res.status(404).json({ message: "Service not found", status: false });
+          }
+
+          // Toggle the availability
+          service.avialable = !service.avialable;
+          await service.save();
+
+          res.status(200).json({
+               message: "Service availability toggled successfully",
+               status: true,
+          });
+     } catch (err) {
+          console.error("Error toggling service availability:", err);
+          res.status(500).json({ err, status: false });
+     }
+};
 exports.getAllService = async (req, res) => {
      try {
           const result = await Service.find({});

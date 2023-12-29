@@ -34,6 +34,13 @@ const serviceSchema = mongoose.Schema({
           type: Date,
           default: Date.now(),
      },
+     scheduledDate: {
+          type: Date,
+     },
+     avialable: {
+          type: Boolean,
+          default: true,
+     },
      visibility: {
           type: String,
      },

@@ -16,6 +16,7 @@ const upload = multer({ dest: "./upload" });
 
 router.post("/create", auth, serviceController.createService);
 router.put("/update/:id", auth, serviceController.updateService);
+router.put("/availability/:serviceId", auth, serviceController.toggleServiceAvailability);
 router.get("/get/all", serviceController.getAllService);
 router.get("/get/one/:id", serviceController.getOneService);
 router.get("/get/user", auth, serviceController.getServiceByUserId);

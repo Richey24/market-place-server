@@ -6,10 +6,13 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
-const { reminderJob, scheduleUserDisablingCronJob } = require("./config/helpers");
+const {
+     reminderJob,
+     scheduleUserDisablingCronJob,
+     publishServiceItemsCronJob,
+} = require("./config/helpers");
 const webpush = require("web-push");
 const Odoo = require("./config/odoo.connection");
-
 
 //configure database and mongoose
 mongoose
@@ -24,7 +27,8 @@ mongoose
 
 const vapidKeys = {
      privateKey: "DJW3lZPIc64kptJOrrwFIvoEPDoRlOUBi5zYBq2nexo",
-     publicKey: "BNW__qlZf6FZ3zCZL8H_JzDe051M2dCs-yaXWT9lc1CreFNlQYJ0oLNihj0AgraCKrOLAltz8MX7E3jLt9xUnD4"
+     publicKey:
+          "BNW__qlZf6FZ3zCZL8H_JzDe051M2dCs-yaXWT9lc1CreFNlQYJ0oLNihj0AgraCKrOLAltz8MX7E3jLt9xUnD4",
 };
 webpush.setVapidDetails("https://chat.ishop.black/", vapidKeys.publicKey, vapidKeys.privateKey);
 
@@ -57,6 +61,7 @@ app.get("/odoo/test", async (req, res) => {
 
 reminderJob();
 scheduleUserDisablingCronJob();
+publishServiceItemsCronJob();
 
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
@@ -79,6 +84,7 @@ const serviceRoute = require("./api/routes/service");
 const shipmentRoute = require("./api/routes/shipment");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
+const policyRouter = require("./api/routes/policy");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -92,6 +98,7 @@ app.use("/api/tags", tagRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/shipment", shipmentRoute);
+app.use("/api/policy", policyRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -108,7 +115,7 @@ app.use("/api/main/category", mainCategoryRouter);
 app.use("/api/main/popular", popularProduct);
 app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
-app.use("/api/complain", complainRoute)
+app.use("/api/complain", complainRoute);
 app.use("/image", imageRouter);
 
 app.listen(PORT, () => {
