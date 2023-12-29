@@ -12,6 +12,7 @@ const {
      publishServiceItemsCronJob,
 } = require("./config/helpers");
 const webpush = require("web-push");
+const Odoo = require("./config/odoo.connection");
 
 //configure database and mongoose
 mongoose
@@ -48,6 +49,15 @@ app.get("/", (req, res) => {
      console.log("Hello MEVN Soldier");
      res.status(201).json({ message: "working" });
 });
+
+app.get("/odoo/test", async (req, res) => {
+     try {
+          await Odoo.connect();
+          res.status(200).json({ error: "Odoo is working", status: true });
+     } catch (error) {
+          res.status(500).json({ error: "Odoo is down", status: false });
+     }
+})
 
 reminderJob();
 scheduleUserDisablingCronJob();
