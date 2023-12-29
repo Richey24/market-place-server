@@ -35,34 +35,15 @@ exports.updateSiteById = async (req, res) => {
 
      console.log("updateData", updateData);
      try {
-          if (updateData.privacyPolicy) {
-               const existingSite = await Site.findById(id);
+          const site = await Site.findByIdAndUpdate(id, { $set: { ...updateData } }, { new: true });
 
-               if (existingSite && existingSite.privacyPolicy) {
-                    const site = await Site.findByIdAndUpdate(
-                         id,
-                         { $set: { ...updateData } },
-                         { new: true },
-                    );
-                    res.status(201).json({ status: true, site });
-               } else {
-                    throw "Privacy policy does not exist for the site.";
-               }
+          if (site) {
+               res.status(201).json({ status: true, site });
           } else {
-               const site = await Site.findByIdAndUpdate(
-                    id,
-                    { $set: { ...updateData } },
-                    { new: true },
-               );
-
-               if (site) {
-                    res.status(201).json({ status: true, site });
-               } else {
-                    throw "Site does not exist";
-               }
+               throw "Site does not exist";
           }
      } catch (error) {
-          console.error("Error:", error);
+          console.log("error", error);
           res.status(400).json({ error, status: false });
      }
 };

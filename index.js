@@ -61,6 +61,7 @@ const serviceRoute = require("./api/routes/service");
 const shipmentRoute = require("./api/routes/shipment");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
+const policyRouter = require("./api/routes/policy");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -74,6 +75,7 @@ app.use("/api/tags", tagRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/shipment", shipmentRoute);
+app.use("/api/policy", policyRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -90,7 +92,7 @@ app.use("/api/main/category", mainCategoryRouter);
 app.use("/api/main/popular", popularProduct);
 app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
-app.use("/api/complain", complainRoute)
+app.use("/api/complain", complainRoute);
 app.use("/image", imageRouter);
 
 app.listen(PORT, () => {
