@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
 
+const policyTypes = [
+     "PRIVACY_POLICY",
+     "TERMS_AND_CONDITION",
+     "SHIPPING_POLICY",
+     "REFUND_POLICY",
+     "RETURN_POLICY",
+     "GRIEVANCE_REDRESSAL",
+];
+
 const policySchema = mongoose.Schema({
      site_id: {
           type: mongoose.Schema.Types.ObjectId,
@@ -10,11 +19,12 @@ const policySchema = mongoose.Schema({
           {
                policy_type: {
                     type: String,
+                    enum: policyTypes,
                     required: [true, "Policy Type is required"],
                },
                content: {
                     type: String,
-                    required: [true, "Policy Description is required"],
+                    required: [true, "Policy content is required"],
                },
           },
      ],
