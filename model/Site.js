@@ -11,11 +11,6 @@ const sectionSchema = new mongoose.Schema({
      component: componentSchema,
 });
 
-const privacyPolicySchema = new mongoose.Schema({
-     type: { type: String },
-     content: { type: String },
-});
-
 const pageSchema = new mongoose.Schema({
      name: { type: String, required: true },
      layout: String,
@@ -38,7 +33,6 @@ const siteSchema = new mongoose.Schema({
           mode: String,
           demoLink: String,
      },
-     privacyPolicy: privacyPolicySchema,
 });
 
 const Site = mongoose.model("Site", siteSchema);
