@@ -13,6 +13,7 @@ const {
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
+const Odoo = require("./config/odoo.connection");
 
 //configure database and mongoose
 mongoose
@@ -89,6 +90,15 @@ app.get("/", (req, res) => {
      res.status(201).json({ message: "working" });
 });
 
+app.get("/odoo/test", async (req, res) => {
+     try {
+          await Odoo.connect();
+          res.status(200).json({ error: "Odoo is working", status: true });
+     } catch (error) {
+          res.status(500).json({ error: "Odoo is down", status: false });
+     }
+});
+
 reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
@@ -115,6 +125,7 @@ const shipmentRoute = require("./api/routes/shipment");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 const visitorRoute = require("./api/routes/visitors");
+const policyRouter = require("./api/routes/policy");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -129,6 +140,7 @@ app.use("/api/orders", orderRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/shipment", shipmentRoute);
 app.use("/api/visitor", visitorRoute);
+app.use("/api/policy", policyRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
