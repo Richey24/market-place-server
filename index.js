@@ -46,18 +46,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev")); // configire morgan
 
 // Middleware to track unique visitors, record the visited site URL, and maintain an array of visited pages
-app.use((req, res, next) => {
-     const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
-     const visitedSite = req.hostname; // Store the visited site URL
-     const visitedPage = req.originalUrl; // Store the visited page URL
-
-     // Check if the visitor with the same identifier already exists
-     Visitor.findOne({ identifier }, (err, existingVisitor) => {
-          if (err) {
-               console.error(err);
-               return next();
-          }
-
+app.use(async (req, res, next) => {
+     try {
+          const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
+          const visitedSite = req.hostname; // Store the visited site URL
+          const visitedPage = req.originalUrl; // Store the visited page URL
+          console.log("identifier", identifier);
+          // // Check if the visitor with the same identifier already exists
+          const existingVisitor = await Visitor.findOne({ identifier });
           // If the visitor does not exist, save the new visitor
           if (!existingVisitor) {
                const newVisitor = new Visitor({
@@ -65,23 +61,18 @@ app.use((req, res, next) => {
                     visitedSite,
                     visitedPages: [visitedPage],
                });
-               newVisitor.save((err) => {
-                    if (err) {
-                         console.error(err);
-                    }
-               });
+               await newVisitor.save();
           } else {
                // If the visitor exists, update the array of visited pages
                existingVisitor.visitedPages.push(visitedPage);
-               existingVisitor.save((err) => {
-                    if (err) {
-                         console.error(err);
-                    }
-               });
+               await existingVisitor.save();
           }
 
           next();
-     });
+     } catch (err) {
+          console.log("visitors", err);
+          next();
+     }
 });
 
 // define first route
