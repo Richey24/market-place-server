@@ -24,7 +24,7 @@ exports.getSalesReport = async (req, res) => {
                     ["date", "<=", endDate],
                ],
           ]);
-            const mapRevenue = result?.map((re) => re.price_total);
+          const mapRevenue = result?.map((re) => re.price_total);
           if (mapRevenue.length > 1) {
                const totalRevenue = mapRevenue.reduce((a, b) => a + b)
                res.status(201).json({
@@ -78,7 +78,7 @@ exports.getBestSellingProducts = async (req, res) => {
           );
 
           if (!orderIds.length) {
-              return res.status(201).json({
+               return res.status(201).json({
                     // result,
                     // orders,
                     bestSellingProducts: [],

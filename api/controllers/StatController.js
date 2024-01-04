@@ -45,7 +45,6 @@ const getTopRatedProduct = async (req, res) => {
                 "standard_price",
                 "x_rating",
                 "categ_id",
-                "image_1920",
             ],
         ]);
         const topRated = productData.sort((a, b) => b.x_rating - a.x_rating).slice(0, 20)
