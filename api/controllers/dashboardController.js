@@ -24,15 +24,19 @@ exports.getSalesReport = async (req, res) => {
                     ["date", "<=", endDate],
                ],
           ]);
-          const totalRevenue = result?.map((re) => re.price_total).reduce((a, b) => a + b);
-
-          res.status(201).json({
-               // result,
-               totalSales: result?.length,
-               totalRevenue,
-               averageOrderSpend: totalRevenue / result?.length,
-               status: true,
-          });
+          const mapRevenue = result?.map((re) => re.price_total);
+          if (mapRevenue.length > 1) {
+               const totalRevenue = mapRevenue.reduce((a, b) => a + b)
+               res.status(201).json({
+                    // result,
+                    totalSales: result?.length,
+                    totalRevenue,
+                    averageOrderSpend: totalRevenue / result?.length,
+                    status: true,
+               });
+          } else {
+               res.status(200).json({ message: "No total revenue for the specified date range" })
+          }
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
@@ -66,7 +70,7 @@ exports.getBestSellingProducts = async (req, res) => {
           );
 
           if (!orderIds.length) {
-               res.status(201).json({
+               return res.status(201).json({
                     // result,
                     // orders,
                     products: [],
