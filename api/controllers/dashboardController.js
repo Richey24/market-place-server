@@ -81,7 +81,7 @@ exports.getBestSellingProducts = async (req, res) => {
               return res.status(201).json({
                     // result,
                     // orders,
-                    products: [],
+                    bestSellingProducts: [],
                     status: true,
                });
           }
