@@ -2,11 +2,12 @@ const StripeSession = require("../../model/StripeSession")
 const User = require("../../model/User");
 
 const stripe = require("stripe")(process.env.STRIPE_KEY)
-const YOUR_DOMAIN = "https://www.dashboard.ishop.black/subscribe"
+const YOUR_DOMAIN = "https://dashboard.ishop.black/onboarding"
 
 exports.createVendorSubscription = async (req, res) => {
     const { email, plan, id } = req.query
-    if (!email || !plan || !id) {
+    console.log(email, plan);
+    if (!email || !plan) {
         return res.status(400).json({ message: "Send All Required Parameter" })
     }
     const session = await stripe.checkout.sessions.create({

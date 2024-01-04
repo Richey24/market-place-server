@@ -37,6 +37,14 @@ exports.getSalesReport = async (req, res) => {
           } else {
                res.status(200).json({ message: "No total revenue for the specified date range" })
           }
+
+          res.status(201).json({
+               // result,
+               totalSales: result?.length,
+               totalRevenue,
+               averageOrderSpend: totalRevenue / result?.length,
+               status: true,
+          });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
@@ -73,7 +81,7 @@ exports.getBestSellingProducts = async (req, res) => {
                return res.status(201).json({
                     // result,
                     // orders,
-                    products: [],
+                    bestSellingProducts: [],
                     status: true,
                });
           }
