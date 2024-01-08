@@ -87,6 +87,7 @@ exports.getOrdersByPartner = async (req, res) => {
                     "amount_total",
                     "date_order",
                     "x_tracking_id",
+                    "x_carrier",
                ],
           ]);
           const ordersWithDetails = await Promise.all(
@@ -277,10 +278,7 @@ exports.addProductToOrder = async (req, res) => {
           const qty = req.body.qty;
           const companyId = req.body.companyId;
 
-          await Odoo.execute_kw("product.product", "write", [
-               productId,
-               { company_id: companyId },
-          ]);
+          await Odoo.execute_kw("product.product", "write", [productId, { company_id: companyId }]);
 
           const orderLineId = await Odoo.execute_kw("sale.order.line", "create", [
                {
@@ -456,6 +454,44 @@ exports.updateOrderTrackingId = async (req, res) => {
           if (updatedOrder) {
                res.status(200).json({
                     message: "Order tracking ID updated successfully.",
+                    status: true,
+               });
+          } else {
+               res.status(404).json({ error: "Order not found.", status: false });
+          }
+     } catch (error) {
+          console.error("Error when trying to connect Odoo XML-RPC.", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
+exports.updateOrderCarrier = async (req, res) => {
+     console.log("POST /api/updateOrderTrackingId");
+
+     try {
+          await Odoo.connect();
+
+          const orderId = req.body.orderId; // Assuming the order ID is sent in the request body
+          const carrier = req.body.carrier; // Assuming the new tracking ID is sent in the request body
+
+          // Check if orderId and trackingId are provided
+          if (!orderId || !carrier) {
+               return res
+                    .status(400)
+                    .json({ error: "Order ID and tracking ID are required.", status: false });
+          }
+
+          // Update order with the new tracking ID
+          const updatedOrder = await Odoo.execute_kw("sale.order", "write", [
+               [orderId],
+               {
+                    x_carrier: carrier,
+               },
+          ]);
+
+          if (updatedOrder) {
+               res.status(200).json({
+                    message: "Order Carrier updated successfully.",
                     status: true,
                });
           } else {

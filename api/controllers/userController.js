@@ -52,8 +52,9 @@ exports.register = async (req, res) => {
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
-                              }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${
+                              req.body.lastname ?? user?.lastname
+                         }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -250,8 +251,9 @@ exports.socialRegister = async (req, res) => {
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
-                              }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${
+                              req.body.lastname ?? user?.lastname
+                         }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -671,6 +673,9 @@ exports.getUserDetails = async (req, res) => {
      try {
           const user = await User.findById(req?.userData?._id ?? req.params.id).populate({
                path: "company",
+               populate: {
+                    path: "selectedCarriers",
+               },
                options: { virtuals: true },
           });
 
@@ -982,11 +987,11 @@ exports.getUserByCompanyID = async (req, res) => {
      } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
      }
-}
+};
 
 exports.sendNotification = async (req, res) => {
-     const pushNotification = req.body.pushNotification
-     const info = req.body.info
-     await webpush.sendNotification(pushNotification, JSON.stringify(info))
-     res.status(200).json({ message: "sent" })
-}
+     const pushNotification = req.body.pushNotification;
+     const info = req.body.info;
+     await webpush.sendNotification(pushNotification, JSON.stringify(info));
+     res.status(200).json({ message: "sent" });
+};

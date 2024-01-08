@@ -112,11 +112,12 @@ const dashboardRouter = require("./api/routes/dashbaord");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
-const shipmentRoute = require("./api/routes/shipment");
+const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 const visitorRoute = require("./api/routes/visitors");
 const policyRouter = require("./api/routes/policy");
+const carrier = require("./api/routes/carrier");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -132,6 +133,7 @@ app.use("/api/dashboard", dashboardRouter);
 app.use("/api/shipment", shipmentRoute);
 app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);
+app.use("/api/carrier", carrier);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
