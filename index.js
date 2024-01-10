@@ -168,6 +168,7 @@ app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
 app.use("/api/complain", complainRoute);
 app.use("/image", imageRouter);
+app.use("/api/checkout", stripeRouter);
 
 app.listen(PORT, () => {
      console.log(`App is running on ${PORT}`);
