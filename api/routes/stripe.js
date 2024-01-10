@@ -4,6 +4,6 @@ const stripeController = require("../controllers/stripeController")
 
 router.post("/vendor/subscription/create", stripeController.createVendorSubscription)
 router.post("/vendor/webhook", express.raw({ type: 'application/json' }), stripeController.stripeVendorCallback)
-router.post("/vendor/subscription/cancel", stripeController.cancelVendorSubscription)
+router.post("/vendor/subscription/cancel/:id", stripeController.cancelVendorSubscription)
 
 module.exports = router
