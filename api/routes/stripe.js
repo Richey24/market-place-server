@@ -8,7 +8,7 @@ router.post("/vendor/subscription/cancel/:id", stripeController.cancelVendorSubs
 router.post("/", stripeController.stripeCheckout);
 router.post(
      "/create-subscription-checkout-session",
-     stripeController.createSubscriptionCheckoutSession,
+     stripeController.createAdsCheckoutSession,
 );
 router.post("/webhooks", stripeController.adsCallback);
 
