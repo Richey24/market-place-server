@@ -74,6 +74,7 @@ const companySchema = mongoose.Schema({
      serviceType: {
           type: String,
      },
+     selectedCarriers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Carrier" }],
 });
 
 const Company = mongoose.model("Company", companySchema);

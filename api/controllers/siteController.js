@@ -14,10 +14,18 @@ exports.getSiteByDomain = async (req, res) => {
                .populate({
                     path: "status",
                })
+               // .populate({
+               //      path: "user_id",
+               // })
                .populate({
                     path: "user_id",
+                    populate: {
+                         path: "company",
+                         populate: {
+                              path: "selectedCarriers",
+                         },
+                    },
                });
-
           if (company) {
                res.status(201).json({ status: true, domain, company });
           } else {
