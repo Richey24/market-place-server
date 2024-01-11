@@ -63,6 +63,22 @@ const userSchema = mongoose.Schema({
      partner_id: {
           type: Number,
      },
+     paid: {
+          type: Boolean,
+          default: false
+     },
+     expiryDate: {
+          type: Date
+     },
+     stripeID: {
+          type: String
+     },
+     subscriptionID: {
+          type: String
+     },
+     subscriptionPlan: {
+          type: String
+     },
      rated: {
           type: Array,
           default: [],
