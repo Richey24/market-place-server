@@ -28,12 +28,12 @@ exports.createVendorSubscription = async (req, res) => {
             mode: "subscription",
             success_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=true`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=true`
+                    : `${YOUR_DOMAIN}/billing`,
             cancel_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=false`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=false`
+                    : `${YOUR_DOMAIN}/billing`,
         });
     } else if (mode === "ecommerce") {
         session = await stripe.checkout.sessions.create({
@@ -50,12 +50,12 @@ exports.createVendorSubscription = async (req, res) => {
             mode: "subscription",
             success_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=true`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=true`
+                    : `${YOUR_DOMAIN}/billing`,
             cancel_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=false`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=false`
+                    : `${YOUR_DOMAIN}/billing`,
         });
     }
     const check = await StripeSession.findOne({ email: email });
@@ -88,9 +88,6 @@ exports.stripeVendorCallback = async (req, res) => {
             sig,
             process.env.VENDOR_SECRET
         );
-        if (event.data.object.mode !== "subscription") {
-            return res.status(400).json("wrong webhook");
-        }
     } catch (err) {
         console.log(err);
         return res.status(400).send(`Webhook Error: ${err.message}`);
@@ -99,6 +96,9 @@ exports.stripeVendorCallback = async (req, res) => {
     switch (event.type) {
         case "checkout.session.completed": {
             const session = event.data.object;
+            if (session.mode !== "subscription") {
+                return res.status(400).json("wrong webhook");
+            }
             if (session.payment_status === "paid") {
                 const customer = await StripeSession.findOne({ sessionID: session.id });
                 const expiryDate =
@@ -126,6 +126,9 @@ exports.stripeVendorCallback = async (req, res) => {
         }
         case "checkout.session.async_payment_succeeded": {
             const session = event.data.object;
+            if (session.mode !== "subscription") {
+                return res.status(400).json("wrong webhook");
+            }
             const customer = await StripeSession.findOne({ sessionID: session.id });
             const expiryDate =
                 customer.plan === "monthly"
@@ -151,6 +154,9 @@ exports.stripeVendorCallback = async (req, res) => {
         }
         case "invoice.payment_succeeded": {
             const invoice = event.data.object;
+            if (invoice.lines?.data[0]?.type !== "subscription") {
+                return res.status(400).json("wrong webhook");
+            }
             const user = await User.findOne({ stripeID: invoice.customer });
             if (user) {
                 const expiryDate =
@@ -266,7 +272,7 @@ exports.adsCallback = async (req, res) => {
             process.env.ADS_SECRET
         );
         if (event.data.object.mode !== "payment") {
-            return res.status(200).json("wrong webhook");
+            return res.status(400).json("wrong webhook");
         }
     } catch (err) {
         console.log(err);
