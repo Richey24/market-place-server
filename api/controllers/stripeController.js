@@ -263,7 +263,7 @@ exports.adsCallback = async (req, res) => {
     let event;
 
     try {
-        event = stripe.webhooks.constructEvent(payload, sig, "whsec_q7eNBCoSoIxJcMOHiEdEAbClxaL0u95q");
+        event = stripe.webhooks.constructEvent(payload, sig, process.env.ADS_SECRET);
         if (event.data.object.mode !== "payment") {
             return res.status(400).json("wrong webhook");
         }
