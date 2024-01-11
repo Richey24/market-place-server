@@ -28,12 +28,12 @@ exports.createVendorSubscription = async (req, res) => {
             mode: "subscription",
             success_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=true`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=true`
+                    : `${YOUR_DOMAIN}/billing`,
             cancel_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=false`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=false`
+                    : `${YOUR_DOMAIN}/billing`,
         });
     } else if (mode === "ecommerce") {
         session = await stripe.checkout.sessions.create({
@@ -50,12 +50,12 @@ exports.createVendorSubscription = async (req, res) => {
             mode: "subscription",
             success_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=true`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=true`
+                    : `${YOUR_DOMAIN}/billing`,
             cancel_url:
                 register === "yes"
-                    ? `${YOUR_DOMAIN}/billing`
-                    : `${YOUR_DOMAIN}/onboarding?success=false`,
+                    ? `${YOUR_DOMAIN}/onboarding?success=false`
+                    : `${YOUR_DOMAIN}/billing`,
         });
     }
     const check = await StripeSession.findOne({ email: email });
