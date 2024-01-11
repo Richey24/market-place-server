@@ -92,6 +92,9 @@ const companySchema = mongoose.Schema({
                type: Date,
                default: null,
           },
+          advertId: {
+               type: String,
+          },
      },
 });
 
