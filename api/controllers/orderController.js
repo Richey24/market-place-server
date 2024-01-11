@@ -193,7 +193,7 @@ exports.createOrder = async (req, res) => {
           // Ensure the products belong to the same company
           // Update the products' company to match the sale order's company
           const productIds = productData.map(({ productId }) => productId);
-          await Odoo.execute_kw("product.template", "write", [
+          await Odoo.execute_kw("product.product", "write", [
                productIds,
                { company_id: companyId },
           ]);
@@ -471,7 +471,7 @@ exports.updateOrderCarrier = async (req, res) => {
      try {
           await Odoo.connect();
 
-          const orderId = req.body.orderId; // Assuming the order ID is sent in the request body
+          const orderId = +req.body.orderId; // Assuming the order ID is sent in the request body
           const carrier = req.body.carrier; // Assuming the new tracking ID is sent in the request body
 
           // Check if orderId and trackingId are provided

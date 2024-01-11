@@ -26,7 +26,7 @@ exports.getSalesReport = async (req, res) => {
           ]);
           const mapRevenue = result?.map((re) => re.price_total);
           if (mapRevenue.length > 1) {
-               const totalRevenue = mapRevenue.reduce((a, b) => a + b)
+               const totalRevenue = mapRevenue.reduce((a, b) => a + b);
                res.status(201).json({
                     // result,
                     totalSales: result?.length,
@@ -35,7 +35,7 @@ exports.getSalesReport = async (req, res) => {
                     status: true,
                });
           } else {
-               res.status(200).json({ message: "No total revenue for the specified date range" })
+               res.status(200).json({ message: "No total revenue for the specified date range" });
           }
 
           res.status(201).json({
@@ -410,6 +410,31 @@ exports.getAdminTopProducts = async (req, res) => {
 
           res.status(201).json({
                bestSellingProducts,
+               status: true,
+          });
+     } catch (error) {
+          console.error("Error when try connect Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.getProductReorder = async (req, res) => {
+     console.log("GET /api/getSalesReport");
+
+     // let user = req.userData;
+     // const companyId = +req.params.companyId;
+     // console.log("user", user);
+     try {
+          await Odoo.connect();
+          // Fetch products that need to be reordered
+          const saleOrderLines = await Odoo.execute_kw("sale.order.line", "search_read", [
+               [["company_id", "=", 122]],
+               ["order_id", "product_id"],
+          ]);
+
+          // Extract product IDs
+          res.status(201).json({
+               productsToReorder: [],
                status: true,
           });
      } catch (error) {
