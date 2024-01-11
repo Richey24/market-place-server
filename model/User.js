@@ -83,6 +83,14 @@ const userSchema = mongoose.Schema({
           type: Array,
           default: [],
      },
+     subscription: {
+          sessionId: { type: String, default: null },
+          planId: { type: String, default: null },
+          planType: { type: String, default: null },
+          planStartDate: { type: String, default: null },
+          planEndDate: { type: String, default: null },
+          planDuration: { type: Number, default: null },
+     },
      order_products: {
           type: Array,
           default: [],

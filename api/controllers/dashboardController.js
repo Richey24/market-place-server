@@ -35,7 +35,12 @@ exports.getSalesReport = async (req, res) => {
                     status: true,
                });
           } else {
-               res.status(200).json({ message: "No total revenue for the specified date range" });
+               res.status(200).json({
+                    totalSales: 0,
+                    totalRevenue: 0,
+                    averageOrderSpend: 0,
+                    status: true,
+               })
           }
 
           res.status(201).json({
@@ -123,7 +128,7 @@ exports.getBestSellingProducts = async (req, res) => {
           }));
 
           // Sort the array by quantity in descending order
-          bestSellingProducts.sort((a, b) => b.quantity - a.quantity);
+          bestSellingProducts?.sort((a, b) => b.quantity - a.quantity);
 
           res.status(201).json({
                bestSellingProducts,
@@ -229,7 +234,7 @@ exports.getRevenueByCustomers = async (req, res) => {
           }));
 
           // Sort the array by revenue in descending order
-          topCustomersByRevenue.sort((a, b) => b.revenue - a.revenue);
+          topCustomersByRevenue?.sort((a, b) => b.revenue - a.revenue);
 
           res.status(201).json({
                topCustomersByRevenue,
@@ -264,7 +269,7 @@ exports.getSalesByCategory = async (req, res) => {
           });
 
           // Group sales data by category and count sales
-          const salesByCategory = products.reduce((result, product) => {
+          const salesByCategory = products?.reduce((result, product) => {
                const categoryKey = product.categ_id[0];
                if (!result[categoryKey]) {
                     result[categoryKey] = {

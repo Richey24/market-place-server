@@ -35,7 +35,12 @@ webpush.setVapidDetails("https://chat.ishop.black/", vapidKeys.publicKey, vapidK
 
 //registering cors
 app.use(cors());
-app.use(express.json());
+app.use(express.json({
+     limit: '5mb',
+     verify: (req, res, buf) => {
+          req.rawBody = buf.toString();
+     }
+}));
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.urlencoded({ extended: true }));
 // //configure body parser
@@ -163,6 +168,7 @@ app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
 app.use("/api/complain", complainRoute);
 app.use("/image", imageRouter);
+app.use("/api/checkout", stripeRouter);
 
 app.listen(PORT, () => {
      console.log(`App is running on ${PORT}`);
