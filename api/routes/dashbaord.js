@@ -11,5 +11,6 @@ router.get("/reorder", dashboardController.getProductReorder);
 
 router.get("/admin/sales-report/:startDate/:endDate", dashboardController.getAdminSalesReport);
 router.get("/admin/top-products/:startDate/:endDate", dashboardController.getAdminTopProducts);
+router.get("/admin/best-vendors", dashboardController.getBestSellingVendor);
 
 module.exports = router;

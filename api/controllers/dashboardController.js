@@ -442,3 +442,58 @@ exports.getProductReorder = async (req, res) => {
           res.status(400).json({ error, status: false });
      }
 };
+
+exports.getBestSellingVendor = async (req, res) => {
+     console.log("GET /api/getSalesReport");
+
+     try {
+          await Odoo.connect();
+
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [[["state", "!=", "draft"]]],
+               {
+                    fields: ["name", "partner_id", "company_id", "amount_total"],
+               },
+          );
+
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               ["id", "company_id", "name", "state", "amount_total", "date_order"],
+          ]);
+
+          // Group orders by company_id
+          const groupedOrders = orders.reduce((acc, order) => {
+               const companyId = order.company_id[0]; // Assuming company_id is a many2one field
+               if (!acc[companyId]) {
+                    acc[companyId] = {
+                         company_id: companyId,
+                         companyName: order.company_id[1],
+                         order_count: 0,
+                         total_amount: 0,
+                    };
+               }
+
+               acc[companyId].order_count++;
+               acc[companyId].total_amount += order.amount_total;
+
+               // acc[companyId].orders.push(order);
+
+               return acc;
+          }, {});
+
+          // Convert the grouped orders object to an array
+          const groupedOrdersArray = Object.values(groupedOrders);
+
+          groupedOrdersArray.sort((a, b) => b.total_amount - a.total_amount);
+
+          res.status(201).json({
+               vendors: groupedOrdersArray,
+               status: true,
+          });
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
+     }
+};
