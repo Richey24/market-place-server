@@ -218,7 +218,7 @@ exports.updateSubscription = async (req, res) => {
     const user = await User.findById(id);
     const session = await stripe.billingPortal.sessions.create({
         customer: user.stripeID,
-        return_url: 'https://example.com/account',
+        return_url: `${YOUR_DOMAIN}/billing`,
     });
     res.redirect(303, session.url);
     // } catch (error) {
