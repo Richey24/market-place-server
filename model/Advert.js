@@ -43,6 +43,9 @@ const AdvertSchema = mongoose.Schema(
                type: Number,
                required: false,
           },
+          serviceId: {
+               type: String,
+          },
           category: {
                type: mongoose.Schema.Types.ObjectId,
                ref: "MainCategory",
