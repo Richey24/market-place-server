@@ -209,6 +209,23 @@ exports.cancelVendorSubscription = async (req, res) => {
     }
 };
 
+exports.updateSubscription = async (req, res) => {
+    // try {
+    const { id } = req.query;
+    if (!id) {
+        return res.status(400).json({ message: "id is required" });
+    }
+    const user = await User.findById(id);
+    const session = await stripe.billingPortal.sessions.create({
+        customer: user.stripeID,
+        return_url: 'https://example.com/account',
+    });
+    res.redirect(303, session.url);
+    // } catch (error) {
+    //     res.status(500).json({ message: "An error occurred" });
+    // }
+}
+
 exports.sendCancelEmail = (req, res) => {
     try {
         const { email, name } = req.body
