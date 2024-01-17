@@ -4,6 +4,8 @@ const Shipping = require("../../model/Shipping");
 const Company = require("../../model/Company");
 const Advert = require("../../model/Advert");
 const Site = require("../../model/Site");
+const billingService = require("../../services/billing.service");
+const paymentService = require("../../services/payment.service");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const {
@@ -16,6 +18,7 @@ const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const webpush = require("web-push");
+const { USER_ROLE } = require("../../schemas/user.schema");
 
 exports.register = async (req, res) => {
      try {
@@ -82,6 +85,20 @@ exports.register = async (req, res) => {
                });
                data = await newUser.save();
                token = await newUser.generateAuthToken(req.body.domain);
+
+               if (data && data.role === USER_ROLE.VENDOR) {
+                    console.log({ vender: "ok" });
+                    let vendorConnectedAccount = await paymentService.createConnectedAccount({
+                         email: data.email,
+                    });
+
+                    await User.updateOne(
+                         { _id: data.id },
+                         {
+                              $set: { stripeConnectedAccountId: vendorConnectedAccount.id },
+                         },
+                    );
+               }
           } else {
                user = await User.findByIdAndUpdate(user?._id, {
                     $set: {
@@ -105,7 +122,9 @@ exports.register = async (req, res) => {
                     role: data.role,
                     chatID: data.chatID,
                     company: data.company,
+                    stripeConnectedAccountId: data?.stripeConnectedAccountId,
                };
+
           sendWelcomeEmail(
                req.body?.email ?? user?.firstname,
                req.body?.firstname ?? user?.lastname,
