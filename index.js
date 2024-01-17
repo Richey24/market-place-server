@@ -45,44 +45,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan("dev")); // configire morgan
 
-// Middleware to track unique visitors, record the visited site URL, and maintain an array of visited pages
-app.use((req, res, next) => {
-     const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
-     const visitedSite = req.hostname; // Store the visited site URL
-     const visitedPage = req.originalUrl; // Store the visited page URL
 
-     // Check if the visitor with the same identifier already exists
-     Visitor.findOne({ identifier }, (err, existingVisitor) => {
-          if (err) {
-               console.error(err);
-               return next();
-          }
-
-          // If the visitor does not exist, save the new visitor
-          if (!existingVisitor) {
-               const newVisitor = new Visitor({
-                    identifier,
-                    visitedSite,
-                    visitedPages: [visitedPage],
-               });
-               newVisitor.save((err) => {
-                    if (err) {
-                         console.error(err);
-                    }
-               });
-          } else {
-               // If the visitor exists, update the array of visited pages
-               existingVisitor.visitedPages.push(visitedPage);
-               existingVisitor.save((err) => {
-                    if (err) {
-                         console.error(err);
-                    }
-               });
-          }
-
-          next();
-     });
-});
 
 // define first route
 app.get("/", (req, res) => {
@@ -126,6 +89,8 @@ const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 const visitorRoute = require("./api/routes/visitors");
 const policyRouter = require("./api/routes/policy");
+const paymentRouter = require("./api/routes/payment");
+const { errorResponder } = require("./utils/http_responder");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -158,7 +123,19 @@ app.use("/api/main/popular", popularProduct);
 app.use("/api/service", serviceRoute);
 app.use("/api/stat", statRoute);
 app.use("/api/complain", complainRoute);
+app.use("/api/payment", paymentRouter);
 app.use("/image", imageRouter);
+
+// Catch-all error handling middleware
+app.use((error, _request, response, _next) => {
+     console.error("Error caught:", error);
+
+     const statusCode = error?.code || 500;
+     const message = error?.message || "SERVER ERROR";
+
+     // Respond with an error message and status code.
+     return errorResponder(response, statusCode, message);
+});
 
 app.listen(PORT, () => {
      console.log(`App is running on ${PORT}`);

@@ -277,10 +277,7 @@ exports.addProductToOrder = async (req, res) => {
           const qty = req.body.qty;
           const companyId = req.body.companyId;
 
-          await Odoo.execute_kw("product.product", "write", [
-               productId,
-               { company_id: companyId },
-          ]);
+          await Odoo.execute_kw("product.product", "write", [productId, { company_id: companyId }]);
 
           const orderLineId = await Odoo.execute_kw("sale.order.line", "create", [
                {
