@@ -1,6 +1,7 @@
 // var Odoo = require("async-odoo-xmlrpc");
 const Odoo = require("../../config/odoo.connection");
 const User = require("../../model/User");
+const { USER_ROLE } = require("../../schemas/user.schema");
 const { addOrder } = require("../../services/order.service");
 const { getProductById } = require("../../services/product.service");
 
@@ -40,7 +41,7 @@ exports.getSalesReport = async (req, res) => {
                     totalRevenue: 0,
                     averageOrderSpend: 0,
                     status: true,
-               })
+               });
           }
 
           res.status(201).json({
@@ -500,5 +501,36 @@ exports.getBestSellingVendor = async (req, res) => {
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
+     }
+};
+
+exports.getVendorsData = async (req, res) => {
+     try {
+          // Count total vendors
+          const totalVendors = await User.countDocuments({ role: USER_ROLE.VENDOR });
+
+          // Count active, suspended, and banned vendors
+          const activeVendors = await User.countDocuments({
+               role: USER_ROLE.VENDOR,
+               status: "active",
+          });
+          const suspendedVendors = await User.countDocuments({
+               role: USER_ROLE.VENDOR,
+               status: "suspended",
+          });
+          const bannedVendors = await User.countDocuments({
+               role: USER_ROLE.VENDOR,
+               status: "banned",
+          });
+
+          res.status(200).json({
+               totalVendors,
+               activeVendors,
+               suspendedVendors,
+               bannedVendors,
+          });
+     } catch (error) {
+          console.error("Error fetching vendor counts:", error);
+          res.status(500).json({ message: "Internal server error" });
      }
 };
