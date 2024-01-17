@@ -3,6 +3,7 @@ const StripeSession = require("../../model/StripeSession");
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 const Advert = require("../../model/Advert");
+const { sendSubscriptionCancelEmail } = require("../../config/helpers");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
@@ -191,6 +192,19 @@ exports.cancelVendorSubscription = async (req, res) => {
         res.status(500).json({ message: "An error occurred" });
     }
 };
+
+exports.sendCancelEmail = (req, res) => {
+    try {
+        const { email, name } = req.body
+        if (!email || !name) {
+            return res.status(400).json({ message: "Send All required params" });
+        }
+        sendSubscriptionCancelEmail(email, name)
+        return res.status(200).json({ message: "subscription cancel mail sent successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "An error occurred" });
+    }
+}
 
 exports.stripeCheckout = async (req, res) => {
     try {

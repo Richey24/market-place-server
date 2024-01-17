@@ -11,5 +11,6 @@ router.post(
      stripeController.createAdsCheckoutSession,
 );
 router.post("/webhooks", stripeController.adsCallback);
+router.post("/cancel/mail", stripeController.sendCancelEmail);
 
 module.exports = router;
