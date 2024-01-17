@@ -35,7 +35,14 @@ webpush.setVapidDetails("https://chat.ishop.black/", vapidKeys.publicKey, vapidK
 
 //registering cors
 app.use(cors());
-app.use(express.json());
+app.use(
+     express.json({
+          limit: "5mb",
+          verify: (req, res, buf) => {
+               req.rawBody = buf.toString();
+          },
+     }),
+);
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.urlencoded({ extended: true }));
 // //configure body parser
@@ -45,7 +52,44 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan("dev")); // configire morgan
 
+// Middleware to track unique visitors, record the visited site URL, and maintain an array of visited pages
+// app.use((req, res, next) => {
+//      const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
+//      const visitedSite = req.hostname; // Store the visited site URL
+//      const visitedPage = req.originalUrl; // Store the visited page URL
 
+//      // Check if the visitor with the same identifier already exists
+//      Visitor.findOne({ identifier }, (err, existingVisitor) => {
+//           if (err) {
+//                console.error(err);
+//                return next();
+//           }
+
+//           // If the visitor does not exist, save the new visitor
+//           if (!existingVisitor) {
+//                const newVisitor = new Visitor({
+//                     identifier,
+//                     visitedSite,
+//                     visitedPages: [visitedPage],
+//                });
+//                newVisitor.save((err) => {
+//                     if (err) {
+//                          console.error(err);
+//                     }
+//                });
+//           } else {
+//                // If the visitor exists, update the array of visited pages
+//                existingVisitor.visitedPages.push(visitedPage);
+//                existingVisitor.save((err) => {
+//                     if (err) {
+//                          console.error(err);
+//                     }
+//                });
+//           }
+
+//           next();
+//      });
+// });
 
 // define first route
 app.get("/", (req, res) => {
@@ -84,13 +128,15 @@ const dashboardRouter = require("./api/routes/dashbaord");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
-const shipmentRoute = require("./api/routes/shipment");
+const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 const visitorRoute = require("./api/routes/visitors");
 const policyRouter = require("./api/routes/policy");
 const paymentRouter = require("./api/routes/payment");
 const { errorResponder } = require("./utils/http_responder");
+const carrier = require("./api/routes/carrier");
+const stripeRouter = require("./api/routes/stripe");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -106,6 +152,8 @@ app.use("/api/dashboard", dashboardRouter);
 app.use("/api/shipment", shipmentRoute);
 app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);
+app.use("/api/carrier", carrier);
+app.use("/api/stripe", stripeRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -125,6 +173,7 @@ app.use("/api/stat", statRoute);
 app.use("/api/complain", complainRoute);
 app.use("/api/payment", paymentRouter);
 app.use("/image", imageRouter);
+app.use("/api/checkout", stripeRouter);
 
 // Catch-all error handling middleware
 app.use((error, _request, response, _next) => {

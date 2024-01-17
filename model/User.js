@@ -63,9 +63,37 @@ const userSchema = mongoose.Schema({
      partner_id: {
           type: Number,
      },
+     paid: {
+          type: Boolean,
+          default: false
+     },
+     subCanceled: {
+          type: Boolean,
+          default: false
+     },
+     expiryDate: {
+          type: Date
+     },
+     stripeID: {
+          type: String
+     },
+     subscriptionID: {
+          type: String
+     },
+     subscriptionPlan: {
+          type: String
+     },
      rated: {
           type: Array,
           default: [],
+     },
+     subscription: {
+          sessionId: { type: String, default: null },
+          planId: { type: String, default: null },
+          planType: { type: String, default: null },
+          planStartDate: { type: String, default: null },
+          planEndDate: { type: String, default: null },
+          planDuration: { type: Number, default: null },
      },
      order_products: {
           type: Array,

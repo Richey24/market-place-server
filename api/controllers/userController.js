@@ -692,6 +692,9 @@ exports.getUserDetails = async (req, res) => {
      try {
           const user = await User.findById(req?.userData?._id ?? req.params.id).populate({
                path: "company",
+               populate: {
+                    path: "selectedCarriers",
+               },
                options: { virtuals: true },
           });
 
