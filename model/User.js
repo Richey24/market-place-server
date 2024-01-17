@@ -114,6 +114,13 @@ const userSchema = mongoose.Schema({
           type: [String],
           default: [],
      },
+     stripeConnectedAccountId: {
+          type: String,
+     },
+     isStripeConnectedAccountVerified: {
+          type: Boolean,
+          default: false,
+     },
      partner_ids: [
           {
                id: { type: Number },
