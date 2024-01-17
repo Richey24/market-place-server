@@ -1,6 +1,7 @@
 // var Odoo = require("async-odoo-xmlrpc");
 const Odoo = require("../../config/odoo.connection");
 const User = require("../../model/User");
+const { USER_ROLE } = require("../../schemas/user.schema");
 const { addOrder } = require("../../services/order.service");
 const { getProductById } = require("../../services/product.service");
 
@@ -40,7 +41,7 @@ exports.getSalesReport = async (req, res) => {
                     totalRevenue: 0,
                     averageOrderSpend: 0,
                     status: true,
-               })
+               });
           }
 
           res.status(201).json({
@@ -445,5 +446,177 @@ exports.getProductReorder = async (req, res) => {
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
+     }
+};
+
+exports.getBestSellingVendor = async (req, res) => {
+     console.log("GET /api/getSalesReport");
+
+     try {
+          await Odoo.connect();
+
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [[["state", "!=", "draft"]]],
+               {
+                    fields: ["name", "partner_id", "company_id", "amount_total"],
+               },
+          );
+
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               ["id", "company_id", "name", "state", "amount_total", "date_order"],
+          ]);
+
+          // Group orders by company_id
+          const groupedOrders = orders.reduce((acc, order) => {
+               const companyId = order.company_id[0]; // Assuming company_id is a many2one field
+               if (!acc[companyId]) {
+                    acc[companyId] = {
+                         company_id: companyId,
+                         companyName: order.company_id[1],
+                         order_count: 0,
+                         total_amount: 0,
+                    };
+               }
+
+               acc[companyId].order_count++;
+               acc[companyId].total_amount += order.amount_total;
+
+               // acc[companyId].orders.push(order);
+
+               return acc;
+          }, {});
+
+          // Convert the grouped orders object to an array
+          const groupedOrdersArray = Object.values(groupedOrders);
+
+          groupedOrdersArray.sort((a, b) => b.total_amount - a.total_amount);
+
+          res.status(201).json({
+               vendors: groupedOrdersArray,
+               status: true,
+          });
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
+          res.status(400).json({ error, status: false });
+     }
+};
+
+exports.getVendorsData = async (req, res) => {
+     try {
+          // Count total vendors
+          const totalVendors = await User.countDocuments({ role: USER_ROLE.VENDOR });
+
+          // Count active, suspended, and banned vendors
+          const activeVendors = await User.countDocuments({
+               role: USER_ROLE.VENDOR,
+               status: "active",
+          });
+          const suspendedVendors = await User.countDocuments({
+               role: USER_ROLE.VENDOR,
+               status: "suspended",
+          });
+          const bannedVendors = await User.countDocuments({
+               role: USER_ROLE.VENDOR,
+               status: "banned",
+          });
+
+          res.status(200).json({
+               totalVendors,
+               activeVendors,
+               suspendedVendors,
+               bannedVendors,
+          });
+     } catch (error) {
+          console.error("Error fetching vendor counts:", error);
+          res.status(500).json({ message: "Internal server error" });
+     }
+};
+
+exports.getRefundData = async (req, res) => {
+     const startDate = req.params.startDate;
+     const endDate = req.params.endDate;
+
+     try {
+          await Odoo.connect();
+
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [
+                    [
+                         ["state", "=", "cancel"],
+                         ["date_order", ">=", startDate],
+                         ["date_order", "<=", endDate],
+                    ],
+               ],
+               { fields: ["name", "company_id", "amount_total"] },
+          );
+
+          const refunds = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               ["id", "company_id", "name", "amount_total"],
+          ]);
+
+          const companyRefunds = refunds.reduce((acc, refund) => {
+               const companyId = refund.company_id[0];
+               if (!acc[companyId]) {
+                    acc[companyId] = { companyName: refund.company_id[1], totalRefund: 0 };
+               }
+               acc[companyId].totalRefund += refund.amount_total;
+               return acc;
+          }, {});
+
+          const sortedCompanyRefunds = Object.values(companyRefunds).sort(
+               (a, b) => b.totalRefund - a.totalRefund,
+          );
+
+          res.status(200).json({ data: sortedCompanyRefunds, status: true });
+     } catch (error) {
+          console.error("Error fetching refund data:", error);
+          res.status(500).json({ message: "Internal server error" });
+     }
+};
+
+exports.getRefundCount = async (req, res) => {
+     const startDate = req.params.startDate;
+     const endDate = req.params.endDate;
+
+     try {
+          await Odoo.connect();
+
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [
+                    [
+                         ["state", "=", "cancel"],
+                         ["date_order", ">=", startDate],
+                         ["date_order", "<=", endDate],
+                    ],
+               ],
+               { fields: ["company_id"] },
+          );
+
+          const refunds = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               ["id", "company_id"],
+          ]);
+
+          const companyRefundCounts = refunds.reduce((acc, refund) => {
+               const companyId = refund.company_id[0];
+               if (!acc[companyId]) {
+                    acc[companyId] = { companyName: refund.company_id[1], refundCount: 0 };
+               }
+               acc[companyId].refundCount += 1;
+               return acc;
+          }, {});
+
+          res.status(200).json({ data: Object.values(companyRefundCounts), status: true });
+     } catch (error) {
+          console.error("Error fetching refund data:", error);
+          res.status(500).json({ message: "Internal server error" });
      }
 };
