@@ -124,7 +124,9 @@ const sendOnboardingEmail = (email, name, type) => {
         <div class="container">
           <div class="header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
+            <h1 style="color: #333333;">Welcome as a New ${
+                 type === "ecommerce" ? "Vendor" : "Member"
+            }!</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
@@ -882,7 +884,9 @@ const sendCouponEmail = (email, name) => {
         <div class="container">
           <div class="header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Welcome as a New Vendor!</h1>
+            <h1 style="color: #333333;">Welcome as a New ${
+                 type === "ecommerce" ? "Vendor" : "Member"
+            }!</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
