@@ -13,5 +13,7 @@ router.get("/admin/sales-report/:startDate/:endDate", dashboardController.getAdm
 router.get("/admin/top-products/:startDate/:endDate", dashboardController.getAdminTopProducts);
 router.get("/admin/best-vendors", dashboardController.getBestSellingVendor);
 router.get("/admin/vendors", dashboardController.getVendorsData);
+router.get("/admin/canceled-orders/:startDate/:endDate", dashboardController.getRefundData);
+router.get("/admin/canceled-orders-count/:startDate/:endDate", dashboardController.getRefundCount);
 
 module.exports = router;
