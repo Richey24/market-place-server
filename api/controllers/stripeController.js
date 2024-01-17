@@ -173,6 +173,21 @@ exports.stripeVendorCallback = async (req, res) => {
             }
             break;
         }
+        case "customer.subscription.deleted": {
+            const session = event.data.object;
+            const user = await User.findOne({ stripeID: session.customer });
+            if (user) {
+                await User.findOneAndUpdate(
+                    { stripeID: session.customer },
+                    { paid: false },
+                );
+                await Logger.create({
+                    userID: user._id,
+                    eventType: "customer.subscription.deleted",
+                });
+                res.status(200).json({ message: "successful" });
+            }
+        }
         default:
             break;
     }
@@ -186,6 +201,7 @@ exports.cancelVendorSubscription = async (req, res) => {
         }
         const user = await User.findById(id);
         await stripe.subscriptions.update(user.subscriptionID, { cancel_at_period_end: true });
+        await User.findByIdAndUpdate(id, { subCanceled: true })
         await Logger.create({ userID: user._id, eventType: "subscription cancelled" });
         return res.status(200).json({ message: "subscription cancelled successfully" });
     } catch (error) {
