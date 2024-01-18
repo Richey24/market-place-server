@@ -620,3 +620,87 @@ exports.getRefundCount = async (req, res) => {
           res.status(500).json({ message: "Internal server error" });
      }
 };
+
+exports.getCompanyOrderCount = async (req, res) => {
+     const startDate = req.params.startDate;
+     const endDate = req.params.endDate;
+     try {
+          await Odoo.connect();
+
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [
+                    [
+                         ["state", "!=", "draft"],
+                         ["date_order", ">=", startDate],
+                         ["date_order", "<=", endDate],
+                    ],
+               ],
+               { fields: ["company_id"] },
+          );
+
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               ["id", "company_id"],
+          ]);
+
+          const companyOrderCounts = orders.reduce((acc, order) => {
+               const companyId = order.company_id[0];
+               if (!acc[companyId]) {
+                    acc[companyId] = { companyName: order.company_id[1], orderCount: 0 };
+               }
+               acc[companyId].orderCount += 1;
+               return acc;
+          }, {});
+
+          res.status(200).json({ data: Object.values(companyOrderCounts), status: true });
+     } catch (error) {
+          console.error("Error fetching refund data:", error);
+          res.status(500).json({ message: "Internal server error" });
+     }
+};
+
+exports.getCompanyOrderAmount = async (req, res) => {
+     const startDate = req.params.startDate;
+     const endDate = req.params.endDate;
+     try {
+          await Odoo.connect();
+
+          const orderIds = await Odoo.execute_kw(
+               "sale.order",
+               "search",
+               [
+                    [
+                         ["state", "!=", "draft"],
+                         ["date_order", ">=", startDate],
+                         ["date_order", "<=", endDate],
+                    ],
+               ],
+               { fields: ["company_id", "amount_total"] },
+          );
+
+          const orders = await Odoo.execute_kw("sale.order", "read", [
+               orderIds,
+               ["company_id", "amount_total"],
+          ]);
+
+          const companySalesAmount = orders.reduce((acc, order) => {
+               const companyId = order.company_id[0];
+               if (!acc[companyId]) {
+                    acc[companyId] = { companyName: order.company_id[1], totalSales: 0 };
+               }
+               acc[companyId].totalSales += order.amount_total;
+               return acc;
+          }, {});
+
+          const sortedCompanySales = Object.values(companySalesAmount).sort(
+               (a, b) => b.totalSales - a.totalSales,
+          );
+
+          res.status(200).json({ data: Object.values(sortedCompanySales), status: true });
+     } catch (error) {
+          console.error("Error fetching sales data:", error);
+          res.status(500).json({ message: "Internal server error" });
+     }
+};
