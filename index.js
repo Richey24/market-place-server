@@ -110,6 +110,7 @@ reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
 
+const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
 const productRouter = require("./api/routes/product");
@@ -144,6 +145,8 @@ const stripeRouter = require("./api/routes/stripe");
 // //for error handling
 // app.use(errorHandler)
 
+app.use("/api/admin/auth", adminRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
