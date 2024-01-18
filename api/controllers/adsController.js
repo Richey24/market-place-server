@@ -11,7 +11,6 @@ class AdvertController {
      }
 
      async create(req, res) {
-          console.log("---", req);
           try {
                const advertType = await advertService.findAdvertType(req.body.advertType);
                console.log(req.body);
@@ -61,6 +60,18 @@ class AdvertController {
           const adService = await advertService.findAllType();
 
           return successResponder(res, adService);
+     }
+
+     async getAdsLenght(req, res) {
+          try {
+               // Get all adverts
+               const adverts = await advertService.findAll();
+
+               // Send the length of ads as a response
+               return successResponder(res, { length: adverts.length });
+          } catch (error) {
+               return errorResponder(res, error?.code, error?.message);
+          }
      }
 
      async findAdsByCompany(req, res) {
