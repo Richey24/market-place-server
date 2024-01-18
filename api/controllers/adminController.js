@@ -37,9 +37,7 @@ exports.login = async (req, res) => {
           const parser = new UAParser(userAgent);
           const browserInfo = parser.getBrowser();
           const deviceName = parser.getDevice();
-          const existingUser = await Adminuser.findByCredentials(email, password).select(
-               "-password -tokens",
-          );
+          const existingUser = await Adminuser.findByCredentials(email, password);
           if (!existingUser)
                return res.status(401).json({
                     error: "Login failed! Check authenthication credentails",
@@ -49,16 +47,17 @@ exports.login = async (req, res) => {
           existingUser.device = deviceName.model;
           existingUser.lastLogin = new Date();
           await existingUser.save();
-          // const userWithoutPassword = {
-          //      _id: existingUser._id,
-          //      firstname: existingUser.firstname,
-          //      lastname: existingUser.lastname,
-          //      email: existingUser.email,
-          //      adminId: existingUser?.adminId,
-          //      image: existingUser?.image,
-          // };
+          const userWithoutPassword = {
+               _id: existingUser._id,
+               firstname: existingUser.firstname,
+               lastname: existingUser.lastname,
+               email: existingUser.email,
+               adminId: existingUser?.adminId,
+               image: existingUser?.image,
+               role: existingUser?.role,
+          };
           const token = await existingUser.generateAuthToken();
-          res.status(201).json({ user: existingUser, token, status: "201" });
+          res.status(201).json({ user: userWithoutPassword, token, status: "201" });
      } catch (error) {
           console.log(error);
           res.status(400).json({ error, status: "400" });
@@ -81,18 +80,18 @@ exports.updateAdminDetails = async (req, res) => {
                {
                     new: true,
                },
-          ).select("-password -tokens");
+          );
 
           // Omit password from the updated user object before sending the response
-          // const userWithoutPassword = {
-          //      _id: updatedUser._id,
-          //      firstname: updatedUser.firstname,
-          //      lastname: updatedUser.lastname,
-          //      email: updatedUser.email,
-          //      role: updatedUser.role,
-          // };
+          const userWithoutPassword = {
+               _id: updatedUser._id,
+               firstname: updatedUser.firstname,
+               lastname: updatedUser.lastname,
+               email: updatedUser.email,
+               role: updatedUser.role,
+          };
 
-          res.status(200).json({ user: updatedUser, status: "200" });
+          res.status(200).json({ user: userWithoutPassword, status: "200" });
      } catch (error) {
           console.log("Error updating Admin details:", error);
           res.status(400).json({ error, status: "400" });
