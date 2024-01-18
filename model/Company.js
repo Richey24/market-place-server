@@ -57,6 +57,15 @@ const companySchema = mongoose.Schema({
      address: {
           type: String,
      },
+     facebookLink: {
+          type: String,
+     },
+     twitterLink: {
+          type: String,
+     },
+     linkedinLink: {
+          type: String,
+     },
      categories: {
           type: Array,
           required: false,
