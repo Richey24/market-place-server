@@ -83,23 +83,27 @@ class AdvertController {
      }
 
      async findAll(req, res) {
-          let adverts;
+          try {
+               let adverts;
 
-          if (req.query.type) {
-               adverts = await advertService.findByType(req.query.type);
-          } else {
-               adverts = await advertService.findAll();
+               if (req.query.type) {
+                    adverts = await advertService.findByType(req.query.type);
+               } else {
+                    adverts = await advertService.findAll();
+               }
+
+               // Fetch details for each advertisement
+               const advertsWithDetails = await Promise.all(
+                    adverts.map(async (advert) => {
+                         const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
+                         return { ...advert, details };
+                    }),
+               );
+
+               return successResponder(res, advertsWithDetails);
+          } catch (error) {
+               return errorResponder(res, error?.code, error?.message);
           }
-
-          // Fetch details for each advertisement
-          const advertsWithDetails = await Promise.all(
-               adverts.map(async (advert) => {
-                    const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
-                    return { ...advert, details };
-               }),
-          );
-
-          return successResponder(res, advertsWithDetails);
      }
 
      async updateOne(req, res) {
