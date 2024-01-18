@@ -3,79 +3,84 @@ const StripeSession = require("../../model/StripeSession");
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 const Advert = require("../../model/Advert");
+const { sendSubscriptionCancelEmail } = require("../../config/helpers");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
 
 exports.createVendorSubscription = async (req, res) => {
-    const { email, plan, mode, id, register } = req.query;
-    console.log(email, plan, mode);
-    if (!email || !plan || !mode) {
-        return res.status(400).json({ message: "Send All Required Parameter" });
-    }
-    let session;
-    if (mode === "service") {
-        session = await stripe.checkout.sessions.create({
-            line_items: [
-                {
-                    // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    price:
-                        plan === "monthly"
-                            ? process.env.MONTHLY_SERVICE
-                            : process.env.YEARLY_SERVICE,
-                    quantity: 1,
-                },
-            ],
-            mode: "subscription",
-            success_url:
-                register === "yes"
-                    ? `${YOUR_DOMAIN}/onboarding?success=true`
-                    : `${YOUR_DOMAIN}/billing`,
-            cancel_url:
-                register === "yes"
-                    ? `${YOUR_DOMAIN}/onboarding?success=false`
-                    : `${YOUR_DOMAIN}/billing`,
-        });
-    } else if (mode === "ecommerce") {
-        session = await stripe.checkout.sessions.create({
-            line_items: [
-                {
-                    // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                    price:
-                        plan === "monthly"
-                            ? process.env.MONTHLY_STORE
-                            : process.env.YEARLY_STORE,
-                    quantity: 1,
-                },
-            ],
-            mode: "subscription",
-            success_url:
-                register === "yes"
-                    ? `${YOUR_DOMAIN}/onboarding?success=true`
-                    : `${YOUR_DOMAIN}/billing`,
-            cancel_url:
-                register === "yes"
-                    ? `${YOUR_DOMAIN}/onboarding?success=false`
-                    : `${YOUR_DOMAIN}/billing`,
-        });
-    }
-    const check = await StripeSession.findOne({ email: email });
-    console.log(session);
-    if (check) {
-        await StripeSession.findOneAndUpdate(
-            { email: email },
-            { sessionID: session.id, plan: plan, userID: id },
-        );
-    } else {
-        await StripeSession.create({
-            sessionID: session.id,
-            email: email,
-            plan: plan,
-            userID: id,
-        });
-    }
+    try {
+        const { email, plan, mode, id, register } = req.query;
+        console.log(email, plan, mode);
+        if (!email || !plan || !mode) {
+            return res.status(400).json({ message: "Send All Required Parameter" });
+        }
+        let session;
+        if (mode === "service") {
+            session = await stripe.checkout.sessions.create({
+                line_items: [
+                    {
+                        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                        price:
+                            plan === "monthly"
+                                ? process.env.MONTHLY_SERVICE
+                                : process.env.YEARLY_SERVICE,
+                        quantity: 1,
+                    },
+                ],
+                mode: "subscription",
+                success_url:
+                    register === "yes"
+                        ? `${YOUR_DOMAIN}/onboarding?success=true`
+                        : `${YOUR_DOMAIN}/billing`,
+                cancel_url:
+                    register === "yes"
+                        ? `${YOUR_DOMAIN}/onboarding?success=false`
+                        : `${YOUR_DOMAIN}/billing`,
+            });
+        } else if (mode === "ecommerce") {
+            session = await stripe.checkout.sessions.create({
+                line_items: [
+                    {
+                        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                        price:
+                            plan === "monthly"
+                                ? process.env.MONTHLY_STORE
+                                : process.env.YEARLY_STORE,
+                        quantity: 1,
+                    },
+                ],
+                mode: "subscription",
+                success_url:
+                    register === "yes"
+                        ? `${YOUR_DOMAIN}/onboarding?success=true`
+                        : `${YOUR_DOMAIN}/billing`,
+                cancel_url:
+                    register === "yes"
+                        ? `${YOUR_DOMAIN}/onboarding?success=false`
+                        : `${YOUR_DOMAIN}/billing`,
+            });
+        }
+        const check = await StripeSession.findOne({ email: email });
+        console.log(session);
+        if (check) {
+            await StripeSession.findOneAndUpdate(
+                { email: email },
+                { sessionID: session.id, plan: plan, userID: id },
+            );
+        } else {
+            await StripeSession.create({
+                sessionID: session.id,
+                email: email,
+                plan: plan,
+                userID: id,
+            });
+        }
 
-    res.redirect(303, session.url);
+        res.redirect(303, session.url);
+    } catch (error) {
+        res.status(500).json({ message: "An error occurred" });
+    }
 };
 
 exports.stripeVendorCallback = async (req, res) => {
@@ -172,6 +177,21 @@ exports.stripeVendorCallback = async (req, res) => {
             }
             break;
         }
+        case "customer.subscription.deleted": {
+            const session = event.data.object;
+            const user = await User.findOne({ stripeID: session.customer });
+            if (user) {
+                await User.findOneAndUpdate(
+                    { stripeID: session.customer },
+                    { paid: false },
+                );
+                await Logger.create({
+                    userID: user._id,
+                    eventType: "customer.subscription.deleted",
+                });
+                res.status(200).json({ message: "successful" });
+            }
+        }
         default:
             break;
     }
@@ -185,12 +205,43 @@ exports.cancelVendorSubscription = async (req, res) => {
         }
         const user = await User.findById(id);
         await stripe.subscriptions.update(user.subscriptionID, { cancel_at_period_end: true });
+        await User.findByIdAndUpdate(id, { subCanceled: true })
         await Logger.create({ userID: user._id, eventType: "subscription cancelled" });
         return res.status(200).json({ message: "subscription cancelled successfully" });
     } catch (error) {
         res.status(500).json({ message: "An error occurred" });
     }
 };
+
+exports.updateSubscription = async (req, res) => {
+    try {
+        const { id } = req.query;
+        if (!id) {
+            return res.status(400).json({ message: "id is required" });
+        }
+        const user = await User.findById(id);
+        const session = await stripe.billingPortal.sessions.create({
+            customer: user.stripeID,
+            return_url: `${YOUR_DOMAIN}/billing`,
+        });
+        res.redirect(303, session.url);
+    } catch (error) {
+        res.status(500).json({ message: "An error occurred" });
+    }
+}
+
+exports.sendCancelEmail = (req, res) => {
+    try {
+        const { email, name } = req.body
+        if (!email || !name) {
+            return res.status(400).json({ message: "Send All required params" });
+        }
+        sendSubscriptionCancelEmail(email, name)
+        return res.status(200).json({ message: "subscription cancel mail sent successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "An error occurred" });
+    }
+}
 
 exports.stripeCheckout = async (req, res) => {
     try {

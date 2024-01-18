@@ -11,6 +11,7 @@ class AdvertController {
      }
 
      async create(req, res) {
+          console.log("---", req);
           try {
                const advertType = await advertService.findAdvertType(req.body.advertType);
                console.log(req.body);
@@ -29,7 +30,7 @@ class AdvertController {
                     const company_name = company ? company.company_name : "unknown";
 
                     // Construct targetUrl for product
-                    targetUrl = `https://${company_name}.ishop.black/${req.body.productId}`;
+                    targetUrl = `https://${company_name}.ishop.black/product/${req.body.productId}`;
                }
 
                // Update the payload with the correct targetUrl

@@ -67,6 +67,10 @@ const userSchema = mongoose.Schema({
           type: Boolean,
           default: false
      },
+     subCanceled: {
+          type: Boolean,
+          default: false
+     },
      expiryDate: {
           type: Date
      },
@@ -109,6 +113,13 @@ const userSchema = mongoose.Schema({
      suspensionReasons: {
           type: [String],
           default: [],
+     },
+     stripeConnectedAccountId: {
+          type: String,
+     },
+     isStripeConnectedAccountVerified: {
+          type: Boolean,
+          default: false,
      },
      partner_ids: [
           {
