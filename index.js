@@ -131,6 +131,7 @@ const serviceRoute = require("./api/routes/service");
 const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
+const companyRoute = require("./api/routes/company");
 const visitorRoute = require("./api/routes/visitors");
 const policyRouter = require("./api/routes/policy");
 const paymentRouter = require("./api/routes/payment");
@@ -154,6 +155,7 @@ app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);
 app.use("/api/carrier", carrier);
 app.use("/api/stripe", stripeRouter);
+app.use("/api/company", companyRoute);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
