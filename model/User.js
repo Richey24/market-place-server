@@ -65,19 +65,19 @@ const userSchema = mongoose.Schema({
      },
      paid: {
           type: Boolean,
-          default: false
+          default: false,
      },
      expiryDate: {
-          type: Date
+          type: Date,
      },
      stripeID: {
-          type: String
+          type: String,
      },
      subscriptionID: {
-          type: String
+          type: String,
      },
      subscriptionPlan: {
-          type: String
+          type: String,
      },
      rated: {
           type: Array,
@@ -116,6 +116,9 @@ const userSchema = mongoose.Schema({
                domain: { type: String },
           },
      ],
+     sales_opt_in: {
+          type: Boolean,
+     },
      created_at: {
           type: Date,
           default: Date.now,
