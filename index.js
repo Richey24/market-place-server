@@ -110,6 +110,7 @@ reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
 
+const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
 const productRouter = require("./api/routes/product");
@@ -131,6 +132,7 @@ const serviceRoute = require("./api/routes/service");
 const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
+const companyRoute = require("./api/routes/company");
 const visitorRoute = require("./api/routes/visitors");
 const policyRouter = require("./api/routes/policy");
 const paymentRouter = require("./api/routes/payment");
@@ -143,6 +145,8 @@ const stripeRouter = require("./api/routes/stripe");
 // //for error handling
 // app.use(errorHandler)
 
+app.use("/api/admin/auth", adminRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
@@ -154,6 +158,7 @@ app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);
 app.use("/api/carrier", carrier);
 app.use("/api/stripe", stripeRouter);
+app.use("/api/company", companyRoute);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);

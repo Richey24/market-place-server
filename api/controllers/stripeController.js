@@ -162,7 +162,7 @@ exports.stripeVendorCallback = async (req, res) => {
             const user = await User.findOne({ stripeID: invoice.customer });
             if (user) {
                 const expiryDate =
-                    user.plan === "monthly"
+                    user.subscriptionPlan === "monthly"
                         ? new Date(new Date().setMonth(new Date().getMonth() + 1))
                         : new Date(new Date().setMonth(new Date().getMonth() + 12));
                 await User.findOneAndUpdate(

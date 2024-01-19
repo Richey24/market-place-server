@@ -31,6 +31,20 @@ class CompanyService {
           return await advertModel.find().populate("advertType", "name");
      }
 
+     async findByDateRange(startDate, endDate) {
+          try {
+               const start = new Date(startDate);
+               const end = new Date(endDate);
+               const adverts = await advertModel.find({
+                    createdAt: { $gte: start, $lte: end },
+               });
+
+               return adverts;
+          } catch (error) {
+               throw error;
+          }
+     }
+
      /**
       * Find all adverts.
       * @param {string} advertType
