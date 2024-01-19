@@ -24,7 +24,7 @@ const policySchema = mongoose.Schema({
                },
                content: {
                     type: String,
-                    required: [true, "Policy content is required"],
+                    default: "No Policy Provided",
                },
           },
      ],
