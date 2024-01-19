@@ -54,6 +54,7 @@ exports.login = async (req, res) => {
                email: existingUser.email,
                adminId: existingUser?.adminId,
                image: existingUser?.image,
+               role: existingUser?.role,
           };
           const token = await existingUser.generateAuthToken();
           res.status(201).json({ user: userWithoutPassword, token, status: "201" });

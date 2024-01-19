@@ -64,8 +64,16 @@ class AdvertController {
 
      async getAdsLenght(req, res) {
           try {
-               // Get all adverts
-               const adverts = await advertService.findAll();
+               let adverts;
+
+               const { startDate, endDate } = req.query;
+               if (startDate && endDate) {
+                    // Assuming you have a method in advertService to filter by date range
+                    adverts = await advertService.findByDateRange(startDate, endDate);
+               } else {
+                    // If no date range is provided, get all adverts
+                    adverts = await advertService.findAll();
+               }
 
                // Send the length of ads as a response
                return successResponder(res, { length: adverts.length });
