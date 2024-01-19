@@ -102,11 +102,12 @@ class AdvertController {
      }
 
      async findAll(req, res) {
+          console.log("advert");
           try {
                let adverts;
-
-               if (req.query.type) {
-                    adverts = await advertService.findByType(req.query.type);
+               if (req.query.advertType) {
+                    console.log({ type: req.query.advertType });
+                    adverts = await advertService.findByType(req.query.advertType);
                } else {
                     adverts = await advertService.findAll();
                }
@@ -119,7 +120,7 @@ class AdvertController {
                     }),
                );
 
-               return successResponder(res, advertsWithDetails);
+               return successResponder(res, advertsWithDetails, 200, "sucessfull");
           } catch (error) {
                return errorResponder(res, error?.code, error?.message);
           }

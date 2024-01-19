@@ -169,7 +169,7 @@ app.use("/api/wishlists", wishlistRouter);
 app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
 app.use("/api/themes", themeRouter);
-app.use("/api/advert", advertRouter);
+app.use("/api/art", advertRouter);
 app.use("/api/contact-us", contactUsRouter);
 app.use("/api/main/category", mainCategoryRouter);
 app.use("/api/main/popular", popularProduct);
