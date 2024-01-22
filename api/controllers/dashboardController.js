@@ -28,7 +28,7 @@ exports.getSalesReport = async (req, res) => {
           const mapRevenue = result?.map((re) => re.price_total);
           if (mapRevenue.length > 1) {
                const totalRevenue = mapRevenue.reduce((a, b) => a + b);
-               res.status(201).json({
+               return res.status(201).json({
                     // result,
                     totalSales: result?.length,
                     totalRevenue,
@@ -36,7 +36,7 @@ exports.getSalesReport = async (req, res) => {
                     status: true,
                });
           } else {
-               res.status(200).json({
+               return res.status(200).json({
                     totalSales: 0,
                     totalRevenue: 0,
                     averageOrderSpend: 0,
