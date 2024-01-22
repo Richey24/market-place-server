@@ -232,11 +232,11 @@ exports.updateSubscription = async (req, res) => {
 
 exports.sendCancelEmail = (req, res) => {
     try {
-        const { email, name } = req.body
-        if (!email || !name) {
+        const { email, name, token } = req.body
+        if (!email || !name || !token) {
             return res.status(400).json({ message: "Send All required params" });
         }
-        sendSubscriptionCancelEmail(email, name)
+        sendSubscriptionCancelEmail(email, name, token)
         return res.status(200).json({ message: "subscription cancel mail sent successfully" });
     } catch (error) {
         res.status(500).json({ message: "An error occurred" });
