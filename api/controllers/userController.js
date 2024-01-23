@@ -79,6 +79,7 @@ exports.register = async (req, res) => {
                     tour: req.body?.tour ?? "",
                     password: req.body.password,
                     phone: req.body.phone,
+                    sales_opt_in: req.body.sales_opt_in,
                     partner_ids: [{ id: partner_id, domain: req.body.domain }],
                     currentSiteType: req.body.currentSiteType,
                     ...(company && { company: company._id }),

@@ -3,7 +3,10 @@ const StripeSession = require("../../model/StripeSession");
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 const Advert = require("../../model/Advert");
-const { sendSubscriptionCancelEmail } = require("../../config/helpers");
+const {
+     sendSubscriptionCancelEmail,
+     sendAdvertisementNotificationEmail,
+} = require("../../config/helpers");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
@@ -320,16 +323,16 @@ exports.adsCallback = async (req, res) => {
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    switch (event.type) {
-        case "checkout.session.completed": {
-            const session = event.data.object;
-            if (session.payment_status === "paid") {
-                const expiryDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
-                const company = await Company.findOne({
-                    "adsSubscription.sessionId": session.id,
-                });
-
-                const advertId = company.adsSubscription.advertId;
+     switch (event.type) {
+          case "checkout.session.completed": {
+               const session = event.data.object;
+               if (session.payment_status === "paid") {
+                    const expiryDate = new Date(new Date().setMonth(new Date().getMonth() + 1));
+                    const company = await Company.findOne({
+                         "adsSubscription.sessionId": session.id,
+                    });
+                    const advertId = company.adsSubscription.advertId;
+                    const advert = Advert.findOne({ _id: advertId });
 
                 if (advertId) {
                     const advertisement = await Advert.findById(advertId);
@@ -347,8 +350,24 @@ exports.adsCallback = async (req, res) => {
                     currentPeriodEnd: expiryDate,
                 };
 
-                await company.save();
-            }
+                    await company.save();
+
+                    const users = await User.find({ sales_opt_in: true });
+
+                    for (const user of users) {
+                         sendAdvertisementNotificationEmail(
+                              user.email,
+                              user.firstname,
+                              {
+                                   advertisementDetails: {
+                                        productService: advert.title,
+                                        description: advert.description,
+                                   },
+                              },
+                              advert.targetUrl,
+                         );
+                    }
+               }
 
             break;
         }
