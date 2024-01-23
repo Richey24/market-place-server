@@ -1955,7 +1955,6 @@ const sendAdvertisementNotificationEmail = (
   <ul>
        <li><strong>Product/Service:</strong> ${advertisementDetails.productService}</li>
        <li><strong>Description:</strong> ${advertisementDetails.description}</li>
-       <li><strong>Valid Until:</strong> ${advertisementDetails.validUntil}</li>
   </ul>
   <p>Click the button below to explore the advertisement:</p>
   <a class="cta-button" href="${advertisementLink}">Explore Now</a>
@@ -2207,22 +2206,23 @@ const calculateThreeWeeksLater = (nextDay) => {
 };
 
 module.exports = {
-  sendOnboardingEmail,
-  sendAdminWelcomeMail,
-  sendAdminResetPasswordMail,
-  sendTrialEndReminderEmail,
-  sendTrialExtensionEmail,
-  sendSubscriptionEmail,
-  sendSubscriptionExpiredEmail,
-  sendCouponEmail,
-  sendRatingMail,
-  formatDate,
-  reminderJob,
-  scheduleUserDisablingCronJob,
-  sendWelcomeEmail,
-  sendForgotPasswordEmail,
-  sendAdminMessage,
-  sendVendorMessage,
-  publishServiceItemsCronJob,
-  sendSubscriptionCancelEmail,
+     sendOnboardingEmail,
+     sendAdminWelcomeMail,
+     sendAdminResetPasswordMail,
+     sendTrialEndReminderEmail,
+     sendTrialExtensionEmail,
+     sendSubscriptionEmail,
+     sendSubscriptionExpiredEmail,
+     sendCouponEmail,
+     sendRatingMail,
+     formatDate,
+     sendAdvertisementNotificationEmail,
+     reminderJob,
+     scheduleUserDisablingCronJob,
+     sendWelcomeEmail,
+     sendForgotPasswordEmail,
+     sendAdminMessage,
+     sendVendorMessage,
+     publishServiceItemsCronJob,
+     sendSubscriptionCancelEmail,
 };
