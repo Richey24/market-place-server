@@ -1960,7 +1960,6 @@ const sendAdvertisementNotificationEmail = (
   <ul>
        <li><strong>Product/Service:</strong> ${advertisementDetails.productService}</li>
        <li><strong>Description:</strong> ${advertisementDetails.description}</li>
-       <li><strong>Valid Until:</strong> ${advertisementDetails.validUntil}</li>
   </ul>
   <p>Click the button below to explore the advertisement:</p>
   <a class="cta-button" href="${advertisementLink}">Explore Now</a>
@@ -2222,6 +2221,7 @@ module.exports = {
      sendCouponEmail,
      sendRatingMail,
      formatDate,
+     sendAdvertisementNotificationEmail,
      reminderJob,
      scheduleUserDisablingCronJob,
      sendWelcomeEmail,

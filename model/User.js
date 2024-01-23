@@ -69,7 +69,7 @@ const userSchema = mongoose.Schema({
      },
      subCanceled: {
           type: Boolean,
-          default: false
+          default: false,
      },
      expiryDate: {
           type: Date,
