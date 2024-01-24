@@ -11,7 +11,6 @@ class AdvertController {
      }
 
      async create(req, res) {
-          console.log("---", req);
           try {
                const advertType = await advertService.findAdvertType(req.body.advertType);
                console.log(req.body);
@@ -63,6 +62,26 @@ class AdvertController {
           return successResponder(res, adService);
      }
 
+     async getAdsLenght(req, res) {
+          try {
+               let adverts;
+
+               const { startDate, endDate } = req.query;
+               if (startDate && endDate) {
+                    // Assuming you have a method in advertService to filter by date range
+                    adverts = await advertService.findByDateRange(startDate, endDate);
+               } else {
+                    // If no date range is provided, get all adverts
+                    adverts = await advertService.findAll();
+               }
+
+               // Send the length of ads as a response
+               return successResponder(res, { length: adverts.length });
+          } catch (error) {
+               return errorResponder(res, error?.code, error?.message);
+          }
+     }
+
      async findAdsByCompany(req, res) {
           try {
                const adverts = await advertService.findByCompany(req.query.company_id);
@@ -83,23 +102,28 @@ class AdvertController {
      }
 
      async findAll(req, res) {
-          let adverts;
+          console.log("advert");
+          try {
+               let adverts;
+               if (req.query.advertType) {
+                    console.log({ type: req.query.advertType });
+                    adverts = await advertService.findByType(req.query.advertType);
+               } else {
+                    adverts = await advertService.findAll();
+               }
 
-          if (req.query.type) {
-               adverts = await advertService.findByType(req.query.type);
-          } else {
-               adverts = await advertService.findAll();
+               // Fetch details for each advertisement
+               const advertsWithDetails = await Promise.all(
+                    adverts.map(async (advert) => {
+                         const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
+                         return { ...advert, details };
+                    }),
+               );
+
+               return successResponder(res, advertsWithDetails, 200, "sucessfull");
+          } catch (error) {
+               return errorResponder(res, error?.code, error?.message);
           }
-
-          // Fetch details for each advertisement
-          const advertsWithDetails = await Promise.all(
-               adverts.map(async (advert) => {
-                    const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
-                    return { ...advert, details };
-               }),
-          );
-
-          return successResponder(res, advertsWithDetails);
      }
 
      async updateOne(req, res) {

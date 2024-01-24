@@ -110,6 +110,7 @@ reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
 
+const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
 const productRouter = require("./api/routes/product");
@@ -131,18 +132,23 @@ const serviceRoute = require("./api/routes/service");
 const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
+const companyRoute = require("./api/routes/company");
 const visitorRoute = require("./api/routes/visitors");
 const policyRouter = require("./api/routes/policy");
 const paymentRouter = require("./api/routes/payment");
 const { errorResponder } = require("./utils/http_responder");
 const carrier = require("./api/routes/carrier");
 const stripeRouter = require("./api/routes/stripe");
+const eventRouter = require("./api/routes/event");
+const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
 
 // //for error handling
 // app.use(errorHandler)
 
+app.use("/api/admin/auth", adminRouter);
+app.use("/api/admin", adminRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
@@ -154,6 +160,9 @@ app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);
 app.use("/api/carrier", carrier);
 app.use("/api/stripe", stripeRouter);
+app.use("/api/company", companyRoute);
+app.use("/api/event", eventRouter);
+app.use("/api/freelancer/payment", freelancePaymentRouter)
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
@@ -164,7 +173,7 @@ app.use("/api/wishlists", wishlistRouter);
 app.use("/api/onboarding", onboardingRouter);
 app.use("/api/promotions", promotionRouter);
 app.use("/api/themes", themeRouter);
-app.use("/api/advert", advertRouter);
+app.use("/api/showcase", advertRouter);
 app.use("/api/contact-us", contactUsRouter);
 app.use("/api/main/category", mainCategoryRouter);
 app.use("/api/main/popular", popularProduct);

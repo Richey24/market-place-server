@@ -127,6 +127,9 @@ const userSchema = mongoose.Schema({
                domain: { type: String },
           },
      ],
+     sales_opt_in: {
+          type: Boolean,
+     },
      created_at: {
           type: Date,
           default: Date.now,

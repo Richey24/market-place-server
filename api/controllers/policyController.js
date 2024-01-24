@@ -1,23 +1,23 @@
 const Policy = require("../../model/Policy");
+const { successResponder, errorResponder } = require("../../utils/http_responder");
 
 exports.getPolicyBySiteId = async (req, res) => {
-     const { siteId } = req.body;
+     const { siteId } = req.query;
 
      try {
           if (!siteId) {
-               return res.status(400).json({ error: "Site ID is required in the request body" });
+               return errorResponder(res, 400, "Site ID is required");
           }
 
           const sitePolicies = await Policy.findOne({ site_id: siteId });
 
           if (!sitePolicies) {
-               return res.status(404).json({ error: "Site not found or no policies exist" });
+               return errorResponder(res, 404, "Site not found or no policies exist");
           }
 
-          return res.status(200).json({ policies: sitePolicies.policies });
+          return successResponder(res, sitePolicies.policies, 200, "successfull");
      } catch (error) {
-          console.error("Error getting policy:", error);
-          return res.status(500).json({ error: "Internal server error" });
+          return errorResponder(res, error?.code, error?.message);
      }
 };
 
@@ -26,7 +26,7 @@ exports.createPolicy = async (req, res) => {
           const { siteId, policy_type, content } = req.body;
 
           if (!siteId) {
-               return res.status(400).json({ error: "Site ID is required in the request body" });
+               return errorResponder(res, 400, "Site ID is required");
           }
 
           let sitePolicies = await Policy.findOne({ site_id: siteId });
@@ -39,7 +39,7 @@ exports.createPolicy = async (req, res) => {
           }
 
           if (!Policy.schema.path("policies.0.policy_type").enumValues.includes(policy_type)) {
-               return res.status(400).json({ error: "Invalid policy_type value" });
+               return errorResponder(res, 400, "Invalid policy_type value");
           }
 
           const existingPolicy = sitePolicies.policies.find(
@@ -57,10 +57,9 @@ exports.createPolicy = async (req, res) => {
 
           await sitePolicies.save();
 
-          return res.status(201).json({ message: "Policy created successfully" });
+          return successResponder(res, {}, 201, "Policy created successfully");
      } catch (error) {
-          console.error("Error creating policy:", error);
-          return res.status(500).json({ error: "Internal server error" });
+          return errorResponder(res, error?.code, error?.message);
      }
 };
 
@@ -90,16 +89,15 @@ exports.updatePolicy = async (req, res) => {
 
           await sitePolicies.save();
 
-          return res.status(200).json({ message: "Policy updated successfully" });
+          return successResponder(res, {}, 201, "Policy updated successfully");
      } catch (error) {
-          console.error("Error updating policy:", error);
-          return res.status(500).json({ error: "Internal server error" });
+          return errorResponder(res, error?.code, error?.message);
      }
 };
 
 exports.getPolicyByType = async (req, res) => {
      try {
-          const { siteId, policy_type } = req.body;
+          const { siteId, policy_type } = req.query;
 
           if (!siteId || !policy_type) {
                return res
@@ -121,9 +119,8 @@ exports.getPolicyByType = async (req, res) => {
                return res.status(404).json({ error: "Policy not found for the specified type" });
           }
 
-          return res.status(200).json({ policy: matchingPolicy });
+          return successResponder(res, matchingPolicy, 200, "successfully");
      } catch (error) {
-          console.error("Error getting policy by type:", error);
-          return res.status(500).json({ error: "Internal server error" });
+          return errorResponder(res, error?.code, error?.message);
      }
 };

@@ -124,9 +124,8 @@ const sendOnboardingEmail = (email, name, type) => {
         <div class="container">
           <div class="header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Welcome as a New ${
-                 type === "ecommerce" ? "Vendor" : "Member"
-            }!</h1>
+            <h1 style="color: #333333;">Welcome as a New ${type === "ecommerce" ? "Vendor" : "Member"
+      }!</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
@@ -304,6 +303,227 @@ const sendWelcomeEmail = (email, name, type) => {
       console.log(error);
     } else {
       console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
+
+const sendAdminResetPasswordMail = (email, name, adminId, token, url) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  let subject, introMessage;
+  let resetLink = `${url}/change-password/${adminId}?token=${token}`;
+
+  subject = `Welcome ${name} to ImarketPlace Admin Service - The Guardians of Our Digital Realm!`;
+  introMessage = `
+<a href="${resetLink}"><p>Click here to reset your password </p></a>
+`;
+
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: subject,
+    html: `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* CSS styles for the email template */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+body {
+font-family: 'Montserrat', Arial, sans-serif;
+line-height: 1.6;
+}
+.container {
+max-width: 600px;
+margin: 0 auto;
+padding: 20px;
+background-color: #f5f5f5;
+border-radius: 5px;
+}
+.header {
+text-align: center;
+margin-bottom: 20px;
+}
+.message {
+margin-bottom: 20px;
+background-color: #ffffff;
+padding: 20px;
+border-radius: 5px;
+}
+.highlight {
+font-weight: bold;
+}
+.footer {
+margin-top: 20px;
+text-align: center;
+font-size: 12px;
+}
+.logo {
+display: block;
+margin: 0 auto;
+max-width: 200px;
+}
+.cta-button {
+display: inline-block;
+margin-top: 20px;
+padding: 10px 20px;
+background-color: #007bff;
+color: #ffffff;
+text-decoration: none;
+border-radius: 5px;
+}
+.cta-button:hover {
+background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+</div>
+<div class="message">
+<p>Dear ${name},</p>
+${introMessage}
+</div>
+<div class="message">
+<p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
+<a class="cta-button" href="${resetLink}"> Get Started</a>
+</div>
+<div class="footer">
+<p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+</div>
+</div>
+</body>
+</html>       
+`,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Admin Welcome Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
+
+const sendAdminWelcomeMail = (email, name, adminId, token, url) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+  let subject, introMessage;
+  let resetLink = `${url}/change-password/${adminId}?token=${token}`;
+
+  subject = `Welcome ${name} to ImarketPlace Admin Service - The Guardians of Our Digital Realm!`;
+  introMessage = `
+<p>We are thrilled to welcome you as a new admin member on our vibrant and dynamic ecommerce marketplace.</p>
+<a href="${resetLink}"><p>Click here to set up your password </p></a>
+`;
+
+  const mailOptions = {
+    from: "info@israelbiblecamp.com",
+    to: email,
+    subject: subject,
+    html: `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* CSS styles for the email template */
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+  body {
+    font-family: 'Montserrat', Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .message {
+    margin-bottom: 20px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+  }
+  .highlight {
+    font-weight: bold;
+  }
+  .footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 12px;
+  }
+  .logo {
+    display: block;
+    margin: 0 auto;
+    max-width: 200px;
+  }
+  .cta-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  .cta-button:hover {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+  </div>
+  <div class="message">
+    <p>Dear ${name},</p>
+    ${introMessage}
+  </div>
+  <div class="message">
+    <p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
+    <a class="cta-button" href="${resetLink}"> Get Started</a>
+  </div>
+  <div class="footer">
+    <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+  </div>
+</div>
+</body>
+</html>       
+`,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Admin Welcome Email sent: " + info.response);
       // do something useful
     }
   });
@@ -883,9 +1103,8 @@ const sendCouponEmail = (email, name) => {
         <div class="container">
           <div class="header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Welcome as a New ${
-                 type === "ecommerce" ? "Vendor" : "Member"
-            }!</h1>
+            <h1 style="color: #333333;">Welcome as a New ${type === "ecommerce" ? "Vendor" : "Member"
+      }!</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
@@ -1272,7 +1491,7 @@ const sendAccountDisablingReminderEmail = (email, name, trialEndDate) => {
     }
   });
 };
-const sendSubscriptionCancelEmail = (email, name) => {
+const sendSubscriptionCancelEmail = (email, name, token) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.office365.com",
     port: 587,
@@ -1286,7 +1505,7 @@ const sendSubscriptionCancelEmail = (email, name) => {
   const mailOptions = {
     from: "info@israelbiblecamp.com",
     to: email,
-    subject: "Urgent: We Value Your Membership – Let's Discuss Your Subscription",
+    subject: "Your Subscription - Let's Talk",
     html: `
       <!DOCTYPE html>
       <html>
@@ -1347,16 +1566,14 @@ const sendSubscriptionCancelEmail = (email, name) => {
         <div class="container">
           <div class "header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Urgent: We Value Your Membership – Let's Discuss Your Subscription</h1>
+            <h1 style="color: #333333;">Your Subscription - Let's Talk</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
-            <p>I trust this email finds you well. We appreciate your continued support as a valued member of iShop.black. Your satisfaction is our top priority, and we want to ensure that you are getting the most out of your subscription.</p>
-            <p>I noticed that you recently initiated the process to cancel your subscription, and I wanted to reach out personally to understand your concerns and see if there's anything we can do to address them. Your feedback is crucial to us, and we are committed to making any necessary improvements to enhance your experience.</p>
-            <p>To better assist you, could you please share the reasons behind your decision to cancel? Whether it's related to our services, features, or any other aspect, your insights will help us tailor our offerings to better suit your needs.</p>
-            <p>Additionally, I'd like to offer you the opportunity to schedule a brief call with our customer support team. This way, we can discuss your concerns in more detail, answer any questions you may have, and explore possible solutions together.</p>
-            <p>We understand that circumstances may change, and we want to make sure we're doing everything we can to meet your expectations. Your satisfaction is of utmost importance to us, and we are committed to going above and beyond to ensure your experience with iShop.black remains positive.</p>
-            <p>Thank you for being a part of our community, and we look forward to the opportunity to address your concerns and continue providing you with exceptional service.</p>
+            <p>I hope this email finds you well. We value your support as a member of iShop.black, and your satisfaction is our priority. I noticed your recent subscription cancellation request, and I'd like to understand your concerns. Could you share your reasons for canceling? Your feedback is crucial for us to improve.</p>
+            <p>If you're open to it, we can schedule a brief call with our customer support team to address your concerns and explore solutions together.</p>
+            <p>Your satisfaction is important to us, and we appreciate your continued support.</p>
+            <a href="https://dashboard.ishop.black/billing?cancel=true&token=${token}">proceed to cancellation</a>
           </div>
           <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
           <div class="message">
@@ -1714,6 +1931,121 @@ const sendRatingMail = (email, name, url, product) => {
   });
 };
 
+const sendAdvertisementNotificationEmail = (
+     email,
+     userName,
+     advertisementDetails,
+     advertisementLink,
+) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+
+     const subject = `New Advertisement Alert - Explore Now!`;
+     const introMessage = `
+  <p>Dear ${userName},</p>
+  <p>We're thrilled to inform you about a new advertisement from one of our vendors. Don't miss out on the latest offers!</p>
+  <p><strong>Advertisement Details:</strong></p>
+  <ul>
+       <li><strong>Product/Service:</strong> ${advertisementDetails.productService}</li>
+       <li><strong>Description:</strong> ${advertisementDetails.description}</li>
+  </ul>
+  <p>Click the button below to explore the advertisement:</p>
+  <a class="cta-button" href="${advertisementLink}">Explore Now</a>
+  `;
+
+     const mailOptions = {
+          from: "info@israelbiblecamp.com",
+          to: email,
+          subject: subject,
+          html: `
+       <!DOCTYPE html>
+       <html>
+       <head>
+            <style>
+                 /* CSS styles for the email template */
+                 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+                 body {
+                      font-family: 'Montserrat', Arial, sans-serif;
+                      line-height: 1.6;
+                 }
+                 .container {
+                      max-width: 600px;
+                      margin: 0 auto;
+                      padding: 20px;
+                      background-color: #f5f5f5;
+                      border-radius: 5px;
+                 }
+                 .header {
+                      text-align: center;
+                      margin-bottom: 20px;
+                 }
+                 .message {
+                      margin-bottom: 20px;
+                      background-color: #ffffff;
+                      padding: 20px;
+                      border-radius: 5px;
+                 }
+                 .highlight {
+                      font-weight: bold;
+                 }
+                 .footer {
+                      margin-top: 20px;
+                      text-align: center;
+                      font-size: 12px;
+                 }
+                 .logo {
+                      display: block;
+                      margin: 0 auto;
+                      max-width: 200px;
+                 }
+                 .cta-button {
+                      display: inline-block;
+                      margin-top: 20px;
+                      padding: 10px 20px;
+                      background-color: #007bff;
+                      color: #ffffff;
+                      text-decoration: none;
+                      border-radius: 5px;
+                 }
+                 .cta-button:hover {
+                      background-color: #0056b3;
+                 }
+            </style>
+       </head>
+       <body>
+            <div class="container">
+                 <div class="header">
+                      <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+                 </div>
+                 <div class="message">
+                      ${introMessage}
+                 </div>
+                 <div class="footer">
+                      <p style="color: #777777;">This email was sent by [Your Company Name]. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+                 </div>
+            </div>
+       </body>
+       </html>       
+       `,
+     };
+
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Advertisement Notification Email sent: " + info.response);
+          }
+     });
+};
+
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
@@ -1874,20 +2206,23 @@ const calculateThreeWeeksLater = (nextDay) => {
 };
 
 module.exports = {
-  sendOnboardingEmail,
-  sendTrialEndReminderEmail,
-  sendTrialExtensionEmail,
-  sendSubscriptionEmail,
-  sendSubscriptionExpiredEmail,
-  sendCouponEmail,
-  sendRatingMail,
-  formatDate,
-  reminderJob,
-  scheduleUserDisablingCronJob,
-  sendWelcomeEmail,
-  sendForgotPasswordEmail,
-  sendAdminMessage,
-  sendVendorMessage,
-  publishServiceItemsCronJob,
-  sendSubscriptionCancelEmail
+     sendOnboardingEmail,
+     sendAdminWelcomeMail,
+     sendAdminResetPasswordMail,
+     sendTrialEndReminderEmail,
+     sendTrialExtensionEmail,
+     sendSubscriptionEmail,
+     sendSubscriptionExpiredEmail,
+     sendCouponEmail,
+     sendRatingMail,
+     formatDate,
+     sendAdvertisementNotificationEmail,
+     reminderJob,
+     scheduleUserDisablingCronJob,
+     sendWelcomeEmail,
+     sendForgotPasswordEmail,
+     sendAdminMessage,
+     sendVendorMessage,
+     publishServiceItemsCronJob,
+     sendSubscriptionCancelEmail,
 };
