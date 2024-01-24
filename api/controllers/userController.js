@@ -572,6 +572,7 @@ exports.updateUserDetails = async (req, res) => {
                email: req.body.email,
                phone: req.body?.phone,
                image: req.body?.image,
+               sales_opt_in: req.body?.sales_opt_in,
           };
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
@@ -604,6 +605,7 @@ exports.updateUserDetails = async (req, res) => {
                email: updatedUser.email,
                role: updatedUser.role,
                company: updatedUser.company,
+               sales_opt_in: updatedUser.sales_opt_in,
           };
 
           res.status(200).json({ user: userWithoutPassword, company, status: true });
