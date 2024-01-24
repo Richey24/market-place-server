@@ -50,7 +50,13 @@ const adminSchema = mongoose.Schema({
      role: {
           type: String,
           default: ADMIN_ROLE.BasicAdmin,
-          enum: [ADMIN_ROLE.BasicAdmin, ADMIN_ROLE.OperationsAdmin, ADMIN_ROLE.SuperAdmin],
+          enum: [
+               ADMIN_ROLE.BasicAdmin,
+               ADMIN_ROLE.OperationsAdmin,
+               ADMIN_ROLE.SuperAdmin,
+               ADMIN_ROLE.CustomerCare,
+               ADMIN_ROLE.EditorAdmin,
+          ],
           required: [true, "Please include user role"],
      },
      tokens: [
