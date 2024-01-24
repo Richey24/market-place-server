@@ -27,7 +27,7 @@ exports.register = async (req, res) => {
           // TODO: add tenant id to verify
           let user = await User.findOne({ email: req.body.email });
           // console.log("user", user);
-          if (req.body.role && user) {
+          if (req.body.role === "VENDOR" && user) {
                return res.status(409).json({
                     message: "email already in use",
                     status: false,
@@ -52,7 +52,7 @@ exports.register = async (req, res) => {
           }
 
           let partner_id;
-          if (!req.body.role) {
+          if (!req.body.role || req.body.role === "USER") {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
                          name: `${req.body.firstname ?? user?.firstname} ${
@@ -647,6 +647,41 @@ exports.updatePassword = async (req, res) => {
           };
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
           const updatedUser = await User.findByIdAndUpdate(req.userData._id, updatedUserData, {
+               new: true,
+          });
+
+          // Omit password from the updated user object before sending the response
+          const userWithoutPassword = {
+               _id: updatedUser._id,
+               firstname: updatedUser.firstname,
+               lastname: updatedUser.lastname,
+               email: updatedUser.email,
+               role: updatedUser.role,
+               company: updatedUser.company,
+          };
+
+          res.status(200).json({ user: userWithoutPassword, status: true });
+     } catch (error) {
+          console.log("Error updating user details:", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
+exports.updatePasswordCustomer = async (req, res) => {
+     try {
+          const user = await User.findById(req.body.userId);
+          if (req.body.oldPassword && !req.body.reset) {
+               const isPasswordMatch = await bcrypt.compare(req.body.oldPassword, user.password);
+               if (!isPasswordMatch) {
+                    return res.status(401).json({ message: "wrong old password" });
+               }
+          }
+          const password = await bcrypt.hash(req.body.password, 8);
+          const updatedUserData = {
+               password: password,
+          };
+          // Assuming you have a User model and a method like `updateUserById` to update a user by ID
+          const updatedUser = await User.findByIdAndUpdate(req.body.userId, updatedUserData, {
                new: true,
           });
 

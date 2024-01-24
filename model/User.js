@@ -46,7 +46,7 @@ const userSchema = mongoose.Schema({
      role: {
           type: String,
           default: USER_ROLE.USER,
-          enum: [USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.VENDOR],
+          enum: [USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.VENDOR, USER_ROLE.CUSTOMER],
           required: [true, "Please include user role"],
      },
      password: {
@@ -65,23 +65,23 @@ const userSchema = mongoose.Schema({
      },
      paid: {
           type: Boolean,
-          default: false
+          default: false,
      },
      subCanceled: {
           type: Boolean,
-          default: false
+          default: false,
      },
      expiryDate: {
-          type: Date
+          type: Date,
      },
      stripeID: {
-          type: String
+          type: String,
      },
      subscriptionID: {
-          type: String
+          type: String,
      },
      subscriptionPlan: {
-          type: String
+          type: String,
      },
      rated: {
           type: Array,
@@ -134,6 +134,29 @@ const userSchema = mongoose.Schema({
      company: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Company",
+     },
+     position: {
+          type: String,
+          required: [false, "Position is not required"],
+     },
+     address: {
+          type: String,
+     },
+     timeZone: {
+          type: String,
+     },
+     languages: [
+          {
+               type: String,
+          },
+     ],
+     skills: [
+          {
+               type: String,
+          },
+     ],
+     about: {
+          type: String,
      },
      tokens: [
           {
