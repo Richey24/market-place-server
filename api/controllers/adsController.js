@@ -12,6 +12,15 @@ class AdvertController {
 
      async create(req, res) {
           try {
+               const advertsCount = await advertService.findAll().length;
+               if (advertsCount >= 100) {
+                    return errorResponder(
+                         res,
+                         "Ad limit reached. Cannot create more adverts.",
+                         400,
+                    );
+               }
+
                const advertType = await advertService.findAdvertType(req.body.advertType);
                console.log(req.body);
                let targetUrl;
@@ -102,20 +111,19 @@ class AdvertController {
      }
 
      async findAll(req, res) {
-          console.log("advert");
           try {
                let adverts;
                if (req.query.advertType) {
-                    console.log({ type: req.query.advertType });
                     adverts = await advertService.findByType(req.query.advertType);
                } else {
                     adverts = await advertService.findAll();
                }
 
-               // Fetch details for each advertisement
+               const activeAdverts = adverts.filter((advert) => advert.status === "ACTIVE");
+
                const advertsWithDetails = await Promise.all(
-                    adverts.map(async (advert) => {
-                         const details = await getProductById(advert.productId); // Assuming productId is a property in each advert
+                    activeAdverts.map(async (advert) => {
+                         const details = await getProductById(advert.productId);
                          return { ...advert, details };
                     }),
                );
