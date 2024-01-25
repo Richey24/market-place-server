@@ -31,6 +31,9 @@ const eventSchema = mongoose.Schema({
     street: {
         type: String
     },
+    images: {
+        type: Array
+    }
 })
 
 const Event = mongoose.model('Event', eventSchema)
