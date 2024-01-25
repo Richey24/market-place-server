@@ -365,7 +365,7 @@ exports.adsCallback = async (req, res) => {
                                         description: advertisement.description,
                                    },
                               },
-                              advert.targetUrl,
+                              advertisement.targetUrl,
                          );
                     }
                }
