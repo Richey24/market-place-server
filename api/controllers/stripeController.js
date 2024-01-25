@@ -3,7 +3,10 @@ const StripeSession = require("../../model/StripeSession");
 const User = require("../../model/User");
 const Company = require("../../model/Company");
 const Advert = require("../../model/Advert");
-const { sendSubscriptionCancelEmail } = require("../../config/helpers");
+const {
+     sendSubscriptionCancelEmail,
+     sendAdvertisementNotificationEmail,
+} = require("../../config/helpers");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
@@ -229,11 +232,11 @@ exports.updateSubscription = async (req, res) => {
 
 exports.sendCancelEmail = (req, res) => {
      try {
-          const { email, name } = req.body;
-          if (!email || !name) {
+          const { email, name, token } = req.body;
+          if (!email || !name || !token) {
                return res.status(400).json({ message: "Send All required params" });
           }
-          sendSubscriptionCancelEmail(email, name);
+          sendSubscriptionCancelEmail(email, name, token);
           return res.status(200).json({ message: "subscription cancel mail sent successfully" });
      } catch (error) {
           res.status(500).json({ message: "An error occurred" });
@@ -328,8 +331,8 @@ exports.adsCallback = async (req, res) => {
                     const company = await Company.findOne({
                          "adsSubscription.sessionId": session.id,
                     });
-
                     const advertId = company.adsSubscription.advertId;
+                    const advert = Advert.findOne({ advertId });
 
                     if (advertId) {
                          const advertisement = await Advert.findById(advertId);
@@ -348,6 +351,22 @@ exports.adsCallback = async (req, res) => {
                     };
 
                     await company.save();
+
+                    const users = await User.find({ sales_opt_in: true });
+
+                    for (const user of users) {
+                         sendAdvertisementNotificationEmail(
+                              user.email,
+                              user.firstname,
+                              {
+                                   advertisementDetails: {
+                                        productService: advert.title,
+                                        description: advert.description,
+                                   },
+                              },
+                              advert.targetUrl,
+                         );
+                    }
                }
 
                break;

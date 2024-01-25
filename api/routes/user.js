@@ -17,7 +17,7 @@ router.put("/me", auth, userController.updateUserDetails);
 router.delete("/me", auth, userController.deleteAccount);
 router.put("/me/customer", userController.updateUserDetails);
 router.put("/update/password", auth, userController.updatePassword);
-router.put("/update/password/customer", userController.updatePassword);
+router.put("/update/password/customer", userController.updatePasswordCustomer);
 router.post("/forgot/password", userController.forgotPassword);
 router.post("/reset/password", userController.resetPassword);
 router.get("/customers/:companyId", userController.getCustomersByCompanyId);

@@ -139,6 +139,8 @@ const paymentRouter = require("./api/routes/payment");
 const { errorResponder } = require("./utils/http_responder");
 const carrier = require("./api/routes/carrier");
 const stripeRouter = require("./api/routes/stripe");
+const eventRouter = require("./api/routes/event");
+const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
 
@@ -159,6 +161,8 @@ app.use("/api/policy", policyRouter);
 app.use("/api/carrier", carrier);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/company", companyRoute);
+app.use("/api/event", eventRouter);
+app.use("/api/freelancer/payment", freelancePaymentRouter)
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
