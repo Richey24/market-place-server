@@ -1,5 +1,7 @@
 const express = require("express");
 const serviceController = require("../controllers/serviceController");
+const serviceOrder = require("../controllers/serviceOrderController");
+
 const router = express.Router();
 const multer = require("multer");
 const {
@@ -30,5 +32,10 @@ router.get("/cat/get/main", getMainCategory);
 router.post("/cat/get/first", getFirstSubCategory);
 router.post("/cat/get/second", getSecondSubCategory);
 router.delete("/delete/:id", serviceController.deleteService);
+
+router.post("/orders/create", serviceOrder.create);
+router.get("/orders/:customerId", serviceOrder.getCustomerOrders);
+router.get("/orders/", serviceOrder.getAllOrders);
+router.get("/orders/services/:customerId", serviceOrder.getOrderedServices);
 
 module.exports = router;
