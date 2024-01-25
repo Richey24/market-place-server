@@ -332,10 +332,11 @@ exports.adsCallback = async (req, res) => {
                          "adsSubscription.sessionId": session.id,
                     });
                     const advertId = company.adsSubscription.advertId;
-                    const advert = Advert.findOne({ advertId });
+
+                    let advertisement;
 
                     if (advertId) {
-                         const advertisement = await Advert.findById(advertId);
+                         advertisement = await Advert.findById(advertId);
 
                          if (advertisement) {
                               advertisement.status = "ACTIVE";
@@ -360,8 +361,8 @@ exports.adsCallback = async (req, res) => {
                               user.firstname,
                               {
                                    advertisementDetails: {
-                                        productService: advert.title,
-                                        description: advert.description,
+                                        productService: advertisement.title,
+                                        description: advertisement.description,
                                    },
                               },
                               advert.targetUrl,

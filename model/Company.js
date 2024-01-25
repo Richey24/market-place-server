@@ -84,27 +84,29 @@ const companySchema = mongoose.Schema({
           type: String,
      },
      selectedCarriers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Carrier" }],
-     adsSubscription: {
-          sessionId: {
-               type: String,
-               default: null,
+     adsSubscription: [
+          {
+               sessionId: {
+                    type: String,
+                    default: null,
+               },
+               subscriptionId: {
+                    type: String,
+                    default: null,
+               },
+               status: {
+                    type: String,
+                    default: null,
+               },
+               currentPeriodEnd: {
+                    type: Date,
+                    default: null,
+               },
+               advertId: {
+                    type: String,
+               },
           },
-          subscriptionId: {
-               type: String,
-               default: null,
-          },
-          status: {
-               type: String,
-               default: null,
-          },
-          currentPeriodEnd: {
-               type: Date,
-               default: null,
-          },
-          advertId: {
-               type: String,
-          },
-     },
+     ],
 });
 
 const Company = mongoose.model("Company", companySchema);
