@@ -1,7 +1,8 @@
 // Import required packages
 const mongoose = require("mongoose");
 const User = require("./model/User");
-const { Complain } = require("./model/Complain");
+const Service = require("./model/Service");
+const { default: algoliasearch } = require("algoliasearch");
 require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 
@@ -41,13 +42,27 @@ mongoose
 // }
 
 const addTime = async () => {
-     await Complain.updateMany(
-          {},
-          [{
-               $set: { createdDate: { $toDate: "$_id" } }
-          }]
-     )
-     console.log("worked");
+     try {
+          const services = await Service.find({})
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("service-title");
+          services.forEach((service) => {
+               index.search(service.title)
+                    .then(async ({ hits }) => {
+                         if (hits.length < 1) {
+                              await index.saveObject({ title: service.title }, {
+                                   autoGenerateObjectIDIfNotExist: true,
+                              });
+                         }
+                    })
+                    .catch((error) => {
+                         console.log(error);
+                    })
+          })
+          console.log("worked");
+     } catch (error) {
+          console.log(error);
+     }
 }
 
 
