@@ -6,6 +6,7 @@ const Advert = require("../../model/Advert");
 const {
      sendSubscriptionCancelEmail,
      sendAdvertisementNotificationEmail,
+     deleteUserData,
 } = require("../../config/helpers");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
@@ -184,7 +185,8 @@ exports.stripeVendorCallback = async (req, res) => {
                const session = event.data.object;
                const user = await User.findOne({ stripeID: session.customer });
                if (user) {
-                    await User.findOneAndUpdate({ stripeID: session.customer }, { paid: false });
+                    const company = await Company.findById(user.company)
+                    await deleteUserData(user._id, user.company, company.site, user.currentSiteType)
                     await Logger.create({
                          userID: user._id,
                          eventType: "customer.subscription.deleted",

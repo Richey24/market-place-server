@@ -2054,7 +2054,7 @@ const formatDate = (date) => {
   return formattedDate;
 };
 
-const deleteUserData = async (userId, companyId, siteId) => {
+const deleteUserData = async (userId, companyId, siteId, siteType) => {
   try {
     // Step 1: Find the user
     const user = await User.findById(userId);
@@ -2066,6 +2066,10 @@ const deleteUserData = async (userId, companyId, siteId) => {
     // Step 2: Delete associated advertisements (adverts) by their _id values
     if (siteId) {
       await Advert.deleteMany({ _id: { $in: siteId } });
+    }
+
+    if (siteType === "service") {
+      await Service.deleteMany({ userId: userId })
     }
 
     // Step 3: Find and delete the user's associated site if it exists
@@ -2225,4 +2229,5 @@ module.exports = {
   sendVendorMessage,
   publishServiceItemsCronJob,
   sendSubscriptionCancelEmail,
+  deleteUserData
 };
