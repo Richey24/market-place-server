@@ -367,10 +367,8 @@ exports.adsCallback = async (req, res) => {
                                    user.email,
                                    user.firstname,
                                    {
-                                        advertisementDetails: {
-                                             productService: advertisement?.title,
-                                             description: advertisement?.description,
-                                        },
+                                        productService: advertisement?.title,
+                                        description: advertisement?.description,
                                    },
                                    advertisement?.targetUrl,
                               );
