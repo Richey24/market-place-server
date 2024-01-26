@@ -331,47 +331,56 @@ exports.adsCallback = async (req, res) => {
                     const company = await Company.findOne({
                          "adsSubscription.sessionId": session.id,
                     });
-                    const advertId = company.adsSubscription.advertId;
 
-                    let advertisement;
+                    const subscriptionIndex = company.adsSubscription.findIndex(
+                         (sub) => sub.sessionId === session.id,
+                    );
 
-                    if (advertId) {
-                         advertisement = await Advert.findById(advertId);
+                    if (subscriptionIndex !== -1) {
+                         const subscription = company.adsSubscription[subscriptionIndex];
+                         let advertisement;
 
-                         if (advertisement) {
-                              advertisement.status = "ACTIVE";
-                              await advertisement.save();
+                         if (subscription.advertId) {
+                              advertisement = await Advert.findById(subscription.advertId);
+
+                              if (advertisement) {
+                                   advertisement.status = "ACTIVE";
+                                   await advertisement.save();
+                              }
                          }
-                    }
 
-                    company.adsSubscription = {
-                         sessionId: session.id,
-                         subscriptionId: session.payment_intent,
-                         status: "active",
-                         currentPeriodEnd: expiryDate,
-                    };
+                         // Update the specific subscription in the array
+                         company.adsSubscription[subscriptionIndex] = {
+                              ...company.adsSubscription[subscriptionIndex],
+                              sessionId: session.id,
+                              subscriptionId: session.payment_intent,
+                              status: "active",
+                              currentPeriodEnd: expiryDate,
+                         };
 
-                    await company.save();
+                         await company.save();
 
-                    const users = await User.find({ sales_opt_in: true });
+                         const users = await User.find({ sales_opt_in: true });
 
-                    for (const user of users) {
-                         sendAdvertisementNotificationEmail(
-                              user.email,
-                              user.firstname,
-                              {
-                                   advertisementDetails: {
-                                        productService: advertisement.title,
-                                        description: advertisement.description,
+                         for (const user of users) {
+                              sendAdvertisementNotificationEmail(
+                                   user.email,
+                                   user.firstname,
+                                   {
+                                        advertisementDetails: {
+                                             productService: advertisement?.title,
+                                             description: advertisement?.description,
+                                        },
                                    },
-                              },
-                              advertisement.targetUrl,
-                         );
+                                   advertisement?.targetUrl,
+                              );
+                         }
                     }
                }
 
                break;
           }
      }
+
      res.status(200).json({ message: "successful" });
 };
