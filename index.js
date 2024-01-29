@@ -10,6 +10,7 @@ const {
      reminderJob,
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
+     deleteEvent,
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -109,6 +110,7 @@ app.get("/odoo/test", async (req, res) => {
 reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
+deleteEvent()
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
