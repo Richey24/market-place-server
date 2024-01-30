@@ -19,6 +19,19 @@ const eventSchema = mongoose.Schema({
     noOfTicket: {
         type: String
     },
+    category: {
+        type: String,
+        enum: [
+            "Music",
+            "Nightlife",
+            "Performing & Visual Arts",
+            "Holidays",
+            "Health",
+            "Hobbies",
+            "Business",
+            "Food & Drink",
+        ]
+    },
     date: {
         type: Date
     },
