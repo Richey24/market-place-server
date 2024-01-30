@@ -11,6 +11,7 @@ const {
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
      disableExpiredAds,
+     deleteEvent,
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -111,6 +112,7 @@ reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
 disableExpiredAds();
+deleteEvent();
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");

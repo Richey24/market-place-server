@@ -3,6 +3,7 @@ const Company = require("../model/Company");
 const cron = require("node-cron");
 const User = require("../model/User");
 const Service = require("../model/Service");
+const Event = require("../model/Event");
 
 const sendOnboardingEmail = (email, name, type) => {
      const startDate = new Date();
@@ -2245,6 +2246,17 @@ const calculateThreeWeeksLater = (nextDay) => {
      return threeWeeksLater;
 };
 
+const deleteEvent = () => {
+     cron.schedule("0 0 * * *", async () => {
+          const events = await Event.find({});
+          events.forEach(async (event) => {
+               if (Date.now() > new Date(event.date).getTime()) {
+                    await Event.findByIdAndDelete(event._id);
+               }
+          });
+     });
+};
+
 module.exports = {
      sendOnboardingEmail,
      sendAdminWelcomeMail,
@@ -2267,4 +2279,5 @@ module.exports = {
      sendSubscriptionCancelEmail,
      deleteUserData,
      disableExpiredAds,
+     deleteEvent,
 };
