@@ -86,6 +86,7 @@ const companySchema = mongoose.Schema({
      selectedCarriers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Carrier" }],
      adsSubscription: [
           {
+               _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
                sessionId: {
                     type: String,
                     default: null,
