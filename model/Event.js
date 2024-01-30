@@ -19,6 +19,13 @@ const eventSchema = mongoose.Schema({
     noOfTicket: {
         type: String
     },
+    status: {
+        type: String,
+        enum: [
+            "paid",
+            "free"
+        ]
+    },
     category: {
         type: String,
         enum: [
