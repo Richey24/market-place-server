@@ -60,6 +60,21 @@ exports.getAllEvent = async (req, res) => {
     }
 }
 
+exports.searchEvent = async (req, res) => {
+    try {
+        const body = req.body;
+        const keys = Object.keys(body);
+        const obj = {};
+        keys.forEach((key) => {
+            obj[key] = { $regex: body[key], $options: "i" };
+        });
+        const events = await Event.find(obj)
+        res.status(200).json(events)
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", status: false });
+    }
+}
+
 exports.deleteEvent = async (req, res) => {
     try {
         const id = req.params.id
