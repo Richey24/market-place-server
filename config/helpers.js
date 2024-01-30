@@ -3,6 +3,7 @@ const Company = require("../model/Company");
 const cron = require("node-cron");
 const User = require("../model/User");
 const Service = require("../model/Service");
+const Event = require("../model/Event");
 
 const sendOnboardingEmail = (email, name, type) => {
   const startDate = new Date();
@@ -61,7 +62,7 @@ const sendOnboardingEmail = (email, name, type) => {
   }
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: subject,
     html: `
@@ -215,7 +216,7 @@ const sendWelcomeEmail = (email, name, type) => {
   }
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: subject,
     html: `
@@ -327,7 +328,7 @@ const sendAdminResetPasswordMail = (email, name, adminId, token, url) => {
 `;
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: subject,
     html: `
@@ -438,7 +439,7 @@ const sendAdminWelcomeMail = (email, name, adminId, token, url) => {
 `;
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: subject,
     html: `
@@ -559,7 +560,7 @@ const sendTrialEndReminderEmail = (email, name, company_id, type) => {
   }
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: subject,
     html: `
@@ -715,7 +716,7 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
   }
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: subject,
     html: `
@@ -825,7 +826,7 @@ const sendSubscriptionEmail = (email, name) => {
     },
   });
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Thank You for Subscribing to Our Service",
     html: `
@@ -934,7 +935,7 @@ const sendSubscriptionExpiredEmail = (email, name) => {
     },
   });
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Subscription Expired or Canceled",
     html: `
@@ -1040,7 +1041,7 @@ const sendCouponEmail = (email, name) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "FREE Ads Code: Supercharge Your Sales Today!",
     html: `
@@ -1159,7 +1160,7 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Reset Password",
     html: `
@@ -1270,7 +1271,7 @@ const sendSubscriptionReminderEmail = (email, name, trialEndDate) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Reminder: Subscription Required to Keep Your Account Active",
     html: `
@@ -1395,7 +1396,7 @@ const sendAccountDisablingReminderEmail = (email, name, trialEndDate) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Important: Your Account Will Be Disabled Tomorrow",
     html: `
@@ -1503,7 +1504,7 @@ const sendSubscriptionCancelEmail = (email, name, token) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Your Subscription - Let's Talk",
     html: `
@@ -1613,7 +1614,7 @@ const sendAdminMessage = (email, name, message) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: "Important: New Message From Admin",
     html: `
@@ -1712,7 +1713,7 @@ const sendVendorMessage = (email, name, message, orderID) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: `Important: New Message Regarding Your Order: ${orderID}`,
     html: `
@@ -1812,7 +1813,7 @@ const sendRatingMail = (email, name, url, product) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: email,
     subject: `Your Order ${product._id} - Please rate the products you purchased!`,
     html: `
@@ -1932,23 +1933,23 @@ const sendRatingMail = (email, name, url, product) => {
 };
 
 const sendAdvertisementNotificationEmail = (
-     email,
-     userName,
-     advertisementDetails,
-     advertisementLink,
+  email,
+  userName,
+  advertisementDetails,
+  advertisementLink,
 ) => {
-     const transporter = nodemailer.createTransport({
-          host: "smtp.office365.com",
-          port: 587,
-          secure: false,
-          auth: {
-               user: process.env.EMAIL,
-               pass: process.env.PASSWORD,
-          },
-     });
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
 
-     const subject = `New Advertisement Alert - Explore Now!`;
-     const introMessage = `
+  const subject = `New Advertisement Alert - Explore Now!`;
+  const introMessage = `
   <p>Dear ${userName},</p>
   <p>We're thrilled to inform you about a new advertisement from one of our vendors. Don't miss out on the latest offers!</p>
   <p><strong>Advertisement Details:</strong></p>
@@ -1960,11 +1961,11 @@ const sendAdvertisementNotificationEmail = (
   <a class="cta-button" href="${advertisementLink}">Explore Now</a>
   `;
 
-     const mailOptions = {
-          from: "info@israelbiblecamp.com",
-          to: email,
-          subject: subject,
-          html: `
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: subject,
+    html: `
        <!DOCTYPE html>
        <html>
        <head>
@@ -2035,15 +2036,15 @@ const sendAdvertisementNotificationEmail = (
        </body>
        </html>       
        `,
-     };
+  };
 
-     transporter.sendMail(mailOptions, function (error, info) {
-          if (error) {
-               console.log(error);
-          } else {
-               console.log("Advertisement Notification Email sent: " + info.response);
-          }
-     });
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Advertisement Notification Email sent: " + info.response);
+    }
+  });
 };
 
 const formatDate = (date) => {
@@ -2054,7 +2055,7 @@ const formatDate = (date) => {
   return formattedDate;
 };
 
-const deleteUserData = async (userId, companyId, siteId) => {
+const deleteUserData = async (userId, companyId, siteId, siteType) => {
   try {
     // Step 1: Find the user
     const user = await User.findById(userId);
@@ -2066,6 +2067,10 @@ const deleteUserData = async (userId, companyId, siteId) => {
     // Step 2: Delete associated advertisements (adverts) by their _id values
     if (siteId) {
       await Advert.deleteMany({ _id: { $in: siteId } });
+    }
+
+    if (siteType === "service") {
+      await Service.deleteMany({ userId: userId })
     }
 
     // Step 3: Find and delete the user's associated site if it exists
@@ -2205,24 +2210,37 @@ const calculateThreeWeeksLater = (nextDay) => {
   return threeWeeksLater;
 };
 
+const deleteEvent = () => {
+  cron.schedule("0 0 * * *", async () => {
+    const events = await Event.find({})
+    events.forEach(async (event) => {
+      if (Date.now() > new Date(event.date).getTime()) {
+        await Event.findByIdAndDelete(event._id)
+      }
+    })
+  })
+}
+
 module.exports = {
-     sendOnboardingEmail,
-     sendAdminWelcomeMail,
-     sendAdminResetPasswordMail,
-     sendTrialEndReminderEmail,
-     sendTrialExtensionEmail,
-     sendSubscriptionEmail,
-     sendSubscriptionExpiredEmail,
-     sendCouponEmail,
-     sendRatingMail,
-     formatDate,
-     sendAdvertisementNotificationEmail,
-     reminderJob,
-     scheduleUserDisablingCronJob,
-     sendWelcomeEmail,
-     sendForgotPasswordEmail,
-     sendAdminMessage,
-     sendVendorMessage,
-     publishServiceItemsCronJob,
-     sendSubscriptionCancelEmail,
+  sendOnboardingEmail,
+  sendAdminWelcomeMail,
+  sendAdminResetPasswordMail,
+  sendTrialEndReminderEmail,
+  sendTrialExtensionEmail,
+  sendSubscriptionEmail,
+  sendSubscriptionExpiredEmail,
+  sendCouponEmail,
+  sendRatingMail,
+  formatDate,
+  sendAdvertisementNotificationEmail,
+  reminderJob,
+  scheduleUserDisablingCronJob,
+  sendWelcomeEmail,
+  sendForgotPasswordEmail,
+  sendAdminMessage,
+  sendVendorMessage,
+  publishServiceItemsCronJob,
+  sendSubscriptionCancelEmail,
+  deleteUserData,
+  deleteEvent
 };

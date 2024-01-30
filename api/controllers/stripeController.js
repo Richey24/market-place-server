@@ -6,6 +6,7 @@ const Advert = require("../../model/Advert");
 const {
      sendSubscriptionCancelEmail,
      sendAdvertisementNotificationEmail,
+     deleteUserData,
 } = require("../../config/helpers");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
@@ -184,7 +185,8 @@ exports.stripeVendorCallback = async (req, res) => {
                const session = event.data.object;
                const user = await User.findOne({ stripeID: session.customer });
                if (user) {
-                    await User.findOneAndUpdate({ stripeID: session.customer }, { paid: false });
+                    const company = await Company.findById(user.company)
+                    await deleteUserData(user._id, user.company, company.site, user.currentSiteType)
                     await Logger.create({
                          userID: user._id,
                          eventType: "customer.subscription.deleted",
@@ -331,46 +333,54 @@ exports.adsCallback = async (req, res) => {
                     const company = await Company.findOne({
                          "adsSubscription.sessionId": session.id,
                     });
-                    const advertId = company.adsSubscription.advertId;
-                    const advert = Advert.findOne({ advertId });
 
-                    if (advertId) {
-                         const advertisement = await Advert.findById(advertId);
+                    const subscriptionIndex = company.adsSubscription.findIndex(
+                         (sub) => sub.sessionId === session.id,
+                    );
 
-                         if (advertisement) {
-                              advertisement.status = "ACTIVE";
-                              await advertisement.save();
+                    if (subscriptionIndex !== -1) {
+                         const subscription = company.adsSubscription[subscriptionIndex];
+                         let advertisement;
+
+                         if (subscription.advertId) {
+                              advertisement = await Advert.findById(subscription.advertId);
+
+                              if (advertisement) {
+                                   advertisement.status = "ACTIVE";
+                                   await advertisement.save();
+                              }
                          }
-                    }
 
-                    company.adsSubscription = {
-                         sessionId: session.id,
-                         subscriptionId: session.payment_intent,
-                         status: "active",
-                         currentPeriodEnd: expiryDate,
-                    };
+                         // Update the specific subscription in the array
+                         company.adsSubscription[subscriptionIndex] = {
+                              ...company.adsSubscription[subscriptionIndex],
+                              sessionId: session.id,
+                              subscriptionId: session.payment_intent,
+                              status: "active",
+                              currentPeriodEnd: expiryDate,
+                         };
 
-                    await company.save();
+                         await company.save();
 
-                    const users = await User.find({ sales_opt_in: true });
+                         const users = await User.find({ sales_opt_in: true });
 
-                    for (const user of users) {
-                         sendAdvertisementNotificationEmail(
-                              user.email,
-                              user.firstname,
-                              {
-                                   advertisementDetails: {
-                                        productService: advert.title,
-                                        description: advert.description,
+                         for (const user of users) {
+                              sendAdvertisementNotificationEmail(
+                                   user.email,
+                                   user.firstname,
+                                   {
+                                        productService: advertisement?.title,
+                                        description: advertisement?.description,
                                    },
-                              },
-                              advert.targetUrl,
-                         );
+                                   advertisement?.targetUrl,
+                              );
+                         }
                     }
                }
 
                break;
           }
      }
+
      res.status(200).json({ message: "successful" });
 };
