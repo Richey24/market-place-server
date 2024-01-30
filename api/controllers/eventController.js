@@ -1,17 +1,27 @@
+const { default: algoliasearch } = require("algoliasearch");
 const Event = require("../../model/Event");
 
 
 exports.createEvent = async (req, res) => {
-    try {
-        const body = req.body
-        if (!body.name || !body.email) {
-            return res.status(400).json({ message: "Send all required parameter" })
-        }
-        const event = await Event.create(body)
-        res.status(200).json(event)
-    } catch (error) {
-        res.status(500).json({ message: "Internal server error", status: false });
+    // try {
+    const body = req.body
+    if (!body.name || !body.email) {
+        return res.status(400).json({ message: "Send all required parameter" })
     }
+    const event = await Event.create(body)
+    const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+    const index = client.initIndex("ishop-event");
+    index.search(body.name).then(async ({ hits }) => {
+        if (hits.length < 1) {
+            await index.saveObject({ name: body.name, description: body.description }, {
+                autoGenerateObjectIDIfNotExist: true,
+            });
+        }
+    });
+    res.status(200).json(event)
+    // } catch (error) {
+    //     res.status(500).json({ message: "Internal server error", status: false });
+    // }
 }
 
 exports.updateEvent = async (req, res) => {
