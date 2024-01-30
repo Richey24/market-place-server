@@ -17,19 +17,19 @@ exports.createService = async (req, res) => {
           if (!user) {
                return res.status(400).json({ message: "Send userId", status: false });
           }
-          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
-          const index = client.initIndex("service-title");
-          index.search(req.body.title).then(async ({ hits }) => {
-               if (hits.length < 1) {
-                    await index.saveObject(req.body.title, {
-                         autoGenerateObjectIDIfNotExist: true,
-                    });
-               }
-          });
           const result = await Service.create({
                ...req.body,
                userId: user._id,
                email: user?.email,
+          });
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("service-title");
+          index.search(req.body.title).then(async ({ hits }) => {
+               if (hits.length < 1) {
+                    await index.saveObject({ title: req.body.title }, {
+                         autoGenerateObjectIDIfNotExist: true,
+                    });
+               }
           });
           //   await ServiceThirdCat.findOneAndUpdate({ name: serviceType }, { $inc: { count: 1 } });
           res.status(201).json({ result, status: true });
