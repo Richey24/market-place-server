@@ -269,6 +269,18 @@ exports.stripeCheckout = async (req, res) => {
 
 const stripeSession = async (req) => {
      try {
+          const queryType = req.query.type;
+
+          // Define the success and cancel URLs based on the query type
+          let successUrl, cancelUrl;
+          if (queryType === "even") {
+               successUrl = `${YOUR_DOMAIN}/success-path-for-event`;
+               cancelUrl = `${YOUR_DOMAIN}/cancel-path-for-event`;
+          } else {
+               successUrl = `${YOUR_DOMAIN}/promotions/ads?success=true`;
+               cancelUrl = `${YOUR_DOMAIN}/promotions/ads?success=false`;
+          }
+
           const session = await stripe.checkout.sessions.create({
                mode: "payment",
                payment_method_types: ["card"],
