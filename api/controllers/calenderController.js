@@ -34,7 +34,7 @@ exports.getCalenderByUserID = async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: "Send ID" })
         }
-        const results = await Calender.find({})
+        const results = await Calender.find({ userID: id })
         res.status(200).json(results)
     } catch (error) {
         res.status(500).json({ message: "Internal server error", status: false });
