@@ -4,8 +4,6 @@ const User = require("../../model/User");
 
 // POST a new service order
 exports.create = async (req, res) => {
-     // Destructuring the request body to match the schema
-
      try {
           const { service, customer, price } = req.body;
 
@@ -19,6 +17,98 @@ exports.create = async (req, res) => {
           res.status(201).json({ savedOrder, status: true });
      } catch (err) {
           res.status(400).json({ message: err.message });
+     }
+};
+
+exports.deliver = async (req, res) => {
+     const orderId = req.params.orderId;
+
+     try {
+          let order = await ServiceOrder.findById(orderId);
+
+          if (!order) {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
+
+          if (order.status === "delivered") {
+               return res
+                    .status(400)
+                    .json({ message: "Order is already delivered", status: false });
+          }
+
+          order.status = "delivered";
+          order.deliveredDate = new Date();
+
+          await order.save();
+
+          res.json({ message: "Service delivered successfully", status: true, order });
+     } catch (err) {
+          res.status(500).json({ message: err.message, status: false });
+     }
+};
+
+exports.continue = async (req, res) => {
+     const orderId = req.params.orderId;
+
+     try {
+          let order = await ServiceOrder.findById(orderId);
+
+          if (!order) {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
+
+          if (order.status !== "on hold") {
+               return res.status(400).json({ message: "Order is not on hold", status: false });
+          }
+
+          order.status = "in progress";
+
+          await order.save();
+
+          res.json({ message: "Service continued successfully", status: true, order });
+     } catch (err) {
+          res.status(500).json({ message: err.message, status: false });
+     }
+};
+
+exports.hold = async (req, res) => {
+     const orderId = req.params.orderId;
+
+     try {
+          let order = await ServiceOrder.findById(orderId);
+
+          if (!order) {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
+
+          order.status = "on hold";
+
+          await order.save();
+
+          res.json({ message: "Service put on hold successfully", status: true, order });
+     } catch (err) {
+          res.status(500).json({ message: err.message, status: false });
+     }
+};
+
+exports.start = async (req, res) => {
+     const orderId = req.params.orderId;
+
+     try {
+          let order = await ServiceOrder.findById(orderId);
+
+          if (!order) {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
+
+          order.startDate = new Date();
+          order.status = "in progress";
+
+          await order.save();
+
+          res.json({ message: "Service started successfully", status: true, order });
+     } catch (err) {
+          res.status(500).json({ message: err.message, status: false });
      }
 };
 
@@ -84,7 +174,6 @@ exports.getOneServiceOrder = async (req, res) => {
      }
 };
 
-
 exports.getOrderedServicesByVendors = async (req, res) => {
      try {
           let user = req.userData;
@@ -147,5 +236,52 @@ exports.getWishlist = async (req, res) => {
           res.json({ wishlist: user.serviceWishlist, status: true });
      } catch (err) {
           res.status(500).send(err.message);
+     }
+};
+
+exports.markAsPaid = async (req, res) => {
+     try {
+          const { orderId } = req.params;
+          const order = await ServiceOrder.findById(orderId);
+
+          if (!order) {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
+
+          order.paymentStatus = "paid";
+          order.paymentDate = new Date();
+          await order.save();
+
+          res.status(200).json({ message: "Payment status updated to paid", status: true, order });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.confirmPayment = async (req, res) => {
+     try {
+          const { orderId } = req.params;
+          const order = await ServiceOrder.findById(orderId);
+
+          if (!order) {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
+
+          if (order.paymentStatus === "paid") {
+               order.paymentStatus = "confirmed";
+               await order.save();
+               res.status(200).json({
+                    message: "Payment confirmed by vendor",
+                    status: true,
+                    order,
+               });
+          } else {
+               res.status(400).json({
+                    message: "Payment not marked as paid by admin",
+                    status: false,
+               });
+          }
+     } catch (err) {
+          res.status(500).json({ message: err.message });
      }
 };

@@ -27,9 +27,12 @@ exports.createService = async (req, res) => {
           const index = client.initIndex("service-title");
           index.search(req.body.title).then(async ({ hits }) => {
                if (hits.length < 1) {
-                    await index.saveObject({ title: req.body.title }, {
-                         autoGenerateObjectIDIfNotExist: true,
-                    });
+                    await index.saveObject(
+                         { title: req.body.title },
+                         {
+                              autoGenerateObjectIDIfNotExist: true,
+                         },
+                    );
                }
           });
           //   await ServiceThirdCat.findOneAndUpdate({ name: serviceType }, { $inc: { count: 1 } });
@@ -98,6 +101,7 @@ exports.toggleServiceAvailability = async (req, res) => {
           res.status(500).json({ err, status: false });
      }
 };
+
 exports.getAllService = async (req, res) => {
      try {
           const result = await Service.find({});
@@ -215,3 +219,4 @@ exports.rateService = async (req, res) => {
           res.status(500).json({ err, status: false });
      }
 };
+
