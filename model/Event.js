@@ -32,6 +32,10 @@ const eventSchema = mongoose.Schema({
                "Food & Drink",
           ],
      },
+     status: {
+          type: String,
+          enum: ["paid", "free"],
+     },
      date: {
           type: Date,
      },
