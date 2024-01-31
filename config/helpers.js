@@ -3,34 +3,35 @@ const Company = require("../model/Company");
 const cron = require("node-cron");
 const User = require("../model/User");
 const Service = require("../model/Service");
+const Event = require("../model/Event");
 
 const sendOnboardingEmail = (email, name, type) => {
-  const startDate = new Date();
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 14);
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+     const startDate = new Date();
+     const endDate = new Date();
+     endDate.setDate(endDate.getDate() + 14);
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  let subject, introMessage, benefitsMessage;
+     let subject, introMessage, benefitsMessage;
 
-  if (type === "ecommerce") {
-    subject = "Welcome to Our IMarketplace - Your Free Trial Period!";
-    introMessage = `
+     if (type === "ecommerce") {
+          subject = "Welcome to Our IMarketplace - Your Free Trial Period!";
+          introMessage = `
             <p>We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.</p>
             <p>We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way. That is why we are delighted to offer you a free two-week trial period to set up and review your ecommerce store.</p>
             <p>During this trial period, you will have ample time to familiarize yourself with our platform, showcase your products, and ensure that your store is a true reflection of your brand.</p>
        `;
-    benefitsMessage = `
+          benefitsMessage = `
             <p><span class="highlight">Benefits of the Trial Period:</span></p>
             <ul>
               <li>Opportunity to create and customize your ecommerce store.</li>
@@ -41,13 +42,13 @@ const sendOnboardingEmail = (email, name, type) => {
               <li>Evaluate the effectiveness of our platform for your business.</li>
             </ul>
        `;
-  } else if (type === "service") {
-    subject = "Welcome to ImarketPlace Service - Your Free Trial Period!";
-    introMessage = `
+     } else if (type === "service") {
+          subject = "Welcome to ImarketPlace Service - Your Free Trial Period!";
+          introMessage = `
             <p>We are thrilled to welcome you to ImarketPlace Service, your partner in success and empowerment.</p>
             <p>Starting today, you have a free two-week trial period to explore the benefits of our consulting services. Take this time to set up your account, familiarize yourself with our expert consultants, and discover how Breaking Black can support and elevate your journey.</p>
        `;
-    benefitsMessage = `
+          benefitsMessage = `
             <p><span class="highlight">Benefits of Registering with ImarketPlace:</span></p>
             <ul>
               <li>Access to a team of experienced and diverse consultants.</li>
@@ -58,13 +59,13 @@ const sendOnboardingEmail = (email, name, type) => {
               <li>Regular updates on industry trends, diversity, and inclusion initiatives.</li>
             </ul>
        `;
-  }
+     }
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: subject,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: subject,
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -124,8 +125,9 @@ const sendOnboardingEmail = (email, name, type) => {
         <div class="container">
           <div class="header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Welcome as a New ${type === "ecommerce" ? "Vendor" : "Member"
-      }!</h1>
+            <h1 style="color: #333333;">Welcome as a New ${
+                 type === "ecommerce" ? "Vendor" : "Member"
+            }!</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
@@ -155,38 +157,38 @@ const sendOnboardingEmail = (email, name, type) => {
       </body>
       </html>
     `,
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendWelcomeEmail = (email, name, type) => {
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 14);
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+     const endDate = new Date();
+     endDate.setDate(endDate.getDate() + 14);
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  let subject, introMessage;
+     let subject, introMessage;
 
-  if (type === "ecommerce") {
-    subject = "Welcome to Our IMarketplace";
-    introMessage = `
+     if (type === "ecommerce") {
+          subject = "Welcome to Our IMarketplace";
+          introMessage = `
       <p>We are thrilled to welcome you as a new vendor on our vibrant and dynamic ecommerce marketplace.</p>
       <p>We understand that getting started in a new marketplace can be both thrilling and challenging, and we want to support you every step of the way.</p>
       <p>Here are some key benefits of joining our platform:</p>
@@ -199,9 +201,9 @@ const sendWelcomeEmail = (email, name, type) => {
         <li>Evaluate the effectiveness of our platform for your business.</li>
       </ul>
     `;
-  } else if (type === "service") {
-    subject = "Welcome to Our ImarketPlace Service Platform";
-    introMessage = `
+     } else if (type === "service") {
+          subject = "Welcome to Our ImarketPlace Service Platform";
+          introMessage = `
       <p>We are excited to welcome you to our service platform, where talented individuals like yourself connect and collaborate on various projects.</p>
       <p>As a member, you'll enjoy:</p>
       <ul>
@@ -212,13 +214,13 @@ const sendWelcomeEmail = (email, name, type) => {
         <li>A supportive community of freelancers and clients.</li>
       </ul>
     `;
-  }
+     }
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: subject,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: subject,
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -278,8 +280,9 @@ const sendWelcomeEmail = (email, name, type) => {
         <div class="container">
           <div class="header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Welcome as a New ${type === "ecommerce" ? "Vendor" : "Member"
-      }!</h1>
+            <h1 style="color: #333333;">Welcome as a New ${
+                 type === "ecommerce" ? "Vendor" : "Member"
+            }!</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
@@ -296,41 +299,41 @@ const sendWelcomeEmail = (email, name, type) => {
       </body>
       </html>       
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendAdminResetPasswordMail = (email, name, adminId, token, url) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-  let subject, introMessage;
-  let resetLink = `${url}/change-password/${adminId}?token=${token}`;
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     let subject, introMessage;
+     let resetLink = `${url}/change-password/${adminId}?token=${token}`;
 
-  subject = `Welcome ${name} to ImarketPlace Admin Service - The Guardians of Our Digital Realm!`;
-  introMessage = `
+     subject = `Welcome ${name} to ImarketPlace Admin Service - The Guardians of Our Digital Realm!`;
+     introMessage = `
 <a href="${resetLink}"><p>Click here to reset your password </p></a>
 `;
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: subject,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: subject,
+          html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -406,42 +409,42 @@ ${introMessage}
 </body>
 </html>       
 `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Admin Welcome Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Admin Welcome Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendAdminWelcomeMail = (email, name, adminId, token, url) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-  let subject, introMessage;
-  let resetLink = `${url}/change-password/${adminId}?token=${token}`;
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     let subject, introMessage;
+     let resetLink = `${url}/change-password/${adminId}?token=${token}`;
 
-  subject = `Welcome ${name} to ImarketPlace Admin Service - The Guardians of Our Digital Realm!`;
-  introMessage = `
+     subject = `Welcome ${name} to ImarketPlace Admin Service - The Guardians of Our Digital Realm!`;
+     introMessage = `
 <p>We are thrilled to welcome you as a new admin member on our vibrant and dynamic ecommerce marketplace.</p>
 <a href="${resetLink}"><p>Click here to set up your password </p></a>
 `;
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: subject,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: subject,
+          html: `
 <!DOCTYPE html>
 <html>
 <head>
@@ -517,52 +520,52 @@ const sendAdminWelcomeMail = (email, name, adminId, token, url) => {
 </body>
 </html>       
 `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Admin Welcome Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Admin Welcome Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendTrialEndReminderEmail = (email, name, company_id, type) => {
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 14);
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
-  const extensionLink = `https://market-server.azurewebsites.net/api/trial?company_id=${company_id}`;
+     const endDate = new Date();
+     endDate.setDate(endDate.getDate() + 14);
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+     const extensionLink = `https://market-server.azurewebsites.net/api/trial?company_id=${company_id}`;
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  let subject, trialType, introMessage;
+     let subject, trialType, introMessage;
 
-  if (type === "ecommerce") {
-    subject = "Reminder: Your Trial Period Ends Soon";
-    trialType = "ecommerce marketplace";
-    introMessage = `<p>We wanted to remind you that your trial period on our vibrant and dynamic ${trialType} is ending soon.</p>`;
-  } else if (type === "service") {
-    subject = "Reminder: Your Trial Period Ends Soon";
-    trialType = "iMarketplace Service";
-    introMessage = `<p>We wanted to remind you that your trial period for our ${trialType} is ending soon.</p>`;
-  }
+     if (type === "ecommerce") {
+          subject = "Reminder: Your Trial Period Ends Soon";
+          trialType = "ecommerce marketplace";
+          introMessage = `<p>We wanted to remind you that your trial period on our vibrant and dynamic ${trialType} is ending soon.</p>`;
+     } else if (type === "service") {
+          subject = "Reminder: Your Trial Period Ends Soon";
+          trialType = "iMarketplace Service";
+          introMessage = `<p>We wanted to remind you that your trial period for our ${trialType} is ending soon.</p>`;
+     }
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: subject,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: subject,
+          html: `
        <!DOCTYPE html>
        <html>
        <head>
@@ -641,38 +644,38 @@ const sendTrialEndReminderEmail = (email, name, company_id, type) => {
        </body>
        </html>                   
     `,
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
-  const endDate = new Date();
-  endDate.setDate(endDate.getDate() + 14);
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+     const endDate = new Date();
+     endDate.setDate(endDate.getDate() + 14);
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  let subject, introMessage, benefitsMessage;
+     let subject, introMessage, benefitsMessage;
 
-  if (type === "ecommerce") {
-    subject = "Your Free Trial Period Has Been Extended!";
-    introMessage = `
+     if (type === "ecommerce") {
+          subject = "Your Free Trial Period Has Been Extended!";
+          introMessage = `
             <p>We hope you're enjoying your trial period on our vibrant and dynamic ecommerce marketplace.</p>
             <p>We're excited to inform you that your trial period has been extended by 7 days. You now have additional time to explore our platform, showcase your products, and familiarize yourself with all the features and tools we offer.</p>
             <p>Please note the updated trial end date:</p>
@@ -680,7 +683,7 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
               <li><span class="highlight">Trial End Date:</span> ${formattedDate(trialEndDate)}</li>
             </ul>
        `;
-    benefitsMessage = `
+          benefitsMessage = `
             <p><span class="highlight">Benefits of the Extended Trial Period:</span></p>
             <ul>
               <li>Opportunity to create and customize your ecommerce store.</li>
@@ -691,9 +694,9 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
               <li>Evaluate the effectiveness of our platform for your business.</li>
             </ul>
        `;
-  } else if (type === "service") {
-    subject = "Your Free Trial Period Has Been Extended!";
-    introMessage = `
+     } else if (type === "service") {
+          subject = "Your Free Trial Period Has Been Extended!";
+          introMessage = `
             <p>We hope you're enjoying your trial period with iMarketplace Service, your partner in success and empowerment.</p>
             <p>We're excited to inform you that your trial period has been extended by 7 days. You now have additional time to explore the benefits of our service, connect with our team, and make the most of the resources available to you.</p>
             <p>Please note the updated trial end date:</p>
@@ -701,7 +704,7 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
               <li><span class="highlight">Trial End Date:</span> ${formattedDate(trialEndDate)}</li>
             </ul>
        `;
-    benefitsMessage = `
+          benefitsMessage = `
             <p><span class="highlight">Benefits of the Extended Trial Period with iMarketplace Service:</span></p>
             <ul>
               <li>Access to a team of experienced and dedicated professionals.</li>
@@ -712,13 +715,13 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
               <li>Regular updates on industry trends and business insights.</li>
             </ul>
        `;
-  }
+     }
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: subject,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: subject,
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -803,32 +806,32 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
       </body>
       </html>        
  `,
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendSubscriptionEmail = (email, name) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Thank You for Subscribing to Our Service",
-    html: `
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Thank You for Subscribing to Our Service",
+          html: `
     <!DOCTYPE html>
     <html>
     <head>
@@ -912,32 +915,32 @@ const sendSubscriptionEmail = (email, name) => {
     </body>
     </html>       
  `,
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendSubscriptionExpiredEmail = (email, name) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Subscription Expired or Canceled",
-    html: `
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Subscription Expired or Canceled",
+          html: `
     <!DOCTYPE html>
     <html>
     <head>
@@ -1017,33 +1020,33 @@ const sendSubscriptionExpiredEmail = (email, name) => {
     </body>
     </html>       
  `,
-  };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     };
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendCouponEmail = (email, name) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "FREE Ads Code: Supercharge Your Sales Today!",
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "FREE Ads Code: Supercharge Your Sales Today!",
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1103,8 +1106,9 @@ const sendCouponEmail = (email, name) => {
         <div class="container">
           <div class="header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Welcome as a New ${type === "ecommerce" ? "Vendor" : "Member"
-      }!</h1>
+            <h1 style="color: #333333;">Welcome as a New ${
+                 type === "ecommerce" ? "Vendor" : "Member"
+            }!</h1>
           </div>
           <div class="message">
             <p>Dear ${name},</p>
@@ -1135,34 +1139,34 @@ const sendCouponEmail = (email, name) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendForgotPasswordEmail = (email, name, token, url) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Reset Password",
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Reset Password",
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1241,39 +1245,39 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendSubscriptionReminderEmail = (email, name, trialEndDate) => {
-  const endDate = new Date(trialEndDate);
-  endDate.setDate(endDate.getDate() - 2); // Calculate the date 2 days before trial end
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+     const endDate = new Date(trialEndDate);
+     endDate.setDate(endDate.getDate() - 2); // Calculate the date 2 days before trial end
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Reminder: Subscription Required to Keep Your Account Active",
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Reminder: Subscription Required to Keep Your Account Active",
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1366,39 +1370,39 @@ const sendSubscriptionReminderEmail = (email, name, trialEndDate) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendAccountDisablingReminderEmail = (email, name, trialEndDate) => {
-  const endDate = new Date(trialEndDate);
-  endDate.setDate(endDate.getDate() + 1); // Calculate the date for the day their account will be disabled
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
+     const endDate = new Date(trialEndDate);
+     endDate.setDate(endDate.getDate() + 1); // Calculate the date for the day their account will be disabled
+     const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+     const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Important: Your Account Will Be Disabled Tomorrow",
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Important: Your Account Will Be Disabled Tomorrow",
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1480,33 +1484,33 @@ const sendAccountDisablingReminderEmail = (email, name, trialEndDate) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 const sendSubscriptionCancelEmail = (email, name, token) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Your Subscription - Let's Talk",
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Your Subscription - Let's Talk",
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1589,34 +1593,34 @@ const sendSubscriptionCancelEmail = (email, name, token) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendAdminMessage = (email, name, message) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: "Important: New Message From Admin",
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Important: New Message From Admin",
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1689,33 +1693,33 @@ const sendAdminMessage = (email, name, message) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 const sendVendorMessage = (email, name, message, orderID) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: `Important: New Message Regarding Your Order: ${orderID}`,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: `Important: New Message Regarding Your Order: ${orderID}`,
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1788,34 +1792,34 @@ const sendVendorMessage = (email, name, message, orderID) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendRatingMail = (email, name, url, product) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
 
-  const mailOptions = {
-    from: "info@israelbiblecamp.com",
-    to: email,
-    subject: `Your Order ${product._id} - Please rate the products you purchased!`,
-    html: `
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: `Your Order ${product._id} - Please rate the products you purchased!`,
+          html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1919,16 +1923,16 @@ const sendRatingMail = (email, name, url, product) => {
       </body>
       </html>
     `,
-  };
+     };
 
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
 };
 
 const sendAdvertisementNotificationEmail = (
@@ -1961,7 +1965,7 @@ const sendAdvertisementNotificationEmail = (
   `;
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -2047,162 +2051,210 @@ const sendAdvertisementNotificationEmail = (
 };
 
 const formatDate = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
-  const day = String(date.getDate()).padStart(2, "0");
-  const formattedDate = `${year}-${month}-${day}`;
-  return formattedDate;
+     const year = date.getFullYear();
+     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+     const day = String(date.getDate()).padStart(2, "0");
+     const formattedDate = `${year}-${month}-${day}`;
+     return formattedDate;
 };
 
-const deleteUserData = async (userId, companyId, siteId) => {
-  try {
-    // Step 1: Find the user
-    const user = await User.findById(userId);
+const deleteUserData = async (userId, companyId, siteId, siteType) => {
+     try {
+          // Step 1: Find the user
+          const user = await User.findById(userId);
 
-    if (!user) {
-      return { success: false, message: "User not found" };
-    }
+          if (!user) {
+               return { success: false, message: "User not found" };
+          }
 
-    // Step 2: Delete associated advertisements (adverts) by their _id values
-    if (siteId) {
-      await Advert.deleteMany({ _id: { $in: siteId } });
-    }
+          // Step 2: Delete associated advertisements (adverts) by their _id values
+          if (siteId) {
+               await Advert.deleteMany({ _id: { $in: siteId } });
+          }
 
-    // Step 3: Find and delete the user's associated site if it exists
-    if (siteId) {
-      await Site.findByIdAndRemove(siteId);
-    }
+          if (siteType === "service") {
+               await Service.deleteMany({ userId: userId });
+          }
 
-    // Step 4: Find and delete the user's associated company if it exists
-    if (companyId) {
-      await Company.findByIdAndRemove(companyId);
-    }
+          // Step 3: Find and delete the user's associated site if it exists
+          if (siteId) {
+               await Site.findByIdAndRemove(siteId);
+          }
 
-    // Step 5: Delete the user account
-    await User.findByIdAndRemove(userId);
+          // Step 4: Find and delete the user's associated company if it exists
+          if (companyId) {
+               await Company.findByIdAndRemove(companyId);
+          }
 
-    return {
-      success: true,
-      message: "Account, associated site, company, advertisements, and data deleted successfully",
-    };
-  } catch (error) {
-    console.error("Error deleting account:", error);
-    return { success: false, message: "Internal server error" };
-  }
+          // Step 5: Delete the user account
+          await User.findByIdAndRemove(userId);
+
+          return {
+               success: true,
+               message: "Account, associated site, company, advertisements, and data deleted successfully",
+          };
+     } catch (error) {
+          console.error("Error deleting account:", error);
+          return { success: false, message: "Internal server error" };
+     }
 };
 
 const sentReminders = new Set();
 
 const reminderJob = () => {
-  cron.schedule("0 9 * * *", () => {
-    const currentDate = formatDate(new Date());
+     cron.schedule("0 9 * * *", () => {
+          const currentDate = formatDate(new Date());
 
-    Company.find({ trial_end_date: currentDate }, async (err, companies) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+          Company.find({ trial_end_date: currentDate }, async (err, companies) => {
+               if (err) {
+                    console.error(err);
+                    return;
+               }
 
-      for (const company of companies) {
-        const userId = company.user_id;
+               for (const company of companies) {
+                    const userId = company.user_id;
 
-        // Check if a reminder has already been sent for this user
-        if (!sentReminders.has(userId)) {
-          try {
-            const user = await User.findById(userId);
-            if (user) {
-              sendTrialEndReminderEmail(
-                user.email,
-                user.firstname,
-                company._id,
-              );
-              sentReminders.add(userId); // Mark the reminder as sent
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        }
-      }
-    });
-  });
+                    // Check if a reminder has already been sent for this user
+                    if (!sentReminders.has(userId)) {
+                         try {
+                              const user = await User.findById(userId);
+                              if (user) {
+                                   sendTrialEndReminderEmail(
+                                        user.email,
+                                        user.firstname,
+                                        company._id,
+                                   );
+                                   sentReminders.add(userId); // Mark the reminder as sent
+                              }
+                         } catch (error) {
+                              console.error(error);
+                         }
+                    }
+               }
+          });
+     });
 };
 
 const scheduleUserDisablingCronJob = async () => {
-  // Calculate the date for 12:00 AM the next day
-  const nextDay = calculateNextDay();
+     // Calculate the date for 12:00 AM the next day
+     const nextDay = calculateNextDay();
 
-  // Calculate the date for 3 weeks after the trial end date
-  const threeWeeksLater = calculateThreeWeeksLater();
+     // Calculate the date for 3 weeks after the trial end date
+     const threeWeeksLater = calculateThreeWeeksLater();
 
-  // Find users whose trial has ended and are not subscribed
-  const usersWithExpiredTrials = await User.find({
-    trial_end_date: { $lte: nextDay },
-    subscribed: false,
-    disabled: false,
-  });
+     // Find users whose trial has ended and are not subscribed
+     const usersWithExpiredTrials = await User.find({
+          trial_end_date: { $lte: nextDay },
+          subscribed: false,
+          disabled: false,
+     });
 
-  // Iterate over the users and send reminder messages and schedule the deleteUserData function
-  usersWithExpiredTrials.forEach(async (user) => {
-    // Send a reminder message 2 days before trial end
-    sendSubscriptionReminderEmail(user.email, user.name, user.trial_end_date);
+     // Iterate over the users and send reminder messages and schedule the deleteUserData function
+     usersWithExpiredTrials.forEach(async (user) => {
+          // Send a reminder message 2 days before trial end
+          sendSubscriptionReminderEmail(user.email, user.name, user.trial_end_date);
 
-    // Schedule the deleteUserData function to run 3 weeks later
-    cron.schedule("0 0 * * *", { start: threeWeeksLater }, async () => {
-      const result = await deleteUserData(user._id, user.companyId, user.siteId);
+          // Schedule the deleteUserData function to run 3 weeks later
+          cron.schedule("0 0 * * *", { start: threeWeeksLater }, async () => {
+               const result = await deleteUserData(user._id, user.companyId, user.siteId);
 
-      console.log(
-        `Cron job executed to delete user account 3 weeks after disabling: ${result.success}`,
-      );
-    });
+               console.log(
+                    `Cron job executed to delete user account 3 weeks after disabling: ${result.success}`,
+               );
+          });
 
-    // Send a reminder message 1 day before trial end
-    sendAccountDisablingReminderEmail(user.email, user.name, user.trial_end_date);
-  });
+          // Send a reminder message 1 day before trial end
+          sendAccountDisablingReminderEmail(user.email, user.name, user.trial_end_date);
+     });
 
-  console.log("Cron job executed to manage trial ending reminders.");
+     console.log("Cron job executed to manage trial ending reminders.");
 };
 
 const publishServiceItemsCronJob = async () => {
-  // Schedule the cron job to run every minute
-  cron.schedule("* * * * *", async () => {
-    try {
-      const currentTime = new Date();
+     // Schedule the cron job to run every minute
+     cron.schedule("* * * * *", async () => {
+          try {
+               const currentTime = new Date();
 
-      // Find services where scheduledDate is less than or equal to the current time
-      // and visibility is 'schedule'
-      const servicesToUpdate = await Service.find({
-        scheduledDate: { $lte: currentTime },
-        visibility: "schedule",
-      });
+               // Find services where scheduledDate is less than or equal to the current time
+               // and visibility is 'schedule'
+               const servicesToUpdate = await Service.find({
+                    scheduledDate: { $lte: currentTime },
+                    visibility: "schedule",
+               });
 
-      // Update the visibility to 'published' for the found services
-      await Promise.all(
-        servicesToUpdate.map((service) => {
-          return Service.findByIdAndUpdate(service._id, {
-            $set: { visibility: "published" },
-          });
-        }),
-      );
+               // Update the visibility to 'published' for the found services
+               await Promise.all(
+                    servicesToUpdate.map((service) => {
+                         return Service.findByIdAndUpdate(service._id, {
+                              $set: { visibility: "published" },
+                         });
+                    }),
+               );
 
-      console.log("Cron job executed successfully. for service");
-    } catch (error) {
-      console.error("Error in cron job:", error);
-    }
-  });
+               console.log("Cron job executed successfully. for service");
+          } catch (error) {
+               console.error("Error in cron job:", error);
+          }
+     });
+};
+
+const disableExpiredAds = async () => {
+     cron.schedule("* * * * *", async () => {
+          console.log("Running a task every minute to check for expired subscriptions");
+
+          try {
+               const companies = await Company.find({});
+
+               for (const company of companies) {
+                    let isUpdated = false;
+
+                    for (const subscription of company.adsSubscription) {
+                         const now = new Date();
+                         if (
+                              subscription.currentPeriodEnd &&
+                              now > subscription.currentPeriodEnd &&
+                              subscription.status !== "DISABLED"
+                         ) {
+                              subscription.status = "DISABLED ";
+                              isUpdated = true;
+                         }
+                    }
+
+                    if (isUpdated) {
+                         await company.save();
+                    }
+               }
+          } catch (error) {
+               console.error("Error running the cron job:", error);
+          }
+          console.log("Cron job executed successfully. for expired ads");
+     });
 };
 
 const calculateNextDay = () => {
-  const currentDate = new Date();
-  const nextDay = new Date(currentDate);
-  nextDay.setDate(currentDate.getDate() + 1);
-  nextDay.setHours(0, 0, 0, 0);
-  return nextDay;
+     const currentDate = new Date();
+     const nextDay = new Date(currentDate);
+     nextDay.setDate(currentDate.getDate() + 1);
+     nextDay.setHours(0, 0, 0, 0);
+     return nextDay;
 };
 
 const calculateThreeWeeksLater = (nextDay) => {
-  const threeWeeksLater = new Date(nextDay);
-  threeWeeksLater.setDate(nextDay?.getDate() + 21);
-  return threeWeeksLater;
+     const threeWeeksLater = new Date(nextDay);
+     threeWeeksLater.setDate(nextDay?.getDate() + 21);
+     return threeWeeksLater;
+};
+
+const deleteEvent = () => {
+     cron.schedule("0 0 * * *", async () => {
+          const events = await Event.find({});
+          events.forEach(async (event) => {
+               if (Date.now() > new Date(event.date).getTime()) {
+                    await Event.findByIdAndDelete(event._id);
+               }
+          });
+     });
 };
 
 module.exports = {
@@ -2225,4 +2277,7 @@ module.exports = {
      sendVendorMessage,
      publishServiceItemsCronJob,
      sendSubscriptionCancelEmail,
+     deleteUserData,
+     disableExpiredAds,
+     deleteEvent,
 };

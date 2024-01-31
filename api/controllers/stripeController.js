@@ -6,6 +6,7 @@ const Advert = require("../../model/Advert");
 const {
      sendSubscriptionCancelEmail,
      sendAdvertisementNotificationEmail,
+     deleteUserData,
 } = require("../../config/helpers");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
@@ -14,7 +15,6 @@ const YOUR_DOMAIN = "https://dashboard.ishop.black";
 exports.createVendorSubscription = async (req, res) => {
      try {
           const { email, plan, mode, id, register } = req.query;
-          console.log(email, plan, mode);
           if (!email || !plan || !mode) {
                return res.status(400).json({ message: "Send All Required Parameter" });
           }
@@ -87,7 +87,7 @@ exports.createVendorSubscription = async (req, res) => {
 };
 
 exports.stripeVendorCallback = async (req, res) => {
-     const payload = req.rawBody;
+     const payload = req.body;
      const sig = req.headers["stripe-signature"];
      let event;
 
@@ -184,7 +184,13 @@ exports.stripeVendorCallback = async (req, res) => {
                const session = event.data.object;
                const user = await User.findOne({ stripeID: session.customer });
                if (user) {
-                    await User.findOneAndUpdate({ stripeID: session.customer }, { paid: false });
+                    const company = await Company.findById(user.company);
+                    await deleteUserData(
+                         user._id,
+                         user.company,
+                         company.site,
+                         user.currentSiteType,
+                    );
                     await Logger.create({
                          userID: user._id,
                          eventType: "customer.subscription.deleted",
@@ -292,24 +298,28 @@ exports.createAdsCheckoutSession = async (req, res) => {
 
           const session = await stripeSession(req);
 
-          company.adsSubscription = {
+          if (!company.adsSubscription) {
+               company.adsSubscription = [];
+          }
+          company.adsSubscription.push({
                sessionId: session.id,
                subscriptionId: null,
                status: null,
                currentPeriodEnd: null,
                advertId: advertId,
-          };
+          });
 
           await company.save();
 
           return res.json({ session });
      } catch (error) {
-          res.send(error);
+          console.error("Error occurred:", error);
+          res.status(500).json({ error: error.message });
      }
 };
 
 exports.adsCallback = async (req, res) => {
-     const payload = req.rawBody;
+     const payload = req.body;
      const sig = req.headers["stripe-signature"];
      let event;
 
@@ -331,46 +341,54 @@ exports.adsCallback = async (req, res) => {
                     const company = await Company.findOne({
                          "adsSubscription.sessionId": session.id,
                     });
-                    const advertId = company.adsSubscription.advertId;
-                    const advert = Advert.findOne({ advertId });
 
-                    if (advertId) {
-                         const advertisement = await Advert.findById(advertId);
+                    const subscriptionIndex = company.adsSubscription.findIndex(
+                         (sub) => sub.sessionId === session.id,
+                    );
 
-                         if (advertisement) {
-                              advertisement.status = "ACTIVE";
-                              await advertisement.save();
+                    if (subscriptionIndex !== -1) {
+                         const subscription = company.adsSubscription[subscriptionIndex];
+                         let advertisement;
+
+                         if (subscription.advertId) {
+                              advertisement = await Advert.findById(subscription.advertId);
+
+                              if (advertisement) {
+                                   advertisement.status = "ACTIVE";
+                                   await advertisement.save();
+                              }
                          }
-                    }
 
-                    company.adsSubscription = {
-                         sessionId: session.id,
-                         subscriptionId: session.payment_intent,
-                         status: "active",
-                         currentPeriodEnd: expiryDate,
-                    };
+                         company.adsSubscription[subscriptionIndex] = {
+                              ...company.adsSubscription[subscriptionIndex],
+                              sessionId: session.id,
+                              subscriptionId: session.payment_intent,
+                              status: "active",
+                              currentPeriodEnd: expiryDate,
+                              advertId: subscription.advertId,
+                         };
 
-                    await company.save();
+                         await company.save();
 
-                    const users = await User.find({ sales_opt_in: true });
+                         const users = await User.find({ sales_opt_in: true });
 
-                    for (const user of users) {
-                         sendAdvertisementNotificationEmail(
-                              user.email,
-                              user.firstname,
-                              {
-                                   advertisementDetails: {
-                                        productService: advert.title,
-                                        description: advert.description,
+                         for (const user of users) {
+                              sendAdvertisementNotificationEmail(
+                                   user.email,
+                                   user.firstname,
+                                   {
+                                        productService: advertisement?.title,
+                                        description: advertisement?.description,
                                    },
-                              },
-                              advert.targetUrl,
-                         );
+                                   advertisement?.targetUrl,
+                              );
+                         }
                     }
                }
 
                break;
           }
      }
+
      res.status(200).json({ message: "successful" });
 };

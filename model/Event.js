@@ -19,6 +19,26 @@ const eventSchema = mongoose.Schema({
     noOfTicket: {
         type: String
     },
+    status: {
+        type: String,
+        enum: [
+            "paid",
+            "free"
+        ]
+    },
+    category: {
+        type: String,
+        enum: [
+            "Music",
+            "Nightlife",
+            "Performing & Visual Arts",
+            "Holidays",
+            "Health",
+            "Hobbies",
+            "Business",
+            "Food & Drink",
+        ]
+    },
     date: {
         type: Date
     },
@@ -31,6 +51,9 @@ const eventSchema = mongoose.Schema({
     street: {
         type: String
     },
+    images: {
+        type: Array
+    }
 })
 
 const Event = mongoose.model('Event', eventSchema)

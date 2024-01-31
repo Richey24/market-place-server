@@ -10,6 +10,8 @@ const {
      reminderJob,
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
+     disableExpiredAds,
+     deleteEvent,
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -109,6 +111,8 @@ app.get("/odoo/test", async (req, res) => {
 reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
+disableExpiredAds();
+deleteEvent();
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
@@ -162,7 +166,7 @@ app.use("/api/carrier", carrier);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/company", companyRoute);
 app.use("/api/event", eventRouter);
-app.use("/api/freelancer/payment", freelancePaymentRouter)
+app.use("/api/freelancer/payment", freelancePaymentRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
