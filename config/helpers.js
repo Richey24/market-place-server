@@ -4,6 +4,7 @@ const cron = require("node-cron");
 const User = require("../model/User");
 const Service = require("../model/Service");
 const Event = require("../model/Event");
+const Advert = require("../model/Advert")
 
 const sendOnboardingEmail = (email, name, type) => {
      const startDate = new Date();
@@ -2216,8 +2217,17 @@ const disableExpiredAds = async () => {
                               now > subscription.currentPeriodEnd &&
                               subscription.status !== "DISABLED"
                          ) {
-                              subscription.status = "DISABLED ";
+                              subscription.status = "DISABLED";
                               isUpdated = true;
+
+                              // If the subscription has an advertId, find and disable the associated advert
+                              if (subscription.advertId) {
+                                   const advert = await Advert.findById(subscription.advertId);
+                                   if (advert) {
+                                        advert.status = "DISABLED";
+                                        await advert.save();
+                                   }
+                              }
                          }
                     }
 
@@ -2228,7 +2238,7 @@ const disableExpiredAds = async () => {
           } catch (error) {
                console.error("Error running the cron job:", error);
           }
-          console.log("Cron job executed successfully. for expired ads");
+          console.log("Cron job executed successfully for expired ads");
      });
 };
 
