@@ -573,6 +573,7 @@ exports.updateUserDetails = async (req, res) => {
                phone: req.body?.phone,
                image: req.body?.image,
                sales_opt_in: req.body?.sales_opt_in,
+               ...req.body,
           };
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID

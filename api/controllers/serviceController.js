@@ -4,6 +4,7 @@ const fs = require("fs");
 const User = require("../../model/User");
 const Rating = require("../../model/Rating");
 const { ServiceThirdCat } = require("../../model/ServiceCategory");
+const { default: mongoose } = require("mongoose");
 const blobClient = BlobServiceClient.fromConnectionString(
      "DefaultEndpointsProtocol=https;AccountName=absa7kzimnaf;AccountKey=8sH4dhZjJa8cMyunmS1iDmwve5hZKLo5kaA1M9ubZScLCJ2oEsuSvWT46P2t+ouKoCwFENosnC4m+AStWRQ+rQ==;EndpointSuffix=core.windows.net",
 );
@@ -101,13 +102,24 @@ exports.getAllService = async (req, res) => {
 exports.getOneService = async (req, res) => {
      try {
           const id = req.params.id;
-          if (!id) {
-               return res.status(400).json({ message: "Send service id", status: false });
+          if (!id || !mongoose.isValidObjectId(id)) {
+               return res
+                    .status(400)
+                    .json({ message: "Invalid or missing service id", status: false });
           }
-          const result = await Service.findById(id);
-          res.status(200).json({ result, status: true });
+
+          const service = await Service.findById(id)
+               .populate("userId") // Populate the userId field
+               .exec();
+
+          if (!service) {
+               return res.status(404).json({ message: "Service not found", status: false });
+          }
+
+          res.status(200).json({ service, status: true });
      } catch (err) {
-          res.status(500).json({ err, status: false });
+          console.error(err); // Log the error for internal tracking
+          res.status(500).json({ message: "An error occurred", status: false });
      }
 };
 

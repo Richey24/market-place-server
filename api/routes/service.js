@@ -34,8 +34,13 @@ router.post("/cat/get/second", getSecondSubCategory);
 router.delete("/delete/:id", serviceController.deleteService);
 
 router.post("/orders/create", serviceOrder.create);
+router.post("/orders/get/one/:orderId", serviceOrder.getOneServiceOrder);
 router.get("/orders/:customerId", serviceOrder.getCustomerOrders);
-router.get("/orders/", serviceOrder.getAllOrders);
+router.get("/orders", serviceOrder.getAllOrders);
 router.get("/orders/services/:customerId", serviceOrder.getOrderedServices);
+router.get("/orders/services", auth, serviceOrder.getOrderedServicesByVendors);
+
+router.post("/wishlist/add", serviceOrder.addToWishlist);
+router.get("/wishlist/:userId", serviceOrder.getWishlist);
 
 module.exports = router;
