@@ -1,54 +1,65 @@
 const mongoose = require("mongoose");
 
 const eventSchema = mongoose.Schema({
-    name: {
-        type: String
-    },
-    price: {
-        type: String
-    },
-    description: {
-        type: String
-    },
-    email: {
-        type: String
-    },
-    phoneNumber: {
-        type: String
-    },
-    noOfTicket: {
-        type: String
-    },
-    category: {
-        type: String,
-        enum: [
-            "Music",
-            "Nightlife",
-            "Performing & Visual Arts",
-            "Holidays",
-            "Health",
-            "Hobbies",
-            "Business",
-            "Food & Drink",
-        ]
-    },
-    date: {
-        type: Date
-    },
-    country: {
-        type: String
-    },
-    city: {
-        type: String
-    },
-    street: {
-        type: String
-    },
-    images: {
-        type: Array
-    }
-})
+     name: {
+          type: String,
+     },
+     price: {
+          type: String,
+     },
+     description: {
+          type: String,
+     },
+     email: {
+          type: String,
+     },
+     phoneNumber: {
+          type: String,
+     },
+     noOfTicket: {
+          type: String,
+     },
+     category: {
+          type: String,
+          enum: [
+               "Music",
+               "Nightlife",
+               "Performing & Visual Arts",
+               "Holidays",
+               "Health",
+               "Hobbies",
+               "Business",
+               "Food & Drink",
+          ],
+     },
+     date: {
+          type: Date,
+     },
+     country: {
+          type: String,
+     },
+     city: {
+          type: String,
+     },
+     address: {
+          type: String,
+     },
 
-const Event = mongoose.model('Event', eventSchema)
+     coordinates: {
+          lat: {
+               type: Number,
+               required: false,
+          },
+          lng: {
+               type: Number,
+               required: false,
+          },
+     },
+     images: {
+          type: Array,
+     },
+});
 
-module.exports = Event
+const Event = mongoose.model("Event", eventSchema);
+
+module.exports = Event;
