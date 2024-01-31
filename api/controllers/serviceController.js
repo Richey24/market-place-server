@@ -5,6 +5,7 @@ const User = require("../../model/User");
 const Rating = require("../../model/Rating");
 const { ServiceThirdCat } = require("../../model/ServiceCategory");
 const { default: mongoose } = require("mongoose");
+const Review = require("../../model/reviews");
 const blobClient = BlobServiceClient.fromConnectionString(
      "DefaultEndpointsProtocol=https;AccountName=absa7kzimnaf;AccountKey=8sH4dhZjJa8cMyunmS1iDmwve5hZKLo5kaA1M9ubZScLCJ2oEsuSvWT46P2t+ouKoCwFENosnC4m+AStWRQ+rQ==;EndpointSuffix=core.windows.net",
 );
@@ -220,3 +221,75 @@ exports.rateService = async (req, res) => {
      }
 };
 
+exports.addReview = async (req, res) => {
+     const { serviceId, userId, rating, reviewText } = req.body;
+
+     try {
+          const review = new Review({
+               service: serviceId,
+               user: userId,
+               rating,
+               reviewText,
+          });
+
+          await review.save();
+          res.status(201).json({ message: "Review added successfully", status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.getServiceReviews = async (req, res) => {
+     const { serviceId } = req.params;
+
+     try {
+          const reviews = await Review.find({ service: serviceId }).populate("user");
+          res.json({ reviews, status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.getServiceReviews = async (req, res) => {
+     const { serviceId } = req.params;
+
+     try {
+          const reviews = await Review.find({ service: serviceId }).populate("user");
+          res.json({ reviews, status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.updateReview = async (req, res) => {
+     const { reviewId } = req.params;
+     const { rating, reviewText } = req.body;
+
+     try {
+          const review = await Review.findByIdAndUpdate(
+               reviewId,
+               { rating, reviewText },
+               { new: true },
+          );
+          if (!review) {
+               return res.status(404).json({ message: "Review not found", status: false });
+          }
+          res.json({ message: "Review updated successfully", review, status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.deleteReview = async (req, res) => {
+     const { reviewId } = req.params;
+
+     try {
+          const review = await Review.findByIdAndDelete(reviewId);
+          if (!review) {
+               return res.status(404).json({ message: "Review not found", status: false });
+          }
+          res.json({ message: "Review deleted successfully", status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};

@@ -32,6 +32,10 @@ router.get("/cat/get/main", getMainCategory);
 router.post("/cat/get/first", getFirstSubCategory);
 router.post("/cat/get/second", getSecondSubCategory);
 router.delete("/delete/:id", serviceController.deleteService);
+router.post("/reviews/add", serviceController.addReview);
+router.put("/reviews/update", serviceController.updateReview);
+router.delete("/reviews/delete", serviceController.deleteReview);
+router.get("/reviews/get/all", serviceController.getServiceReviews);
 
 router.put("/order/start/:orderId", serviceOrder.start);
 router.put("/order/hold/:orderId", serviceOrder.hold);
