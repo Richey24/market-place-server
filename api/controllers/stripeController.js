@@ -89,7 +89,7 @@ exports.createVendorSubscription = async (req, res) => {
 };
 
 exports.stripeVendorCallback = async (req, res) => {
-     const payload = req.body;
+     const payload = req.rawBody;
      const sig = req.headers["stripe-signature"];
      let event;
 

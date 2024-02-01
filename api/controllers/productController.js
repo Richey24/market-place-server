@@ -963,6 +963,7 @@ const getOdooSuggestions = async (query) => {
                     "x_size",
                     "description",
                     "list_price",
+                    "image_1920",
                ],
           ]);
 
@@ -971,13 +972,13 @@ const getOdooSuggestions = async (query) => {
                name: category.name,
                type: "category",
           }));
-          const productNames = productSuggestions.map((product) => ({
-               name: product.name,
-               type: "product",
-          }));
+          // const productNames = productSuggestions.map((product) => ({
+          //      name: product.name,
+          //      type: "product",
+          // }));
 
           // Combine and return the suggestions
-          return categoryNames.concat(productNames);
+          return categoryNames.concat(productSuggestions);
      } catch (error) {
           console.error("Error fetching Odoo suggestions:", error.message);
           return [];
