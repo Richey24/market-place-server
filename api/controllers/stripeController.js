@@ -280,6 +280,7 @@ const stripeSession = async (req) => {
           } else {
                successUrl = `${YOUR_DOMAIN}/promotions/ads?success=true`;
                cancelUrl = `${YOUR_DOMAIN}/promotions/ads?success=false`;
+               metadata = { type: "ad", advertId: advertId };
           }
 
           const session = await stripe.checkout.sessions.create({
@@ -402,7 +403,7 @@ exports.adsCallback = async (req, res) => {
 
                               await event.save();
                          }
-                    } else {
+                    } else if (session.metadata && session.metadata.type === "ad") {
                          const company = await Company.findOne({
                               "adsSubscription.sessionId": session.id,
                          });
