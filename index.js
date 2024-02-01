@@ -145,6 +145,7 @@ const carrier = require("./api/routes/carrier");
 const calenderRouter = require("./api/routes/calender");
 const stripeRouter = require("./api/routes/stripe");
 const eventRouter = require("./api/routes/event");
+const boardRouter = require("./api/routes/board");
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
@@ -168,6 +169,7 @@ app.use("/api/stripe", stripeRouter);
 app.use("/api/company", companyRoute);
 app.use("/api/event", eventRouter);
 app.use("/api/calender", calenderRouter);
+app.use("/api/board", boardRouter);
 app.use("/api/freelancer/payment", freelancePaymentRouter);
 
 app.use("/api/products", productRouter);
