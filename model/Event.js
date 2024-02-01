@@ -45,8 +45,19 @@ const eventSchema = mongoose.Schema({
      city: {
           type: String,
      },
-     street: {
+     address: {
           type: String,
+     },
+
+     coordinates: {
+          lat: {
+               type: Number,
+               required: false,
+          },
+          lng: {
+               type: Number,
+               required: false,
+          },
      },
      images: {
           type: Array,

@@ -12,6 +12,7 @@ const {
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
+const YOUR_ISHOP_DOMAIN = "https://ishop.black";
 
 exports.createVendorSubscription = async (req, res) => {
      try {
@@ -274,8 +275,8 @@ const stripeSession = async (req) => {
 
           let successUrl, cancelUrl, metadata;
           if (type === "event") {
-               successUrl = `${YOUR_DOMAIN}/success-path-for-event`;
-               cancelUrl = `${YOUR_DOMAIN}/cancel-path-for-event`;
+               successUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=success`;
+               cancelUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=failed`;
                metadata = { type: "event", eventId: eventId };
           } else {
                successUrl = `${YOUR_DOMAIN}/promotions/ads?success=true`;
