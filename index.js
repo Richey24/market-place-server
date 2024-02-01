@@ -10,6 +10,7 @@ const {
      reminderJob,
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
+     disableExpiredAds,
      deleteEvent,
 } = require("./config/helpers");
 const webpush = require("web-push");
@@ -110,7 +111,8 @@ app.get("/odoo/test", async (req, res) => {
 reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
-deleteEvent()
+disableExpiredAds();
+deleteEvent();
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
@@ -140,6 +142,7 @@ const policyRouter = require("./api/routes/policy");
 const paymentRouter = require("./api/routes/payment");
 const { errorResponder } = require("./utils/http_responder");
 const carrier = require("./api/routes/carrier");
+const calenderRouter = require("./api/routes/calender");
 const stripeRouter = require("./api/routes/stripe");
 const eventRouter = require("./api/routes/event");
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
@@ -164,7 +167,8 @@ app.use("/api/carrier", carrier);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/company", companyRoute);
 app.use("/api/event", eventRouter);
-app.use("/api/freelancer/payment", freelancePaymentRouter)
+app.use("/api/calender", calenderRouter);
+app.use("/api/freelancer/payment", freelancePaymentRouter);
 
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);

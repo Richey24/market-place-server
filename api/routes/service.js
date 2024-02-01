@@ -32,10 +32,26 @@ router.get("/cat/get/main", getMainCategory);
 router.post("/cat/get/first", getFirstSubCategory);
 router.post("/cat/get/second", getSecondSubCategory);
 router.delete("/delete/:id", serviceController.deleteService);
+router.post("/reviews/add", serviceController.addReview);
+router.put("/reviews/update", serviceController.updateReview);
+router.delete("/reviews/delete", serviceController.deleteReview);
+router.get("/reviews/get/all", serviceController.getServiceReviews);
+
+router.put("/order/start/:orderId", serviceOrder.start);
+router.put("/order/hold/:orderId", serviceOrder.hold);
+router.put("/order/continue/:orderId", serviceOrder.continue);
+router.put("/order/deliver/:orderId", serviceOrder.deliver);
+router.put("/order/admin/mark-as-paid/:orderId", serviceOrder.markAsPaid);
+router.put("/order/confirm-payment/:orderId", serviceOrder.confirmPayment);
 
 router.post("/orders/create", serviceOrder.create);
+router.post("/orders/get/one/:orderId", serviceOrder.getOneServiceOrder);
 router.get("/orders/:customerId", serviceOrder.getCustomerOrders);
-router.get("/orders/", serviceOrder.getAllOrders);
+router.get("/orders", serviceOrder.getAllOrders);
 router.get("/orders/services/:customerId", serviceOrder.getOrderedServices);
+router.get("/orders/services", auth, serviceOrder.getOrderedServicesByVendors);
+
+router.post("/wishlist/add", serviceOrder.addToWishlist);
+router.get("/wishlist/:userId", serviceOrder.getWishlist);
 
 module.exports = router;

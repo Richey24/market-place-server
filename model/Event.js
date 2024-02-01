@@ -32,6 +32,10 @@ const eventSchema = mongoose.Schema({
                "Food & Drink",
           ],
      },
+     status: {
+          type: String,
+          enum: ["paid", "free"],
+     },
      date: {
           type: Date,
      },
@@ -58,6 +62,30 @@ const eventSchema = mongoose.Schema({
      images: {
           type: Array,
      },
+     adsSubscription: [
+          {
+               _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+               sessionId: {
+                    type: String,
+                    default: null,
+               },
+               subscriptionId: {
+                    type: String,
+                    default: null,
+               },
+               status: {
+                    type: String,
+                    default: null,
+               },
+               currentPeriodEnd: {
+                    type: Date,
+                    default: null,
+               },
+               eventId: {
+                    type: String,
+               },
+          },
+     ],
 });
 
 const Event = mongoose.model("Event", eventSchema);
