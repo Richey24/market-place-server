@@ -59,7 +59,10 @@ const eventSchema = mongoose.Schema({
           type: String,
           enum: ["paid", "free"],
      },
-     date: {
+     startDate: {
+          type: Date,
+     },
+     endDate: {
           type: Date,
      },
      country: {
