@@ -70,6 +70,7 @@ exports.searchEvent = async (req, res) => {
         keys.forEach((key) => {
             obj[key] = { $regex: body[key], $options: "i" };
         });
+        console.log({ obj });
         const events = await Event.find(obj)
         res.status(200).json(events)
     } catch (error) {
