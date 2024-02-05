@@ -88,6 +88,10 @@ const eventSchema = mongoose.Schema({
      images: {
           type: Array,
      },
+     published: {
+          type: Boolean,
+          default: false
+     },
      adsSubscription: [
           {
                _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
