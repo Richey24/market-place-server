@@ -1,5 +1,7 @@
 const { default: algoliasearch } = require("algoliasearch");
 const Event = require("../../model/Event");
+const jwt = require("jsonwebtoken");
+const { sendCreateEventMail } = require("../../config/helpers");
 
 
 exports.createEvent = async (req, res) => {
@@ -83,6 +85,45 @@ exports.deleteEvent = async (req, res) => {
         }
         await Event.findByIdAndDelete(id)
         res.status(200).json({ message: "deleted successfully" })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", status: false });
+    }
+}
+
+exports.sendEventMail = async (req, res) => {
+    try {
+        const { id, email } = req.body
+        if (!id) {
+            return res.status(400).json({ message: "Send id" })
+        }
+        const token = jwt.sign(
+            {
+                id: id,
+            },
+            "event_secret",
+        );
+        sendCreateEventMail(email, token)
+        res.status(200).json({ message: "message sent successfully" })
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", status: false });
+    }
+}
+
+exports.publishEvent = async (req, res) => {
+    try {
+        const { token } = req.body;
+        if (!token) {
+            return res.status(400).json({ message: "Send token" })
+        }
+        const decoded = jwt.verify(token, "event_secret");
+        if (decoded.id) {
+            const event = await Event.findByIdAndUpdate(decoded.id, {
+                publish: true
+            }, { new: true })
+            res.status(200).json(event)
+        } else {
+            res.status(400).json({ message: "No ID" })
+        }
     } catch (error) {
         res.status(500).json({ message: "Internal server error", status: false });
     }
