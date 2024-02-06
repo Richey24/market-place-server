@@ -92,6 +92,10 @@ const eventSchema = mongoose.Schema({
           type: Boolean,
           default: false
      },
+     isAd: {
+          type: Boolean,
+          default: false
+     },
      adsSubscription: [
           {
                _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
