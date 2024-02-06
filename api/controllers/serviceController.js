@@ -149,6 +149,43 @@ exports.getServiceByUserId = async (req, res) => {
      }
 };
 
+exports.getServicesByCategoryName = async (req, res) => {
+     try {
+          const categoryName = req.params.categoryName;
+          const services = await Service.find({ category: categoryName }); // Assuming 'category' field in your Service model
+          res.json({ services, status: true });
+     } catch (error) {
+          res.status(500).send({ message: error.message });
+     }
+};
+
+exports.getServiceByUserIdParams = async (req, res) => {
+     try {
+          let id = req.params.id;
+
+          if (!id) {
+               return res.status(400).json({ message: "Send user id", status: false });
+          }
+
+          // Convert string to ObjectId
+          // const objectId = mongoose.Types.ObjectId(id);
+
+          // Fetch services and populate user details
+          let services = await Service.find({}).populate({
+               path: "userId",
+               match: { _id: id },
+          });
+
+          // Filter out services that don't match the userId
+          services = services.filter((service) => service.userId && service.userId._id.equals(id));
+
+          // console.log("id", id, services);
+          res.status(200).json({ services, status: true });
+     } catch (err) {
+          res.status(500).json({ err, status: false });
+     }
+};
+
 exports.searchService = async (req, res) => {
      try {
           const body = req.body;
@@ -250,17 +287,6 @@ exports.getServiceReviews = async (req, res) => {
      }
 };
 
-exports.getServiceReviews = async (req, res) => {
-     const { serviceId } = req.params;
-
-     try {
-          const reviews = await Review.find({ service: serviceId }).populate("user");
-          res.json({ reviews, status: true });
-     } catch (err) {
-          res.status(500).json({ message: err.message });
-     }
-};
-
 exports.updateReview = async (req, res) => {
      const { reviewId } = req.params;
      const { rating, reviewText } = req.body;
@@ -289,6 +315,22 @@ exports.deleteReview = async (req, res) => {
                return res.status(404).json({ message: "Review not found", status: false });
           }
           res.json({ message: "Review deleted successfully", status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.getReviewsByServiceUserId = async (req, res) => {
+     const serviceUserId = req.params.userId;
+
+     try {
+          const services = await Service.find({ userId: serviceUserId }).exec();
+
+          const serviceIds = services.map((service) => service._id);
+
+          const reviews = await Review.find({ service: { $in: serviceIds } }).exec();
+
+          res.json({ reviews, status: true });
      } catch (err) {
           res.status(500).json({ message: err.message });
      }

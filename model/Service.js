@@ -61,6 +61,9 @@ const serviceSchema = mongoose.Schema({
           type: Number,
           default: 0,
      },
+     features: {
+          type: Array,
+     },
      variants: {
           type: Array,
      },
