@@ -22,6 +22,9 @@ router.put("/availability/:serviceId", auth, serviceController.toggleServiceAvai
 router.get("/get/all", serviceController.getAllService);
 router.get("/get/one/:id", serviceController.getOneService);
 router.get("/get/user", auth, serviceController.getServiceByUserId);
+router.get("/get/user/:id", serviceController.getServiceByUserIdParams);
+router.get("/category/:categoryName", serviceController.getServicesByCategoryName);
+
 router.post("/search", serviceController.searchService);
 router.post("/rate", serviceController.rateService);
 router.post("/cat/first/add", addFirstCat);
@@ -32,10 +35,11 @@ router.get("/cat/get/main", getMainCategory);
 router.post("/cat/get/first", getFirstSubCategory);
 router.post("/cat/get/second", getSecondSubCategory);
 router.delete("/delete/:id", serviceController.deleteService);
-router.post("/reviews/add", serviceController.addReview);
-router.put("/reviews/update", serviceController.updateReview);
-router.delete("/reviews/delete", serviceController.deleteReview);
-router.get("/reviews/get/all", serviceController.getServiceReviews);
+router.post("/reviews", serviceController.addReview);
+router.put("/reviews", serviceController.updateReview);
+router.delete("/reviews", serviceController.deleteReview);
+router.get("/reviews/:serviceId", serviceController.getServiceReviews);
+router.get("/reviews/freelancer/:userId", serviceController.getReviewsByServiceUserId);
 
 router.put("/order/start/:orderId", serviceOrder.start);
 router.put("/order/hold/:orderId", serviceOrder.hold);
