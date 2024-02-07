@@ -11,10 +11,12 @@ const blobClient = BlobServiceClient.fromConnectionString(
 );
 const containerClient = blobClient.getContainerClient("newcontainer");
 const { default: algoliasearch } = require("algoliasearch");
+const { default: axios } = require("axios");
 
 exports.createService = async (req, res) => {
      try {
           let user = req.userData;
+       
           //   console.log("user", user);
           //   const file = req.file;
           if (!user) {
@@ -24,7 +26,9 @@ exports.createService = async (req, res) => {
                ...req.body,
                userId: user._id,
                email: user?.email,
+               timeZone: timezone,
           });
+
           const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
           const index = client.initIndex("service-title");
           index.search(req.body.title).then(async ({ hits }) => {
