@@ -10,6 +10,7 @@ const blobClient = BlobServiceClient.fromConnectionString(
      "DefaultEndpointsProtocol=https;AccountName=absa7kzimnaf;AccountKey=8sH4dhZjJa8cMyunmS1iDmwve5hZKLo5kaA1M9ubZScLCJ2oEsuSvWT46P2t+ouKoCwFENosnC4m+AStWRQ+rQ==;EndpointSuffix=core.windows.net",
 );
 const containerClient = blobClient.getContainerClient("newcontainer");
+const { default: algoliasearch } = require("algoliasearch");
 
 exports.createService = async (req, res) => {
      try {
