@@ -57,7 +57,7 @@ exports.getOneEvent = async (req, res) => {
 
 exports.getAllEvent = async (req, res) => {
      try {
-          const events = await Event.find({});
+          const events = await Event.find({ published: true });
           res.status(200).json(events);
      } catch (error) {
           res.status(500).json({ message: "Internal server error", status: false });
@@ -80,13 +80,21 @@ exports.searchEvent = async (req, res) => {
                          // For prices greater than 0
                          obj[key] = { $gt: 0 };
                     }
+               } else if (typeof body[key] === "boolean") {
+                    console.log({ val: { [obj[key]]: body[key] } });
+                    obj[key] = body[key];
                } else {
                     // Apply regex for all other string fields with case-insensitive search
                     obj[key] = { $regex: body[key], $options: "i" };
                }
           });
 
-          console.log({ obj });
+          if (!!body.published) {
+               obj["published"] = true;
+          }
+
+          // console.log({ obj, body, keys });
+
           const events = await Event.find(obj);
           res.status(200).json(events);
      } catch (error) {
@@ -137,7 +145,7 @@ exports.publishEvent = async (req, res) => {
                const event = await Event.findByIdAndUpdate(
                     decoded.id,
                     {
-                         publish: true,
+                         published: true,
                     },
                     { new: true },
                );
