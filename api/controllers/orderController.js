@@ -1,4 +1,5 @@
 // var Odoo = require("async-odoo-xmlrpc");
+const { sendPurchaseEmail, sendSalesReport } = require("../../config/helpers");
 const Odoo = require("../../config/odoo.connection");
 const User = require("../../model/User");
 const { addOrder } = require("../../services/order.service");
@@ -207,6 +208,17 @@ exports.createOrder = async (req, res) => {
           // console.log("orderData", orderData);
           const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
           console.log("Order created successfully. Order ID:", orderId);
+
+          const items = productData.map(({ productId, qty, price_unit }) => ({
+               name: productId,
+               price: price_unit,
+               quantity: qty,
+          }));
+          const orderDetails = {
+               orderId,
+               items,
+          };
+          sendSalesReport(companyId, orderDetails);
 
           return res.status(201).json({ orderId, status: true });
      } catch (error) {
