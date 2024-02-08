@@ -1813,10 +1813,10 @@ const sendCreateEventMail = (email, token) => {
   });
 
   const mailOptions = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: `Finish Creating Your Event`,
-    html: `
+       from: process.env.EMAIL,
+       to: email,
+       subject: `Finish Creating Your Event`,
+       html: `
       <!DOCTYPE html>
       <html>
       <head>
@@ -1880,7 +1880,7 @@ const sendCreateEventMail = (email, token) => {
           </div>
           <div class="message">
             <p>Follow this link to confirm your email and finish creating your event</p>
-            <a class="cta-button" href="https://ishop.black/event/create?token=${token}">Finish</a>
+            <a class="cta-button" href="https://ishop.black/event/new-event?token=${token}">Finish</a>
             </div>
           <div class="footer">
             <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
