@@ -121,14 +121,20 @@ class AdvertController {
 
                const activeAdverts = adverts.filter((advert) => advert.status === "ACTIVE");
 
-               const advertsWithDetails = await Promise.all(
+               const advertsWithCompanyName = await Promise.all(
                     activeAdverts.map(async (advert) => {
-                         const details = await getProductById(advert.productId);
-                         return { ...advert, details };
+                         const advertData = advert.toObject ? advert.toObject() : advert;
+
+                         const company = await companyModel.findById(advertData.company_id);
+
+                         return {
+                              ...advertData,
+                              company_name: company.company_name,
+                         };
                     }),
                );
 
-               return successResponder(res, advertsWithDetails, 200, "sucessfull");
+               return successResponder(res, advertsWithCompanyName, 200, "successful");
           } catch (error) {
                return errorResponder(res, error?.code, error?.message);
           }
