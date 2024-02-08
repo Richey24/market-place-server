@@ -35,29 +35,29 @@ exports.getProductbyCompanyId = async (req, res) => {
                               ["type", "=", "consu"],
                               ["company_id", "=", companyId],
                          ],
-                         // [
-                         //      "id",
-                         //      "public_categ_ids",
-                         //      "name",
-                         //      "display_name",
-                         //      "list_price",
-                         //      // "image_1920",
-                         //      "standard_price",
-                         //      "categ_id",
-                         //      "rating_avg",
-                         //      "rating_count",
-                         //      "x_color",
-                         //      "x_dimension",
-                         //      "x_size",
-                         //      "x_subcategory",
-                         //      "x_weight",
-                         //      "x_rating",
-                         //      "website_url",
-                         //      "website_meta_keywords",
-                         // ],
+                         [
+                              "id",
+                              "public_categ_ids",
+                              "name",
+                              "display_name",
+                              "list_price",
+                              // "image_1920",
+                              "standard_price",
+                              "categ_id",
+                              "rating_avg",
+                              "rating_count",
+                              "x_color",
+                              "x_dimension",
+                              "x_size",
+                              "x_subcategory",
+                              "x_weight",
+                              "x_rating",
+                              "website_url",
+                              "website_meta_keywords",
+                         ],
                          null,
                          0,
-                         10,
+                         // 10,
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
@@ -963,6 +963,7 @@ const getOdooSuggestions = async (query) => {
                     "x_size",
                     "description",
                     "list_price",
+                    "image_1920",
                ],
           ]);
 
@@ -971,13 +972,13 @@ const getOdooSuggestions = async (query) => {
                name: category.name,
                type: "category",
           }));
-          const productNames = productSuggestions.map((product) => ({
-               name: product.name,
-               type: "product",
-          }));
+          // const productNames = productSuggestions.map((product) => ({
+          //      name: product.name,
+          //      type: "product",
+          // }));
 
           // Combine and return the suggestions
-          return categoryNames.concat(productNames);
+          return categoryNames.concat(productSuggestions);
      } catch (error) {
           console.error("Error fetching Odoo suggestions:", error.message);
           return [];

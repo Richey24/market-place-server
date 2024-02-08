@@ -10,8 +10,13 @@ const {
      reminderJob,
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
+<<<<<<< HEAD
      sendSalesReport,
      sendEmailsToUsers,
+=======
+     disableExpiredAds,
+     deleteEvent,
+>>>>>>> 17cdba0227013f2f184cfbd9308ac30f50446fd0
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -111,9 +116,14 @@ app.get("/odoo/test", async (req, res) => {
 reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
+<<<<<<< HEAD
 const items = [{ name: "Product1", price: 80, quantity: 4 }];
 // sendSalesReport(175, { orderId: "1234", items });
 sendEmailsToUsers();
+=======
+disableExpiredAds();
+deleteEvent();
+>>>>>>> 17cdba0227013f2f184cfbd9308ac30f50446fd0
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
@@ -143,8 +153,10 @@ const policyRouter = require("./api/routes/policy");
 const paymentRouter = require("./api/routes/payment");
 const { errorResponder } = require("./utils/http_responder");
 const carrier = require("./api/routes/carrier");
+const calenderRouter = require("./api/routes/calender");
 const stripeRouter = require("./api/routes/stripe");
 const eventRouter = require("./api/routes/event");
+const boardRouter = require("./api/routes/board");
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
@@ -167,6 +179,11 @@ app.use("/api/carrier", carrier);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/company", companyRoute);
 app.use("/api/event", eventRouter);
+<<<<<<< HEAD
+=======
+app.use("/api/calender", calenderRouter);
+app.use("/api/board", boardRouter);
+>>>>>>> 17cdba0227013f2f184cfbd9308ac30f50446fd0
 app.use("/api/freelancer/payment", freelancePaymentRouter);
 
 app.use("/api/products", productRouter);

@@ -166,6 +166,12 @@ const userSchema = mongoose.Schema({
      about: {
           type: String,
      },
+     serviceWishlist: [
+          {
+               type: mongoose.Schema.Types.ObjectId,
+               ref: "Service",
+          },
+     ],
      tokens: [
           {
                token: {

@@ -6,7 +6,6 @@ const serviceOrderSchema = new mongoose.Schema({
           type: Date,
           default: null,
      },
-
      orderDate: {
           type: Date,
           default: Date.now,
@@ -20,19 +19,31 @@ const serviceOrderSchema = new mongoose.Schema({
      },
      service: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Service", // assuming you have a Service model
+          ref: "Service",
           required: true,
+     },
+     status: {
+          type: String,
+          default: "pending",
      },
      customer: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "User", // assuming you have a Customer model
+          ref: "User",
           required: true,
+     },
+     paymentStatus: {
+          type: String,
+          default: "pending", 
+     },
+     paymentDate: {
+          type: Date,
+          default: null, 
      },
 });
 
 serviceOrderSchema.pre("save", function (next) {
      if (this.isNew) {
-          this.orderId = orderCounter++; // Increment the counter for each new order
+          this.orderId = orderCounter++;
      }
      next();
 });

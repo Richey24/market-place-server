@@ -4,24 +4,42 @@ const fs = require("fs");
 const User = require("../../model/User");
 const Rating = require("../../model/Rating");
 const { ServiceThirdCat } = require("../../model/ServiceCategory");
+const { default: mongoose } = require("mongoose");
+const Review = require("../../model/reviews");
 const blobClient = BlobServiceClient.fromConnectionString(
      "DefaultEndpointsProtocol=https;AccountName=absa7kzimnaf;AccountKey=8sH4dhZjJa8cMyunmS1iDmwve5hZKLo5kaA1M9ubZScLCJ2oEsuSvWT46P2t+ouKoCwFENosnC4m+AStWRQ+rQ==;EndpointSuffix=core.windows.net",
 );
 const containerClient = blobClient.getContainerClient("newcontainer");
+const { default: algoliasearch } = require("algoliasearch");
+const { default: axios } = require("axios");
 
 exports.createService = async (req, res) => {
      try {
           let user = req.userData;
+       
           //   console.log("user", user);
           //   const file = req.file;
           if (!user) {
                return res.status(400).json({ message: "Send userId", status: false });
           }
-
           const result = await Service.create({
                ...req.body,
                userId: user._id,
                email: user?.email,
+               timeZone: timezone,
+          });
+
+          const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
+          const index = client.initIndex("service-title");
+          index.search(req.body.title).then(async ({ hits }) => {
+               if (hits.length < 1) {
+                    await index.saveObject(
+                         { title: req.body.title },
+                         {
+                              autoGenerateObjectIDIfNotExist: true,
+                         },
+                    );
+               }
           });
           //   await ServiceThirdCat.findOneAndUpdate({ name: serviceType }, { $inc: { count: 1 } });
           res.status(201).json({ result, status: true });
@@ -89,6 +107,7 @@ exports.toggleServiceAvailability = async (req, res) => {
           res.status(500).json({ err, status: false });
      }
 };
+
 exports.getAllService = async (req, res) => {
      try {
           const result = await Service.find({});
@@ -101,13 +120,24 @@ exports.getAllService = async (req, res) => {
 exports.getOneService = async (req, res) => {
      try {
           const id = req.params.id;
-          if (!id) {
-               return res.status(400).json({ message: "Send service id", status: false });
+          if (!id || !mongoose.isValidObjectId(id)) {
+               return res
+                    .status(400)
+                    .json({ message: "Invalid or missing service id", status: false });
           }
-          const result = await Service.findById(id);
-          res.status(200).json({ result, status: true });
+
+          const service = await Service.findById(id)
+               .populate("userId") // Populate the userId field
+               .exec();
+
+          if (!service) {
+               return res.status(404).json({ message: "Service not found", status: false });
+          }
+
+          res.status(200).json({ service, status: true });
      } catch (err) {
-          res.status(500).json({ err, status: false });
+          console.error(err); // Log the error for internal tracking
+          res.status(500).json({ message: "An error occurred", status: false });
      }
 };
 
@@ -119,6 +149,43 @@ exports.getServiceByUserId = async (req, res) => {
           }
           const result = await Service.find({ userId: user?._id });
           res.status(200).json({ result, status: true });
+     } catch (err) {
+          res.status(500).json({ err, status: false });
+     }
+};
+
+exports.getServicesByCategoryName = async (req, res) => {
+     try {
+          const categoryName = req.params.categoryName;
+          const services = await Service.find({ category: categoryName }); // Assuming 'category' field in your Service model
+          res.json({ services, status: true });
+     } catch (error) {
+          res.status(500).send({ message: error.message });
+     }
+};
+
+exports.getServiceByUserIdParams = async (req, res) => {
+     try {
+          let id = req.params.id;
+
+          if (!id) {
+               return res.status(400).json({ message: "Send user id", status: false });
+          }
+
+          // Convert string to ObjectId
+          // const objectId = mongoose.Types.ObjectId(id);
+
+          // Fetch services and populate user details
+          let services = await Service.find({}).populate({
+               path: "userId",
+               match: { _id: id },
+          });
+
+          // Filter out services that don't match the userId
+          services = services.filter((service) => service.userId && service.userId._id.equals(id));
+
+          // console.log("id", id, services);
+          res.status(200).json({ services, status: true });
      } catch (err) {
           res.status(500).json({ err, status: false });
      }
@@ -193,5 +260,83 @@ exports.rateService = async (req, res) => {
           res.status(200).json({ result, status: true });
      } catch (err) {
           res.status(500).json({ err, status: false });
+     }
+};
+
+exports.addReview = async (req, res) => {
+     const { serviceId, userId, rating, reviewText } = req.body;
+
+     try {
+          const review = new Review({
+               service: serviceId,
+               user: userId,
+               rating,
+               reviewText,
+          });
+
+          await review.save();
+          res.status(201).json({ message: "Review added successfully", status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.getServiceReviews = async (req, res) => {
+     const { serviceId } = req.params;
+
+     try {
+          const reviews = await Review.find({ service: serviceId }).populate("user");
+          res.json({ reviews, status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.updateReview = async (req, res) => {
+     const { reviewId } = req.params;
+     const { rating, reviewText } = req.body;
+
+     try {
+          const review = await Review.findByIdAndUpdate(
+               reviewId,
+               { rating, reviewText },
+               { new: true },
+          );
+          if (!review) {
+               return res.status(404).json({ message: "Review not found", status: false });
+          }
+          res.json({ message: "Review updated successfully", review, status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.deleteReview = async (req, res) => {
+     const { reviewId } = req.params;
+
+     try {
+          const review = await Review.findByIdAndDelete(reviewId);
+          if (!review) {
+               return res.status(404).json({ message: "Review not found", status: false });
+          }
+          res.json({ message: "Review deleted successfully", status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
+     }
+};
+
+exports.getReviewsByServiceUserId = async (req, res) => {
+     const serviceUserId = req.params.userId;
+
+     try {
+          const services = await Service.find({ userId: serviceUserId }).exec();
+
+          const serviceIds = services.map((service) => service._id);
+
+          const reviews = await Review.find({ service: { $in: serviceIds } }).exec();
+
+          res.json({ reviews, status: true });
+     } catch (err) {
+          res.status(500).json({ message: err.message });
      }
 };

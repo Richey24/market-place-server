@@ -8,6 +8,8 @@ const {
      findCompaniesAndPopulateUser,
 } = require("../api/controllers/companyController");
 const OrderEmail = require("../model/OrderEmails");
+const Event = require("../model/Event");
+const Advert = require("../model/Advert");
 
 const sendOnboardingEmail = (email, name, type) => {
      const startDate = new Date();
@@ -66,7 +68,7 @@ const sendOnboardingEmail = (email, name, type) => {
      }
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -221,7 +223,7 @@ const sendWelcomeEmail = (email, name, type) => {
      }
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -334,7 +336,7 @@ const sendAdminResetPasswordMail = (email, name, adminId, token, url) => {
 `;
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -445,7 +447,7 @@ const sendAdminWelcomeMail = (email, name, adminId, token, url) => {
 `;
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -553,20 +555,8 @@ const sendTrialEndReminderEmail = (email, name, company_id, type) => {
           },
      });
 
-     let subject, trialType, introMessage;
-
-     if (type === "ecommerce") {
-          subject = "Reminder: Your Trial Period Ends Soon";
-          trialType = "ecommerce marketplace";
-          introMessage = `<p>We wanted to remind you that your trial period on our vibrant and dynamic ${trialType} is ending soon.</p>`;
-     } else if (type === "service") {
-          subject = "Reminder: Your Trial Period Ends Soon";
-          trialType = "iMarketplace Service";
-          introMessage = `<p>We wanted to remind you that your trial period for our ${trialType} is ending soon.</p>`;
-     }
-
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -722,7 +712,7 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
      }
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -832,7 +822,7 @@ const sendSubscriptionEmail = (email, name) => {
           },
      });
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "Thank You for Subscribing to Our Service",
           html: `
@@ -941,7 +931,7 @@ const sendSubscriptionExpiredEmail = (email, name) => {
           },
      });
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "Subscription Expired or Canceled",
           html: `
@@ -1047,7 +1037,7 @@ const sendCouponEmail = (email, name) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "FREE Ads Code: Supercharge Your Sales Today!",
           html: `
@@ -1167,7 +1157,7 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "Reset Password",
           html: `
@@ -1278,7 +1268,7 @@ const sendSubscriptionReminderEmail = (email, name, trialEndDate) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "Reminder: Subscription Required to Keep Your Account Active",
           html: `
@@ -1403,7 +1393,7 @@ const sendAccountDisablingReminderEmail = (email, name, trialEndDate) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "Important: Your Account Will Be Disabled Tomorrow",
           html: `
@@ -1511,7 +1501,7 @@ const sendSubscriptionCancelEmail = (email, name, token) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "Your Subscription - Let's Talk",
           html: `
@@ -1621,7 +1611,7 @@ const sendAdminMessage = (email, name, message) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: "Important: New Message From Admin",
           html: `
@@ -1720,7 +1710,7 @@ const sendVendorMessage = (email, name, message, orderID) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: `Important: New Message Regarding Your Order: ${orderID}`,
           html: `
@@ -1807,6 +1797,105 @@ const sendVendorMessage = (email, name, message, orderID) => {
           }
      });
 };
+const sendCreateEventMail = (email, token) => {
+     const transporter = nodemailer.createTransport({
+          host: "smtp.office365.com",
+          port: 587,
+          secure: false,
+          auth: {
+               user: process.env.EMAIL,
+               pass: process.env.PASSWORD,
+          },
+     });
+
+     const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: `Finish Creating Your Event`,
+          html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px.
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+          .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+          }
+          .cta-button:hover {
+            background-color: #0056b3;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class "header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">Finish Creating Your Event</h1>
+          </div>
+          <div class="message">
+            <p>Follow this link to confirm your email and finish creating your event</p>
+            <a class="cta-button" href="https://ishop.black/event/new-event?token=${token}">Finish</a>
+            </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `,
+     };
+
+     transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+               console.log(error);
+          } else {
+               console.log("Email sent: " + info.response);
+               // do something useful
+          }
+     });
+};
 
 const sendRatingMail = (email, name, url, product) => {
      const transporter = nodemailer.createTransport({
@@ -1820,7 +1909,7 @@ const sendRatingMail = (email, name, url, product) => {
      });
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: `Your Order ${product._id} - Please rate the products you purchased!`,
           html: `
@@ -1969,7 +2058,7 @@ const sendAdvertisementNotificationEmail = (
   `;
 
      const mailOptions = {
-          from: "info@israelbiblecamp.com",
+          from: process.env.EMAIL,
           to: email,
           subject: subject,
           html: `
@@ -2618,6 +2707,48 @@ const publishServiceItemsCronJob = async () => {
      });
 };
 
+const disableExpiredAds = async () => {
+     cron.schedule("* * * * *", async () => {
+          console.log("Running a task every minute to check for expired subscriptions");
+
+          try {
+               const companies = await Company.find({});
+
+               for (const company of companies) {
+                    let isUpdated = false;
+
+                    for (const subscription of company.adsSubscription) {
+                         const now = new Date();
+                         if (
+                              subscription.currentPeriodEnd &&
+                              now > subscription.currentPeriodEnd &&
+                              subscription.status !== "DISABLED"
+                         ) {
+                              subscription.status = "DISABLED";
+                              isUpdated = true;
+
+                              // If the subscription has an advertId, find and disable the associated advert
+                              if (subscription.advertId) {
+                                   const advert = await Advert.findById(subscription.advertId);
+                                   if (advert) {
+                                        advert.status = "DISABLED";
+                                        await advert.save();
+                                   }
+                              }
+                         }
+                    }
+
+                    if (isUpdated) {
+                         await company.save();
+                    }
+               }
+          } catch (error) {
+               console.error("Error running the cron job:", error);
+          }
+          console.log("Cron job executed successfully for expired ads");
+     });
+};
+
 const calculateNextDay = () => {
      const currentDate = new Date();
      const nextDay = new Date(currentDate);
@@ -2630,6 +2761,17 @@ const calculateThreeWeeksLater = (nextDay) => {
      const threeWeeksLater = new Date(nextDay);
      threeWeeksLater.setDate(nextDay?.getDate() + 21);
      return threeWeeksLater;
+};
+
+const deleteEvent = () => {
+     cron.schedule("0 0 * * *", async () => {
+          const events = await Event.find({});
+          events.forEach(async (event) => {
+               if (Date.now() > new Date(event.date).getTime()) {
+                    await Event.findByIdAndDelete(event._id);
+               }
+          });
+     });
 };
 
 module.exports = {
@@ -2652,6 +2794,10 @@ module.exports = {
      sendVendorMessage,
      publishServiceItemsCronJob,
      sendSubscriptionCancelEmail,
+     deleteUserData,
+     disableExpiredAds,
+     deleteEvent,
+     sendCreateEventMail,
      sendSalesReport,
      sendEmailsToUsers,
 };
