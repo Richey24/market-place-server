@@ -575,6 +575,7 @@ exports.editBillingAddress = async (req, res) => {
 };
 
 exports.updateUserDetails = async (req, res) => {
+     console.log("Request body", req.body);
      try {
           const updatedUserData = {
                firstname: req.body?.firstname,
@@ -583,8 +584,11 @@ exports.updateUserDetails = async (req, res) => {
                phone: req.body?.phone,
                image: req.body?.image,
                sales_opt_in: req.body?.sales_opt_in,
-               ...req.body,
+               salesEmailReport: req.body?.salesEmailReport,
+               timeZone: req.body?.timeZone,
           };
+
+          console.log("updatedUserData", updatedUserData);
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
           const updatedUser = await User.findByIdAndUpdate(
@@ -617,6 +621,7 @@ exports.updateUserDetails = async (req, res) => {
                role: updatedUser.role,
                company: updatedUser.company,
                sales_opt_in: updatedUser.sales_opt_in,
+               salesEmailReport: updatedUser.salesEmailReport,
           };
 
           res.status(200).json({ user: userWithoutPassword, company, status: true });
