@@ -575,6 +575,7 @@ exports.updateUserDetails = async (req, res) => {
                image: req.body?.image,
                sales_opt_in: req.body?.sales_opt_in,
                salesEmailReport: req.body?.salesEmailReport,
+               timeZone: req.body?.timeZone,
           };
 
           console.log("updatedUserData", updatedUserData);

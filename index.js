@@ -11,6 +11,7 @@ const {
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
      sendSalesReport,
+     sendEmailsToUsers,
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -111,7 +112,8 @@ reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
 const items = [{ name: "Product1", price: 80, quantity: 4 }];
-sendSalesReport(175, { orderId: "1234", items });
+// sendSalesReport(175, { orderId: "1234", items });
+sendEmailsToUsers();
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");

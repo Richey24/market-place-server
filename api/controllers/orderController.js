@@ -209,11 +209,24 @@ exports.createOrder = async (req, res) => {
           const orderId = await Odoo.execute_kw("sale.order", "create", [orderData]);
           console.log("Order created successfully. Order ID:", orderId);
 
-          const items = productData.map(({ productId, qty, price_unit }) => ({
-               name: productId,
-               price: price_unit,
-               quantity: qty,
-          }));
+          // const items = productData.map(({ productId, qty, price_unit }) => ({
+          //      name: productId,
+          //      price: price_unit,
+          //      quantity: qty,
+          // }));
+          const items = await Promise.all(
+               productData.map(async ({ productId, qty, price_unit }) => {
+                    // Get product details using getProductById
+                    const productDetails = await getProductById(productId);
+                    // Extract product name from product details
+                    const productName = productDetails.display_name || productId;
+                    return {
+                         name: productName,
+                         price: price_unit,
+                         quantity: qty,
+                    };
+               }),
+          );
           const orderDetails = {
                orderId,
                items,

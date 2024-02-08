@@ -1979,6 +1979,7 @@ const sendAdvertisementNotificationEmail = (
             <style>
                  /* CSS styles for the email template */
                  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
                  body {
                       font-family: 'Montserrat', Arial, sans-serif;
@@ -2056,7 +2057,7 @@ const sendAdvertisementNotificationEmail = (
 const createOrderTable = (order) => {
      let table = `
           <h3>Order # ${order.orderId}</h3>
-          <table border="1">
+          <table border="1" class='table'>
             <tr>
               <th>SN</th>
               <th>Item</th>
@@ -2078,13 +2079,99 @@ const createOrderTable = (order) => {
      return table;
 };
 
+const createOrderReport = (orders) => {
+     let totalRevenue;
+     let numberOfOrders;
+     let numberOfItems;
+
+     if (Array.isArray(orders)) {
+          numberOfOrders = orders.length;
+          orders.forEach((order) => {
+               order.items.forEach((item) => {
+                    numberOfItems += item.quantity;
+                    totalRevenue += item.quantity * item.price;
+               });
+          });
+     } else {
+          numberOfOrders = 1;
+          orders.items.forEach((item) => {
+               numberOfItems += item.quantity;
+          });
+          totalRevenue = orders.items.reduce((total, item) => {
+               const subtotal = item.quantity * item.price;
+               return total + subtotal;
+          }, 0);
+     }
+     let report = `
+      <div class='row'>
+        <div className="col-md-6 col-lg-4 ">
+          <div
+              className="border-1 rounded h-100 position-relative overflow-hidden d-flex flex-column px-3 py-4  "
+              style={{ borderStyle: "solid", borderColor: "#B886FC" }}
+          >
+            <div className="d-flex justify-content-end pt-1 ps-0 flex-grow-1">                
+                <div className="text-end">                     
+                     <p className="py-0 my-0 fs-3 fw-semibold text-opacity-75">                          
+                             ${Number(totalRevenue).toLocaleString()}                          
+                     </p>
+                </div>
+            </div> 
+            <div className="lh-1">
+              <p className="py-0 my-0 ">Total Revenue</p>  
+            </div>        
+          </div>
+        </div>
+
+        <div className="col-md-6 col-lg-4 ">
+          <div
+              className="border-1 rounded h-100 position-relative overflow-hidden d-flex flex-column px-3 py-4  "
+              style={{ borderStyle: "solid", borderColor: "#B886FC" }}
+          >
+            <div className="d-flex justify-content-end pt-1 ps-0 flex-grow-1">                
+                <div className="text-end">                     
+                     <p className="py-0 my-0 fs-3 fw-semibold text-opacity-75">                          
+                             ${Number(numberOfItems).toLocaleString()}                          
+                     </p>
+                </div>
+            </div> 
+            <div className="lh-1">
+              <p className="py-0 my-0 ">Total Items</p>  
+            </div>        
+          </div>
+        </div>
+
+        <div className="col-md-6 col-lg-4 ">
+          <div
+              className="border-1 rounded h-100 position-relative overflow-hidden d-flex flex-column px-3 py-4  "
+              style={{ borderStyle: "solid", borderColor: "#B886FC" }}
+          >
+            <div className="d-flex justify-content-end pt-1 ps-0 flex-grow-1">                
+                <div className="text-end">                     
+                     <p className="py-0 my-0 fs-3 fw-semibold text-opacity-75">                          
+                             ${Number(numberOfOrders).toLocaleString()}                          
+                     </p>
+                </div>
+            </div> 
+            <div className="lh-1">
+              <p className="py-0 my-0 ">Number Of Orders</p>  
+            </div>        
+          </div>
+        </div>
+      </div>
+    `;
+
+     return report;
+};
+
 const consolidateOrdersTables = (orders) => {
      const orderTables = orders.map((order) => createOrderTable(order)).join("<br>");
      return orderTables;
 };
 
 const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
-     const { orderId, items } = orderDetails;
+     //  const { orderId, items } = orderDetails;
+     const orderTable = createOrderTable(orderDetails);
+     const report = createOrderReport(orderDetails);
      const transporter = nodemailer.createTransport({
           host: "smtp.office365.com",
           port: 587,
@@ -2106,6 +2193,7 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
         <style>
           /* CSS styles for the email template */
           @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
           body {
             font-family: 'Montserrat', Arial, sans-serif;
@@ -2164,31 +2252,8 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
           <div class="message">
             <h2>Purchased Today:</h2>
             <p><strong>Order #:</strong> ${orderId}</p>
-            <table>
-            <thead>
-              <tr>
-                <th>SN</th>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${items
-                   .map(
-                        (item, index) => `
-                <tr>
-                  <td>${index + 1}</td>
-                  <td>${item.name}</td>
-                  <td>${item.price}</td>
-                  <td>${item.quantity}</td>
-                </tr>
-              `,
-                   )
-                   .join("")}
-            </tbody>
-          </table>
-    
+           ${orderTable} 
+           ${report}   
           </div>
           <div class="footer">
             <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
@@ -2201,7 +2266,7 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
 
      transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
-               console.log(error);
+               console.log("Email sending error", error);
           } else {
                console.log("Email sent: " + info.response);
                // do something useful
@@ -2209,9 +2274,7 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
      });
 };
 
-const sendPurchaseEmailOnceDaily = (vendorEmail, orders) => {
-     const ordersTable = consolidateOrdersTables(orders);
-
+const sendPurchaseEmailOnceDaily = (vendorEmail, ordersTable, report, callback) => {
      const transporter = nodemailer.createTransport({
           host: "smtp.office365.com",
           port: 587,
@@ -2227,78 +2290,80 @@ const sendPurchaseEmailOnceDaily = (vendorEmail, orders) => {
           to: vendorEmail,
           subject: `Purchased Today`,
           html: `
-   <!DOCTYPE html>
-   <html>
-   <head>
-     <style>
-       /* CSS styles for the email template */
-       @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    /* CSS styles for the email template */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-       body {
-         font-family: 'Montserrat', Arial, sans-serif;
-         line-height: 1.6;
-       }
-       .container {
-         max-width: 600px;
-         margin: 0 auto;
-         padding: 20px;
-         background-color: #f5f5f5;
-         border-radius: 5px;
-       }
-       .header {
-         text-align: center;
-         margin-bottom: 20px;
-       }
-       .message {
-         margin-bottom: 20px;
-         background-color: #ffffff;
-         padding: 20px;
-         border-radius: 5px.
-       }
-       .highlight {
-         font-weight: bold;
-       }
-       .footer {
-         margin-top: 20px;
-         text-align: center;
-         font-size: 12px;
-       }
-       .logo {
-         display: block;
-         margin: 0 auto;
-         max-width: 200px;
-       }
-       .cta-button {
-         display: inline-block;
-         margin-top: 20px;
-         padding: 10px 20px;
-         background-color: #007bff;
-         color: #ffffff;
-         text-decoration: none;
-         border-radius: 5px;
-       }
-       .cta-button:hover {
-         background-color: #0056b3;
-       }
-     </style>
-   </head>
-   <body>
-     <div class="container">
-       <div class "header">
-         <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-         <h1 style="color: #333333;">New Message Regarding Your Order: ${orderId}</h1>
-       </div>
-       <div class="message">
-         <h2>Consolidated Order Details</h2>
-         ${ordersTable} 
-       </div>
-       <div class="footer">
-         <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
-       </div>
-     </div>
-   </body>
-   </html>
- `,
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .message {
+      margin-bottom: 20px;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px.
+    }
+    .highlight {
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto;
+      max-width: 200px;
+    }
+    .cta-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .cta-button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class "header">
+      <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+      <h1 style="color: #333333;">New Message Regarding Your Orders</h1>
+    </div>
+    <div class="message">
+      <h2>Consolidated Order Details</h2>
+      ${ordersTable} 
+      ${report}
+    </div>
+    <div class="footer">
+      <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+    </div>
+  </div>
+</body>
+</html>
+`,
      };
 
      transporter.sendMail(mailOptions, function (error, info) {
@@ -2306,27 +2371,63 @@ const sendPurchaseEmailOnceDaily = (vendorEmail, orders) => {
                console.log(error);
           } else {
                console.log("Email sent: " + info.response);
-               // do something useful
+               // Execute the callback function if provided (indicating successful email delivery)
+               if (callback) {
+                    callback();
+               }
           }
      });
 };
+const prepareAndSendEmail = async (vendorEmail) => {
+     const userOrders = await OrderEmail.findOne({ email: vendorEmail });
 
-async function getUsersAndOrders() {
-     try {
-          const companies = await findCompaniesAndPopulateUser();
-          return companies;
-     } catch (error) {
-          console.error("Error fetching users and orders:", error);
-          throw error;
-     }
-}
+     const ordersTable = consolidateOrdersTables(userOrders.orders);
+     const report = createOrderReport(userOrders.orders);
 
-async function sendEmailsToUsers(users) {
-     for (const user of users) {
-          const ordersTable = consolidateOrdersTables(user.orders);
-          await sendPurchaseEmailOnceDaily(user.email, ordersTable);
-          console.log(`Email sent to ${user.name} (${user.email}) with orders.`);
-     }
+     sendPurchaseEmailOnceDaily(userOrders.email, ordersTable, report, async () => {
+          await OrderEmail.deleteOne({ _id: userOrders._id });
+          console.log(`OrderEmail document deleted after successful email delivery.`);
+     });
+};
+async function sendEmailsToUsers() {
+     console.log("Cron job to send order emails to vendors");
+     const fetchUsers = async () => {
+          const users = await OrderEmail.find({});
+          updateCronJobs(users);
+          console.log("Order emails cron job executed successfully");
+     };
+
+     const updateCronJobs = (users) => {
+          try {
+               const cronJobs = [];
+               for (const user of users) {
+                    const job = cron.schedule(
+                         "0 12 * * *",
+                         async () => {
+                              try {
+                                   await prepareAndSendEmail(user.email);
+                                   console.log(
+                                        `Order emails sent successfully for user ${user.email}.`,
+                                   );
+                              } catch (error) {
+                                   console.error(
+                                        `Error sending order emails for user ${user.email}:`,
+                                        error,
+                                   );
+                              }
+                         },
+                         { timezone: user.timeZone },
+                    );
+                    cronJobs.push(job);
+               }
+               return cronJobs;
+          } catch (error) {
+               console.error("Error sending emails to users:", error);
+          }
+     };
+
+     fetchUsers();
+     cron.schedule("0 * * * *", fetchUsers);
 }
 
 const sendSalesReport = async (companyId, orderDetails) => {
@@ -2336,7 +2437,6 @@ const sendSalesReport = async (companyId, orderDetails) => {
                const { user_id: user } = company;
                if (user.salesEmailReport.status) {
                     if (user.salesEmailReport.frequency === "Per sales") {
-                         console.log(user.email);
                          sendPurchaseEmailPerSales(user.email, orderDetails);
                     } else {
                          // Find existing OrderEmail document for the user's email
@@ -2352,12 +2452,12 @@ const sendSalesReport = async (companyId, orderDetails) => {
                               // If existing OrderEmail document found, push new order to orders array
                               existingOrderEmail.orders.push(newOrder);
                               await existingOrderEmail.save();
-                              console.log("Order added to existing OrderEmail document");
                          } else {
                               // If no existing OrderEmail document found, create new document
                               const orderEmail = new OrderEmail({
                                    email: user.email,
                                    orders: [newOrder],
+                                   timeZone: user.timeZone,
                               });
                               await orderEmail.save();
                               console.log("New OrderEmail document created with order");
@@ -2553,4 +2653,5 @@ module.exports = {
      publishServiceItemsCronJob,
      sendSubscriptionCancelEmail,
      sendSalesReport,
+     sendEmailsToUsers,
 };

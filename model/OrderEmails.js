@@ -18,6 +18,7 @@ const orderEmailSchema = mongoose.Schema({
                ],
           },
      ],
+     timeZone: { type: String, default: "America/New_York" },
      status: { type: String, default: "Pending" },
 });
 
