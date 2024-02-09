@@ -5,7 +5,7 @@ const eventSchema = mongoose.Schema({
           type: String,
      },
      price: {
-          type: String,
+          type: Number,
      },
      description: {
           type: String,
@@ -90,11 +90,11 @@ const eventSchema = mongoose.Schema({
      },
      published: {
           type: Boolean,
-          default: false
+          default: false,
      },
      isAd: {
           type: Boolean,
-          default: false
+          default: false,
      },
      adsSubscription: [
           {

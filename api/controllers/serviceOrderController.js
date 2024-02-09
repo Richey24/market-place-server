@@ -182,13 +182,14 @@ exports.getOrderedServicesByVendors = async (req, res) => {
           }
 
           const services = await Service.find({ userId: user?._id }).exec();
-
+          console.log("services", services);
           const orders = await ServiceOrder.find({
                service: { $in: services.map((service) => service._id) },
           }).populate("service");
 
           res.json({ orders, status: true });
      } catch (err) {
+          console.log("err", err);
           res.status(500).json({ message: err.message });
      }
 };

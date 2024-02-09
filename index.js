@@ -10,6 +10,8 @@ const {
      reminderJob,
      scheduleUserDisablingCronJob,
      publishServiceItemsCronJob,
+     sendSalesReport,
+     sendEmailsToUsers,
      disableExpiredAds,
      deleteEvent,
 } = require("./config/helpers");
@@ -111,6 +113,9 @@ app.get("/odoo/test", async (req, res) => {
 reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
+const items = [{ name: "Product1", price: 80, quantity: 4 }];
+// sendSalesReport(175, { orderId: "1234", items });
+sendEmailsToUsers();
 disableExpiredAds();
 deleteEvent();
 

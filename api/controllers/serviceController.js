@@ -10,10 +10,13 @@ const blobClient = BlobServiceClient.fromConnectionString(
      "DefaultEndpointsProtocol=https;AccountName=absa7kzimnaf;AccountKey=8sH4dhZjJa8cMyunmS1iDmwve5hZKLo5kaA1M9ubZScLCJ2oEsuSvWT46P2t+ouKoCwFENosnC4m+AStWRQ+rQ==;EndpointSuffix=core.windows.net",
 );
 const containerClient = blobClient.getContainerClient("newcontainer");
+const { default: algoliasearch } = require("algoliasearch");
+const { default: axios } = require("axios");
 
 exports.createService = async (req, res) => {
      try {
           let user = req.userData;
+
           //   console.log("user", user);
           //   const file = req.file;
           if (!user) {
@@ -24,6 +27,7 @@ exports.createService = async (req, res) => {
                userId: user._id,
                email: user?.email,
           });
+
           const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
           const index = client.initIndex("service-title");
           index.search(req.body.title).then(async ({ hits }) => {
