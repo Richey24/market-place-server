@@ -7,7 +7,7 @@ const productController = require("../controllers/productController");
 // router.get("/:companyId/:productId", productController.getProductById);
 
 router.get("/category/:companyId/:categoryId", productController.getProductbyCategory);
-router.post("/", auth, multer().any("images"), productController.createProduct);
+router.post("/", auth, productController.createProduct);
 router.post("/variants", multer().any("images"), productController.createProductWithVariant);
 router.put("/:id", auth, multer().any("images"), productController.updateProduct);
 router.post("/multiple", productController.createMultipleProducts);
