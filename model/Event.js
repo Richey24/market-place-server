@@ -71,6 +71,9 @@ const eventSchema = mongoose.Schema({
      city: {
           type: String,
      },
+     state: {
+          type: String,
+     },
      address: {
           type: String,
      },

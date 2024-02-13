@@ -18,6 +18,7 @@ const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const webpush = require("web-push");
+const axios = require("axios");
 const { USER_ROLE } = require("../../schemas/user.schema");
 
 exports.register = async (req, res) => {
@@ -31,7 +32,7 @@ exports.register = async (req, res) => {
           // Fetch timezone information using the IP address
           const response = await axios.get(`http://ip-api.com/json/${ipAddress}`);
           const timezone = response.data.timezone;
-          
+
           console.log("Timezone:", timezone);
           // TODO: add tenant id to verify
           let user = await User.findOne({ email: req.body.email });
@@ -575,6 +576,7 @@ exports.editBillingAddress = async (req, res) => {
 };
 
 exports.updateUserDetails = async (req, res) => {
+     console.log("Request body", req.body);
      try {
           const updatedUserData = {
                firstname: req.body?.firstname,
@@ -583,8 +585,11 @@ exports.updateUserDetails = async (req, res) => {
                phone: req.body?.phone,
                image: req.body?.image,
                sales_opt_in: req.body?.sales_opt_in,
-               ...req.body,
+               salesEmailReport: req.body?.salesEmailReport,
+               timeZone: req.body?.timeZone,
           };
+
+          console.log("updatedUserData", updatedUserData);
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
           const updatedUser = await User.findByIdAndUpdate(
@@ -617,6 +622,7 @@ exports.updateUserDetails = async (req, res) => {
                role: updatedUser.role,
                company: updatedUser.company,
                sales_opt_in: updatedUser.sales_opt_in,
+               salesEmailReport: updatedUser.salesEmailReport,
           };
 
           res.status(200).json({ user: userWithoutPassword, company, status: true });
