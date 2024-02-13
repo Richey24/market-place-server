@@ -17,6 +17,7 @@ router.get("/inventory/products/out-of-stock", productController.productOutOfSto
 router.get("/inventory/total/sales/:startDate/:endDate", productController.totalSales);
 router.get("/inventory/quantity/sold/:startDate/:endDate", productController.totalSalesQuantity);
 router.get("/inventory/order/failed/:startDate/:endDate", productController.totalFailedOrder);
+router.delete("/delete/:id", productController.deleteProduct)
 
 router.get("/attributes", productController.fetchProductAttributes);
 router.post("/attributes", productController.createProductAttributes);
