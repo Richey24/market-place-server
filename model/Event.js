@@ -99,6 +99,7 @@ const eventSchema = mongoose.Schema({
           type: Boolean,
           default: false,
      },
+     tags: [String],
      adsSubscription: [
           {
                _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
