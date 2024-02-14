@@ -45,6 +45,9 @@ const getProductById = async (id) => {
                     "website_meta_keywords",
                ],
           ]);
+          if (productData.length === 0) {
+               return []
+          }
 
           let attributeLineIds = productData[0].attribute_line_ids || [];
           attributeLineIds = attributeLineIds?.map(async (attributeLineId) => {
@@ -672,7 +675,18 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => { };
+const deleteProduct = async (id) => {
+     try {
+          await Odoo.connect();
+          await Odoo.execute_kw("product.template", "unlink",
+               [[Number(id)]],
+          )
+          return true
+     } catch (error) {
+          console.log(error);
+          return false
+     }
+};
 
 // const getProductImageUrl = async (params) => {
 
@@ -695,4 +709,5 @@ module.exports = {
      updateProduct,
      searchProducts,
      addProductVariant,
+     deleteProduct
 };

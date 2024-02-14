@@ -15,6 +15,7 @@ const {
      searchProducts,
      rateProduct,
      addProductVariant,
+     deleteProduct,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -362,7 +363,7 @@ exports.productDetails = async (req, res) => {
 
      const details = await getProductById(productId);
 
-     const product = details.map((product) => {
+     const product = details?.map((product) => {
           return {
                id: product.id,
                website_url: product.website_url,
@@ -559,6 +560,19 @@ exports.updateProduct = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
+
+exports.deleteProduct = async (req, res) => {
+     const id = req.params.id
+     if (!id) {
+          return res.status(400).json({ message: "Send product id" })
+     }
+     const response = deleteProduct(id)
+     if (response) {
+          res.status(200).json({ message: "Product deleted successfully" })
+     } else {
+          res.status(500).json({ message: "Something went wrong" })
+     }
+}
 
 exports.salesProducts = async (req, res) => {
      // let companyId = req.params?.company_id;

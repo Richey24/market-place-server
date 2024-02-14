@@ -18,6 +18,7 @@ const Odoo = require("../../config/odoo.connection");
 const moment = require("moment");
 const mongoose = require("mongoose");
 const webpush = require("web-push");
+const axios = require("axios");
 const { USER_ROLE } = require("../../schemas/user.schema");
 
 exports.register = async (req, res) => {
@@ -31,7 +32,7 @@ exports.register = async (req, res) => {
           // Fetch timezone information using the IP address
           const response = await axios.get(`http://ip-api.com/json/${ipAddress}`);
           const timezone = response.data.timezone;
-          
+
           console.log("Timezone:", timezone);
           // TODO: add tenant id to verify
           let user = await User.findOne({ email: req.body.email });
