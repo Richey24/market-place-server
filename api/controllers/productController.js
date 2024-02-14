@@ -15,6 +15,7 @@ const {
      searchProducts,
      rateProduct,
      addProductVariant,
+     deleteProduct,
 } = require("../../services/product.service");
 const { initProducts } = require("../../utils/initProducts");
 
@@ -52,6 +53,8 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "x_subcategory",
                               "x_weight",
                               "x_rating",
+                              "x_images",
+                              "create_date",
                               "website_url",
                               "website_meta_keywords",
                          ],
@@ -62,7 +65,32 @@ exports.getProductbyCompanyId = async (req, res) => {
                     { fields: ["name", "public_categ_ids"] },
                );
 
-               res.status(200).json({ products: theProducts, status: true });
+               const products = theProducts.map((product) => {
+                    return {
+                         id: product.id,
+                         website_url: product.website_url,
+                         name: product.name,
+                         description: product.description,
+                         categ_id: product.categ_id,
+                         list_price: product.list_price,
+                         standard_price: product.standard_price,
+                         company_id: product.company_id,
+                         display_name: product.display_name,
+                         base_unit_count: product.base_unit_count,
+                         // image_1920: product.image_1920,
+                         // image_1024: product.image_1024,
+                         x_rating: product.x_rating,
+                         create_date: product.create_date,
+                         x_subcategory: product.x_subcategory,
+                         x_size: product.x_size,
+                         x_images: JSON.parse(product.x_images),
+                         x_weight: product.x_weight,
+                         x_color: product.x_color,
+                         x_dimension: product.x_dimension,
+                    };
+               });
+
+               res.status(200).json({ products: products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
           }
@@ -85,7 +113,7 @@ exports.getProductbyCategory = async (req, res) => {
 
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
-                         ["public_categ_ids", "=", categoryId], // Replace "categ_id" with the actual field name for the category
+                         ["categ_id", "=", categoryId], // Replace "categ_id" with the actual field name for the category
                          ["type", "=", "consu"],
                          ["company_id", "=", companyId], // If you want to filter by company
                     ],
@@ -103,6 +131,7 @@ exports.getProductbyCategory = async (req, res) => {
                          "x_color",
                          "x_dimension",
                          "x_size",
+                         "x_images",
                          "x_subcategory",
                          "x_weight",
                          "x_rating",
@@ -111,7 +140,32 @@ exports.getProductbyCategory = async (req, res) => {
                     ],
                ]);
 
-               res.status(200).json({ products: theProducts, status: true });
+               const products = theProducts.map((product) => {
+                    return {
+                         id: product.id,
+                         website_url: product.website_url,
+                         name: product.name,
+                         description: product.description,
+                         categ_id: product.categ_id,
+                         list_price: product.list_price,
+                         standard_price: product.standard_price,
+                         company_id: product.company_id,
+                         display_name: product.display_name,
+                         base_unit_count: product.base_unit_count,
+                         // image_1920: product.image_1920,
+                         // image_1024: product.image_1024,
+                         x_rating: product.x_rating,
+                         create_date: product.create_date,
+                         x_subcategory: product.x_subcategory,
+                         x_size: product.x_size,
+                         x_images: JSON.parse(product.x_images),
+                         x_weight: product.x_weight,
+                         x_color: product.x_color,
+                         x_dimension: product.x_dimension,
+                    };
+               });
+
+               res.status(200).json({ products: products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Category", status: false });
           }
@@ -177,8 +231,8 @@ exports.getFeaturedProducts = async (req, res) => {
                company_id: product.company_id,
                display_name: product.display_name,
                base_unit_count: product.base_unit_count,
-               image_1920: product.image_1920,
-               image_1024: product.image_1024,
+               // image_1920: product.image_1920,
+               // image_1024: product.image_1024,
                x_rating: product.x_rating,
                create_date: product.create_date,
                x_subcategory: product.x_subcategory,
@@ -205,7 +259,7 @@ exports.filterProducts = async (req, res) => {
                     [
                          "name",
                          "list_price",
-                         "image_512",
+                         // "image_512",
                          "categ_id",
                          "x_rating",
                          "rating_count",
@@ -215,6 +269,7 @@ exports.filterProducts = async (req, res) => {
                          "x_subcategory",
                          "x_weight",
                          "x_rating",
+                         "x_images",
                          "website_url",
                          "public_categ_ids",
                          "website_meta_keywords",
@@ -234,14 +289,15 @@ exports.filterProducts = async (req, res) => {
                          company_id: product.company_id,
                          display_name: product.display_name,
                          base_unit_count: product.base_unit_count,
-                         image_1920: product.image_1920,
-                         image_1024: product.image_1024,
+                         // image_1920: product.image_1920,
+                         // image_1024: product.image_1024,
                          x_rating: product.x_rating,
                          create_date: product.create_date,
                          x_subcategory: product.x_subcategory,
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
+                         x_images: JSON.parse(product.x_images),
                          x_dimension: product.x_dimension,
                     };
                });
@@ -260,6 +316,7 @@ exports.filterProducts = async (req, res) => {
                          "x_size",
                          "x_subcategory",
                          "x_weight",
+                         "x_images",
                          "x_rating",
                          "rating_count",
                          "website_url",
@@ -281,14 +338,15 @@ exports.filterProducts = async (req, res) => {
                          company_id: product.company_id,
                          display_name: product.display_name,
                          base_unit_count: product.base_unit_count,
-                         image_1920: product.image_1920,
-                         image_1024: product.image_1024,
+                         // image_1920: product.image_1920,
+                         // image_1024: product.image_1024,
                          x_rating: product.x_rating,
                          create_date: product.create_date,
                          x_subcategory: product.x_subcategory,
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
+                         x_images: JSON.parse(product.x_images),
                          x_dimension: product.x_dimension,
                     };
                });
@@ -304,7 +362,33 @@ exports.productDetails = async (req, res) => {
      const productId = req.params.id;
 
      const details = await getProductById(productId);
-     res.status(201).json({ product: details });
+
+     const product = details?.map((product) => {
+          return {
+               id: product.id,
+               website_url: product.website_url,
+               name: product.name,
+               description: product.description,
+               categ_id: product.categ_id,
+               list_price: product.list_price,
+               standard_price: product.standard_price,
+               company_id: product.company_id,
+               display_name: product.display_name,
+               base_unit_count: product.base_unit_count,
+               // image_1920: product.image_1920,
+               // image_1024: product.image_1024,
+               x_rating: product.x_rating,
+               create_date: product.create_date,
+               x_subcategory: product.x_subcategory,
+               x_size: product.x_size,
+               x_weight: product.x_weight,
+               x_color: product.x_color,
+               x_images: JSON.parse(product.x_images),
+               x_dimension: product.x_dimension,
+          };
+     });
+
+     res.status(201).json({ product: product });
 };
 
 exports.wishlistProduct = async (req, res) => {
@@ -391,6 +475,7 @@ exports.createProduct = async (req, res) => {
                     });
                }
           });
+          console.log(productId);
           res.status(201).json({ productId, status: true });
      } catch (err) {
           console.log("error", err);
@@ -401,6 +486,7 @@ exports.createProduct = async (req, res) => {
 exports.createProductWithVariant = async (req, res) => {
      // let user = req.userData;
      try {
+          console.log("req body", req.body);
           const client = algoliasearch("CM2FP8NI0T", "daeb45e2c3fb98833358aba5e0c962c6");
           const index = client.initIndex("market-product");
           let params = {
@@ -413,7 +499,7 @@ exports.createProductWithVariant = async (req, res) => {
                          //      '[[{"attributeId":3,"value":"423","price_extra":5},{"attributeId":1,"value":"666","price_extra":21},{"attributeId":1,"value":"888","price_extra":5},{"attributeId":1,"value":"211","price_extra":15}],[{"attributeId":3,"value":"444","price_extra":5},{"attributeId":3,"value":"999","price_extra":15},{"attributeId":3,"value":"801","price_extra":5}]]',
                          // ),
                     },
-                    images: req.files,
+                    // images: req.files,
                     is_variant: true,
                },
                // user: user
@@ -445,7 +531,7 @@ exports.updateProduct = async (req, res) => {
           };
 
           const theProduct = await updateProduct({ ...params });
-          const product = theProduct.map((product) => {
+          const products = theProducts.map((product) => {
                return {
                     id: product.id,
                     website_url: product.website_url,
@@ -457,14 +543,15 @@ exports.updateProduct = async (req, res) => {
                     company_id: product.company_id,
                     display_name: product.display_name,
                     base_unit_count: product.base_unit_count,
-                    image_1920: product.image_1920,
-                    image_1024: product.image_1024,
+                    // image_1920: product.image_1920,
+                    // image_1024: product.image_1024,
                     x_rating: product.x_rating,
                     create_date: product.create_date,
                     x_subcategory: product.x_subcategory,
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
+                    x_images: JSON.parse(product.x_images),
                     x_dimension: product.x_dimension,
                };
           });
@@ -473,6 +560,19 @@ exports.updateProduct = async (req, res) => {
           res.status(400).json({ err, status: false });
      }
 };
+
+exports.deleteProduct = async (req, res) => {
+     const id = req.params.id
+     if (!id) {
+          return res.status(400).json({ message: "Send product id" })
+     }
+     const response = deleteProduct(id)
+     if (response) {
+          res.status(200).json({ message: "Product deleted successfully" })
+     } else {
+          res.status(500).json({ message: "Something went wrong" })
+     }
+}
 
 exports.salesProducts = async (req, res) => {
      // let companyId = req.params?.company_id;
@@ -674,14 +774,15 @@ exports.createMultipleProducts = async (req, res) => {
                     company_id: product.company_id,
                     display_name: product.display_name,
                     base_unit_count: product.base_unit_count,
-                    image_1920: product.image_1920,
-                    image_1024: product.image_1024,
+                    // image_1920: product.image_1920,
+                    // image_1024: product.image_1024,
                     x_rating: product.x_rating,
                     create_date: product.create_date,
                     x_subcategory: product.x_subcategory,
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
+                    x_images: JSON.parse(product.x_images),
                     x_dimension: product.x_dimension,
                };
           });
@@ -712,14 +813,15 @@ exports.searchProduct = async (req, res) => {
                     company_id: product.company_id,
                     display_name: product.display_name,
                     base_unit_count: product.base_unit_count,
-                    image_1920: product.image_1920,
-                    image_1024: product.image_1024,
+                    // image_1920: product.image_1920,
+                    // image_1024: product.image_1024,
                     x_rating: product.x_rating,
                     create_date: product.create_date,
                     x_subcategory: product.x_subcategory,
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
+                    x_images: JSON.parse(product.x_images),
                     x_dimension: product.x_dimension,
                };
           });
@@ -760,6 +862,7 @@ exports.getBestSellingProducts = async (req, res) => {
                     "x_subcategory",
                     "x_weight",
                     "x_rating",
+                    "x_images",
                     "website_url",
                     "public_categ_ids",
                     "website_meta_keywords",
@@ -768,8 +871,33 @@ exports.getBestSellingProducts = async (req, res) => {
                null,
                null,
           ]);
+          const products = theProducts.map((product) => {
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    // image_1920: product.image_1920,
+                    // image_1024: product.image_1024,
+                    x_rating: product.x_rating,
+                    create_date: product.create_date,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    sales_count: product.sales_count,
+                    x_images: JSON.parse(product.x_images),
+                    x_dimension: product.x_dimension,
+               };
+          });
           res.status(200).json({
-               products: theProducts
+               products: products
                     ?.sort((a, b) => b?.sales_count - a?.sales_count)
                     ?.filter((_, idx) => idx < 3),
                status: true,
@@ -924,6 +1052,7 @@ exports.getAdsProduct = async (req, res) => {
                     "x_dimension",
                     "x_size",
                     "x_subcategory",
+                    "x_images",
                     "x_weight",
                     "x_rating",
                     "website_url",

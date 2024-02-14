@@ -71,6 +71,9 @@ const eventSchema = mongoose.Schema({
      city: {
           type: String,
      },
+     state: {
+          type: String,
+     },
      address: {
           type: String,
      },
@@ -96,6 +99,7 @@ const eventSchema = mongoose.Schema({
           type: Boolean,
           default: false,
      },
+     tags: [String],
      adsSubscription: [
           {
                _id: { type: mongoose.Schema.Types.ObjectId, auto: true },

@@ -23,8 +23,31 @@ const getProductById = async (id) => {
           await Odoo.connect();
           const productData = await Odoo.execute_kw("product.template", "search_read", [
                [["id", "=", productId]],
-               [],
+               [
+                    "id",
+                    "name",
+                    "display_name",
+                    "list_price",
+                    // "image_1920",
+                    "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
+                    "x_rating",
+                    "x_images",
+                    "rating_count",
+                    "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
+               ],
           ]);
+          if (productData.length === 0) {
+               return []
+          }
 
           let attributeLineIds = productData[0].attribute_line_ids || [];
           attributeLineIds = attributeLineIds?.map(async (attributeLineId) => {
@@ -112,6 +135,7 @@ const getFeaturedProducts = async (params) => {
                     "x_subcategory",
                     "x_weight",
                     "x_rating",
+                    "x_images",
                     "rating_count",
                     "website_url",
                     "public_categ_ids",
@@ -135,7 +159,27 @@ const searchProducts = async (params) => {
                "product.template",
                "search_read",
                [[...params]],
-
+               [
+                    "id",
+                    "name",
+                    "display_name",
+                    "list_price",
+                    // "image_1920",
+                    "standard_price",
+                    "categ_id",
+                    "rating_avg",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
+                    "x_rating",
+                    "x_images",
+                    "rating_count",
+                    "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
+               ],
                {},
           );
           return products;
@@ -146,14 +190,14 @@ const searchProducts = async (params) => {
 
 const addProduct = async (params) => {
      try {
-          const images = params.product.images || [];
+          // const images = params.product.images || [];
           // Convert each image buffer to base64
-          const base64Images = images.map((image) => {
-               return {
-                    ...image,
-                    base64: image.buffer.toString("base64"),
-               };
-          });
+          // const base64Images = images.map((image) => {
+          //      return {
+          //           ...image,
+          //           base64: image.buffer.toString("base64"),
+          //      };
+          // });
 
           // Connect to Odoo instance
           await params.odoo.connect();
@@ -173,6 +217,7 @@ const addProduct = async (params) => {
                x_subcategory: params.product.subcategory,
                x_size: params.product.size,
                x_weight: params.product.weight,
+               x_images: params.product.images,
                x_dimension: params.product.dimension,
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
@@ -192,26 +237,26 @@ const addProduct = async (params) => {
                }
           }
           // // Write the images if provided
-          for (const base64Image of base64Images) {
-               await params.odoo.execute_kw("product.template", "write", [
-                    [productId],
-                    { image_1920: base64Image.base64 },
-               ]);
+          // for (const base64Image of base64Images) {
+          //      await params.odoo.execute_kw("product.template", "write", [
+          //           [productId],
+          //           { image_1920: base64Image.base64 },
+          //      ]);
 
-               const recordId = await Odoo.execute_kw("ir.attachment", "create", [
-                    {
-                         name: "productId.png",
-                         datas: base64Image.base64,
-                         res_model: "ir.ui.view",
-                         res_id: productId,
-                         res_field: "product_images",
-                         public: true,
-                         company_id: params.product.company_id,
-                    },
-               ]);
+          //      const recordId = await Odoo.execute_kw("ir.attachment", "create", [
+          //           {
+          //                name: "productId.png",
+          //                datas: base64Image.base64,
+          //                res_model: "ir.ui.view",
+          //                res_id: productId,
+          //                res_field: "product_images",
+          //                public: true,
+          //                company_id: params.product.company_id,
+          //           },
+          //      ]);
 
-               console.log("Image saved with ID:", recordId);
-          }
+          //      console.log("Image saved with ID:", recordId);
+          // }
 
           // saveImageToOdoo(base64Images[0].base64);
           // Return the ID of the created product
@@ -295,6 +340,7 @@ const addProductVariant = async (params) => {
                display_name: params.product.name,
                website_published: params.product.published,
                company_id: params.product.company_id,
+               x_images: params.product.images,
                // qty_available: 5,
                // product_tag_ids: params.product.product_tag_ids
                //      ? JSON.parse(params.product.product_tag_ids)
@@ -396,36 +442,36 @@ const addProductVariant = async (params) => {
                });
           }
 
-          const images = params.product?.images || [];
-          // Convert each image buffer to base64
-          const base64Images = images.map((image) => {
-               return {
-                    ...image,
-                    base64: image.buffer.toString("base64"),
-               };
-          });
+          // const images = params.product?.images || [];
+          // // Convert each image buffer to base64
+          // const base64Images = images.map((image) => {
+          //      return {
+          //           ...image,
+          //           base64: image.buffer.toString("base64"),
+          //      };
+          // });
 
-          // // Write the images if provided
-          for (const base64Image of base64Images) {
-               await params.odoo.execute_kw("product.template", "write", [
-                    [templateId],
-                    { image_1920: base64Image.base64 },
-               ]);
+          // // // Write the images if provided
+          // for (const base64Image of base64Images) {
+          //      await params.odoo.execute_kw("product.template", "write", [
+          //           [templateId],
+          //           { image_1920: base64Image.base64 },
+          //      ]);
 
-               const recordId = await Odoo.execute_kw("ir.attachment", "create", [
-                    {
-                         name: "productId.png",
-                         datas: base64Image.base64,
-                         res_model: "ir.ui.view",
-                         res_id: templateId,
-                         res_field: "product_images",
-                         public: true,
-                         company_id: params.product.company_id,
-                    },
-               ]);
+          //      const recordId = await Odoo.execute_kw("ir.attachment", "create", [
+          //           {
+          //                name: "productId.png",
+          //                datas: base64Image.base64,
+          //                res_model: "ir.ui.view",
+          //                res_id: templateId,
+          //                res_field: "product_images",
+          //                public: true,
+          //                company_id: params.product.company_id,
+          //           },
+          //      ]);
 
-               console.log("Image saved with ID:", recordId);
-          }
+          //      console.log("Image saved with ID:", recordId);
+          // }
 
           return templateId;
      } else {
@@ -462,6 +508,7 @@ const updateProduct = async (params) => {
                x_color: params.product.color,
                x_subcategory: params.product.subcategory,
                x_size: params.product.size,
+               x_images: params.product.images,
                x_weight: params.product.weight,
                x_dimension: params.product.dimension,
                product_tag_ids: params.product.product_tag_ids
@@ -482,26 +529,26 @@ const updateProduct = async (params) => {
                throw new Error("Failed to update product data.");
           }
 
-          for (const base64Image of base64Images) {
-               await params.odoo.execute_kw("product.template", "write", [
-                    [productId],
-                    { image_1920: base64Image.base64 },
-               ]);
+          // for (const base64Image of base64Images) {
+          //      await params.odoo.execute_kw("product.template", "write", [
+          //           [productId],
+          //           { image_1920: base64Image.base64 },
+          //      ]);
 
-               const recordId = await Odoo.execute_kw("ir.attachment", "create", [
-                    {
-                         name: "productId.png",
-                         datas: base64Image.base64,
-                         res_model: "ir.ui.view",
-                         res_id: productId,
-                         res_field: "product_images",
-                         public: true,
-                         company_id: params.product.company_id,
-                    },
-               ]);
+          //      const recordId = await Odoo.execute_kw("ir.attachment", "create", [
+          //           {
+          //                name: "productId.png",
+          //                datas: base64Image.base64,
+          //                res_model: "ir.ui.view",
+          //                res_id: productId,
+          //                res_field: "product_images",
+          //                public: true,
+          //                company_id: params.product.company_id,
+          //           },
+          //      ]);
 
-               console.log("Image saved with ID:", recordId);
-          }
+          //      console.log("Image saved with ID:", recordId);
+          // }
 
           return result;
      } catch (error) {
@@ -514,19 +561,19 @@ const addMultipleProducts = async (params) => {
      try {
           const productIds = [];
           for (const product of params.products) {
-               const images = product?.images || [];
-               const base64Images = [];
+               // const images = product?.images || [];
+               // const base64Images = [];
 
-               // Convert each image URL to base64
-               for (const imageUrl of images) {
-                    const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-                    const imageBuffer = Buffer.from(response.data, "binary");
+               // // Convert each image URL to base64
+               // for (const imageUrl of images) {
+               //      const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
+               //      const imageBuffer = Buffer.from(response.data, "binary");
 
-                    base64Images.push({
-                         url: imageUrl,
-                         base64: imageBuffer.toString("base64"),
-                    });
-               }
+               //      base64Images.push({
+               //           url: imageUrl,
+               //           base64: imageBuffer.toString("base64"),
+               //      });
+               // }
 
                // // Connect to Odoo instance
                await params.odoo.connect();
@@ -542,6 +589,7 @@ const addMultipleProducts = async (params) => {
                     display_name: product.name,
                     website_published: product.published,
                     company_id: product.company_id,
+                    x_images: product.images
                };
 
                const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -549,12 +597,12 @@ const addMultipleProducts = async (params) => {
                ]);
 
                // // Write the images if provided
-               for (const base64Image of base64Images) {
-                    await params.odoo.execute_kw("product.template", "write", [
-                         [productId],
-                         { image_1920: base64Image.base64 },
-                    ]);
-               }
+               // for (const base64Image of base64Images) {
+               //      await params.odoo.execute_kw("product.template", "write", [
+               //           [productId],
+               //           { image_1920: base64Image.base64 },
+               //      ]);
+               // }
                productIds.push(productId);
                // Log the ID of the created product
                console.log(`Product created with ID: ${productId}`);
@@ -627,7 +675,18 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => {};
+const deleteProduct = async (id) => {
+     try {
+          await Odoo.connect();
+          await Odoo.execute_kw("product.template", "unlink",
+               [[Number(id)]],
+          )
+          return true
+     } catch (error) {
+          console.log(error);
+          return false
+     }
+};
 
 // const getProductImageUrl = async (params) => {
 
@@ -650,4 +709,5 @@ module.exports = {
      updateProduct,
      searchProducts,
      addProductVariant,
+     deleteProduct
 };
