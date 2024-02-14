@@ -114,7 +114,7 @@ reminderJob();
 scheduleUserDisablingCronJob();
 publishServiceItemsCronJob();
 const items = [{ name: "Product1", price: 80, quantity: 4 }];
-// sendSalesReport(175, { orderId: "1234", items });
+sendSalesReport(175, { orderId: "1234", items });
 sendEmailsToUsers();
 disableExpiredAds();
 deleteEvent();

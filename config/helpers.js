@@ -2146,6 +2146,20 @@ const sendAdvertisementNotificationEmail = (
 const createOrderTable = (order) => {
      let table = `
           <h3>Order # ${order.orderId}</h3>
+          <style>
+            .table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            .table th, .table td {
+                border: 1px solid #dddddd;
+                padding: 8px;
+                text-align: left;
+            }
+            .table th {
+                background-color: #f2f2f2;
+            }
+        </style>
           <table border="1" class='table'>
             <tr>
               <th>SN</th>
@@ -2169,9 +2183,9 @@ const createOrderTable = (order) => {
 };
 
 const createOrderReport = (orders) => {
-     let totalRevenue;
-     let numberOfOrders;
-     let numberOfItems;
+     let totalRevenue = 0;
+     let numberOfOrders = 0;
+     let numberOfItems = 0;
 
      if (Array.isArray(orders)) {
           numberOfOrders = orders.length;
@@ -2192,57 +2206,48 @@ const createOrderReport = (orders) => {
           }, 0);
      }
      let report = `
-      <div class='row'>
-        <div className="col-md-6 col-lg-4 ">
-          <div
-              className="border-1 rounded h-100 position-relative overflow-hidden d-flex flex-column px-3 py-4  "
-              style={{ borderStyle: "solid", borderColor: "#B886FC" }}
-          >
-            <div className="d-flex justify-content-end pt-1 ps-0 flex-grow-1">                
+      <div class='box-container'>
+        <div className="box">
+          <div class="box-content">
+            <div style="display: flex; justify-content: flex-end;">                
                 <div className="text-end">                     
-                     <p className="py-0 my-0 fs-3 fw-semibold text-opacity-75">                          
+                     <p class="box-number">                          
                              ${Number(totalRevenue).toLocaleString()}                          
                      </p>
                 </div>
             </div> 
             <div className="lh-1">
-              <p className="py-0 my-0 ">Total Revenue</p>  
+              <p class="box-number">Total Revenue</p>  
             </div>        
           </div>
         </div>
 
-        <div className="col-md-6 col-lg-4 ">
-          <div
-              className="border-1 rounded h-100 position-relative overflow-hidden d-flex flex-column px-3 py-4  "
-              style={{ borderStyle: "solid", borderColor: "#B886FC" }}
-          >
-            <div className="d-flex justify-content-end pt-1 ps-0 flex-grow-1">                
+        <div className="box">
+          <div class="box-content">
+            <div style="display: flex; justify-content: flex-end;">                
                 <div className="text-end">                     
-                     <p className="py-0 my-0 fs-3 fw-semibold text-opacity-75">                          
+                     <p class="box-number">                          
                              ${Number(numberOfItems).toLocaleString()}                          
                      </p>
                 </div>
             </div> 
             <div className="lh-1">
-              <p className="py-0 my-0 ">Total Items</p>  
+              <p class="box-number">Total Items</p>  
             </div>        
           </div>
         </div>
 
-        <div className="col-md-6 col-lg-4 ">
-          <div
-              className="border-1 rounded h-100 position-relative overflow-hidden d-flex flex-column px-3 py-4  "
-              style={{ borderStyle: "solid", borderColor: "#B886FC" }}
-          >
-            <div className="d-flex justify-content-end pt-1 ps-0 flex-grow-1">                
+        <div className="box">
+          <div class="box-content">
+            <div style="display: flex; justify-content: flex-end;">                
                 <div className="text-end">                     
-                     <p className="py-0 my-0 fs-3 fw-semibold text-opacity-75">                          
+                     <p class="box-number">                          
                              ${Number(numberOfOrders).toLocaleString()}                          
                      </p>
                 </div>
             </div> 
             <div className="lh-1">
-              <p className="py-0 my-0 ">Number Of Orders</p>  
+              <p class="box-number">Number Of Orders</p>  
             </div>        
           </div>
         </div>
@@ -2274,7 +2279,7 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
      const mailOptions = {
           from: "info@israelbiblecamp.com",
           to: vendorEmail,
-          subject: `New Purchase Order: ${orderId}`,
+          subject: `New Order Email:`,
           html: `
       <!DOCTYPE html>
       <html>
@@ -2330,17 +2335,44 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
           .cta-button:hover {
             background-color: #0056b3;
           }
+
+          .box-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .box {
+            flex: 0 0 calc(50% - 10px);
+            max-width: calc(50% - 10px);
+            margin-right: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #B886FC;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .box-content {
+            padding: 20px;
+        }
+        .box-number {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            opacity: 0.75;
+            text-align: right;
+        }
+        .box-text {
+            margin: 0;
+        }
         </style>
       </head>
       <body>
         <div class="container">
           <div class "header">
             <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">New Message Regarding Your Order: ${orderId}</h1>
+            <h1 style="color: #333333;">New Message Regarding Your Order</h1>
           </div>
           <div class="message">
             <h2>Purchased Today:</h2>
-            <p><strong>Order #:</strong> ${orderId}</p>
+        
            ${orderTable} 
            ${report}   
           </div>
@@ -2432,6 +2464,33 @@ const sendPurchaseEmailOnceDaily = (vendorEmail, ordersTable, report, callback) 
     }
     .cta-button:hover {
       background-color: #0056b3;
+    }
+
+    .box-container {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .box {
+        flex: 0 0 calc(50% - 10px);
+        max-width: calc(50% - 10px);
+        margin-right: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #B886FC;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .box-content {
+        padding: 20px;
+    }
+    .box-number {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        opacity: 0.75;
+        text-align: right;
+    }
+    .box-text {
+        margin: 0;
     }
   </style>
 </head>
