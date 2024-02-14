@@ -58,6 +58,19 @@ exports.getOneEvent = async (req, res) => {
      }
 };
 
+exports.searchByLocation = async (req, res) => {
+     const region = req.query.region;
+     try {
+          let events = await Event.find({
+               $or: [{ country: region }, { city: region }, { state: region }],
+               published: true,
+          });
+          return res.status(200).json(events);
+     } catch (err) {
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+};
+
 exports.getAllEvent = async (req, res) => {
      try {
           const events = await Event.find({ published: true });
