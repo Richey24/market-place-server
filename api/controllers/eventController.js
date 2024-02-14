@@ -15,7 +15,10 @@ exports.createEvent = async (req, res) => {
           index.search(body.name).then(async ({ hits }) => {
                if (hits.length < 1) {
                     await index.saveObject(
-                         { name: body.name, description: body.description },
+                         {
+                              name: body.name,
+                              description: body.description,
+                         },
                          {
                               autoGenerateObjectIDIfNotExist: true,
                          },
