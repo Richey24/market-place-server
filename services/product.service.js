@@ -340,7 +340,12 @@ const addProductVariant = async (params) => {
                display_name: params.product.name,
                website_published: params.product.published,
                company_id: params.product.company_id,
+               x_color: params.product.color,
+               x_subcategory: params.product.subcategory,
+               x_size: params.product.size,
+               x_weight: params.product.weight,
                x_images: params.product.images,
+               x_dimension: params.product.dimension,
                // qty_available: 5,
                // product_tag_ids: params.product.product_tag_ids
                //      ? JSON.parse(params.product.product_tag_ids)
@@ -483,14 +488,14 @@ const addProductVariant = async (params) => {
 
 const updateProduct = async (params) => {
      try {
-          const images = params.product.images || [];
+          // const images = params.product.images || [];
           // Convert each image buffer to base64
-          const base64Images = images?.map((image) => {
-               return {
-                    ...image,
-                    base64: image.buffer.toString("base64"),
-               };
-          });
+          // const base64Images = images?.map((image) => {
+          //      return {
+          //           ...image,
+          //           base64: image.buffer.toString("base64"),
+          //      };
+          // });
 
           await params.odoo.connect();
           console.log(" params.product", params.product);
