@@ -65,7 +65,6 @@ exports.getProductbyCompanyId = async (req, res) => {
                );
 
                const products = theProducts.map((product) => {
-                    console.log("--->", product.x_images);
                     return {
                          id: product.id,
                          website_url: product.website_url,
