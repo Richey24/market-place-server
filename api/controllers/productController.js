@@ -65,6 +65,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                );
 
                const products = theProducts.map((product) => {
+                    console.log("--->", product.x_images);
                     return {
                          id: product.id,
                          website_url: product.website_url,
@@ -82,13 +83,12 @@ exports.getProductbyCompanyId = async (req, res) => {
                          create_date: product.create_date,
                          x_subcategory: product.x_subcategory,
                          x_size: product.x_size,
-                         x_images: JSON.parse(product.x_images),
+                         // x_images: JSON.parse(product.x_images),
                          x_weight: product.x_weight,
                          x_color: product.x_color,
                          x_dimension: product.x_dimension,
                     };
                });
-
                res.status(200).json({ products: products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
