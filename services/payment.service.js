@@ -78,6 +78,53 @@ class PaymentService {
                );
           }
      }
+     async createDirectChargePaymentIntents(payload) {
+          const { amount, connectedAccountId, orderId, userId, siteId } = payload;
+
+          try {
+               const paymentIntent = await stripeClient.paymentIntents.create(
+                    {
+                         amount: amount * 100, //amount + service charges and Convert to cents
+                         currency: "usd",
+
+                         automatic_payment_methods: {
+                              enabled: true,
+                         },
+                    },
+                    {
+                         stripeAccount: connectedAccountId, // Direct charge to the connected account
+                    },
+               );
+
+               const paymentRecipt = await this.createPaymentRecept({
+                    amount: paymentIntent.amount,
+                    currency: paymentIntent.currency,
+                    paymentIntentId: paymentIntent.id,
+                    status: paymentIntent.status,
+                    captureMethod: paymentIntent.capture_method,
+                    confirmationMethod: paymentIntent.confirmation_method,
+                    clientSecret: paymentIntent.client_secret,
+                    connectedAccountId: connectedAccountId,
+                    orderId: orderId,
+                    buyer: userId,
+                    site: siteId,
+               });
+
+               console.log({ paymentRecipt });
+               // Handle successful payment
+               return { clientSecret: paymentIntent.client_secret };
+          } catch (error) {
+               console.log({ et: error });
+               // Handle payment failure
+               throw new ServerError(
+                    error?.message ||
+                         error?.raw?.message ||
+                         "An error occured while creating payment intent",
+                    error?.raw?.statusCode || error?.statusCode,
+                    error?.raw?.code,
+               );
+          }
+     }
 
      getAllExternalAccounts = async (params) => {
           try {

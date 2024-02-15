@@ -85,35 +85,79 @@ exports.searchEvent = async (req, res) => {
           const body = req.body;
           const keys = Object.keys(body);
           const obj = {};
+          let andConditions = []; // Array to hold all $and conditions
 
-          keys.forEach((key) => {
+          // keys.forEach((key) => {
+
+          Object.keys(body).forEach((key) => {
                if (key === "price") {
-                    // Check if price is meant to represent "free" events
-                    if (req.body.price === "free") {
-                         // Use numeric comparison for price equal to 0
+                    if (body.price === "free") {
                          obj[key] = { $eq: 0 };
                     } else {
-                         // For prices greater than 0
                          obj[key] = { $gt: 0 };
                     }
-               } else if (typeof body[key] === "boolean") {
-                    console.log({ val: { [obj[key]]: body[key] } });
-                    obj[key] = body[key];
-               } else {
-                    // Apply regex for all other string fields with case-insensitive search
-                    obj[key] = { $regex: body[key], $options: "i" };
+               } else if (key === "location") {
+                    // Location condition
+                    andConditions.push({
+                         $or: [
+                              { country: body.location },
+                              { city: body.location },
+                              { state: body.location },
+                         ],
+                    });
                }
           });
 
-          if (!!body.published) {
+          // Handle "name or tag" outside the loop to ensure it's correctly applied
+          let nameOrTagConditions = [];
+          if (body.name) {
+               // Construct regex for name search
+               const nameRegex = new RegExp("^[" + body.name + "]", "i");
+               nameOrTagConditions.push({ name: nameRegex });
+          }
+          if (Array.isArray(body.tags)) {
+               // Condition for tags
+               nameOrTagConditions.push({ tags: { $in: body.tags } });
+          }
+
+          // Only add the "name or tag" condition if it's needed
+          if (nameOrTagConditions.length > 0) {
+               andConditions.push({ $or: nameOrTagConditions });
+          }
+
+          // Apply boolean and regex conditions directly to obj, assuming they don't conflict with existing keys
+          Object.keys(body).forEach((key) => {
+               if (
+                    typeof body[key] === "boolean" ||
+                    (key !== "price" && key !== "location" && key !== "tags" && key !== "name")
+               ) {
+                    // Apply boolean values directly
+                    if (typeof body[key] === "boolean") {
+                         obj[key] = body[key];
+                    } else {
+                         // Apply regex for unspecified string fields, excluding special cases already handled
+                         obj[key] = { $regex: body[key], $options: "i" };
+                    }
+               }
+          });
+
+          // Finally, add all $and conditions to the query if any exist
+          if (andConditions.length > 0) {
+               obj["$and"] = andConditions;
+          }
+
+          // The published filter is independent of the loop
+          if (body.hasOwnProperty("published")) {
+               // This checks explicitly for the presence of 'published'
                obj["published"] = true;
           }
 
-          // console.log({ obj, body, keys });
-
+          console.log({ obj: obj["$and"], body, keys });
+          //$or: [{ country: region }, { city: region }, { state: region }]
           const events = await Event.find(obj);
           res.status(200).json(events);
      } catch (error) {
+          console.log(error);
           res.status(500).json({ message: "Internal server error", status: false });
      }
 };
