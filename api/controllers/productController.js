@@ -474,7 +474,7 @@ exports.createProduct = async (req, res) => {
           const index = client.initIndex("market-product");
           let params = {
                odoo: Odoo,
-               product: { ...req.body, images: req.files },
+               product: { ...req.body },
                // user: user
           };
           const productId = await addProduct({ ...params });
@@ -536,37 +536,13 @@ exports.updateProduct = async (req, res) => {
      try {
           let params = {
                odoo: Odoo,
-               product: { ...req.body, images: req.files },
+               product: { ...req.body },
                productId: req.params?.id,
           };
 
-          const theProduct = await updateProduct({ ...params });
-          const products = theProducts.map((product) => {
-               return {
-                    id: product.id,
-                    website_url: product.website_url,
-                    name: product.name,
-                    description: product.description,
-                    categ_id: product.categ_id,
-                    public_categ_ids: product.public_categ_ids,
-                    list_price: product.list_price,
-                    standard_price: product.standard_price,
-                    company_id: product.company_id,
-                    display_name: product.display_name,
-                    base_unit_count: product.base_unit_count,
-                    // image_1920: product.image_1920,
-                    // image_1024: product.image_1024,
-                    x_rating: product.x_rating,
-                    create_date: product.create_date,
-                    x_subcategory: product.x_subcategory,
-                    x_size: product.x_size,
-                    x_weight: product.x_weight,
-                    x_color: product.x_color,
-                    x_images: JSON.parse(product.x_images),
-                    x_dimension: product.x_dimension,
-               };
-          });
-          res.status(201).json({ product: product, status: true });
+          await updateProduct({ ...params });
+
+          res.status(200).json({ message: "updated successfully", status: true });
      } catch (err) {
           res.status(400).json({ err, status: false });
      }
