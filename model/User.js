@@ -204,7 +204,7 @@ userSchema.methods.generateAuthToken = async function (domain) {
 
      // Set token to expire in 1 hour in production mode
      if (process.env.NODE_ENV !== "development") {
-          options.expiresIn = "30s";
+          options.expiresIn = "1h";
      }
 
      const token = jwt.sign(
