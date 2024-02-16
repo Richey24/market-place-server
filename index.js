@@ -14,6 +14,7 @@ const {
      sendEmailsToUsers,
      disableExpiredAds,
      deleteEvent,
+     clearOldToken,
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -118,6 +119,7 @@ const items = [{ name: "Product1", price: 80, quantity: 4 }];
 sendEmailsToUsers();
 disableExpiredAds();
 deleteEvent();
+clearOldToken()
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
