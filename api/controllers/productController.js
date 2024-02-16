@@ -115,9 +115,9 @@ exports.getProductbyCategory = async (req, res) => {
 
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
-                         ["categ_id", "=", categoryId], // Replace "categ_id" with the actual field name for the category
+                         ["categ_id", "=", categoryId], 
                          ["type", "=", "consu"],
-                         ["company_id", "=", companyId], // If you want to filter by company
+                         ["company_id", "=", companyId], 
                     ],
                     [
                          "id",
