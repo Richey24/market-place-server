@@ -3,9 +3,21 @@ const User = require("../../model/User");
 const paymentService = require("../../services/payment.service");
 
 exports.createPaymentIntents = async (req, res) => {
-     const { amount, connectedAccountId, orderId, userId, siteId } = req.body;
+     const { amount, connectedAccountId, orderId, userId, siteId, type } = req.body;
 
      try {
+          if (type === "direct_charges") {
+               const payment = await paymentService.createDirectChargePaymentIntents({
+                    amount,
+                    connectedAccountId,
+                    orderId,
+                    userId,
+                    siteId,
+               });
+
+               return successResponder(res, payment, 201, "Payment successFull");
+          }
+
           const payment = await paymentService.createPaymentIntents({
                amount,
                connectedAccountId,

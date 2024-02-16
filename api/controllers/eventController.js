@@ -80,40 +80,93 @@ exports.getAllEvent = async (req, res) => {
      }
 };
 
+
 exports.searchEvent = async (req, res) => {
      try {
           const body = req.body;
-          const keys = Object.keys(body);
           const obj = {};
+          let andConditions = []; // Array to hold all $and conditions
 
-          keys.forEach((key) => {
+          Object.keys(body).forEach((key) => {
                if (key === "price") {
-                    // Check if price is meant to represent "free" events
-                    if (req.body.price === "free") {
-                         // Use numeric comparison for price equal to 0
+                    if (body.price === "free") {
                          obj[key] = { $eq: 0 };
                     } else {
-                         // For prices greater than 0
                          obj[key] = { $gt: 0 };
                     }
-               } else if (typeof body[key] === "boolean") {
-                    console.log({ val: { [obj[key]]: body[key] } });
-                    obj[key] = body[key];
-               } else {
-                    // Apply regex for all other string fields with case-insensitive search
-                    obj[key] = { $regex: body[key], $options: "i" };
+               } else if (key === "location") {
+                    andConditions.push({
+                         $or: [
+                              { country: body.location },
+                              { city: body.location },
+                              { state: body.location },
+                         ],
+                    });
                }
           });
 
-          if (!!body.published) {
-               obj["published"] = true;
+          let nameOrTagConditions = [];
+          if (body.name) {
+               const nameRegex = new RegExp("^[" + body.name + "]", "i");
+               nameOrTagConditions.push({ name: nameRegex });
+          }
+          if (Array.isArray(body.tags)) {
+               nameOrTagConditions.push({ tags: { $in: body.tags } });
+          }
+          if (nameOrTagConditions.length > 0) {
+               andConditions.push({ $or: nameOrTagConditions });
           }
 
-          // console.log({ obj, body, keys });
+          // Date filtering logic
+          if (body.date) {
+               if (body.date.startDate && body.date.endDate) {
+                    andConditions.push({
+                         $or: [
+                              {
+                                   startDate: {
+                                        $gte: new Date(body.date.startDate),
+                                        $lte: new Date(body.date.endDate),
+                                   },
+                              },
+                              {
+                                   endDate: {
+                                        $gte: new Date(body.date.startDate),
+                                        $lte: new Date(body.date.endDate),
+                                   },
+                              },
+                         ],
+                    });
+               } else if (body.date.startDate) {
+                    andConditions.push({ startDate: { $gte: new Date(body.date.startDate) } });
+               } else if (body.date.endDate) {
+                    andConditions.push({ endDate: { $lte: new Date(body.date.endDate) } });
+               }
+          }
+
+          // Apply boolean and regex conditions directly to obj
+          Object.keys(body).forEach((key) => {
+               if (
+                    typeof body[key] === "string" &&
+                    !["price", "location", "tags", "name", "date"].includes(key)
+               ) {
+                    obj[key] = { $regex: body[key], $options: "i" };
+               } else if (typeof body[key] === "boolean" && key !== "published") {
+                    obj[key] = body[key];
+               }
+          });
+
+          if (body.hasOwnProperty("published")) {
+               obj["published"] = body.published;
+          }
+
+          if (andConditions.length > 0) {
+               obj["$and"] = andConditions;
+          }
 
           const events = await Event.find(obj);
           res.status(200).json(events);
      } catch (error) {
+          console.log(error);
           res.status(500).json({ message: "Internal server error", status: false });
      }
 };

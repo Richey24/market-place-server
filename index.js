@@ -14,6 +14,7 @@ const {
      sendEmailsToUsers,
      disableExpiredAds,
      deleteEvent,
+     clearOldToken,
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -118,6 +119,7 @@ sendSalesReport(175, { orderId: "1234", items });
 sendEmailsToUsers();
 disableExpiredAds();
 deleteEvent();
+clearOldToken()
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
@@ -138,7 +140,7 @@ const dashboardRouter = require("./api/routes/dashbaord");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
-const shipmentRoute = require("./api/routes/carrier");
+// const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 const companyRoute = require("./api/routes/company");
@@ -151,6 +153,8 @@ const calenderRouter = require("./api/routes/calender");
 const stripeRouter = require("./api/routes/stripe");
 const eventRouter = require("./api/routes/event");
 const boardRouter = require("./api/routes/board");
+const pluginRouter = require("./api/routes/plugin");
+
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
@@ -163,10 +167,11 @@ app.use("/api/admin", adminRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
+app.use("/api/plugins", pluginRouter);
 app.use("/api/tags", tagRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/dashboard", dashboardRouter);
-app.use("/api/shipment", shipmentRoute);
+// app.use("/api/shipment", shipmentRoute);
 app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);
 app.use("/api/carrier", carrier);
