@@ -2807,6 +2807,25 @@ const disableExpiredAds = async () => {
      });
 };
 
+const clearOldToken = async () => {
+     cron.schedule("* * * * *", async () => {
+          console.log("Running a task every minute to check for expired token");
+
+          try {
+               const users = await User.find({});
+               users.forEach(async (user) => {
+                    if (user.tokens.length > 3) {
+                         user.tokens = user.tokens.slice(-3);
+                         await user.save();
+                    }
+               });
+          } catch (error) {
+               console.error("Error running the cron job:", error);
+          }
+          console.log("Cron job executed successfully for expired token");
+     });
+};
+
 const calculateNextDay = () => {
      const currentDate = new Date();
      const nextDay = new Date(currentDate);
@@ -2852,6 +2871,7 @@ module.exports = {
      sendVendorMessage,
      publishServiceItemsCronJob,
      sendSubscriptionCancelEmail,
+     clearOldToken,
      deleteUserData,
      disableExpiredAds,
      deleteEvent,
