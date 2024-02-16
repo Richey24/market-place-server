@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { USER_ROLE } = require("../schemas/user.schema");
+const { serviceNav, ecommerceNav } = require("../utils/navigation");
 
 const currentDate = new Date();
 
@@ -180,6 +181,9 @@ const userSchema = mongoose.Schema({
                },
           },
      ],
+     navigation: {
+          type: Array
+     }
 });
 
 userSchema.pre("save", async function () {
@@ -192,6 +196,14 @@ userSchema.pre("save", async function () {
           { _id: user._id, firstname: user.firstname, lastname: user.lastname, email: user.email },
           "secret",
      );
+
+     if (user.role === "VENDOR") {
+          if (user.currentSiteType === "service") {
+               user.navigation = serviceNav
+          } else {
+               user.navigation = ecommerceNav
+          }
+     }
 
      user.tokens = user.tokens.concat({ token });
      return token;
