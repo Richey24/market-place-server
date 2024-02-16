@@ -147,6 +147,10 @@ const userSchema = mongoose.Schema({
           type: String,
           required: [false, "Position is not required"],
      },
+     batch: {
+          type: Number,
+          default: 1,
+     },
      address: {
           type: String,
      },

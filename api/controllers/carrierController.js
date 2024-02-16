@@ -1,6 +1,7 @@
 const Carrier = require("../../model/Carrier");
 const EasyPost = require("@easypost/api");
 const Company = require("../../model/Company");
+const { calculate } = require("../../utils/usps");
 
 const apiKey = "EZTK6cc52423aac2476eaea1c12cb94bb368qQqcaeAXfzOxo0hmKf7aJA";
 const easyPost = new EasyPost(apiKey);
@@ -60,5 +61,23 @@ exports.getCarriersByCompanyId = async (req, res) => {
      } catch (error) {
           console.error("Error updating selected carriers:", error);
           res.status(500).json({ status: false, error: "Internal Server Error" });
+     }
+};
+
+exports.calculateShippings = async (req, res) => {
+     const package = req.body?.package;
+     const carrier = req.body;
+
+     console.log("here", package);
+     if (!package) {
+          return res.status(400).send({ error: "Carrier and package information are required." });
+     }
+
+     try {
+          const rate = await calculate(package);
+          console.log("rate", rate);
+          res.json({ carrier, rate });
+     } catch (error) {
+          res.status(500).send({ error: error.message });
      }
 };

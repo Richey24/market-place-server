@@ -8,6 +8,8 @@ const carrierController = require("../controllers/carrierController");
 
 router.get("/", carrierController.getCarriers);
 router.post("/", carrierController.createCarrier);
+router.post("/calculate", carrierController.calculateShippings);
+
 // router.get("/all", carrierController.getAllCarrriers);
 router.post("/company/:companyId", carrierController.selectCarrierByCompanyId);
 router.get("/company/:companyId", carrierController.getCarriersByCompanyId);
