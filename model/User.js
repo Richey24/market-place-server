@@ -109,6 +109,7 @@ const userSchema = mongoose.Schema({
      },
      banReason: {
           type: [String],
+          default: [],
      },
      suspensionReasons: {
           type: [String],
