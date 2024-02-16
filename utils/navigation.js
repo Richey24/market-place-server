@@ -82,6 +82,11 @@ const ecommerceNav = [
 
 const serviceNav = [
     {
+        path: "/getstarted",
+        title: "Get Started",
+        icon: "RxDashboard",
+    },
+    {
         path: "/dashboard",
         title: "Dashboard",
         icon: "RxDashboard",
