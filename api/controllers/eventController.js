@@ -80,14 +80,12 @@ exports.getAllEvent = async (req, res) => {
      }
 };
 
+
 exports.searchEvent = async (req, res) => {
      try {
           const body = req.body;
-          const keys = Object.keys(body);
           const obj = {};
           let andConditions = []; // Array to hold all $and conditions
-
-          // keys.forEach((key) => {
 
           Object.keys(body).forEach((key) => {
                if (key === "price") {
@@ -97,7 +95,6 @@ exports.searchEvent = async (req, res) => {
                          obj[key] = { $gt: 0 };
                     }
                } else if (key === "location") {
-                    // Location condition
                     andConditions.push({
                          $or: [
                               { country: body.location },
@@ -108,52 +105,64 @@ exports.searchEvent = async (req, res) => {
                }
           });
 
-          // Handle "name or tag" outside the loop to ensure it's correctly applied
           let nameOrTagConditions = [];
           if (body.name) {
-               // Construct regex for name search
                const nameRegex = new RegExp("^[" + body.name + "]", "i");
                nameOrTagConditions.push({ name: nameRegex });
           }
           if (Array.isArray(body.tags)) {
-               // Condition for tags
                nameOrTagConditions.push({ tags: { $in: body.tags } });
           }
-
-          // Only add the "name or tag" condition if it's needed
           if (nameOrTagConditions.length > 0) {
                andConditions.push({ $or: nameOrTagConditions });
           }
 
-          // Apply boolean and regex conditions directly to obj, assuming they don't conflict with existing keys
+          // Date filtering logic
+          if (body.date) {
+               if (body.date.startDate && body.date.endDate) {
+                    andConditions.push({
+                         $or: [
+                              {
+                                   startDate: {
+                                        $gte: new Date(body.date.startDate),
+                                        $lte: new Date(body.date.endDate),
+                                   },
+                              },
+                              {
+                                   endDate: {
+                                        $gte: new Date(body.date.startDate),
+                                        $lte: new Date(body.date.endDate),
+                                   },
+                              },
+                         ],
+                    });
+               } else if (body.date.startDate) {
+                    andConditions.push({ startDate: { $gte: new Date(body.date.startDate) } });
+               } else if (body.date.endDate) {
+                    andConditions.push({ endDate: { $lte: new Date(body.date.endDate) } });
+               }
+          }
+
+          // Apply boolean and regex conditions directly to obj
           Object.keys(body).forEach((key) => {
                if (
-                    typeof body[key] === "boolean" ||
-                    (key !== "price" && key !== "location" && key !== "tags" && key !== "name")
+                    typeof body[key] === "string" &&
+                    !["price", "location", "tags", "name", "date"].includes(key)
                ) {
-                    // Apply boolean values directly
-                    if (typeof body[key] === "boolean") {
-                         obj[key] = body[key];
-                    } else {
-                         // Apply regex for unspecified string fields, excluding special cases already handled
-                         obj[key] = { $regex: body[key], $options: "i" };
-                    }
+                    obj[key] = { $regex: body[key], $options: "i" };
+               } else if (typeof body[key] === "boolean" && key !== "published") {
+                    obj[key] = body[key];
                }
           });
 
-          // Finally, add all $and conditions to the query if any exist
+          if (body.hasOwnProperty("published")) {
+               obj["published"] = body.published;
+          }
+
           if (andConditions.length > 0) {
                obj["$and"] = andConditions;
           }
 
-          // The published filter is independent of the loop
-          if (body.hasOwnProperty("published")) {
-               // This checks explicitly for the presence of 'published'
-               obj["published"] = true;
-          }
-
-          console.log({ obj: obj["$and"], body, keys });
-          //$or: [{ country: region }, { city: region }, { state: region }]
           const events = await Event.find(obj);
           res.status(200).json(events);
      } catch (error) {
