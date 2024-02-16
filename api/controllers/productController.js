@@ -86,7 +86,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                          create_date: product.create_date,
                          x_subcategory: product.x_subcategory,
                          x_size: product.x_size,
-                         // x_images: JSON.parse(product.x_images),
+                         x_images: JSON.parse(product.x_images),
                          x_weight: product.x_weight,
                          x_color: product.x_color,
                          x_dimension: product.x_dimension,
