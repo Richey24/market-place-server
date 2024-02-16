@@ -104,7 +104,7 @@ exports.stripeVendorCallback = async (req, res) => {
           case "checkout.session.completed": {
                const session = event.data.object;
                if (session.mode !== "subscription") {
-                    return res.status(400).json("wrong webhook");
+                    return res.status(200).json("wrong webhook");
                }
                if (session.payment_status === "paid") {
                     const customer = await StripeSession.findOne({ sessionID: session.id });
@@ -370,7 +370,7 @@ exports.adsCallback = async (req, res) => {
      try {
           event = stripe.webhooks.constructEvent(payload, sig, process.env.ADS_SECRET);
           if (event.data.object.mode !== "payment") {
-               return res.status(400).json("wrong webhook");
+               return res.status(200).json("wrong webhook");
           }
      } catch (err) {
           console.log(err);

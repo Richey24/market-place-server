@@ -30,6 +30,8 @@ const getProductById = async (id) => {
                     "list_price",
                     // "image_1920",
                     "standard_price",
+                    "description",
+                    "base_unit_count",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -45,6 +47,9 @@ const getProductById = async (id) => {
                     "website_meta_keywords",
                ],
           ]);
+          if (productData.length === 0) {
+               return []
+          }
 
           let attributeLineIds = productData[0].attribute_line_ids || [];
           attributeLineIds = attributeLineIds?.map(async (attributeLineId) => {
@@ -124,6 +129,8 @@ const getFeaturedProducts = async (params) => {
                     "list_price",
                     // "image_1920",
                     "standard_price",
+                    "description",
+                    "base_unit_count",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -163,6 +170,8 @@ const searchProducts = async (params) => {
                     "list_price",
                     // "image_1920",
                     "standard_price",
+                    "description",
+                    "base_unit_count",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -208,6 +217,7 @@ const addProduct = async (params) => {
                name: params.product.name,
                uom_name: params.product.uom_name,
                display_name: params.product.name,
+               description: params.product.description,
                website_published: params.product.published,
                company_id: params.product.company_id,
                x_color: params.product.color,
@@ -335,9 +345,15 @@ const addProductVariant = async (params) => {
                name: params.product.name,
                uom_name: params.product.uom_name,
                display_name: params.product.name,
+               description: params.product.description,
                website_published: params.product.published,
                company_id: params.product.company_id,
+               x_color: params.product.color,
+               x_subcategory: params.product.subcategory,
+               x_size: params.product.size,
+               x_weight: params.product.weight,
                x_images: params.product.images,
+               x_dimension: params.product.dimension,
                // qty_available: 5,
                // product_tag_ids: params.product.product_tag_ids
                //      ? JSON.parse(params.product.product_tag_ids)
@@ -480,37 +496,35 @@ const addProductVariant = async (params) => {
 
 const updateProduct = async (params) => {
      try {
-          const images = params.product.images || [];
+          // const images = params.product.images || [];
           // Convert each image buffer to base64
-          const base64Images = images?.map((image) => {
-               return {
-                    ...image,
-                    base64: image.buffer.toString("base64"),
-               };
-          });
+          // const base64Images = images?.map((image) => {
+          //      return {
+          //           ...image,
+          //           base64: image.buffer.toString("base64"),
+          //      };
+          // });
 
           await params.odoo.connect();
           console.log(" params.product", params.product);
           // Create the product
           const productData = {
                base_unit_count: params.product.qty,
-               // categ_id: +params.product.category_id,
+               public_categ_ids: [+params.product.category_id],
                list_price: params.product.list_price,
                standard_price: params.product.standard_price,
                name: params.product.name,
                uom_name: params.product.uom_name,
                display_name: params.product.name,
+               description: params.product.description,
                website_published: params.product.published,
                company_id: params.product.company_id,
                x_color: params.product.color,
                x_subcategory: params.product.subcategory,
                x_size: params.product.size,
-               x_images: params.product.images,
                x_weight: params.product.weight,
+               x_images: params.product.images,
                x_dimension: params.product.dimension,
-               product_tag_ids: params.product.product_tag_ids
-                    ? JSON.parse(params.product.product_tag_ids)
-                    : [],
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
@@ -672,7 +686,18 @@ const getProductDetails = async (productId) => {
  * @param  {[array]} product_id [The id of the product that has been seleected]
  * @return {[productID]}        [Return the id of the product]
  */
-const deleteProduct = async (params) => { };
+const deleteProduct = async (id) => {
+     try {
+          await Odoo.connect();
+          await Odoo.execute_kw("product.template", "unlink",
+               [[Number(id)]],
+          )
+          return true
+     } catch (error) {
+          console.log(error);
+          return false
+     }
+};
 
 // const getProductImageUrl = async (params) => {
 
@@ -695,4 +720,5 @@ module.exports = {
      updateProduct,
      searchProducts,
      addProductVariant,
+     deleteProduct
 };

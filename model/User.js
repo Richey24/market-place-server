@@ -204,7 +204,14 @@ userSchema.pre("save", async function () {
 //this function generates an auth token for the user
 userSchema.methods.generateAuthToken = async function (domain) {
      const user = this;
-     var token = jwt.sign(
+     let options = {};
+
+     // Set token to expire in 1 hour in production mode
+     if (process.env.NODE_ENV !== "development") {
+          options.expiresIn = "1h";
+     }
+
+     const token = jwt.sign(
           {
                _id: user._id,
                firstname: user.firstname,
@@ -214,8 +221,8 @@ userSchema.methods.generateAuthToken = async function (domain) {
                partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
           },
           "secret",
+          options,
      );
-
      user.tokens = user.tokens.concat({ token });
      await user.save();
 
