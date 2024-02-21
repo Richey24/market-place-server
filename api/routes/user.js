@@ -29,6 +29,7 @@ router.post("/notification", userController.sendNotification);
 
 // ban user
 router.get("/users", userController.getAllUsers);
+
 router.get("/get/partner/:id", userController.getUserByPartnerID);
 router.get("/get/company/:id", userController.getUserByCompanyID);
 router.post("/ban", userController.banUser);
