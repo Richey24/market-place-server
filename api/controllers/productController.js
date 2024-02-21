@@ -59,6 +59,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "create_date",
                               "website_url",
                               "website_meta_keywords",
+                              "x_shipping_package",
                          ],
                          null,
                          0,
@@ -90,6 +91,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                          x_weight: product.x_weight,
                          x_color: product.x_color,
                          x_dimension: product.x_dimension,
+                         x_shipping_package: product?.x_shipping_package,
                     };
                });
                res.status(200).json({ products: products, status: true });
@@ -115,9 +117,9 @@ exports.getProductbyCategory = async (req, res) => {
 
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
-                         ["categ_id", "=", categoryId], // Replace "categ_id" with the actual field name for the category
+                         ["categ_id", "=", categoryId],
                          ["type", "=", "consu"],
-                         ["company_id", "=", companyId], // If you want to filter by company
+                         ["company_id", "=", companyId],
                     ],
                     [
                          "id",
@@ -141,6 +143,7 @@ exports.getProductbyCategory = async (req, res) => {
                          "x_rating",
                          "website_url",
                          "website_meta_keywords",
+                         "x_shipping_package",
                     ],
                ]);
 
@@ -167,6 +170,7 @@ exports.getProductbyCategory = async (req, res) => {
                          x_weight: product.x_weight,
                          x_color: product.x_color,
                          x_dimension: product.x_dimension,
+                         x_shipping_package: product?.x_shipping_package,
                     };
                });
 
@@ -394,6 +398,7 @@ exports.productDetails = async (req, res) => {
                x_color: product.x_color,
                x_images: JSON.parse(product.x_images),
                x_dimension: product.x_dimension,
+               x_shipping_package: product?.x_shipping_package,
           };
      });
 
@@ -548,17 +553,17 @@ exports.updateProduct = async (req, res) => {
 };
 
 exports.deleteProduct = async (req, res) => {
-     const id = req.params.id
+     const id = req.params.id;
      if (!id) {
-          return res.status(400).json({ message: "Send product id" })
+          return res.status(400).json({ message: "Send product id" });
      }
-     const response = deleteProduct(id)
+     const response = deleteProduct(id);
      if (response) {
-          res.status(200).json({ message: "Product deleted successfully" })
+          res.status(200).json({ message: "Product deleted successfully" });
      } else {
-          res.status(500).json({ message: "Something went wrong" })
+          res.status(500).json({ message: "Something went wrong" });
      }
-}
+};
 
 exports.salesProducts = async (req, res) => {
      // let companyId = req.params?.company_id;

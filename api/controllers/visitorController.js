@@ -1,7 +1,9 @@
 const Visitor = require("../../model/Visitor");
 
 exports.getUniqueVisitors = async (req, res) => {
-     const { startDate, endDate } = req.query;
+     const { startDate, endDate } = req.body;
+     console.log(req);
+     console.log(startDate, endDate);
 
      try {
           const uniqueVisitors = await Visitor.distinct("identifier", {
