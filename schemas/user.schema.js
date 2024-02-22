@@ -6,6 +6,7 @@ const USER_ROLE = Object.freeze({
      CUSTOMER: "CUSTOMER",
      VENDOR: "VENDOR",
      ADMIN: "ADMIN",
+     DEVELOPER: "DEVELOPER",
 });
 
 module.exports = {

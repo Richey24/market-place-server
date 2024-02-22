@@ -11,7 +11,6 @@ exports.getPlugins = async (req, res) => {
 
 exports.createPlugin = async (req, res) => {
      let user = req.userData;
-     console.log("user", user);
      try {
           if (!user) {
                return res.status(401).send({ message: "Unauthorized: No user ID provided" });
