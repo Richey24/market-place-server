@@ -162,7 +162,9 @@ exports.getOneServiceOrder = async (req, res) => {
      }
 
      try {
-          const order = await ServiceOrder.findById(orderId).populate("service");
+          const order = await ServiceOrder.findById(orderId)
+               .populate("service")
+               .populate("customer");
 
           if (!order) {
                return res.status(404).json({ message: "Service order not found", status: false });
