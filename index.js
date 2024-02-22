@@ -58,43 +58,35 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev")); // configire morgan
 
 // Middleware to track unique visitors, record the visited site URL, and maintain an array of visited pages
-// app.use((req, res, next) => {
-//      const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
-//      const visitedSite = req.hostname; // Store the visited site URL
-//      const visitedPage = req.originalUrl; // Store the visited page URL
+app.use(async (req, res, next) => {
+     const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
+     const visitedSite = req.hostname; // Store the visited site URL
+     const visitedPage = req.originalUrl; // Store the visited page URL
 
-//      // Check if the visitor with the same identifier already exists
-//      Visitor.findOne({ identifier }, (err, existingVisitor) => {
-//           if (err) {
-//                console.error(err);
-//                return next();
-//           }
+     try {
+          // Check if the visitor with the same identifier already exists
+          const existingVisitor = await Visitor.findOne({ identifier });
 
-//           // If the visitor does not exist, save the new visitor
-//           if (!existingVisitor) {
-//                const newVisitor = new Visitor({
-//                     identifier,
-//                     visitedSite,
-//                     visitedPages: [visitedPage],
-//                });
-//                newVisitor.save((err) => {
-//                     if (err) {
-//                          console.error(err);
-//                     }
-//                });
-//           } else {
-//                // If the visitor exists, update the array of visited pages
-//                existingVisitor.visitedPages.push(visitedPage);
-//                existingVisitor.save((err) => {
-//                     if (err) {
-//                          console.error(err);
-//                     }
-//                });
-//           }
+          // If the visitor does not exist, save the new visitor
+          if (!existingVisitor) {
+               const newVisitor = new Visitor({
+                    identifier,
+                    visitedSite,
+                    visitedPages: [visitedPage],
+               });
+               await newVisitor.save();
+          } else {
+               // If the visitor exists, update the array of visited pages
+               existingVisitor.visitedPages.push(visitedPage);
+               await existingVisitor.save();
+          }
 
-//           next();
-//      });
-// });
+          next();
+     } catch (err) {
+          console.error(err);
+          next();
+     }
+});
 
 // define first route
 app.get("/", (req, res) => {

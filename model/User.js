@@ -53,6 +53,7 @@ const userSchema = mongoose.Schema({
                USER_ROLE.VENDOR,
                USER_ROLE.CUSTOMER,
                USER_ROLE.DEVELOPER,
+               USER_ROLE.FREELANCER,
           ],
           required: [true, "Please include user role"],
      },
