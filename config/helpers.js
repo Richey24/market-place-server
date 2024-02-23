@@ -2145,20 +2145,7 @@ const sendAdvertisementNotificationEmail = (
 const createOrderTable = (order) => {
      let table = `
           <h3>Order # ${order.orderId}</h3>
-          <style>
-            .table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            .table th, .table td {
-                border: 1px solid #dddddd;
-                padding: 8px;
-                text-align: left;
-            }
-            .table th {
-                background-color: #f2f2f2;
-            }
-        </style>
+          
           <table border="1" class='table'>
             <tr>
               <th>SN</th>
@@ -2361,6 +2348,53 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
         .box-text {
             margin: 0;
         }
+        body, table, td, th {
+          margin: 0;
+          padding: 0;
+          border-collapse: collapse;
+          border-spacing: 0;
+      }
+  
+      /* Optional: Add some padding and border to the table */
+      .table {
+          width: 100%;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+      }
+  
+      /* Style for table headers */
+      th {
+          background-color: #f2f2f2;
+          border-bottom: 1px solid #ccc;
+          padding: 10px;
+          text-align: left;
+      }
+  
+      /* Style for table rows */
+      td {
+          border-bottom: 1px solid #ccc;
+          padding: 10px;
+      }
+  
+      /* Alternate row colors */
+      tr:nth-child(even) {
+          background-color: #f9f9f9;
+      }
+  
+      /* Bootstrap grid classes */
+      .row {
+          display: flex;
+          flex-wrap: wrap;
+          margin-right: -15px;
+          margin-left: -15px;
+      }
+  
+      .col-lg-4 {
+          flex: 0 0 33.333333%;
+          max-width: 33.333333%;
+          padding-right: 15px;
+          padding-left: 15px;
+      }
         </style>
       </head>
       <body>
@@ -2491,6 +2525,53 @@ const sendPurchaseEmailOnceDaily = (vendorEmail, ordersTable, report, callback) 
     .box-text {
         margin: 0;
     }
+    body, table, td, th {
+      margin: 0;
+      padding: 0;
+      border-collapse: collapse;
+      border-spacing: 0;
+  }
+
+  /* Optional: Add some padding and border to the table */
+  .table {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+  }
+
+  /* Style for table headers */
+  th {
+      background-color: #f2f2f2;
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+  }
+
+  /* Style for table rows */
+  td {
+      border-bottom: 1px solid #ccc;
+      padding: 10px;
+  }
+
+  /* Alternate row colors */
+  tr:nth-child(even) {
+      background-color: #f9f9f9;
+  }
+
+  /* Bootstrap grid classes */
+  .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-right: -15px;
+      margin-left: -15px;
+  }
+
+  .col-lg-4 {
+      flex: 0 0 33.333333%;
+      max-width: 33.333333%;
+      padding-right: 15px;
+      padding-left: 15px;
+  }
   </style>
 </head>
 <body>
