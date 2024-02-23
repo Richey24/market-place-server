@@ -147,6 +147,8 @@ const eventRouter = require("./api/routes/event");
 const boardRouter = require("./api/routes/board");
 const pluginRouter = require("./api/routes/plugin");
 
+const devRouter = require("./api/routes/dev");
+
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
@@ -155,6 +157,7 @@ const freelancePaymentRouter = require("./api/routes/freelancePayment");
 // app.use(errorHandler)
 
 app.use("/api/admin/auth", adminRouter);
+app.use("/api/dev", devRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
