@@ -10,10 +10,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "269",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-1.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-2.jpg",
-          ],
+          ]),
      },
      {
           name: "Porto White Cap",
@@ -26,10 +26,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "101",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-3.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-3.jpg",
-          ],
+          ]),
      },
      {
           name: "Winter Towel",
@@ -42,10 +42,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "1280",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-4.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-4.jpg",
-          ],
+          ]),
      },
      {
           name: "Product Extended",
@@ -58,10 +58,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "1280",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-5.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-5.jpg",
-          ],
+          ]),
      },
      {
           name: "Sports Shoes",
@@ -74,10 +74,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "299",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-6.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-6.jpg",
-          ],
+          ]),
      },
      {
           name: "Women Bag",
@@ -90,10 +90,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "1280",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-7.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-7.jpg",
-          ],
+          ]),
      },
      {
           name: "Men Black Belts",
@@ -106,10 +106,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "55",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-8.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-8.jpg",
-          ],
+          ]),
      },
      {
           name: "Women Bag",
@@ -122,10 +122,10 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "199",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-9.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-9.jpg",
-          ],
+          ]),
      },
      {
           name: "Product Short Name",
@@ -138,9 +138,9 @@ exports.initProducts = (company_id) => [
           company_id,
           description: "this is a scam",
           standard_price: "39",
-          images: [
+          images: JSON.stringify([
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-14.jpg",
                "https://absa7kzimnaf.blob.core.windows.net/templates-images/all-template-product/product-14.jpg",
-          ],
+          ]),
      },
 ];

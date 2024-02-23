@@ -994,7 +994,8 @@ exports.liftSuspension = async (req, res) => {
 
 exports.getAllUsers = async (req, res) => {
      try {
-          const users = await User.find();
+          const userType = req.query?.type;
+          const users = await User.find(userType ? { role: USER_ROLE[userType] } : {});
           res.status(200).json({
                status: true,
                users: users,
@@ -1069,3 +1070,14 @@ exports.sendNotification = async (req, res) => {
      await webpush.sendNotification(pushNotification, JSON.stringify(info));
      res.status(200).json({ message: "sent" });
 };
+
+exports.getAllFreelancUsers = async (req, res) => {
+     try {
+          const users = await user.find({ role: USER_ROLE.FREELANCER });
+          res.status(200).json(users);
+          return successResponder(res, users);
+     } catch (error) {
+          res.status(500).json({ message: "Internal server error", status: false });
+     }
+};
+

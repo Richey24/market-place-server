@@ -14,6 +14,7 @@ const {
      sendEmailsToUsers,
      disableExpiredAds,
      deleteEvent,
+     clearOldToken,
 } = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
@@ -57,43 +58,35 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev")); // configire morgan
 
 // Middleware to track unique visitors, record the visited site URL, and maintain an array of visited pages
-// app.use((req, res, next) => {
-//      const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
-//      const visitedSite = req.hostname; // Store the visited site URL
-//      const visitedPage = req.originalUrl; // Store the visited page URL
+app.use(async (req, res, next) => {
+     const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
+     const visitedSite = req.hostname; // Store the visited site URL
+     const visitedPage = req.originalUrl; // Store the visited page URL
 
-//      // Check if the visitor with the same identifier already exists
-//      Visitor.findOne({ identifier }, (err, existingVisitor) => {
-//           if (err) {
-//                console.error(err);
-//                return next();
-//           }
+     try {
+          // Check if the visitor with the same identifier already exists
+          const existingVisitor = await Visitor.findOne({ identifier });
 
-//           // If the visitor does not exist, save the new visitor
-//           if (!existingVisitor) {
-//                const newVisitor = new Visitor({
-//                     identifier,
-//                     visitedSite,
-//                     visitedPages: [visitedPage],
-//                });
-//                newVisitor.save((err) => {
-//                     if (err) {
-//                          console.error(err);
-//                     }
-//                });
-//           } else {
-//                // If the visitor exists, update the array of visited pages
-//                existingVisitor.visitedPages.push(visitedPage);
-//                existingVisitor.save((err) => {
-//                     if (err) {
-//                          console.error(err);
-//                     }
-//                });
-//           }
+          // If the visitor does not exist, save the new visitor
+          if (!existingVisitor) {
+               const newVisitor = new Visitor({
+                    identifier,
+                    visitedSite,
+                    visitedPages: [visitedPage],
+               });
+               await newVisitor.save();
+          } else {
+               // If the visitor exists, update the array of visited pages
+               existingVisitor.visitedPages.push(visitedPage);
+               await existingVisitor.save();
+          }
 
-//           next();
-//      });
-// });
+          next();
+     } catch (err) {
+          console.error(err);
+          next();
+     }
+});
 
 // define first route
 app.get("/", (req, res) => {
@@ -118,6 +111,7 @@ sendSalesReport(175, { orderId: "1234", items });
 sendEmailsToUsers();
 disableExpiredAds();
 deleteEvent();
+// clearOldToken()
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
@@ -138,7 +132,7 @@ const dashboardRouter = require("./api/routes/dashbaord");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
-const shipmentRoute = require("./api/routes/carrier");
+// const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 const companyRoute = require("./api/routes/company");
@@ -151,6 +145,8 @@ const calenderRouter = require("./api/routes/calender");
 const stripeRouter = require("./api/routes/stripe");
 const eventRouter = require("./api/routes/event");
 const boardRouter = require("./api/routes/board");
+const pluginRouter = require("./api/routes/plugin");
+
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
@@ -163,10 +159,11 @@ app.use("/api/admin", adminRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);
 app.use("/api/site", siteRouter);
+app.use("/api/plugins", pluginRouter);
 app.use("/api/tags", tagRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/dashboard", dashboardRouter);
-app.use("/api/shipment", shipmentRoute);
+// app.use("/api/shipment", shipmentRoute);
 app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);
 app.use("/api/carrier", carrier);

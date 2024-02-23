@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { USER_ROLE } = require("../schemas/user.schema");
+const { serviceNav, ecommerceNav } = require("../utils/navigation");
 
 const currentDate = new Date();
 
@@ -46,8 +47,21 @@ const userSchema = mongoose.Schema({
      role: {
           type: String,
           default: USER_ROLE.USER,
-          enum: [USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.VENDOR, USER_ROLE.CUSTOMER],
+          enum: [
+               USER_ROLE.USER,
+               USER_ROLE.ADMIN,
+               USER_ROLE.VENDOR,
+               USER_ROLE.CUSTOMER,
+               USER_ROLE.DEVELOPER,
+               USER_ROLE.FREELANCER,
+          ],
           required: [true, "Please include user role"],
+     },
+     githubUsername: {
+          type: String,
+     },
+     portfolioUrl: {
+          type: String,
      },
      password: {
           type: String,
@@ -108,7 +122,8 @@ const userSchema = mongoose.Schema({
           default: 0,
      },
      banReason: {
-          type: String,
+          type: [String],
+          default: [],
      },
      suspensionReasons: {
           type: [String],
@@ -147,6 +162,10 @@ const userSchema = mongoose.Schema({
           type: String,
           required: [false, "Position is not required"],
      },
+     batch: {
+          type: Number,
+          default: 1,
+     },
      address: {
           type: String,
      },
@@ -180,6 +199,9 @@ const userSchema = mongoose.Schema({
                },
           },
      ],
+     navigation: {
+          type: Array,
+     },
 });
 
 userSchema.pre("save", async function () {
@@ -193,6 +215,14 @@ userSchema.pre("save", async function () {
           "secret",
      );
 
+     if (user.role === "VENDOR") {
+          if (user.currentSiteType === "service") {
+               user.navigation = serviceNav;
+          } else {
+               user.navigation = ecommerceNav;
+          }
+     }
+
      user.tokens = user.tokens.concat({ token });
      return token;
 });
@@ -200,7 +230,16 @@ userSchema.pre("save", async function () {
 //this function generates an auth token for the user
 userSchema.methods.generateAuthToken = async function (domain) {
      const user = this;
-     var token = jwt.sign(
+     let options = {};
+
+     // Set token to expire in 1 hour in production mode
+     if (process.env.NODE_ENV !== "development") {
+          options.expiresIn = "1h";
+     } else {
+          options.expiresIn = "5d";
+     }
+
+     const token = jwt.sign(
           {
                _id: user._id,
                firstname: user.firstname,
@@ -210,8 +249,8 @@ userSchema.methods.generateAuthToken = async function (domain) {
                partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
           },
           "secret",
+          options,
      );
-
      user.tokens = user.tokens.concat({ token });
      await user.save();
 

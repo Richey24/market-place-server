@@ -30,6 +30,8 @@ const getProductById = async (id) => {
                     "list_price",
                     // "image_1920",
                     "standard_price",
+                    "description",
+                    "base_unit_count",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -46,7 +48,7 @@ const getProductById = async (id) => {
                ],
           ]);
           if (productData.length === 0) {
-               return []
+               return [];
           }
 
           let attributeLineIds = productData[0].attribute_line_ids || [];
@@ -127,6 +129,8 @@ const getFeaturedProducts = async (params) => {
                     "list_price",
                     // "image_1920",
                     "standard_price",
+                    "description",
+                    "base_unit_count",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -166,6 +170,8 @@ const searchProducts = async (params) => {
                     "list_price",
                     // "image_1920",
                     "standard_price",
+                    "description",
+                    "base_unit_count",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -211,6 +217,7 @@ const addProduct = async (params) => {
                name: params.product.name,
                uom_name: params.product.uom_name,
                display_name: params.product.name,
+               description: params.product.description,
                website_published: params.product.published,
                company_id: params.product.company_id,
                x_color: params.product.color,
@@ -222,6 +229,7 @@ const addProduct = async (params) => {
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
+               x_shipping_package: params?.product?.x_shipping_package,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -277,57 +285,6 @@ const createProductTemplate = async (params, templateData) => {
      }
 };
 
-const createProductVariant = async (params, templateId, variantData) => {
-     try {
-          // variantData.product_tmpl_id = templateId;
-          // const combination_indices = 10033454365 * Math.random(1000);
-
-          // Check if the combination already exists
-          // const existingCombination = await params.odoo.execute_kw(
-          //      "product.product",
-          //      "search_count",
-          //      [
-          //           [
-          //                ["product_tmpl_id", "=", templateId],
-          //                ["combination_indices", "=", combination_indices],
-          //           ],
-          //      ],
-          // );
-
-          // console.log(
-          //      "existingCombination",
-          //      existingCombination,
-          //      "combination_indices",
-          //      combination_indices,
-          // );
-
-          // The combination is unique, proceed with creating the product variant
-
-          const variantId = await params.odoo.execute_kw("product.product", "create", [
-               { ...variantData },
-          ]);
-
-          return variantId;
-
-          // await params.odoo.execute_kw("product.template", "write", [
-          //      [templateId],
-          //      { product_variant_ids: [[4, variantId]] }, // 4 is for linking the variant
-          // ]);
-
-          // Update variant with additional information
-          // await params.odoo.execute_kw("product.product", "write", [
-          //      [variantId],
-          //      { x_additional_property: variantData.x_additional_property },
-          // ]);
-
-          // Write images for the variant
-          // ... (existing image handling code)
-     } catch (error) {
-          console.error("Error creating product variant:", error);
-          throw error;
-     }
-};
-
 const addProductVariant = async (params) => {
      if (params.product.is_variant) {
           const templateData = {
@@ -338,9 +295,17 @@ const addProductVariant = async (params) => {
                name: params.product.name,
                uom_name: params.product.uom_name,
                display_name: params.product.name,
+               description: params.product.description,
                website_published: params.product.published,
                company_id: params.product.company_id,
+               x_color: params.product.color,
+               x_subcategory: params.product.subcategory,
+               x_size: params.product.size,
+               x_weight: params.product.weight,
                x_images: params.product.images,
+               x_dimension: params.product.dimension,
+               x_shipping_package: params?.product?.x_shipping_package,
+
                // qty_available: 5,
                // product_tag_ids: params.product.product_tag_ids
                //      ? JSON.parse(params.product.product_tag_ids)
@@ -483,37 +448,35 @@ const addProductVariant = async (params) => {
 
 const updateProduct = async (params) => {
      try {
-          const images = params.product.images || [];
+          // const images = params.product.images || [];
           // Convert each image buffer to base64
-          const base64Images = images?.map((image) => {
-               return {
-                    ...image,
-                    base64: image.buffer.toString("base64"),
-               };
-          });
+          // const base64Images = images?.map((image) => {
+          //      return {
+          //           ...image,
+          //           base64: image.buffer.toString("base64"),
+          //      };
+          // });
 
           await params.odoo.connect();
           console.log(" params.product", params.product);
           // Create the product
           const productData = {
                base_unit_count: params.product.qty,
-               // categ_id: +params.product.category_id,
+               public_categ_ids: [+params.product.category_id],
                list_price: params.product.list_price,
                standard_price: params.product.standard_price,
                name: params.product.name,
                uom_name: params.product.uom_name,
                display_name: params.product.name,
+               description: params.product.description,
                website_published: params.product.published,
                company_id: params.product.company_id,
                x_color: params.product.color,
                x_subcategory: params.product.subcategory,
                x_size: params.product.size,
-               x_images: params.product.images,
                x_weight: params.product.weight,
+               x_images: params.product.images,
                x_dimension: params.product.dimension,
-               product_tag_ids: params.product.product_tag_ids
-                    ? JSON.parse(params.product.product_tag_ids)
-                    : [],
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
@@ -589,7 +552,7 @@ const addMultipleProducts = async (params) => {
                     display_name: product.name,
                     website_published: product.published,
                     company_id: product.company_id,
-                    x_images: product.images
+                    x_images: product.images,
                };
 
                const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -678,13 +641,11 @@ const getProductDetails = async (productId) => {
 const deleteProduct = async (id) => {
      try {
           await Odoo.connect();
-          await Odoo.execute_kw("product.template", "unlink",
-               [[Number(id)]],
-          )
-          return true
+          await Odoo.execute_kw("product.template", "unlink", [[Number(id)]]);
+          return true;
      } catch (error) {
           console.log(error);
-          return false
+          return false;
      }
 };
 
@@ -709,5 +670,5 @@ module.exports = {
      updateProduct,
      searchProducts,
      addProductVariant,
-     deleteProduct
+     deleteProduct,
 };
