@@ -14,6 +14,32 @@ const updateCompany = async (req, res) => {
      }
 };
 
+const updateBrandColor = async (req, res) => {
+     const { brandColor } = req.body;
+     const user = req.userData;
+
+     if (!brandColor) {
+          return res.status(400).send({ message: "brandColor is required" });
+     }
+
+     try {
+          const company = await Company.findById(companyId);
+          if (!company) {
+               return res.status(404).send({ message: "Company not found" });
+          }
+
+          company.brandColor = brandColor;
+          await company.save();
+
+          res.status(200).send({
+               message: "Brand colors updated successfully",
+               brandColor: company.brandColor,
+          });
+     } catch (error) {
+          res.status(500).send({ message: "Error updating brand colors", error: error.message });
+     }
+};
+
 const findCompanyByCompanyIdAndPopulateUser = async (companyId) => {
      try {
           const company = await Company.findOne({ company_id: companyId })
@@ -44,5 +70,6 @@ const findCompaniesAndPopulateUser = async () => {
 module.exports = {
      updateCompany,
      findCompanyByCompanyIdAndPopulateUser,
-     findCompaniesAndPopulateUser
+     findCompaniesAndPopulateUser,
+     updateBrandColor,
 };

@@ -58,43 +58,35 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev")); // configire morgan
 
 // Middleware to track unique visitors, record the visited site URL, and maintain an array of visited pages
-// app.use((req, res, next) => {
-//      const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
-//      const visitedSite = req.hostname; // Store the visited site URL
-//      const visitedPage = req.originalUrl; // Store the visited page URL
+app.use(async (req, res, next) => {
+     const identifier = req.ip; // Use IP address as an identifier, you can customize this based on your needs
+     const visitedSite = req.hostname; // Store the visited site URL
+     const visitedPage = req.originalUrl; // Store the visited page URL
 
-//      // Check if the visitor with the same identifier already exists
-//      Visitor.findOne({ identifier }, (err, existingVisitor) => {
-//           if (err) {
-//                console.error(err);
-//                return next();
-//           }
+     try {
+          // Check if the visitor with the same identifier already exists
+          const existingVisitor = await Visitor.findOne({ identifier });
 
-//           // If the visitor does not exist, save the new visitor
-//           if (!existingVisitor) {
-//                const newVisitor = new Visitor({
-//                     identifier,
-//                     visitedSite,
-//                     visitedPages: [visitedPage],
-//                });
-//                newVisitor.save((err) => {
-//                     if (err) {
-//                          console.error(err);
-//                     }
-//                });
-//           } else {
-//                // If the visitor exists, update the array of visited pages
-//                existingVisitor.visitedPages.push(visitedPage);
-//                existingVisitor.save((err) => {
-//                     if (err) {
-//                          console.error(err);
-//                     }
-//                });
-//           }
+          // If the visitor does not exist, save the new visitor
+          if (!existingVisitor) {
+               const newVisitor = new Visitor({
+                    identifier,
+                    visitedSite,
+                    visitedPages: [visitedPage],
+               });
+               await newVisitor.save();
+          } else {
+               // If the visitor exists, update the array of visited pages
+               existingVisitor.visitedPages.push(visitedPage);
+               await existingVisitor.save();
+          }
 
-//           next();
-//      });
-// });
+          next();
+     } catch (err) {
+          console.error(err);
+          next();
+     }
+});
 
 // define first route
 app.get("/", (req, res) => {
@@ -119,7 +111,7 @@ sendSalesReport(175, { orderId: "1234", items });
 sendEmailsToUsers();
 disableExpiredAds();
 deleteEvent();
-clearOldToken()
+// clearOldToken()
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
@@ -155,6 +147,8 @@ const eventRouter = require("./api/routes/event");
 const boardRouter = require("./api/routes/board");
 const pluginRouter = require("./api/routes/plugin");
 
+const devRouter = require("./api/routes/dev");
+
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
 
 // const errorHandler = require("./config/errorHandler");
@@ -163,6 +157,7 @@ const freelancePaymentRouter = require("./api/routes/freelancePayment");
 // app.use(errorHandler)
 
 app.use("/api/admin/auth", adminRouter);
+app.use("/api/dev", devRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/auth", userRouter);
 app.use("/api/user", userRouter);

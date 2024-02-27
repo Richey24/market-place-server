@@ -11,7 +11,6 @@ exports.getPlugins = async (req, res) => {
 
 exports.createPlugin = async (req, res) => {
      let user = req.userData;
-     console.log("user", user);
      try {
           if (!user) {
                return res.status(401).send({ message: "Unauthorized: No user ID provided" });
@@ -23,5 +22,32 @@ exports.createPlugin = async (req, res) => {
           res.status(201).send(newPlugin);
      } catch (error) {
           res.status(400).send(error);
+     }
+};
+
+exports.updatePlugin = async (req, res) => {
+     const { pluginId } = req.params;
+     const user = req.userData;
+
+     if (!user) {
+          return res.status(401).send({ message: "Unauthorized: No user ID provided" });
+     }
+
+     try {
+          const pluginToUpdate = await Plugin.findById(pluginId);
+
+          if (!pluginToUpdate) {
+               return res.status(404).send({ message: "Plugin not found" });
+          }
+
+          Object.assign(pluginToUpdate, req.body);
+
+          await pluginToUpdate.save();
+          res.status(200).send({ message: "Plugin updated successfully", plugin: pluginToUpdate });
+     } catch (error) {
+          console.error("Error updating plugin:", error);
+          res.status(500).send({
+               message: "An error occurred while updating the plugin. Please try again.",
+          });
      }
 };

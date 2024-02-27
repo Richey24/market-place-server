@@ -36,6 +36,17 @@ const pluginSchema = new mongoose.Schema({
           type: Boolean,
           default: true,
      },
+     publicKey: {
+          type: String,
+     },
+     privateKey: {
+          type: String,
+     },
+     appUrl: { type: String },
+     active: {
+          type: Boolean,
+          default: true,
+     },
      user: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "User",

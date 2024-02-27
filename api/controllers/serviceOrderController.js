@@ -146,7 +146,7 @@ exports.getOrderedServices = async (req, res) => {
      try {
           const customerId = req.params.customerId;
           const orders = await ServiceOrder.find({ customer: customerId }).populate("service");
-          const services = orders.map((order) => order.service);
+          const services = orders.map((order) => ({ ...order.service, customer: order?.customer }));
 
           res.json({ services, status: true });
      } catch (err) {
@@ -162,7 +162,9 @@ exports.getOneServiceOrder = async (req, res) => {
      }
 
      try {
-          const order = await ServiceOrder.findById(orderId).populate("service");
+          const order = await ServiceOrder.findById(orderId)
+               .populate("service")
+               .populate("customer");
 
           if (!order) {
                return res.status(404).json({ message: "Service order not found", status: false });

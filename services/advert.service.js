@@ -1,6 +1,7 @@
 const advertModel = require("../model/Advert");
 const advertTypeModel = require("../model/AdvertType");
 const { NotFoundError } = require("../utils/error");
+
 class CompanyService {
      async createAdvertType(payload) {
           return await advertTypeModel.create(payload);

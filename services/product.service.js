@@ -48,7 +48,7 @@ const getProductById = async (id) => {
                ],
           ]);
           if (productData.length === 0) {
-               return []
+               return [];
           }
 
           let attributeLineIds = productData[0].attribute_line_ids || [];
@@ -128,6 +128,7 @@ const getFeaturedProducts = async (params) => {
                     "display_name",
                     "list_price",
                     // "image_1920",
+                    "product_tag_ids",
                     "standard_price",
                     "description",
                     "base_unit_count",
@@ -229,6 +230,7 @@ const addProduct = async (params) => {
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
+               x_shipping_package: params?.product?.x_shipping_package,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -284,57 +286,6 @@ const createProductTemplate = async (params, templateData) => {
      }
 };
 
-const createProductVariant = async (params, templateId, variantData) => {
-     try {
-          // variantData.product_tmpl_id = templateId;
-          // const combination_indices = 10033454365 * Math.random(1000);
-
-          // Check if the combination already exists
-          // const existingCombination = await params.odoo.execute_kw(
-          //      "product.product",
-          //      "search_count",
-          //      [
-          //           [
-          //                ["product_tmpl_id", "=", templateId],
-          //                ["combination_indices", "=", combination_indices],
-          //           ],
-          //      ],
-          // );
-
-          // console.log(
-          //      "existingCombination",
-          //      existingCombination,
-          //      "combination_indices",
-          //      combination_indices,
-          // );
-
-          // The combination is unique, proceed with creating the product variant
-
-          const variantId = await params.odoo.execute_kw("product.product", "create", [
-               { ...variantData },
-          ]);
-
-          return variantId;
-
-          // await params.odoo.execute_kw("product.template", "write", [
-          //      [templateId],
-          //      { product_variant_ids: [[4, variantId]] }, // 4 is for linking the variant
-          // ]);
-
-          // Update variant with additional information
-          // await params.odoo.execute_kw("product.product", "write", [
-          //      [variantId],
-          //      { x_additional_property: variantData.x_additional_property },
-          // ]);
-
-          // Write images for the variant
-          // ... (existing image handling code)
-     } catch (error) {
-          console.error("Error creating product variant:", error);
-          throw error;
-     }
-};
-
 const addProductVariant = async (params) => {
      if (params.product.is_variant) {
           const templateData = {
@@ -354,10 +305,11 @@ const addProductVariant = async (params) => {
                x_weight: params.product.weight,
                x_images: params.product.images,
                x_dimension: params.product.dimension,
+               x_shipping_package: params?.product?.x_shipping_package,
+               product_tag_ids: params.product.product_tag_ids
+                    ? JSON.parse(params.product.product_tag_ids)
+                    : [],
                // qty_available: 5,
-               // product_tag_ids: params.product.product_tag_ids
-               //      ? JSON.parse(params.product.product_tag_ids)
-               //      : [],
           };
 
           console.log("templateData", templateData);
@@ -600,7 +552,7 @@ const addMultipleProducts = async (params) => {
                     display_name: product.name,
                     website_published: product.published,
                     company_id: product.company_id,
-                    x_images: product.images
+                    x_images: product.images,
                };
 
                const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -689,13 +641,11 @@ const getProductDetails = async (productId) => {
 const deleteProduct = async (id) => {
      try {
           await Odoo.connect();
-          await Odoo.execute_kw("product.template", "unlink",
-               [[Number(id)]],
-          )
-          return true
+          await Odoo.execute_kw("product.template", "unlink", [[Number(id)]]);
+          return true;
      } catch (error) {
           console.log(error);
-          return false
+          return false;
      }
 };
 
@@ -720,5 +670,5 @@ module.exports = {
      updateProduct,
      searchProducts,
      addProductVariant,
-     deleteProduct
+     deleteProduct,
 };

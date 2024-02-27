@@ -47,8 +47,21 @@ const userSchema = mongoose.Schema({
      role: {
           type: String,
           default: USER_ROLE.USER,
-          enum: [USER_ROLE.USER, USER_ROLE.ADMIN, USER_ROLE.VENDOR, USER_ROLE.CUSTOMER],
+          enum: [
+               USER_ROLE.USER,
+               USER_ROLE.ADMIN,
+               USER_ROLE.VENDOR,
+               USER_ROLE.CUSTOMER,
+               USER_ROLE.DEVELOPER,
+               USER_ROLE.FREELANCER,
+          ],
           required: [true, "Please include user role"],
+     },
+     githubUsername: {
+          type: String,
+     },
+     portfolioUrl: {
+          type: String,
      },
      password: {
           type: String,
@@ -187,8 +200,8 @@ const userSchema = mongoose.Schema({
           },
      ],
      navigation: {
-          type: Array
-     }
+          type: Array,
+     },
 });
 
 userSchema.pre("save", async function () {
@@ -204,9 +217,9 @@ userSchema.pre("save", async function () {
 
      if (user.role === "VENDOR") {
           if (user.currentSiteType === "service") {
-               user.navigation = serviceNav
+               user.navigation = serviceNav;
           } else {
-               user.navigation = ecommerceNav
+               user.navigation = ecommerceNav;
           }
      }
 
