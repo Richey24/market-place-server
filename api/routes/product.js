@@ -4,7 +4,7 @@ const auth = require("../../config/auth");
 const multer = require("multer");
 const productController = require("../controllers/productController");
 
-// router.get("/:companyId/:productId", productController.getProductById);
+// router.get("/:companyId/:productId", productController.getProductById);xx
 
 router.get("/category/:companyId/:categoryId", productController.getProductbyCategory);
 router.post("/", auth, productController.createProduct);
