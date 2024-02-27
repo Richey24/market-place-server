@@ -6,7 +6,7 @@ const { Complain } = require("../../model/Complain");
 
 const createDownloadStat = async (req, res) => {
     try {
-        req.body.ipAddress = req.socket.remoteAddress
+        req.body.ipAddress = req.ip
         await DownloadStat.create(req.body)
         res.status(201).json({ message: "Created" })
     } catch (error) {
