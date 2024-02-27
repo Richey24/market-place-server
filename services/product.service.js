@@ -128,6 +128,7 @@ const getFeaturedProducts = async (params) => {
                     "display_name",
                     "list_price",
                     // "image_1920",
+                    "product_tag_ids",
                     "standard_price",
                     "description",
                     "base_unit_count",
@@ -305,11 +306,10 @@ const addProductVariant = async (params) => {
                x_images: params.product.images,
                x_dimension: params.product.dimension,
                x_shipping_package: params?.product?.x_shipping_package,
-
+               product_tag_ids: params.product.product_tag_ids
+                    ? JSON.parse(params.product.product_tag_ids)
+                    : [],
                // qty_available: 5,
-               // product_tag_ids: params.product.product_tag_ids
-               //      ? JSON.parse(params.product.product_tag_ids)
-               //      : [],
           };
 
           console.log("templateData", templateData);

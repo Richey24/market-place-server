@@ -67,7 +67,6 @@ exports.getProductbyCompanyId = async (req, res) => {
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
-
                const products = theProducts.map((product) => {
                     return {
                          id: product.id,
