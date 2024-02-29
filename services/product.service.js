@@ -118,7 +118,7 @@ const getFeaturedProducts = async (params) => {
           await Odoo.connect();
 
           const tagName = "Featured Product";
-          const products = await Odoo.execute_kw("product.product", "search_read", [
+          const products = await Odoo.execute_kw("product.template", "search_read", [
                [
                     ["product_tag_ids.name", "=", tagName],
                     ["company_id", "=", params.company_id],
@@ -129,9 +129,11 @@ const getFeaturedProducts = async (params) => {
                     "display_name",
                     "list_price",
                     // "image_1920",
+                    "product_tag_ids",
                     "standard_price",
                     "description",
                     "base_unit_count",
+                    "product_variant_id",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -307,11 +309,10 @@ const addProductVariant = async (params) => {
                x_images: params.product.images,
                x_dimension: params.product.dimension,
                x_shipping_package: params?.product?.x_shipping_package,
-
+               product_tag_ids: params.product.product_tag_ids
+                    ? JSON.parse(params.product.product_tag_ids)
+                    : [],
                // qty_available: 5,
-               // product_tag_ids: params.product.product_tag_ids
-               //      ? JSON.parse(params.product.product_tag_ids)
-               //      : [],
           };
 
           console.log("templateData", templateData);

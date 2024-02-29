@@ -28,6 +28,7 @@ exports.getProducts = async (req, res) => {
                               "base_unit_count",
                               "categ_id",
                               "rating_avg",
+                              "product_variant_id",
                               "rating_count",
                               "x_color",
                               "x_dimension",
