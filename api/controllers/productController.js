@@ -375,34 +375,34 @@ exports.productDetails = async (req, res) => {
 
      const details = await getProductById(productId);
 
-     const product = details?.map((product) => {
-          return {
-               id: product.id,
-               website_url: product.website_url,
-               name: product.name,
-               description: product.description,
-               categ_id: product.categ_id,
-               public_categ_ids: product.public_categ_ids,
-               list_price: product.list_price,
-               standard_price: product.standard_price,
-               company_id: product.company_id,
-               display_name: product.display_name,
-               base_unit_count: product.base_unit_count,
-               // image_1920: product.image_1920,
-               // image_1024: product.image_1024,
-               x_rating: product.x_rating,
-               create_date: product.create_date,
-               x_subcategory: product.x_subcategory,
-               x_size: product.x_size,
-               x_weight: product.x_weight,
-               x_color: product.x_color,
-               x_images: JSON.parse(product.x_images),
-               x_dimension: product.x_dimension,
-               x_shipping_package: product?.x_shipping_package,
-          };
-     });
+     // const product = details?.map((product) => {
+     //      return {
+     //           id: product.id,
+     //           website_url: product.website_url,
+     //           name: product.name,
+     //           description: product.description,
+     //           categ_id: product.categ_id,
+     //           public_categ_ids: product.public_categ_ids,
+     //           list_price: product.list_price,
+     //           standard_price: product.standard_price,
+     //           company_id: product.company_id,
+     //           display_name: product.display_name,
+     //           base_unit_count: product.base_unit_count,
+     //           // image_1920: product.image_1920,
+     //           // image_1024: product.image_1024,
+     //           x_rating: product.x_rating,
+     //           create_date: product.create_date,
+     //           x_subcategory: product.x_subcategory,
+     //           x_size: product.x_size,
+     //           x_weight: product.x_weight,
+     //           x_color: product.x_color,
+     //           x_images: JSON.parse(product.x_images),
+     //           x_dimension: product.x_dimension,
+     //           x_shipping_package: product?.x_shipping_package,
+     //      };
+     // });
 
-     res.status(201).json({ product: product });
+     res.status(201).json({ product: details });
 };
 
 exports.wishlistProduct = async (req, res) => {

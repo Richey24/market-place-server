@@ -11,14 +11,14 @@ exports.generateAccessKeys = async (req, res) => {
           const decryptionKey = devService.generateSecretKey();
           const publicKey = devService.encrypt(appId, decryptionKey);
 
-          res.json({ appId, publicKey, screteKey: decryptionKey });
+          res.json({ appId, publicKey, secretKey: decryptionKey });
      } catch (error) {
           res.status(500).send(error.message);
      }
 };
 
 exports.decryptAccessKeys = async (req, res) => {
-     const { appId, publicKey, screteKey } = req.body;
+     const { appId, publicKey, secretKey } = req.body;
 
      if (!appId || !publicKey) {
           return res.status(400).send("App ID and public key are required");
@@ -29,7 +29,7 @@ exports.decryptAccessKeys = async (req, res) => {
      // }
 
      try {
-          const accessKey = devService.decrypt(publicKey, screteKey);
+          const accessKey = devService.decrypt(publicKey, secretKey);
           res.json({ appId, accessKey });
      } catch (error) {
           res.status(500).send(error.message);
