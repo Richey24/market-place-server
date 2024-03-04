@@ -32,6 +32,7 @@ const getProductById = async (id) => {
                     "standard_price",
                     "description",
                     "base_unit_count",
+                    "product_variant_id",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -132,6 +133,7 @@ const getFeaturedProducts = async (params) => {
                     "standard_price",
                     "description",
                     "base_unit_count",
+                    "product_variant_id",
                     "categ_id",
                     "rating_avg",
                     "x_color",
@@ -279,6 +281,7 @@ const addProduct = async (params) => {
 const createProductTemplate = async (params, templateData) => {
      try {
           await params.odoo.connect();
+          ("product.template");
           return await params.odoo.execute_kw("product.template", "create", [templateData]);
      } catch (error) {
           console.error("Error creating product template:", error);

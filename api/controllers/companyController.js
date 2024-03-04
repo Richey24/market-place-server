@@ -29,8 +29,8 @@ const updateCompany = async (req, res) => {
 };
 
 const updateBrandColor = async (req, res) => {
+     const { companyId } = req.params;
      const { brandColor } = req.body;
-     const user = req.userData;
 
      if (!brandColor) {
           return res.status(400).send({ message: "brandColor is required" });
@@ -42,14 +42,16 @@ const updateBrandColor = async (req, res) => {
                return res.status(404).send({ message: "Company not found" });
           }
 
-          company.brandColor = brandColor;
+          company.brandcolor = brandColor;
           await company.save();
 
           res.status(200).send({
                message: "Brand colors updated successfully",
                brandColor: company.brandColor,
+               status: true,
           });
      } catch (error) {
+          console.log("err", error.message);
           res.status(500).send({ message: "Error updating brand colors", error: error.message });
      }
 };
