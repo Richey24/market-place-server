@@ -19,7 +19,7 @@ const sendOnboardingEmail = (email, name, type) => {
   const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
 
   const transporter = nodemailer.createTransport({
-    host: "smtp-legacy.office365.com",
+    host: "smtp.office365.com",
     port: 587,
     secure: false,
     auth: {
