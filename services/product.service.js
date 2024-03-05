@@ -42,6 +42,7 @@ const getProductById = async (id) => {
                     "x_weight",
                     "x_rating",
                     "x_images",
+                    "x_free_shipping",
                     "rating_count",
                     "website_url",
                     "public_categ_ids",
@@ -224,7 +225,7 @@ const addProduct = async (params) => {
                website_published: params.product.published,
                company_id: params.product.company_id,
                x_color: params.product.color,
-               x_subcategory: params.product.subcategory,
+               x_subcategory: params.product.subcategory,   
                x_size: params.product.size,
                x_weight: params.product.weight,
                x_images: params.product.images,
@@ -233,6 +234,7 @@ const addProduct = async (params) => {
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
                x_shipping_package: params?.product?.x_shipping_package,
+               x_free_shipping: params?.product.free_shipping,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -477,6 +479,7 @@ const updateProduct = async (params) => {
                x_color: params.product.color,
                x_subcategory: params.product.subcategory,
                x_size: params.product.size,
+               x_free_shipping: params.product.free_shipping,
                x_weight: params.product.weight,
                x_images: params.product.images,
                x_dimension: params.product.dimension,
