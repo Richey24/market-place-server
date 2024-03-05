@@ -57,6 +57,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "x_weight",
                               "x_rating",
                               "x_images",
+                              "x_free_shipping",
                               "create_date",
                               "website_url",
                               "website_meta_keywords",
