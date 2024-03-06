@@ -759,7 +759,7 @@ exports.getBestSellingProducts = async (req, res) => {
           const companyId = [+req.params.companyId];
 
           // Fetch best-selling products based on your criteria (e.g., sales count)
-          const theProducts = await Odoo.execute_kw("product.product", "search_read", [
+          const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                [
                     ["sale_ok", "=", true],
                     ["company_id", "=", companyId],
