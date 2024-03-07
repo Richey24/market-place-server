@@ -95,10 +95,11 @@ class CategoryController {
                await Odoo.connect();
                const { name, categ_id } = req.body;
                const user = await UserService.findById(req.userData._id);
+               let id;
 
                console.log("company", name, categ_id);
                if (name) {
-                    let id = await Odoo.execute_kw("product.public.category", "create", [
+                    id = await Odoo.execute_kw("product.public.category", "create", [
                          { name: name },
                     ]);
                     await CompanyService.updateCategories(user.company._id, id);
