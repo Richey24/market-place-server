@@ -108,7 +108,7 @@ class CategoryController {
                     throw "Invalid Category";
                }
 
-               res.status(201).json({ status: true, message: "Created Successfullly" });
+               res.status(201).json({ status: true, message: "Created Successfullly", id: id });
           } catch (e) {
                res.status(500).json(e);
                console.error("Error when trying to connect odoo xml-rpc", e);
