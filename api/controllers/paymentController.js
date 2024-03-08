@@ -3,7 +3,7 @@ const User = require("../../model/User");
 const paymentService = require("../../services/payment.service");
 
 exports.createPaymentIntents = async (req, res) => {
-     const { amount, connectedAccountId, orderId, userId, siteId, type } = req.body;
+     const { amount, connectedAccountId, orderId, userId, siteId, type, metadata } = req.body;
 
      try {
           if (type === "direct_charges") {
@@ -13,6 +13,7 @@ exports.createPaymentIntents = async (req, res) => {
                     orderId,
                     userId,
                     siteId,
+                    metadata,
                });
 
                return successResponder(res, payment, 201, "Payment successFull");
@@ -24,6 +25,7 @@ exports.createPaymentIntents = async (req, res) => {
                orderId,
                userId,
                siteId,
+               metadata,
           });
 
           return successResponder(res, payment, 201, "Payment successFull");

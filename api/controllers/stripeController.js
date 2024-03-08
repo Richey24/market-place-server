@@ -9,6 +9,7 @@ const {
      sendAdvertisementNotificationEmail,
      deleteUserData,
 } = require("../../config/helpers");
+const Order = require("../../model/Order");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
@@ -271,13 +272,19 @@ exports.stripeCheckout = async (req, res) => {
 
 const stripeSession = async (req) => {
      try {
-          const { type, advertId, eventId } = req.query;
+          const { type, advertId, eventId, serviceId, price } = req.query;
 
           let successUrl, cancelUrl, metadata;
           if (type === "event") {
                successUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=success`;
                cancelUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=failed`;
                metadata = { type: "event", eventId: eventId };
+          } else if (type === "freelancer") {
+               console.log({ req });
+
+               successUrl = `${YOUR_DOMAIN}/order/`;
+               cancelUrl = `${YOUR_DOMAIN}/order`;
+               metadata = { type: "freelancer_payment" };
           } else {
                successUrl = `${YOUR_DOMAIN}/promotions/ads?success=true`;
                cancelUrl = `${YOUR_DOMAIN}/promotions/ads?success=false`;
@@ -287,12 +294,27 @@ const stripeSession = async (req) => {
           const session = await stripe.checkout.sessions.create({
                mode: "payment",
                payment_method_types: ["card"],
-               line_items: [
-                    {
-                         price: "price_1OVEIDH56ySuleg3AnmtX3o0",
-                         quantity: 1,
-                    },
-               ],
+               line_items:
+                    type !== "freelancer"
+                         ? [
+                                {
+                                     price: "price_1OVEIDH56ySuleg3AnmtX3o0",
+                                     quantity: 1,
+                                },
+                           ]
+                         : [
+                                {
+                                     price_data: {
+                                          currency: "usd",
+                                          product_data: {
+                                               name: "FreeLancer Payment",
+                                          },
+                                          unit_amount: 120, // Price in cents
+                                     },
+                                     quantity: 1,
+                                },
+                           ],
+
                success_url: successUrl,
                cancel_url: cancelUrl,
                metadata: metadata,
@@ -328,6 +350,17 @@ exports.createAdsCheckoutSession = async (req, res) => {
                });
 
                await event.save();
+
+               return res.json({ session });
+               //FREELANCER
+          } else if (req.query.type === "freelancer") {
+               // const user = await User.findOne({ id: customerId });
+
+               // if (!user) {
+               //      return res.status(404).json({ error: "Event not found for the given email" });
+               // }
+
+               const session = await stripeSession(req);
 
                return res.json({ session });
           } else {
@@ -459,4 +492,130 @@ exports.adsCallback = async (req, res) => {
      }
 
      res.status(200).json({ message: "successful" });
+};
+
+exports.stripeClientCallback = async (req, res) => {
+     const payload = req.rawBody;
+
+     // const metadata = paymentIntent.metadata;
+
+     const sig = req.headers["stripe-signature"];
+     let event;
+     console.log({ payload });
+
+     try {
+          event = stripe.webhooks.constructEvent(
+               payload,
+               sig,
+               "whsec_BVTdrkj1eTgq3f6qIV5pVbzhFysGdM47",
+          );
+     } catch (err) {
+          console.log(err);
+          return res.status(400).send(`Webhook Error: ${err.message}`);
+     }
+
+     console.log({ event, data: event.data });
+     switch (event.type) {
+          case "checkout.session.completed": {
+               const session = event.data.object;
+               if (session.mode !== "subscription") {
+                    return res.status(200).json("wrong webhook");
+               }
+               if (session.payment_status === "paid") {
+                    // const customer = await StripeSession.findOne({ sessionID: session.id });
+                    // const expiryDate =
+                    //      customer.plan === "monthly"
+                    //           ? new Date(new Date().setMonth(new Date().getMonth() + 1))
+                    //           : new Date(new Date().setMonth(new Date().getMonth() + 12));
+                    // const user = await Order.findOneAndUpdate(
+                    //      { customer: customer.email },
+                    //      {
+                    //           paid: true,
+                    //           expiryDate: expiryDate,
+                    //           stripeID: session.customer,
+                    //           subscriptionID: session.subscription,
+                    //           subscriptionPlan: customer.plan,
+                    //      },
+                    //      { new: true },
+                    // );
+                    // await Logger.create({
+                    //      userID: user._id,
+                    //      eventType: "checkout.session.completed",
+                    // });
+                    res.status(200).json({ message: "successful" });
+               }
+               break;
+          }
+          // case "checkout.session.async_payment_succeeded": {
+          //      const session = event.data.object;
+          //      if (session.mode !== "subscription") {
+          //           return res.status(400).json("wrong webhook");
+          //      }
+          //      const customer = await StripeSession.findOne({ sessionID: session.id });
+          //      const expiryDate =
+          //           customer.plan === "monthly"
+          //                ? new Date(new Date().setMonth(new Date().getMonth() + 1))
+          //                : new Date(new Date().setMonth(new Date().getMonth() + 12));
+          //      const user = await User.findOneAndUpdate(
+          //           { email: customer.email },
+          //           {
+          //                paid: true,
+          //                expiryDate: expiryDate,
+          //                stripeID: session.customer,
+          //                subscriptionID: session.subscription,
+          //                subscriptionPlan: customer.plan,
+          //           },
+          //           { new: true },
+          //      );
+          //      await Logger.create({
+          //           userID: user._id,
+          //           eventType: "checkout.session.async_payment_succeeded",
+          //      });
+          //      res.status(200).json({ message: "successful" });
+          //      break;
+          // }
+          // case "invoice.payment_succeeded": {
+          //      const invoice = event.data.object;
+          //      if (invoice.lines?.data[0]?.type !== "subscription") {
+          //           return res.status(400).json("wrong webhook");
+          //      }
+          //      const user = await User.findOne({ stripeID: invoice.customer });
+          //      if (user) {
+          //           const expiryDate =
+          //                user.subscriptionPlan === "monthly"
+          //                     ? new Date(new Date().setMonth(new Date().getMonth() + 1))
+          //                     : new Date(new Date().setMonth(new Date().getMonth() + 12));
+          //           await User.findOneAndUpdate(
+          //                { stripeID: invoice.customer },
+          //                { expiryDate: expiryDate },
+          //           );
+          //           await Logger.create({
+          //                userID: user._id,
+          //                eventType: "invoice.payment_succeeded",
+          //           });
+          //           res.status(200).json({ message: "successful" });
+          //      }
+          //      break;
+          // }
+          // case "customer.subscription.deleted": {
+          //      const session = event.data.object;
+          //      const user = await User.findOne({ stripeID: session.customer });
+          //      if (user) {
+          //           const company = await Company.findById(user.company);
+          //           await deleteUserData(
+          //                user._id,
+          //                user.company,
+          //                company.site,
+          //                user.currentSiteType,
+          //           );
+          //           await Logger.create({
+          //                userID: user._id,
+          //                eventType: "customer.subscription.deleted",
+          //           });
+          //           res.status(200).json({ message: "successful" });
+          //      }
+          // }
+          default:
+               break;
+     }
 };

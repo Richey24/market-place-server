@@ -34,10 +34,22 @@ class PaymentService {
      }
 
      async createPaymentIntents(payload) {
-          const { amount, connectedAccountId, orderId, userId, siteId } = payload;
-
+          const { amount, connectedAccountId, orderId, userId, siteId, metadata } = payload;
+          console.log({
+               amount: (amount + this.calculateApplicationFee(amount)) * 100, //amount + service charges and Convert to cents
+               currency: "usd",
+               transfer_data: {
+                    amount: amount * 100,
+                    destination: connectedAccountId, // ID of the connected account
+               },
+               automatic_payment_methods: {
+                    enabled: true,
+               },
+               metadata: metadata,
+          });
           try {
                const paymentIntent = await stripeClient.paymentIntents.create({
+                    metadata,
                     amount: (amount + this.calculateApplicationFee(amount)) * 100, //amount + service charges and Convert to cents
                     currency: "usd",
                     transfer_data: {
@@ -63,7 +75,7 @@ class PaymentService {
                     site: siteId,
                });
 
-               console.log({ paymentRecipt });
+               console.log({ paymentRecipt, paymentIntent });
                // Handle successful payment
                return { clientSecret: paymentIntent.client_secret };
           } catch (error) {
@@ -79,7 +91,7 @@ class PaymentService {
           }
      }
      async createDirectChargePaymentIntents(payload) {
-          const { amount, connectedAccountId, orderId, userId, siteId } = payload;
+          const { amount, connectedAccountId, orderId, userId, siteId, metadata } = payload;
 
           try {
                const paymentIntent = await stripeClient.paymentIntents.create(
@@ -90,6 +102,7 @@ class PaymentService {
                          automatic_payment_methods: {
                               enabled: true,
                          },
+                         metadata,
                     },
                     {
                          stripeAccount: connectedAccountId, // Direct charge to the connected account
@@ -125,6 +138,15 @@ class PaymentService {
                );
           }
      }
+
+     // async createPaymentLinks(payload) {
+     //      const paymentLink = await stripeClient.paymentLinks.create({
+     //           line_items: payload.products,
+     //           transfer_data: {
+     //                destination: payload.connectedAccountId,
+     //           },
+     //      });
+     // }
 
      getAllExternalAccounts = async (params) => {
           try {
