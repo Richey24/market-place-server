@@ -103,12 +103,23 @@ exports.getOrdersByPartner = async (req, res) => {
                     return order;
                }),
           );
-          const productId = ordersWithDetails.map(
-               (data) => data?.order_lines[0]?.product_template_id[0],
-          );
-          const productDetailsPromises = productId.map((id) => getProductById(id));
+          // const productIdwrapper = ordersWithDetails.map((data) => data?.order_lines);
+          // console.log("total images", productIdwrapper);
+          // const productId = productIdwrapper[0].map((id) => id?.product_template_id[0]);
+          // console.log("total id", productId);
+          // const productDetailsPromises = productId.map((id) => getProductById(id));
+          // const productDetails = await Promise.all(productDetailsPromises);
+          // const images = productDetails.map((info) => info && info.map((data) => data?.x_images));
+          const orderLines = ordersWithDetails[0]?.order_lines || [];
+
+          const productIds = orderLines.map((id) => id?.product_template_id?.[0]).filter(Boolean);
+
+          const productDetailsPromises = productIds.map((id) => getProductById(id));
           const productDetails = await Promise.all(productDetailsPromises);
-          const images = productDetails.map((info) => info && info.map((data) => data?.x_images));
+
+          const images = productDetails.flatMap(
+               (info) => info?.map((data) => data?.x_images) || [],
+          );
 
           return res
                .status(201)
