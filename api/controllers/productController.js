@@ -57,6 +57,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "x_weight",
                               "x_rating",
                               "x_images",
+                              "x_free_shipping",
                               "create_date",
                               "website_url",
                               "website_meta_keywords",
@@ -97,7 +98,7 @@ exports.getProductbyCategory = async (req, res) => {
 
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
-                         ["categ_id", "=", categoryId],
+                         ["public_categ_ids", "=", categoryId],
                          ["type", "=", "consu"],
                          ["company_id", "=", companyId],
                     ],
@@ -758,7 +759,7 @@ exports.getBestSellingProducts = async (req, res) => {
           const companyId = [+req.params.companyId];
 
           // Fetch best-selling products based on your criteria (e.g., sales count)
-          const theProducts = await Odoo.execute_kw("product.product", "search_read", [
+          const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                [
                     ["sale_ok", "=", true],
                     ["company_id", "=", companyId],

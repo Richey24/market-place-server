@@ -56,8 +56,6 @@ exports.getOrdersByCompanyId = async (req, res) => {
 };
 
 exports.getOrdersByPartner = async (req, res) => {
-     console.log("GET /api/orders");
-
      try {
           await Odoo.connect();
 
@@ -105,8 +103,27 @@ exports.getOrdersByPartner = async (req, res) => {
                     return order;
                }),
           );
+          // const productIdwrapper = ordersWithDetails.map((data) => data?.order_lines);
+          // console.log("total images", productIdwrapper);
+          // const productId = productIdwrapper[0].map((id) => id?.product_template_id[0]);
+          // console.log("total id", productId);
+          // const productDetailsPromises = productId.map((id) => getProductById(id));
+          // const productDetails = await Promise.all(productDetailsPromises);
+          // const images = productDetails.map((info) => info && info.map((data) => data?.x_images));
+          const orderLines = ordersWithDetails[0]?.order_lines || [];
 
-          return res.status(201).json({ order: ordersWithDetails[0], status: true });
+          const productIds = orderLines.map((id) => id?.product_template_id?.[0]).filter(Boolean);
+
+          const productDetailsPromises = productIds.map((id) => getProductById(id));
+          const productDetails = await Promise.all(productDetailsPromises);
+
+          const images = productDetails.flatMap(
+               (info) => info?.map((data) => data?.x_images) || [],
+          );
+
+          return res
+               .status(201)
+               .json({ order: ordersWithDetails[0], images: images, status: true });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
