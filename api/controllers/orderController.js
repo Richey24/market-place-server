@@ -298,9 +298,20 @@ exports.getOrderById = async (req, res) => {
                     return order;
                }),
           );
+          const orderLines = ordersWithDetails[0]?.order_lines || [];
 
+          const productIds = orderLines.map((id) => id?.product_template_id?.[0]).filter(Boolean);
+
+          const productDetailsPromises = productIds.map((id) => getProductById(id));
+          const productDetails = await Promise.all(productDetailsPromises);
+
+          const images = productDetails.flatMap(
+               (info) => info?.map((data) => data?.x_images) || [],
+          );
           if (orders.length > 0) {
-               return res.status(200).json({ order: ordersWithDetails, status: true });
+               return res
+                    .status(200)
+                    .json({ order: ordersWithDetails, images: images, status: true });
           } else {
                return res.status(404).json({ message: "Order not found", status: false });
           }
