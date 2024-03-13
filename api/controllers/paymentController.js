@@ -3,7 +3,7 @@ const User = require("../../model/User");
 const paymentService = require("../../services/payment.service");
 
 exports.createPaymentIntents = async (req, res) => {
-     const { amount, connectedAccountId, orderId, userId, siteId, type } = req.body;
+     const { amount, connectedAccountId, orderId, userId, siteId, type, metadata } = req.body;
 
      try {
           if (type === "direct_charges") {
@@ -13,6 +13,7 @@ exports.createPaymentIntents = async (req, res) => {
                     orderId,
                     userId,
                     siteId,
+                    metadata,
                });
 
                return successResponder(res, payment, 201, "Payment successFull");
@@ -24,6 +25,7 @@ exports.createPaymentIntents = async (req, res) => {
                orderId,
                userId,
                siteId,
+               metadata,
           });
 
           return successResponder(res, payment, 201, "Payment successFull");
@@ -138,6 +140,17 @@ exports.updatePaymentMethod = async (req, res) => {
           });
 
           return successResponder(res, payoutMethod, 200, "Payout method updated successfully");
+     } catch (error) {
+          return errorResponder(res, error ? error.code : 500, error?.message);
+     }
+};
+
+exports.privatOrderCheckout = async (req, res) => {
+     try {
+          const paymentSession = await paymentService.createPaymentSession(req.body);
+          console.log({ paymentSession });
+
+          return successResponder(res, paymentSession, 200, "payment session created successfully");
      } catch (error) {
           return errorResponder(res, error.code || 500, error?.message);
      }
