@@ -225,7 +225,7 @@ const addProduct = async (params) => {
                website_published: params.product.published,
                company_id: params.product.company_id,
                x_color: params.product.color,
-               x_subcategory: params.product.subcategory,   
+               x_subcategory: params.product.subcategory,
                x_size: params.product.size,
                x_weight: params.product.weight,
                x_images: params.product.images,
@@ -235,6 +235,8 @@ const addProduct = async (params) => {
                     : [],
                x_shipping_package: params?.product?.x_shipping_package,
                x_free_shipping: params?.product.free_shipping,
+               x_brand_gate_id: params?.product.brand_gate_id,
+               x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -311,6 +313,8 @@ const addProductVariant = async (params) => {
                x_images: params.product.images,
                x_dimension: params.product.dimension,
                x_shipping_package: params?.product?.x_shipping_package,
+               x_brand_gate_id: params?.product.brand_gate_id,
+               x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
@@ -483,6 +487,8 @@ const updateProduct = async (params) => {
                x_weight: params.product.weight,
                x_images: params.product.images,
                x_dimension: params.product.dimension,
+               x_brand_gate_id: params?.product.brand_gate_id,
+               x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
