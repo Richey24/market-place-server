@@ -1,5 +1,7 @@
 const stripeClient = require("../config/stripe");
 const paymentModel = require("../model/Payment");
+const StripeSession = require("../model/StripeSession");
+
 const { NotFoundError, PermissionError, ServerError } = require("../utils/error");
 
 class PaymentService {
@@ -35,18 +37,7 @@ class PaymentService {
 
      async createPaymentIntents(payload) {
           const { amount, connectedAccountId, orderId, userId, siteId, metadata } = payload;
-          console.log({
-               amount: (amount + this.calculateApplicationFee(amount)) * 100, //amount + service charges and Convert to cents
-               currency: "usd",
-               transfer_data: {
-                    amount: amount * 100,
-                    destination: connectedAccountId, // ID of the connected account
-               },
-               automatic_payment_methods: {
-                    enabled: true,
-               },
-               metadata: metadata,
-          });
+
           try {
                const paymentIntent = await stripeClient.paymentIntents.create({
                     metadata,
@@ -139,14 +130,45 @@ class PaymentService {
           }
      }
 
-     // async createPaymentLinks(payload) {
-     //      const paymentLink = await stripeClient.paymentLinks.create({
-     //           line_items: payload.products,
-     //           transfer_data: {
-     //                destination: payload.connectedAccountId,
-     //           },
-     //      });
-     // }
+     /**
+      * create a payment session
+      * @param {{product:Array,successUrl:string,metaData:object}} payload
+      * @returns {string} success_url
+      */
+
+     async createPaymentSession(payload) {
+          try {
+               const session = await stripeClient.checkout.sessions.create(
+                    {
+                         mode: "payment",
+                         payment_method_types: ["card"],
+                         line_items: payload.products,
+                         success_url: payload.successUrl,
+                         payment_intent_data: payload.payment_intent_data,
+                         metadata: payload.metadata,
+                    },
+                    payload.stripeAccount && {
+                         stripeAccount: payload.stripeAccount,
+                    },
+               );
+
+               await StripeSession.create({
+                    sessionID: session.id,
+                    email: payload.user.email,
+                    userID: payload.user.id,
+               });
+
+               return session;
+          } catch (error) {
+               throw new ServerError(
+                    error?.message ||
+                         error?.raw?.message ||
+                         "An error occured while a payment link",
+                    error?.raw?.statusCode || error?.statusCode,
+                    error?.raw?.code,
+               );
+          }
+     }
 
      getAllExternalAccounts = async (params) => {
           try {

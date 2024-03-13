@@ -141,6 +141,17 @@ exports.updatePaymentMethod = async (req, res) => {
 
           return successResponder(res, payoutMethod, 200, "Payout method updated successfully");
      } catch (error) {
+          return errorResponder(res, error ? error.code : 500, error?.message);
+     }
+};
+
+exports.privatOrderCheckout = async (req, res) => {
+     try {
+          const paymentSession = await paymentService.createPaymentSession(req.body);
+          console.log({ paymentSession });
+
+          return successResponder(res, paymentSession, 200, "payment session created successfully");
+     } catch (error) {
           return errorResponder(res, error.code || 500, error?.message);
      }
 };

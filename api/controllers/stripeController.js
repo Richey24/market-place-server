@@ -2,6 +2,7 @@ const Logger = require("../../model/Logger");
 const StripeSession = require("../../model/StripeSession");
 const User = require("../../model/User");
 const Company = require("../../model/Company");
+const Odoo = require("../../config/odoo.connection");
 const Advert = require("../../model/Advert");
 const Event = require("../../model/Event");
 const {
@@ -10,6 +11,7 @@ const {
      deleteUserData,
 } = require("../../config/helpers");
 const Order = require("../../model/Order");
+const { changeOrderStatus } = require("./orderController");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
@@ -494,7 +496,58 @@ exports.adsCallback = async (req, res) => {
      res.status(200).json({ message: "successful" });
 };
 
-exports.stripeClientCallback = async (req, res) => {
+exports.stripePubicCheckoutCallback = async (req, res) => {
+     const payload = req.rawBody;
+
+     // const metadata = paymentIntent.metadata;
+
+     const sig = req.headers["stripe-signature"];
+     let event;
+
+     try {
+          event = stripe.webhooks.constructEvent(
+               payload,
+               sig,
+               process.env.PUBLIC_SITE_STRIPE_SECRET,
+          );
+     } catch (err) {
+          console.log(err);
+          return res.status(400).send(`Webhook Error: ${err.message}`);
+     }
+
+     switch (event.type) {
+          case "checkout.session.completed": {
+               const session = event.data.object;
+               if (session.mode !== "payment") {
+                    return res.status(200).json("wrong webhook");
+               }
+               if (session.payment_status === "paid") {
+                    // Connect to Odoo
+                    await Odoo.connect();
+
+                    // Update the order status
+                    const result = await Odoo.execute_kw("sale.order", "write", [
+                         [+session.metadata.orderId],
+                         { state: "sale" },
+                    ]);
+                    console.log({ event, data: event.data });
+
+                    await Logger.create({
+                         userID: session.metadata.buyerId,
+                         siteId: session.metadata.siteId,
+                         eventType: "checkout.session.completed",
+                    });
+                    res.status(200).json({ message: "successful" });
+               }
+               break;
+          }
+
+          default:
+               break;
+     }
+};
+
+exports.stripePrivateCheckoutCallback = async (req, res) => {
      const payload = req.rawBody;
 
      // const metadata = paymentIntent.metadata;
@@ -507,114 +560,44 @@ exports.stripeClientCallback = async (req, res) => {
           event = stripe.webhooks.constructEvent(
                payload,
                sig,
-               "whsec_BVTdrkj1eTgq3f6qIV5pVbzhFysGdM47",
+               process.env.PRIVATE_SITE_STRIPE_SECRET,
           );
      } catch (err) {
           console.log(err);
           return res.status(400).send(`Webhook Error: ${err.message}`);
      }
 
-     console.log({ event, data: event.data });
      switch (event.type) {
           case "checkout.session.completed": {
                const session = event.data.object;
-               if (session.mode !== "subscription") {
+               if (session.mode !== "payment") {
                     return res.status(200).json("wrong webhook");
                }
                if (session.payment_status === "paid") {
+                    console.log({ session });
+
                     // const customer = await StripeSession.findOne({ sessionID: session.id });
-                    // const expiryDate =
-                    //      customer.plan === "monthly"
-                    //           ? new Date(new Date().setMonth(new Date().getMonth() + 1))
-                    //           : new Date(new Date().setMonth(new Date().getMonth() + 12));
-                    // const user = await Order.findOneAndUpdate(
-                    //      { customer: customer.email },
-                    //      {
-                    //           paid: true,
-                    //           expiryDate: expiryDate,
-                    //           stripeID: session.customer,
-                    //           subscriptionID: session.subscription,
-                    //           subscriptionPlan: customer.plan,
-                    //      },
-                    //      { new: true },
-                    // );
-                    // await Logger.create({
-                    //      userID: user._id,
-                    //      eventType: "checkout.session.completed",
-                    // });
+                    // Connect to Odoo
+                    await Odoo.connect();
+
+                    // Update the order status
+                    const result = await Odoo.execute_kw("sale.order", "write", [
+                         [+session.metadata.orderId],
+                         { state: "sale" },
+                    ]);
+                    console.log({ result, orderId: session.metadata.orderId });
+                    console.log({ event, data: event.data });
+
+                    await Logger.create({
+                         userID: session.metadata.buyerId,
+                         siteId: session.metadata.siteId,
+                         eventType: "checkout.session.completed",
+                    });
                     res.status(200).json({ message: "successful" });
                }
                break;
           }
-          // case "checkout.session.async_payment_succeeded": {
-          //      const session = event.data.object;
-          //      if (session.mode !== "subscription") {
-          //           return res.status(400).json("wrong webhook");
-          //      }
-          //      const customer = await StripeSession.findOne({ sessionID: session.id });
-          //      const expiryDate =
-          //           customer.plan === "monthly"
-          //                ? new Date(new Date().setMonth(new Date().getMonth() + 1))
-          //                : new Date(new Date().setMonth(new Date().getMonth() + 12));
-          //      const user = await User.findOneAndUpdate(
-          //           { email: customer.email },
-          //           {
-          //                paid: true,
-          //                expiryDate: expiryDate,
-          //                stripeID: session.customer,
-          //                subscriptionID: session.subscription,
-          //                subscriptionPlan: customer.plan,
-          //           },
-          //           { new: true },
-          //      );
-          //      await Logger.create({
-          //           userID: user._id,
-          //           eventType: "checkout.session.async_payment_succeeded",
-          //      });
-          //      res.status(200).json({ message: "successful" });
-          //      break;
-          // }
-          // case "invoice.payment_succeeded": {
-          //      const invoice = event.data.object;
-          //      if (invoice.lines?.data[0]?.type !== "subscription") {
-          //           return res.status(400).json("wrong webhook");
-          //      }
-          //      const user = await User.findOne({ stripeID: invoice.customer });
-          //      if (user) {
-          //           const expiryDate =
-          //                user.subscriptionPlan === "monthly"
-          //                     ? new Date(new Date().setMonth(new Date().getMonth() + 1))
-          //                     : new Date(new Date().setMonth(new Date().getMonth() + 12));
-          //           await User.findOneAndUpdate(
-          //                { stripeID: invoice.customer },
-          //                { expiryDate: expiryDate },
-          //           );
-          //           await Logger.create({
-          //                userID: user._id,
-          //                eventType: "invoice.payment_succeeded",
-          //           });
-          //           res.status(200).json({ message: "successful" });
-          //      }
-          //      break;
-          // }
-          // case "customer.subscription.deleted": {
-          //      const session = event.data.object;
-          //      const user = await User.findOne({ stripeID: session.customer });
-          //      if (user) {
-          //           const company = await Company.findById(user.company);
-          //           await deleteUserData(
-          //                user._id,
-          //                user.company,
-          //                company.site,
-          //                user.currentSiteType,
-          //           );
-          //           await Logger.create({
-          //                userID: user._id,
-          //                eventType: "customer.subscription.deleted",
-          //           });
-          //           res.status(200).json({ message: "successful" });
-          //      }
-          // }
+
           default:
                break;
      }

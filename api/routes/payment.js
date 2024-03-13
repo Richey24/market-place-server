@@ -15,4 +15,7 @@ router.delete(
      paymentController.deleteExternalAccount,
 );
 
+
+router.post("/private-checkout-link", paymentController.privatOrderCheckout);
+
 module.exports = router;
