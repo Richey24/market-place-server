@@ -160,7 +160,7 @@ exports.confirmEmail = async (req, res) => {
                "partner_ids.domain": req.body.domain,
                email: req.body.email,
           });
-          console.log("domainExists", domainExists, req.body);
+          // console.log("domainExists", domainExists, req.body);
           if (domainExists) {
                return res.status(409).json({
                     message: "Account Already Exist for this Site",
@@ -1080,4 +1080,3 @@ exports.getAllFreelancUsers = async (req, res) => {
           res.status(500).json({ message: "Internal server error", status: false });
      }
 };
-

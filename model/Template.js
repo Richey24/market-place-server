@@ -15,6 +15,9 @@ const templateSchema = new mongoose.Schema({
      type: {
           type: String,
      },
+     limit: {
+          type: Boolean,
+     },
 });
 const VendorTemplate = mongoose.model("VendorTemplate", templateSchema);
 module.exports = VendorTemplate;

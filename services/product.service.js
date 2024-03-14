@@ -232,7 +232,7 @@ const addProduct = async (params) => {
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
-               x_shipping_package: params?.product?.x_shipping_package,
+               x_shipping_package: JSON?.stringify(params?.product?.x_shipping_package),
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -308,7 +308,7 @@ const addProductVariant = async (params) => {
                x_weight: params.product.weight,
                x_images: params.product.images,
                x_dimension: params.product.dimension,
-               x_shipping_package: params?.product?.x_shipping_package,
+               x_shipping_package: JSON?.stringify(params?.product?.x_shipping_package),
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],

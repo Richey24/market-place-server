@@ -63,6 +63,7 @@ exports.login = async (req, res) => {
           res.status(400).json({ error, status: "400" });
      }
 };
+
 exports.updateAdminDetails = async (req, res) => {
      try {
           const updatedUserData = {

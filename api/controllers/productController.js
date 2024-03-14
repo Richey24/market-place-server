@@ -71,7 +71,10 @@ exports.getProductbyCompanyId = async (req, res) => {
                const products = theProducts.map((product) => {
                     return {
                          ...product,
-                         x_images: JSON.parse(product.x_images),
+                         // x_images:
+                         //      typeof product?.x_images === "string"
+                         //           ? JSON?.parse(product?.x_images)
+                         //           : product?.x_images,
                     };
                });
                res.status(200).json({ products, status: true });
@@ -193,7 +196,7 @@ exports.getFeaturedProducts = async (req, res) => {
      const products = theProducts.map((product) => {
           return {
                ...product,
-               x_images: JSON.parse(product.x_images),
+               x_images: JSON?.parse(product?.x_images),
           };
      });
 
@@ -303,7 +306,10 @@ exports.filterProducts = async (req, res) => {
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
-                         x_images: JSON.parse(product.x_images),
+                         x_images:
+                              typeof product?.x_images === "string"
+                                   ? JSON?.parse(product?.x_images)
+                                   : product?.x_images,
                          x_dimension: product.x_dimension,
                     };
                });
@@ -323,7 +329,7 @@ exports.productDetails = async (req, res) => {
      const product = details?.map((product) => {
           return {
                ...product,
-               x_images: JSON.parse(product.x_images),
+               x_images: JSON?.parse(product?.x_images),
           };
      });
 
@@ -699,7 +705,7 @@ exports.createMultipleProducts = async (req, res) => {
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
-                    x_images: JSON.parse(product.x_images),
+                    x_images: JSON?.parse(product?.x_images),
                     x_dimension: product.x_dimension,
                };
           });
@@ -813,7 +819,7 @@ exports.getBestSellingProducts = async (req, res) => {
                     x_weight: product.x_weight,
                     x_color: product.x_color,
                     sales_count: product.sales_count,
-                    x_images: JSON.parse(product.x_images),
+                    x_images: JSON?.parse(product?.x_images),
                     x_dimension: product.x_dimension,
                };
           });
