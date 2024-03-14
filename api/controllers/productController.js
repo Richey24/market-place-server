@@ -24,18 +24,27 @@ exports.getProductbyCompanyId = async (req, res) => {
 
      try {
           const companyId = [+req.params.companyId];
-          if (req.params.companyId) {
+          const searchQuery = req.query.searchQuery;
+
+          if (companyId) {
                await Odoo.connect();
-               console.log("Connect to Odoo XML-RPC - api/products");
+               console.log("Connected to Odoo XML-RPC - api/products");
+
+               // Define the search filter
+               let searchFilter = [
+                    ["type", "=", "consu"],
+                    ["company_id", "=", companyId],
+               ];
+
+               if (searchQuery) {
+                    searchFilter.push(["name", "ilike", searchQuery]);
+               }
 
                const theProducts = await Odoo.execute_kw(
                     "product.template",
                     "search_read",
                     [
-                         [
-                              ["type", "=", "consu"],
-                              ["company_id", "=", companyId],
-                         ],
+                         searchFilter,
                          [
                               "id",
                               "public_categ_ids",
@@ -57,6 +66,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "x_weight",
                               "x_rating",
                               "x_images",
+                              "x_free_shipping",
                               "create_date",
                               "website_url",
                               "website_meta_keywords",
@@ -68,6 +78,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
+
                const products = theProducts.map((product) => {
                     return {
                          ...product,
@@ -77,6 +88,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                          //           : product?.x_images,
                     };
                });
+
                res.status(200).json({ products, status: true });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
@@ -100,7 +112,7 @@ exports.getProductbyCategory = async (req, res) => {
 
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
-                         ["categ_id", "=", categoryId],
+                         ["public_categ_ids", "=", categoryId],
                          ["type", "=", "consu"],
                          ["company_id", "=", companyId],
                     ],
@@ -231,6 +243,8 @@ exports.filterProducts = async (req, res) => {
                          "website_url",
                          "public_categ_ids",
                          "website_meta_keywords",
+                         "x_shipping_package",
+                         "x_show_sold_count",
                     ],
                     0,
                     5, // Offset, Limit
@@ -258,6 +272,8 @@ exports.filterProducts = async (req, res) => {
                          x_color: product.x_color,
                          x_images: JSON.parse(product.x_images),
                          x_dimension: product.x_dimension,
+                         x_shipping_package: product?.x_shipping_package,
+                         x_show_sold_count: product?.x_show_sold_count,
                     };
                });
                res.status(201).json({ products });
@@ -281,6 +297,8 @@ exports.filterProducts = async (req, res) => {
                          "website_url",
                          "public_categ_ids",
                          "website_meta_keywords",
+                         "x_shipping_package",
+                         "x_show_sold_count",
                     ], // Fields
                     0,
                     5, // Offset, Limit
@@ -303,9 +321,11 @@ exports.filterProducts = async (req, res) => {
                          x_rating: product.x_rating,
                          create_date: product.create_date,
                          x_subcategory: product.x_subcategory,
+                         x_show_sold_count: product?.x_show_sold_count,
                          x_size: product.x_size,
                          x_weight: product.x_weight,
                          x_color: product.x_color,
+                         x_shipping_package: product?.x_shipping_package,
                          x_images:
                               typeof product?.x_images === "string"
                                    ? JSON?.parse(product?.x_images)
@@ -764,7 +784,7 @@ exports.getBestSellingProducts = async (req, res) => {
           const companyId = [+req.params.companyId];
 
           // Fetch best-selling products based on your criteria (e.g., sales count)
-          const theProducts = await Odoo.execute_kw("product.product", "search_read", [
+          const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                [
                     ["sale_ok", "=", true],
                     ["company_id", "=", companyId],
@@ -1110,6 +1130,90 @@ exports.fetchProductAttributeValues = async (req, res) => {
           res.status(200).json({ values: attributeValues, status: true });
      } catch (error) {
           console.log(error);
+          res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.getProductbyCompanyIdAndSearch = async (req, res) => {
+     console.log("GET /api/products");
+
+     try {
+          const companyId = [+req.params.companyId];
+          const searchQuery = req.query.searchQuery;
+          const page = parseInt(req.query.page) || 1;
+          const limit = parseInt(req.query.limit) || 10;
+          const offset = (page - 1) * limit;
+
+          if (companyId) {
+               await Odoo.connect();
+               console.log("Connected to Odoo XML-RPC - api/products");
+
+               // Define the search filter
+               let searchFilter = [
+                    ["type", "=", "consu"],
+                    ["company_id", "=", companyId],
+               ];
+
+               if (searchQuery) {
+                    searchFilter.push(["name", "ilike", searchQuery]);
+               }
+
+               // Get total count of products
+               const totalCount = await Odoo.execute_kw("product.template", "search_count", [
+                    searchFilter,
+               ]);
+
+               const theProducts = await Odoo.execute_kw(
+                    "product.template",
+                    "search_read",
+                    [
+                         searchFilter,
+                         [
+                              "id",
+                              "public_categ_ids",
+                              "name",
+                              "display_name",
+                              "list_price",
+                              // "image_1920",
+                              "standard_price",
+                              "description",
+                              "base_unit_count",
+                              "product_variant_id",
+                              "categ_id",
+                              "rating_avg",
+                              "rating_count",
+                              "x_color",
+                              "x_dimension",
+                              "x_size",
+                              "x_subcategory",
+                              "x_weight",
+                              "x_rating",
+                              "x_images",
+                              "x_free_shipping",
+                              "create_date",
+                              "website_url",
+                              "website_meta_keywords",
+                              "x_shipping_package",
+                         ],
+                         null,
+                         0,
+                    ],
+                    { limit: limit, offset: offset },
+               );
+
+               const products = theProducts.map((product) => {
+                    return {
+                         ...product,
+                         x_images: JSON.parse(product.x_images),
+                    };
+               });
+
+               res.status(200).json({ products, totalCount, status: true });
+          } else {
+               res.status(404).json({ error: "Invalid Company Id", status: false });
+          }
+     } catch (error) {
+          console.error("Error when trying to connect to Odoo XML-RPC.", error);
           res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };

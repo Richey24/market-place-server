@@ -43,6 +43,39 @@ class CategoryController {
           }
      }
 
+     async getComapnyCategoriesByName(req, res) {
+          try {
+               const { name } = req.body
+               await Odoo.connect();
+               const company = await CompanyService.findById(req.params.companyId);
+               console.log("company", company.categories);
+
+               let categories = await Odoo.execute_kw(
+                    "product.public.category",
+                    "search_read",
+                    [
+                         [
+                              ["id", "in", company.categories]
+                         ],
+                         [
+                              "id",
+                              "name"
+                         ]
+                    ],
+                    {
+                         fields: ["name"],
+                         order: "id desc",
+                    },
+               );
+
+               const category = categories.find((cat) => cat.name === name)
+
+               res.status(200).json({ category, status: true });
+          } catch (e) {
+               res.status(500).json({ error: e, status: false });
+          }
+     }
+
      async findOne(req, res) {
           try {
                await Odoo.connect();
@@ -61,10 +94,11 @@ class CategoryController {
                await Odoo.connect();
                const { name, categ_id } = req.body;
                const user = await UserService.findById(req.userData._id);
+               let id;
 
                console.log("company", name, categ_id);
                if (name) {
-                    let id = await Odoo.execute_kw("product.public.category", "create", [
+                    id = await Odoo.execute_kw("product.public.category", "create", [
                          { name: name },
                     ]);
                     await CompanyService.updateCategories(user.company._id, id);
@@ -74,7 +108,7 @@ class CategoryController {
                     throw "Invalid Category";
                }
 
-               res.status(201).json({ status: true, message: "Created Successfullly" });
+               res.status(201).json({ status: true, message: "Created Successfullly", id: id });
           } catch (e) {
                res.status(500).json(e);
                console.error("Error when trying to connect odoo xml-rpc", e);

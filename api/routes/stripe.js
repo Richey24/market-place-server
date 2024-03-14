@@ -10,7 +10,20 @@ router.post(
      "/create-subscription-checkout-session",
      stripeController.createAdsCheckoutSession,
 );
+
 router.post("/webhooks", stripeController.adsCallback);
+router.post(
+     "/private-product-payment-webhook",
+     express.raw({ type: "application/json" }),
+     stripeController.stripePrivateCheckoutCallback,
+);
+// stripePubicCheckoutCallback
+router.post(
+     "/product-payment-webhook",
+     express.raw({ type: "application/json" }),
+     stripeController.stripePubicCheckoutCallback,
+);
+
 router.post("/cancel/mail", stripeController.sendCancelEmail);
 router.post("/subscription/update", stripeController.updateSubscription);
 
