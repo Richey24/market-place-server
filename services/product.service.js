@@ -45,10 +45,12 @@ const getProductById = async (id) => {
                     "x_free_shipping",
                     "x_brand_gate_id",
                     "x_brand_gate_variant_id",
+                    "x_show_sold_count",
                     "rating_count",
                     "website_url",
                     "public_categ_ids",
                     "website_meta_keywords",
+                    "x_shipping_package",
                ],
           ]);
           if (productData.length === 0) {
@@ -145,6 +147,7 @@ const getFeaturedProducts = async (params) => {
                     "x_subcategory",
                     "x_weight",
                     "x_rating",
+                    "x_show_sold_count",
                     "x_images",
                     "rating_count",
                     "website_url",
@@ -190,6 +193,7 @@ const searchProducts = async (params) => {
                     "rating_count",
                     "website_url",
                     "public_categ_ids",
+                    "x_show_sold_count",
                     "website_meta_keywords",
                ],
                {},
@@ -235,10 +239,12 @@ const addProduct = async (params) => {
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
+               // x_shipping_package: JSON?.stringify(params?.product?.x_shipping_package),
                x_shipping_package: params?.product?.x_shipping_package,
                x_free_shipping: params?.product.free_shipping,
                x_brand_gate_id: params?.product.brand_gate_id,
                x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
+               x_show_sold_count: params?.product.x_show_sold_count,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -317,6 +323,9 @@ const addProductVariant = async (params) => {
                x_shipping_package: params?.product?.x_shipping_package,
                x_brand_gate_id: params?.product.brand_gate_id,
                x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
+               x_shipping_package: JSON?.stringify(params?.product?.x_shipping_package),
+               x_free_shipping: params?.product.free_shipping,
+               x_show_sold_count: params?.product.x_show_sold_count,
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
@@ -488,6 +497,7 @@ const updateProduct = async (params) => {
                x_free_shipping: params.product.free_shipping,
                x_weight: params.product.weight,
                x_images: params.product.images,
+               x_show_sold_count: params?.product.x_show_sold_count,
                x_dimension: params.product.dimension,
                x_brand_gate_id: params?.product.brand_gate_id,
                x_brand_gate_variant_id: params?.product.brand_gate_variant_id,

@@ -65,18 +65,49 @@ exports.getCarriersByCompanyId = async (req, res) => {
 };
 
 exports.calculateShippings = async (req, res) => {
-     const package = req.body?.package;
-     const carrier = req.body;
+     const { shipTo, shipFrom, package } = req.body;
 
-     console.log("here", package);
+     // console.log("here", package);
+     // Usage example
+     const carrierId = "se-6244031";
+     // const shipTo = {
+     //      name: "The President",
+     //      phone: "222-333-4444",
+     //      company_name: "",
+     //      address_line1: "1600 Pennsylvania Avenue NW",
+     //      city_locality: "Washington",
+     //      state_province: "DC",
+     //      postal_code: "20500",
+     //      country_code: "US",
+     //      address_residential_indicator: "no",
+     // };
+     // const shipFrom = {
+     //      name: "ShipEngine Team",
+     //      phone: "222-333-4444",
+     //      company_name: "ShipEngine",
+     //      address_line1: "4301 Bull Creek Road",
+     //      city_locality: "Austin",
+     //      state_province: "TX",
+     //      postal_code: "78731",
+     //      country_code: "US",
+     //      address_residential_indicator: "no",
+     // };
+     // const packageDetails = {
+     //      package_code: "package",
+     //      weight: {
+     //           value: 6,
+     //           unit: "ounce",
+     //      },
+     // };
      if (!package) {
           return res.status(400).send({ error: "Carrier and package information are required." });
      }
 
      try {
-          const rate = await calculate(package);
-          console.log("rate", rate);
-          res.json({ carrier, rate });
+          const rate = await calculate(carrierId, shipTo, shipFrom, package);
+
+          // console.log("rate", rate);
+          res.json({ rate, status: true });
      } catch (error) {
           res.status(500).send({ error: error.message });
      }
