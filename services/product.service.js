@@ -43,6 +43,8 @@ const getProductById = async (id) => {
                     "x_rating",
                     "x_images",
                     "x_free_shipping",
+                    "x_brand_gate_id",
+                    "x_brand_gate_variant_id",
                     "x_show_sold_count",
                     "rating_count",
                     "website_url",
@@ -240,6 +242,8 @@ const addProduct = async (params) => {
                // x_shipping_package: JSON?.stringify(params?.product?.x_shipping_package),
                x_shipping_package: params?.product?.x_shipping_package,
                x_free_shipping: params?.product.free_shipping,
+               x_brand_gate_id: params?.product.brand_gate_id,
+               x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
                x_show_sold_count: params?.product.x_show_sold_count,
           };
 
@@ -316,6 +320,9 @@ const addProductVariant = async (params) => {
                x_weight: params.product.weight,
                x_images: params.product.images,
                x_dimension: params.product.dimension,
+               x_shipping_package: params?.product?.x_shipping_package,
+               x_brand_gate_id: params?.product.brand_gate_id,
+               x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
                x_shipping_package: JSON?.stringify(params?.product?.x_shipping_package),
                x_free_shipping: params?.product.free_shipping,
                x_show_sold_count: params?.product.x_show_sold_count,
@@ -492,6 +499,8 @@ const updateProduct = async (params) => {
                x_images: params.product.images,
                x_show_sold_count: params?.product.x_show_sold_count,
                x_dimension: params.product.dimension,
+               x_brand_gate_id: params?.product.brand_gate_id,
+               x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [

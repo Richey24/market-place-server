@@ -12,6 +12,7 @@ const {
 } = require("../../config/helpers");
 const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
+const { default: axios } = require("axios");
 
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
@@ -299,23 +300,23 @@ const stripeSession = async (req) => {
                line_items:
                     type !== "freelancer"
                          ? [
-                                {
-                                     price: "price_1OVEIDH56ySuleg3AnmtX3o0",
-                                     quantity: 1,
-                                },
-                           ]
+                              {
+                                   price: "price_1OVEIDH56ySuleg3AnmtX3o0",
+                                   quantity: 1,
+                              },
+                         ]
                          : [
-                                {
-                                     price_data: {
-                                          currency: "usd",
-                                          product_data: {
-                                               name: "FreeLancer Payment",
-                                          },
-                                          unit_amount: 120, // Price in cents
-                                     },
-                                     quantity: 1,
-                                },
-                           ],
+                              {
+                                   price_data: {
+                                        currency: "usd",
+                                        product_data: {
+                                             name: "FreeLancer Payment",
+                                        },
+                                        unit_amount: 120, // Price in cents
+                                   },
+                                   quantity: 1,
+                              },
+                         ],
 
                success_url: successUrl,
                cancel_url: cancelUrl,
@@ -531,6 +532,44 @@ exports.stripePubicCheckoutCallback = async (req, res) => {
                          { state: "sale" },
                     ]);
                     console.log({ event, data: event.data });
+
+                    const order = await axios.get(`https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`)
+                    const theOrder = order.data.order[0].order_lines
+                    const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_id[0]}`)
+                    const brand = checkBrand.data.product[0]
+                    if (brand.x_brand_gate_id) {
+                         const lineItems = theOrder.map(async (item) => {
+                              const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_id[0]}`)
+                              const pro = product.data.product[0]
+                              return {
+                                   product_id: pro.x_brand_gate_id,
+                                   variation_id: pro.x_brand_gate_variant_id,
+                                   quantity: item.product_qty
+                              }
+                         })
+                         const theAddress = await axios.post(`https://market-server.azurewebsites.net/api/orders/address/get`, {
+                              partnerID: order.data.order[0]?.partner_id[0],
+                              addressID: order.data.order[0]?.partner_shipping_id[0]
+                         })
+                         const address = theAddress.data
+                         const body = {
+                              order_id: 1,
+                              line_items: lineItems,
+                              shipping: {
+                                   first_name: address.name.split(" ")[0],
+                                   last_name: address.name.split(" ")[1],
+                                   address_1: address.street,
+                                   city: address.city,
+                                   state: address.state_id ? address.state_id[1] : "",
+                                   postcode: address.zip,
+                                   country: address.country_id[1],
+                                   phone: address.phone,
+                                   email: address.email
+                              }
+                         }
+                         const brandGateOrder = await axios.post("https://ishop-brangate.azurewebsites.net/api/brandgate/order/create", body)
+                         console.log(brandGateOrder.data);
+                    }
 
                     await Logger.create({
                          userID: session.metadata.buyerId,
