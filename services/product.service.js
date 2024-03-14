@@ -43,6 +43,8 @@ const getProductById = async (id) => {
                     "x_rating",
                     "x_images",
                     "x_free_shipping",
+                    "x_brand_gate_id",
+                    "x_brand_gate_variant_id",
                     "rating_count",
                     "website_url",
                     "public_categ_ids",

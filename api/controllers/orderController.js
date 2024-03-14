@@ -278,6 +278,7 @@ exports.getOrderById = async (req, res) => {
                     "amount_total",
                     "date_order",
                     "partner_id",
+                    "partner_shipping_id",
                     // "shipping_address_field1",
                     // "shipping_address",
                     // "delivery_method",
@@ -555,3 +556,33 @@ exports.updateOrderCarrier = async (req, res) => {
           res.status(500).json({ error, status: false });
      }
 };
+
+exports.getOrderAddress = async (req, res) => {
+     try {
+          const { partnerID, addressID } = req.body
+          if (!partnerID || !addressID) {
+               return res.status(400).json({ message: "send address id" })
+          }
+          await Odoo.connect();
+          const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
+               [["parent_id", "=", partnerID]],
+               [
+                    "name",
+                    "street",
+                    "city",
+                    "zip",
+                    "country_id",
+                    "state_id",
+                    "type",
+                    "phone",
+                    "email",
+               ], // Fields you want to retrieve
+          ]);
+          const shippingAddress = partnerAddresses.find((add) => add.id === addressID)
+          res.status(200).json(shippingAddress)
+
+     } catch (error) {
+          console.error("Error when trying to connect Odoo XML-RPC.", error);
+          res.status(500).json({ error, status: false });
+     }
+}
