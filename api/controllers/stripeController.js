@@ -570,6 +570,44 @@ exports.stripePubicCheckoutCallback = async (req, res) => {
                          const brandGateOrder = await axios.post("https://ishop-brangate.azurewebsites.net/api/brandgate/order/create", body)
                          console.log(brandGateOrder.data);
                     }
+                    if (brand.x_printify_id) {
+                         const lineItems = theOrder.map(async (item) => {
+                              const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_id[0]}`)
+                              const pro = product.data.product[0]
+                              return {
+                                   product_id: pro.x_printify_id,
+                                   print_provider_id: pro.x_printify_provider_id,
+                                   blueprint_id: pro.x_printify_blueprint_id,
+                                   print_areas: pro.x_printify_print_areas,
+                                   variant_id: pro.x_printify_variant_id,
+                                   quantity: item.product_qty
+                              }
+                         })
+                         const theAddress = await axios.post(`https://market-server.azurewebsites.net/api/orders/address/get`, {
+                              partnerID: order.data.order[0]?.partner_id[0],
+                              addressID: order.data.order[0]?.partner_shipping_id[0]
+                         })
+                         const address = theAddress.data
+                         const body = {
+                              external_id: order.data.order[0],
+                              line_items: lineItems,
+                              shipping_method: 1,
+                              send_shipping_notification: true,
+                              address_to: {
+                                   first_name: address.name.split(" ")[0],
+                                   last_name: address.name.split(" ")[1],
+                                   address1: address.street,
+                                   city: address.city,
+                                   region: address.state_id ? address.state_id[1] : "",
+                                   zip: address.zip,
+                                   country: address.country_id[1],
+                                   phone: address.phone,
+                                   email: address.email
+                              }
+                         }
+                         const printifyGateOrder = await axios.post("https://ishop-brangate.azurewebsites.net/api/printify/order/create", body)
+                         console.log(printifyGateOrder.data);
+                    }
 
                     await Logger.create({
                          userID: session.metadata.buyerId,

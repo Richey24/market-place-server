@@ -51,6 +51,11 @@ const getProductById = async (id) => {
                     "public_categ_ids",
                     "website_meta_keywords",
                     "x_shipping_package",
+                    "x_printify_id",
+                    "x_printify_blueprint_id",
+                    "x_printify_provider_id",
+                    "x_printify_variant_id",
+                    "x_printify_print_areas",
                ],
           ]);
           if (productData.length === 0) {
@@ -245,6 +250,11 @@ const addProduct = async (params) => {
                x_brand_gate_id: params?.product.brand_gate_id,
                x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
                x_show_sold_count: params?.product.x_show_sold_count,
+               x_printify_id: params?.product.x_printify_id,
+               x_printify_blueprint_id: params?.product.x_printify_blueprint_id,
+               x_printify_provider_id: params?.product.x_printify_provider_id,
+               x_printify_variant_id: params?.product.x_printify_variant_id,
+               x_printify_print_areas: params?.product.x_printify_print_areas,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -326,6 +336,11 @@ const addProductVariant = async (params) => {
                x_shipping_package: JSON?.stringify(params?.product?.x_shipping_package),
                x_free_shipping: params?.product.free_shipping,
                x_show_sold_count: params?.product.x_show_sold_count,
+               x_printify_id: params?.product.x_printify_id,
+               x_printify_blueprint_id: params?.product.x_printify_blueprint_id,
+               x_printify_provider_id: params?.product.x_printify_provider_id,
+               x_printify_variant_id: params?.product.x_printify_variant_id,
+               x_printify_print_areas: params?.product.x_printify_print_areas,
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
@@ -501,6 +516,11 @@ const updateProduct = async (params) => {
                x_dimension: params.product.dimension,
                x_brand_gate_id: params?.product.brand_gate_id,
                x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
+               x_printify_id: params?.product.x_printify_id,
+               x_printify_blueprint_id: params?.product.x_printify_blueprint_id,
+               x_printify_provider_id: params?.product.x_printify_provider_id,
+               x_printify_variant_id: params?.product.x_printify_variant_id,
+               x_printify_print_areas: params?.product.x_printify_print_areas,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
