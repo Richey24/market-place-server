@@ -20,27 +20,20 @@ const pageSchema = new mongoose.Schema({
 const conditionSchema = new mongoose.Schema({
      target: {
           type: String,
-          required: true,
           enum: ["quantity", "price"],
      },
      count: {
           type: Number,
-          required: true,
      },
 });
 
 const freeConditionSchema = new mongoose.Schema({
-     condition: {
-          type: conditionSchema,
-          required: true,
-     },
+     condition: conditionSchema,
+     enabled: Boolean,
 });
 
 const shippingSchema = new mongoose.Schema({
-     free: {
-          type: freeConditionSchema,
-          required: true,
-     },
+     free: freeConditionSchema,
 });
 
 const siteSchema = new mongoose.Schema({
@@ -50,7 +43,7 @@ const siteSchema = new mongoose.Schema({
      header: sectionSchema,
      footer: sectionSchema,
      topAds: sectionSchema,
-     freeShipping: shippingSchema,
+     shipping: shippingSchema,
      company: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Company",

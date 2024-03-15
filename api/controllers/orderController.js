@@ -121,9 +121,7 @@ exports.getOrdersByPartner = async (req, res) => {
                (info) => info?.map((data) => data?.x_images) || [],
           );
 
-          return res
-               .status(201)
-               .json({ order: ordersWithDetails[0], images: images, status: true });
+          return res.status(201).json({ order: ordersWithDetails[0], status: true });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
@@ -207,7 +205,7 @@ exports.createOrder = async (req, res) => {
                ],
           );
 
-          console.log("orderLines", orderLines);
+          // console.log("orderLines", orderLines);
           // Ensure the products belong to the same company
           // Update the products' company to match the sale order's company
           const productIds = productData.map(({ productId }) => productId);
