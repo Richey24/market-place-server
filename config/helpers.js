@@ -2361,7 +2361,7 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: vendorEmail,
     subject: `New Order Email:`,
     html: `
@@ -2538,7 +2538,7 @@ const sendPurchaseEmailOnceDaily = (vendorEmail, ordersTable, report, callback) 
   });
 
   const mailOptions = {
-    from: "info@israelbiblecamp.com",
+    from: process.env.EMAIL,
     to: vendorEmail,
     subject: `Purchased Today`,
     html: `
