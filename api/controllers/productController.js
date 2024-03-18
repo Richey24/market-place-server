@@ -82,10 +82,10 @@ exports.getProductbyCompanyId = async (req, res) => {
                const products = theProducts.map((product) => {
                     return {
                          ...product,
-                         // x_images:
-                         //      typeof product?.x_images === "string"
-                         //           ? JSON?.parse(product?.x_images)
-                         //           : product?.x_images,
+                         x_images:
+                              typeof product?.x_images === "string"
+                                   ? JSON?.parse(product?.x_images)
+                                   : product?.x_images,
                     };
                });
 
