@@ -23,6 +23,13 @@ router.post(
      express.raw({ type: "application/json" }),
      stripeController.stripePubicCheckoutCallback,
 );
+//
+
+router.post(
+     "/service-payment-webhook",
+     express.raw({ type: "application/json" }),
+     stripeController.stripeServiceCheckoutCallback,
+);
 
 router.post("/cancel/mail", stripeController.sendCancelEmail);
 router.post("/subscription/update", stripeController.updateSubscription);

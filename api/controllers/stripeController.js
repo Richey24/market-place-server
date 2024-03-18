@@ -5,6 +5,7 @@ const Company = require("../../model/Company");
 const Odoo = require("../../config/odoo.connection");
 const Advert = require("../../model/Advert");
 const Event = require("../../model/Event");
+const ServiceOrderSchema = require("../../model/ServiceOrder");
 const {
      sendSubscriptionCancelEmail,
      sendAdvertisementNotificationEmail,
@@ -585,8 +586,55 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          [+session.metadata.orderId],
                          { state: "sale" },
                     ]);
-                    console.log({ result, orderId: session.metadata.orderId });
-                    console.log({ event, data: event.data });
+                    // console.log({ result, orderId: session.metadata.orderId });
+
+                    await Logger.create({
+                         userID: session.metadata.buyerId,
+                         siteId: session.metadata.siteId,
+                         eventType: "checkout.session.completed",
+                    });
+                    res.status(200).json({ message: "successful" });
+               }
+               break;
+          }
+
+          default:
+               break;
+     }
+};
+
+exports.stripeServiceCheckoutCallback = async (req, res) => {
+     const payload = req.rawBody;
+
+     // const metadata = paymentIntent.metadata;
+
+     const sig = req.headers["stripe-signature"];
+     let event;
+
+     try {
+          event = stripe.webhooks.constructEvent(
+               payload,
+               sig,
+               process.env.PUBLIC_SERVICE_SITE_STRIPE_SECRET,
+          );
+     } catch (err) {
+          console.log(err);
+          return res.status(400).send(`Webhook Error: ${err.message}`);
+     }
+
+     switch (event.type) {
+          case "checkout.session.completed": {
+               const session = event.data.object;
+               if (session.mode !== "payment") {
+                    return res.status(200).json("wrong webhook");
+               }
+               if (session.payment_status === "paid") {
+                    // Update the order status
+                    await ServiceOrderSchema.updateOne(
+                         { _id: session.metadata.orderId },
+                         { paymentStatus: "successfull" },
+                    );
+                    // console.log({ event, data: event.data, meta: session.metadata, order });
 
                     await Logger.create({
                          userID: session.metadata.buyerId,
