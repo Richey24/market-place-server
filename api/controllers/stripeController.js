@@ -534,6 +534,57 @@ exports.stripePubicCheckoutCallback = async (req, res) => {
                     ]);
                     console.log({ event, data: event.data });
 
+                    await Logger.create({
+                         userID: session.metadata.buyerId,
+                         siteId: session.metadata.siteId,
+                         eventType: "checkout.session.completed",
+                    });
+                    res.status(200).json({ message: "successful" });
+               }
+               break;
+          }
+
+          default:
+               break;
+     }
+};
+
+exports.stripePrivateCheckoutCallback = async (req, res) => {
+     const payload = req.rawBody;
+
+     // const metadata = paymentIntent.metadata;
+
+     const sig = req.headers["stripe-signature"];
+     let event;
+     console.log({ payload });
+
+     try {
+          event = stripe.webhooks.constructEvent(
+               payload,
+               sig,
+               process.env.PRIVATE_SITE_STRIPE_SECRET,
+          );
+     } catch (err) {
+          console.log(err);
+          return res.status(400).send(`Webhook Error: ${err.message}`);
+     }
+
+     switch (event.type) {
+          case "checkout.session.completed": {
+               const session = event.data.object;
+               if (session.mode !== "payment") {
+                    return res.status(200).json("wrong webhook");
+               }
+               if (session.payment_status === "paid") {
+                    // Connect to Odoo
+                    await Odoo.connect();
+
+                    // Update the order status
+                    const result = await Odoo.execute_kw("sale.order", "write", [
+                         [+session.metadata.orderId],
+                         { state: "sale" },
+                    ]);
+
                     const order = await axios.get(`https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`)
                     const theOrder = order.data.order[0].order_lines
                     const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_id[0]}`)
@@ -609,57 +660,6 @@ exports.stripePubicCheckoutCallback = async (req, res) => {
                          const printifyGateOrder = await axios.post("https://ishop-brangate.azurewebsites.net/api/printify/order/create", body)
                          console.log(printifyGateOrder.data);
                     }
-
-                    await Logger.create({
-                         userID: session.metadata.buyerId,
-                         siteId: session.metadata.siteId,
-                         eventType: "checkout.session.completed",
-                    });
-                    res.status(200).json({ message: "successful" });
-               }
-               break;
-          }
-
-          default:
-               break;
-     }
-};
-
-exports.stripePrivateCheckoutCallback = async (req, res) => {
-     const payload = req.rawBody;
-
-     // const metadata = paymentIntent.metadata;
-
-     const sig = req.headers["stripe-signature"];
-     let event;
-     console.log({ payload });
-
-     try {
-          event = stripe.webhooks.constructEvent(
-               payload,
-               sig,
-               process.env.PRIVATE_SITE_STRIPE_SECRET,
-          );
-     } catch (err) {
-          console.log(err);
-          return res.status(400).send(`Webhook Error: ${err.message}`);
-     }
-
-     switch (event.type) {
-          case "checkout.session.completed": {
-               const session = event.data.object;
-               if (session.mode !== "payment") {
-                    return res.status(200).json("wrong webhook");
-               }
-               if (session.payment_status === "paid") {
-                    // Connect to Odoo
-                    await Odoo.connect();
-
-                    // Update the order status
-                    const result = await Odoo.execute_kw("sale.order", "write", [
-                         [+session.metadata.orderId],
-                         { state: "sale" },
-                    ]);
 
                     await Logger.create({
                          userID: session.metadata.buyerId,
