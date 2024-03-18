@@ -652,9 +652,6 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                     return res.status(200).json("wrong webhook");
                }
                if (session.payment_status === "paid") {
-                    console.log({ session });
-
-                    // const customer = await StripeSession.findOne({ sessionID: session.id });
                     // Connect to Odoo
                     await Odoo.connect();
 
@@ -663,7 +660,6 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          [+session.metadata.orderId],
                          { state: "sale" },
                     ]);
-                    // console.log({ result, orderId: session.metadata.orderId });
 
                     await Logger.create({
                          userID: session.metadata.buyerId,
@@ -695,7 +691,6 @@ exports.stripeServiceCheckoutCallback = async (req, res) => {
                process.env.PUBLIC_SERVICE_SITE_STRIPE_SECRET,
           );
      } catch (err) {
-          console.log(err);
           return res.status(400).send(`Webhook Error: ${err.message}`);
      }
 
