@@ -103,13 +103,6 @@ exports.getOrdersByPartner = async (req, res) => {
                     return order;
                }),
           );
-          // const productIdwrapper = ordersWithDetails.map((data) => data?.order_lines);
-          // console.log("total images", productIdwrapper);
-          // const productId = productIdwrapper[0].map((id) => id?.product_template_id[0]);
-          // console.log("total id", productId);
-          // const productDetailsPromises = productId.map((id) => getProductById(id));
-          // const productDetails = await Promise.all(productDetailsPromises);
-          // const images = productDetails.map((info) => info && info.map((data) => data?.x_images));
           const orderLines = ordersWithDetails[0]?.order_lines || [];
 
           const productIds = orderLines.map((id) => id?.product_template_id?.[0]).filter(Boolean);
@@ -120,10 +113,16 @@ exports.getOrdersByPartner = async (req, res) => {
           const images = productDetails.flatMap(
                (info) => info?.map((data) => data?.x_images) || [],
           );
-
-          return res
-               .status(201)
-               .json({ order: ordersWithDetails[0], images: images, status: true });
+          const updatedOrderLines = orderLines.map((orderLine, index) => {
+               const imageIndex = index % images.length; // Calculate index to loop through images array
+               return {
+                    ...orderLine,
+                    x_images: JSON.parse(images[imageIndex]), // Assign corresponding array of images to x_images field
+               };
+          });
+          const updatedOrder = { ...ordersWithDetails[0], order_lines: updatedOrderLines };
+          return res.status(201).json({ order: updatedOrder, status: true });
+          // return res.status(201).json({ order: ordersWithDetails[0], status: true });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
@@ -207,7 +206,7 @@ exports.createOrder = async (req, res) => {
                ],
           );
 
-          console.log("orderLines", orderLines);
+          // console.log("orderLines", orderLines);
           // Ensure the products belong to the same company
           // Update the products' company to match the sale order's company
           const productIds = productData.map(({ productId }) => productId);
@@ -278,6 +277,7 @@ exports.getOrderById = async (req, res) => {
                     "amount_total",
                     "date_order",
                     "partner_id",
+                    "partner_shipping_id",
                     // "shipping_address_field1",
                     // "shipping_address",
                     // "delivery_method",
@@ -308,10 +308,17 @@ exports.getOrderById = async (req, res) => {
           const images = productDetails.flatMap(
                (info) => info?.map((data) => data?.x_images) || [],
           );
+          const updatedOrderLines = orderLines.map((orderLine, index) => {
+               const imageIndex = index % images.length; // Calculate index to loop through images array
+               return {
+                    ...orderLine,
+                    x_images: JSON.parse(images[imageIndex]), // Assign corresponding array of images to x_images field
+               };
+          });
+          const updatedOrder = { ...ordersWithDetails[0], order_lines: updatedOrderLines };
+          console.log(updatedOrder);
           if (orders.length > 0) {
-               return res
-                    .status(200)
-                    .json({ order: ordersWithDetails, images: images, status: true });
+               return res.status(200).json({ order: [updatedOrder], status: true });
           } else {
                return res.status(404).json({ message: "Order not found", status: false });
           }
@@ -550,6 +557,35 @@ exports.updateOrderCarrier = async (req, res) => {
           } else {
                res.status(404).json({ error: "Order not found.", status: false });
           }
+     } catch (error) {
+          console.error("Error when trying to connect Odoo XML-RPC.", error);
+          res.status(500).json({ error, status: false });
+     }
+};
+
+exports.getOrderAddress = async (req, res) => {
+     try {
+          const { partnerID, addressID } = req.body;
+          if (!partnerID || !addressID) {
+               return res.status(400).json({ message: "send address id" });
+          }
+          await Odoo.connect();
+          const partnerAddresses = await Odoo.execute_kw("res.partner", "search_read", [
+               [["parent_id", "=", partnerID]],
+               [
+                    "name",
+                    "street",
+                    "city",
+                    "zip",
+                    "country_id",
+                    "state_id",
+                    "type",
+                    "phone",
+                    "email",
+               ], // Fields you want to retrieve
+          ]);
+          const shippingAddress = partnerAddresses.find((add) => add.id === addressID);
+          res.status(200).json(shippingAddress);
      } catch (error) {
           console.error("Error when trying to connect Odoo XML-RPC.", error);
           res.status(500).json({ error, status: false });

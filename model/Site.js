@@ -17,6 +17,25 @@ const pageSchema = new mongoose.Schema({
      sections: [sectionSchema],
 });
 
+const conditionSchema = new mongoose.Schema({
+     target: {
+          type: String,
+          enum: ["quantity", "price"],
+     },
+     count: {
+          type: Number,
+     },
+});
+
+const freeConditionSchema = new mongoose.Schema({
+     condition: conditionSchema,
+     enabled: Boolean,
+});
+
+const shippingSchema = new mongoose.Schema({
+     free: freeConditionSchema,
+});
+
 const siteSchema = new mongoose.Schema({
      theme: { type: String, required: true },
      pages: [pageSchema],
@@ -24,6 +43,7 @@ const siteSchema = new mongoose.Schema({
      header: sectionSchema,
      footer: sectionSchema,
      topAds: sectionSchema,
+     shipping: shippingSchema,
      company: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Company",

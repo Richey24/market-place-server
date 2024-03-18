@@ -16,5 +16,6 @@ router.delete("/product/:id", orderController.removeProductFromOrderLine);
 router.put("/product/qty/:id", orderController.updateProductToOrderLine);
 router.put("/status", orderController.changeOrderStatus);
 router.put("/delivery", orderController.addDeliveryDetailsToOrder);
+router.post("/address/get", orderController.getOrderAddress);
 
 module.exports = router;

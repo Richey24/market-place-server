@@ -252,6 +252,14 @@ const site = (theme, services) => {
                       mode: "light",
                       demoLink: "demo13",
                  },
+                 shipping: {
+                      free: {
+                           condition: {
+                                target: "quantity",
+                                count: 50,
+                           },
+                      },
+                 },
             }
           : {
                  theme: theme?.name,
@@ -578,6 +586,14 @@ const site = (theme, services) => {
                       colors: [],
                       mode: "light",
                       demoLink: "demo13",
+                 },
+                 shipping: {
+                      free: {
+                           condition: {
+                                target: "quantity",
+                                count: 50,
+                           },
+                      },
                  },
             };
 };
