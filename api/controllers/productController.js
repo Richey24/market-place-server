@@ -184,35 +184,42 @@ exports.getProductImage = async (req, res) => {
 };
 
 exports.getFeaturedProducts = async (req, res) => {
-     console.log("GET  api/products/featured");
-     const company_id = [+req.params.companyId];
+     try {
+          console.log("GET  api/products/featured");
+          const company_id = [+req.params.companyId];
 
-     let user = req.userData;
+          let user = req.userData;
 
-     let params = {
-          promo: req.body,
-          user: user,
-          company_id,
-          page: req.query.page,
-     };
-
-     const theProducts = await getFeaturedProducts(params);
-     const productsLength = await Odoo.execute_kw("product.template", "search_read", [
-          [
-               ["product_tag_ids.name", "=", "Featured Product"],
-               ["company_id", "=", params.company_id],
-          ],
-          ["id"],
-     ]);
-
-     const products = theProducts.map((product) => {
-          return {
-               ...product,
-               x_images: JSON?.parse(product?.x_images),
+          let params = {
+               promo: req.body,
+               user: user,
+               company_id,
+               page: req.query.page,
           };
-     });
 
-     res.status(201).json({ products, count: productsLength.length });
+          const theProducts = await getFeaturedProducts(params);
+          const productsLength = await Odoo.execute_kw("product.template", "search_read", [
+               [
+                    ["product_tag_ids.name", "=", "Featured Product"],
+                    ["company_id", "=", params.company_id],
+               ],
+               ["id"],
+          ]);
+ 
+          if (theProducts.length === 0) {
+               return res.status(400).json({ products: null, count: 0 });
+          }
+          const products = theProducts.map((product) => {
+               return {
+                    ...product,
+                    x_images: JSON?.parse(product?.x_images),
+               };
+          });
+
+          res.status(201).json({ products, count: productsLength.length });
+     } catch (error) {
+          console.log(eror);
+     }
 };
 
 exports.filterProducts = async (req, res) => {
