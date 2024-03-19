@@ -101,6 +101,48 @@ const midBannerConfig = {
                height: 400,
           },
      ],
+     theme12: [
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme12"]?.banner1,
+               link: "/",
+               width: 300,
+               height: 400,
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme12"]?.banner1,
+               link: "/",
+               width: 300,
+               height: 400,
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme12"]?.banner1,
+               link: "/",
+               width: 300,
+               height: 400,
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme12"]?.banner1,
+               link: "/",
+               width: 300,
+               height: 400,
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme12"]?.banner1,
+               link: "/",
+               width: 300,
+               height: 400,
+          },
+     ],
 };
 
 module.exports = midBannerConfig;
