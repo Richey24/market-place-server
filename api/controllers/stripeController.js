@@ -590,7 +590,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                     const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_id[0]}`)
                     const brand = checkBrand.data.product[0]
                     if (brand.x_brand_gate_id) {
-                         const lineItems = theOrder.map(async (item) => {
+                         const lineItems = await Promise.all(theOrder.map(async (item) => {
                               const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_id[0]}`)
                               const pro = product.data.product[0]
                               return {
@@ -598,21 +598,21 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                                    variation_id: pro.x_brand_gate_variant_id,
                                    quantity: item.product_qty
                               }
-                         })
+                         }))
                          const theAddress = await axios.post(`https://market-server.azurewebsites.net/api/orders/address/get`, {
                               partnerID: order.data.order[0]?.partner_id[0],
                               addressID: order.data.order[0]?.partner_shipping_id[0]
                          })
                          const address = theAddress.data
                          const body = {
-                              order_id: 1,
+                              order_id: session.metadata.orderId,
                               line_items: lineItems,
                               shipping: {
                                    first_name: address.name.split(" ")[0],
                                    last_name: address.name.split(" ")[1],
                                    address_1: address.street,
                                    city: address.city,
-                                   state: address.state_id ? address.state_id[1] : "",
+                                   state: address.state_id ? address.state_id[1] : "state",
                                    postcode: address.zip,
                                    country: address.country_id[1],
                                    phone: address.phone,
