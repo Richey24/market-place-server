@@ -121,7 +121,11 @@ exports.getOrdersByPartner = async (req, res) => {
                };
           });
           const updatedOrder = { ...ordersWithDetails[0], order_lines: updatedOrderLines };
-          return res.status(201).json({ order: updatedOrder, status: true });
+          if (orders.length > 0) {
+               return res.status(201).json({ order: updatedOrder, status: true });
+          } else {
+               return res.status(404).json({ message: "Order not found", status: false });
+          }
           // return res.status(201).json({ order: ordersWithDetails[0], status: true });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
