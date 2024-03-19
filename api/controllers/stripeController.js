@@ -587,11 +587,11 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
 
                     const order = await axios.get(`https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`)
                     const theOrder = order.data.order[0].order_lines
-                    const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_id[0]}`)
+                    const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_template_id[0]}`)
                     const brand = checkBrand.data.product[0]
                     if (brand.x_brand_gate_id) {
                          const lineItems = await Promise.all(theOrder.map(async (item) => {
-                              const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_id[0]}`)
+                              const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_template_id[0]}`)
                               const pro = product.data.product[0]
                               return {
                                    product_id: pro.x_brand_gate_id,
@@ -624,7 +624,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                     }
                     if (brand.x_printify_id) {
                          const lineItems = await Promise.all(theOrder.map(async (item) => {
-                              const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_id[0]}`)
+                              const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_template_id[0]}`)
                               const pro = product.data.product[0]
                               return {
                                    product_id: pro.x_printify_id,
