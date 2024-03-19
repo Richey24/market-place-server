@@ -205,7 +205,7 @@ exports.getFeaturedProducts = async (req, res) => {
                ],
                ["id"],
           ]);
-          console.log("----------->", theProducts);
+ 
           if (theProducts.length === 0) {
                return res.status(400).json({ products: null, count: 0 });
           }
