@@ -56,6 +56,7 @@ const getProductById = async (id) => {
                     "x_printify_provider_id",
                     "x_printify_variant_id",
                     "x_printify_print_areas",
+                    "attribute_line_ids",
                ],
           ]);
           if (productData.length === 0) {
