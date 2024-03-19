@@ -623,7 +623,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          console.log(brandGateOrder.data);
                     }
                     if (brand.x_printify_id) {
-                         const lineItems = theOrder.map(async (item) => {
+                         const lineItems = await Promise.all(theOrder.map(async (item) => {
                               const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_id[0]}`)
                               const pro = product.data.product[0]
                               return {
@@ -634,7 +634,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                                    variant_id: pro.x_printify_variant_id,
                                    quantity: item.product_qty
                               }
-                         })
+                         }))
                          const theAddress = await axios.post(`https://market-server.azurewebsites.net/api/orders/address/get`, {
                               partnerID: order.data.order[0]?.partner_id[0],
                               addressID: order.data.order[0]?.partner_shipping_id[0]
@@ -650,7 +650,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                                    last_name: address.name.split(" ")[1],
                                    address1: address.street,
                                    city: address.city,
-                                   region: address.state_id ? address.state_id[1] : "",
+                                   region: address.state_id ? address.state_id[1] : "state",
                                    zip: address.zip,
                                    country: address.country_id[1],
                                    phone: address.phone,
