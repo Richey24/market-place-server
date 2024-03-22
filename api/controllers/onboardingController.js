@@ -7,6 +7,8 @@ const { initProducts } = require("../../utils/initProducts");
 const { addMultipleProducts } = require("../../services/product.service");
 const companyService = require("../../services/company.service");
 const bannerImages = require("../../utils/bannerImages");
+const midBannerCOnfig = require("../../utils/midBannerConfiq");
+const midBannerConfig = require("../../utils/midBannerConfiq");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -258,6 +260,7 @@ const site = (theme, services) => {
                                 target: "quantity",
                                 count: 50,
                            },
+                           enabled: true,
                       },
                  },
             }
@@ -434,35 +437,7 @@ const site = (theme, services) => {
                                                               title: "Health Insurance",
                                                          },
                                                     ],
-                                                    midSection: {
-                                                         audit: {
-                                                              description:
-                                                                   "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet",
-                                                         },
-                                                         strategy: {
-                                                              image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/female.jpg",
-                                                              title: "International Business Opportunities.",
-                                                              description:
-                                                                   "Adipisicing elit, sed do eiusmod tempor incididunt ul labore et dolore magna aliqua",
-                                                              list: [
-                                                                   {
-                                                                        title: "research beyond the business plan",
-                                                                   },
-                                                                   {
-                                                                        title: "marketing options and rates.",
-                                                                   },
-                                                                   {
-                                                                        title: "the ability to turnaround consulting.",
-                                                                   },
-                                                              ],
-                                                         },
-                                                         sustainability: {
-                                                              title: "Project Results.",
-                                                              image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/graph.png",
-                                                              description:
-                                                                   "There are many variations of passages of Lorem ipsum available, but the majority have suffered altera tion in some form, by injected, Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. eu fugiat nulla pariatur. Enim minim veniam quis nostrud. exercitation ullamco laboris nisi aliquip",
-                                                         },
-                                                    },
+                                                    midBanner: midBannerConfig?.[theme?.name] ?? "",
                                                     banner: [
                                                          {
                                                               title: "",
@@ -470,6 +445,7 @@ const site = (theme, services) => {
                                                               imageUrl:
                                                                    bannerImages?.[theme?.name]
                                                                         ?.banner1,
+                                                              link: "/",
                                                          },
                                                          {
                                                               title: "",
@@ -477,6 +453,7 @@ const site = (theme, services) => {
                                                               imageUrl:
                                                                    bannerImages?.[theme?.name]
                                                                         ?.banner2,
+                                                              link: "/",
                                                          },
                                                     ],
                                                     dealsBanner: [
@@ -593,6 +570,7 @@ const site = (theme, services) => {
                                 target: "quantity",
                                 count: 50,
                            },
+                           enabled: true,
                       },
                  },
             };
