@@ -507,6 +507,9 @@ const updateProduct = async (params) => {
                description: params.product.description,
                website_published: params.product.published,
                company_id: params.product.company_id,
+               product_tag_ids: params.product.product_tag_ids
+                    ? JSON.parse(params.product.product_tag_ids)
+                    : [],
                x_color: params.product.color,
                x_subcategory: params.product.subcategory,
                x_size: params.product.size,
