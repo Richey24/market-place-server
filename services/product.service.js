@@ -397,7 +397,7 @@ const addProductVariant = async (params) => {
                                    attribute_id: variant?.attributeId,
                                    sequence: 1, // Optional: Display sequence
                               };
-
+                              console.log(attributeValueData);
                               attributeValueId = await params.odoo.execute_kw(
                                    "product.attribute.value",
                                    "create",
@@ -406,7 +406,7 @@ const addProductVariant = async (params) => {
                          } else {
                               attributeValueId = variant?.valueId;
                          }
-
+                         console.log(attributeValueId);
                          const attributeLineData = {
                               product_tmpl_id: templateId,
                               attribute_id: variant?.attributeId,
@@ -538,6 +538,65 @@ const updateProduct = async (params) => {
           } else {
                console.error("Failed to update product data.");
                throw new Error("Failed to update product data.");
+          }
+
+          if (params?.product?.variants && params?.product?.variants.length > 0) {
+               await params?.product?.variants?.forEach(async (container) => {
+                    await container.forEach(async (variant, idx) => {
+                         // console.log("variant", variant);
+
+                         let attributeValueId;
+
+                         if (!variant?.valueId) {
+                              const attributeValueData = {
+                                   name: variant?.value, // Replace with the actual value
+                                   attribute_id: variant?.attributeId,
+                                   sequence: 1, // Optional: Display sequence
+                              };
+                              console.log(attributeValueData);
+                              attributeValueId = await params.odoo.execute_kw(
+                                   "product.attribute.value",
+                                   "create",
+                                   [attributeValueData],
+                              );
+                         } else {
+                              attributeValueId = variant?.valueId;
+                         }
+                         console.log(attributeValueId);
+                         const attributeLineData = {
+                              product_tmpl_id: params?.productId,
+                              attribute_id: variant?.attributeId,
+                              value_ids: [[6, 0, [attributeValueId]]],
+                         };
+
+                         const attributeLineId = await params.odoo.execute_kw(
+                              "product.template.attribute.line",
+                              "create",
+                              [attributeLineData],
+                         );
+
+                         if (variant?.price_extra && variant?.price_extra !== 0) {
+                              ///ADD PRICE_EXTRA
+                              const attributeLineRespData = await Odoo.execute_kw(
+                                   "product.template.attribute.line",
+                                   "read",
+                                   [[attributeLineId], ["product_template_value_ids"]],
+                              );
+
+                              const productTemplateValueIds =
+                                   attributeLineRespData[0]?.product_template_value_ids || [];
+                              const attributeValueWriteData = {
+                                   price_extra: variant?.price_extra, // Set the price adjustment here
+                              };
+
+                              await params.odoo.execute_kw(
+                                   "product.template.attribute.value",
+                                   "write",
+                                   [[productTemplateValueIds[0]], attributeValueWriteData],
+                              );
+                         }
+                    });
+               });
           }
 
           // for (const base64Image of base64Images) {

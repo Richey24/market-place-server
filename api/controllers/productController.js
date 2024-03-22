@@ -205,7 +205,7 @@ exports.getFeaturedProducts = async (req, res) => {
                ],
                ["id"],
           ]);
- 
+
           if (theProducts.length === 0) {
                return res.status(400).json({ products: null, count: 0 });
           }
@@ -498,7 +498,10 @@ exports.updateProduct = async (req, res) => {
      try {
           let params = {
                odoo: Odoo,
-               product: { ...req.body },
+               product: {
+                    ...req.body,
+                    variants: req.body?.variants ? JSON.parse(req.body?.variants) : null
+               },
                productId: req.params?.id,
           };
 
