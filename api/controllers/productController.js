@@ -975,7 +975,7 @@ exports.getUnratedProducts = async (req, res) => {
           const userId = req.params.id;
           const companyId = req.params.companyId;
           const user = await User.findById(userId);
-          if (!user) {
+          if (!user || !companyId) {
                return res
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });

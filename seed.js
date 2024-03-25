@@ -45,7 +45,8 @@ mongoose
 
 const addNav = async () => {
      try {
-          sendAdminMessage("uahomorejoice@gmail.com", "Rejoice", "testing the new email")
+          // sendAdminMessage("uahomorejoice@gmail.com", "Rejoice", "testing the new email")
+
           console.log("worked");
      } catch (error) {
           console.log(error);
