@@ -585,8 +585,15 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          { state: "sale" },
                     ]);
 
+
                     const order = await axios.get(`https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`)
                     const theOrder = order.data.order[0].order_lines
+
+                    for (const product of theOrder) {
+                         const mainProduct = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${product.product_template_id[0]}`)
+                         await User.findByIdAndUpdate(session.metadata.buyerId, { $push: { order_products: { ...mainProduct.data.product[0], company_id: session.metadata.siteId } } });
+                    }
+
                     const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_template_id[0]}`)
                     const brand = checkBrand.data.product[0]
                     if (brand.x_brand_gate_id) {
