@@ -101,6 +101,24 @@ const midBannerConfig = {
                height: 400,
           },
      ],
+     theme6: [
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme6"]?.banner1,
+               link: "/",
+               width: 300,
+               height: 400,
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme6"]?.banner1,
+               link: "/",
+               width: 300,
+               height: 400,
+          },
+     ],
      theme12: [
           {
                title: "",
