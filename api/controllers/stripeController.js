@@ -640,7 +640,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                                    product_id: pro.x_printify_id,
                                    print_provider_id: pro.x_printify_provider_id,
                                    blueprint_id: pro.x_printify_blueprint_id,
-                                   print_areas: pro.x_printify_print_areas,
+                                   print_areas: JSON.parse(pro.x_printify_print_areas),
                                    variant_id: pro.x_printify_variant_id,
                                    quantity: item.product_qty
                               }

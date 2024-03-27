@@ -45,7 +45,7 @@ const getTopRatedProduct = async (req, res) => {
                     "list_price",
                     "standard_price",
                     "x_rating",
-                    "categ_id",
+                    "public_categ_ids",
                ],
           ]);
           const topRated = productData.sort((a, b) => b.x_rating - a.x_rating).slice(0, 20);
@@ -65,6 +65,9 @@ const getTopRatedProduct = async (req, res) => {
                          const oneStar = rateResult.ratings.filter((pro) => pro.rating == 1);
                          arr.push({ rating: 1, count: oneStar.length });
                     }
+                    let data = await Odoo.execute_kw("product.public.category", "search_read", [
+                         [["id", "=", product.public_categ_ids]],
+                    ]);
                     const obj = {
                          id: product.id,
                          create_date: product.create_date,
@@ -73,7 +76,7 @@ const getTopRatedProduct = async (req, res) => {
                          list_price: product.list_price,
                          standard_price: product.standard_price,
                          x_rating: product.x_rating,
-                         categ_id: product.categ_id,
+                         categ_id: [data[0].id, data[0].name],
                          image_1920: product.image_1920,
                          ratings: arr,
                     };
