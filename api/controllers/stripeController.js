@@ -600,12 +600,15 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          const lineItems = await Promise.all(theOrder.map(async (item) => {
                               const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_template_id[0]}`)
                               const pro = product.data.product[0]
+                              console.log(JSON.parse(pro.x_brand_gate_variant_id));
+                              console.log(JSON.parse(item.x_variant)[0].name);
                               return {
                                    product_id: pro.x_brand_gate_id,
-                                   variation_id: pro.x_brand_gate_variant_id,
+                                   variation_id: JSON.parse(pro.x_brand_gate_variant_id)[JSON.parse(item.x_variant)[0].name],
                                    quantity: item.product_qty
                               }
                          }))
+                         console.log(lineItems);
                          const theAddress = await axios.post(`https://market-server.azurewebsites.net/api/orders/address/get`, {
                               partnerID: order.data.order[0]?.partner_id[0],
                               addressID: order.data.order[0]?.partner_shipping_id[0]
