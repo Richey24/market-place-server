@@ -143,6 +143,26 @@ const midBannerConfig = {
                height: 400,
           },
      ],
+     theme17: [
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme17"]?.banner1,
+               link: "/",
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme17"]?.banner1,
+               link: "/",
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme17"]?.banner1,
+               link: "/",
+          },
+     ],
 };
 
 module.exports = midBannerConfig;
