@@ -594,7 +594,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          await User.findByIdAndUpdate(session.metadata.buyerId, { $push: { order_products: { ...mainProduct.data.product[0], company_id: session.metadata.siteId } } });
                     }
 
-                    const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_template_id[0]}`)
+                    const checkBrand = await axios.get(`http://localhost:4000/api/products/details/${theOrder[0].product_template_id[0]}`)
                     const brand = checkBrand.data.product[0]
                     if (brand.x_brand_gate_id) {
                          const lineItems = await Promise.all(theOrder.map(async (item) => {
@@ -608,7 +608,6 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                                    quantity: item.product_qty
                               }
                          }))
-                         console.log(lineItems);
                          const theAddress = await axios.post(`https://market-server.azurewebsites.net/api/orders/address/get`, {
                               partnerID: order.data.order[0]?.partner_id[0],
                               addressID: order.data.order[0]?.partner_shipping_id[0]
@@ -638,9 +637,6 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                               const pro = product.data.product[0]
                               return {
                                    product_id: pro.x_printify_id,
-                                   print_provider_id: pro.x_printify_provider_id,
-                                   blueprint_id: pro.x_printify_blueprint_id,
-                                   print_areas: JSON.parse(pro.x_printify_print_areas),
                                    variant_id: pro.x_printify_variant_id,
                                    quantity: item.product_qty
                               }
@@ -650,25 +646,28 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                               addressID: order.data.order[0]?.partner_shipping_id[0]
                          })
                          const address = theAddress.data
-                         const body = {
-                              external_id: order.data.order[0],
-                              line_items: lineItems,
-                              shipping_method: 1,
-                              send_shipping_notification: true,
-                              address_to: {
-                                   first_name: address.name.split(" ")[0],
-                                   last_name: address.name.split(" ")[1],
-                                   address1: address.street,
-                                   city: address.city,
-                                   region: address.state_id ? address.state_id[1] : "state",
-                                   zip: address.zip,
-                                   country: address.country_id[1],
-                                   phone: address.phone,
-                                   email: address.email
+                         if (address.state_id) {
+                              const countryCode = address.state_id[1].substring(address.state_id[1].indexOf("(") + 1, address.state_id[1].lastIndexOf(")"))
+                              const body = {
+                                   external_id: order.data.order[0].id.toString(),
+                                   line_items: lineItems,
+                                   shipping_method: 1,
+                                   send_shipping_notification: true,
+                                   address_to: {
+                                        first_name: address.name.split(" ")[0],
+                                        last_name: address.name.split(" ")[1],
+                                        address1: address.street,
+                                        city: address.city,
+                                        region: address.state_id[1],
+                                        zip: address.zip,
+                                        country: countryCode,
+                                        phone: address.phone,
+                                        email: address.email
+                                   }
                               }
+                              const printifyGateOrder = await axios.post(`https://ishop-brangate.azurewebsites.net/api/printify/order/create/${brand.x_printify_shop_id}`, body)
+                              console.log(printifyGateOrder.data);
                          }
-                         const printifyGateOrder = await axios.post(`https://ishop-brangate.azurewebsites.net/api/printify/order/create/${brand.x_printify_shop_id}`, body)
-                         console.log(printifyGateOrder.data);
                     }
 
                     await Logger.create({
