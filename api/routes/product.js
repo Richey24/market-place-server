@@ -18,11 +18,11 @@ router.get("/inventory/total/sales/:startDate/:endDate", productController.total
 router.get("/inventory/quantity/sold/:startDate/:endDate", productController.totalSalesQuantity);
 router.get("/inventory/order/failed/:startDate/:endDate", productController.totalFailedOrder);
 router.delete("/delete/:id", productController.deleteProduct);
+router.get("/:companyId", auth, productController.getProductbyCompanyId);
 
 router.get("/attributes", productController.fetchProductAttributes);
 router.post("/attributes", productController.createProductAttributes);
 router.get("/attribute-values/:attributeId", productController.fetchProductAttributeValues);
-router.get("/:companyId", auth, productController.getProductbyCompanyId);
 router.post("/search/suggestions", productController.searchProductsAndcateg);
 router.get("/:companyId/featured", productController.getFeaturedProducts);
 router.get("/details/:id", productController.productDetails);
