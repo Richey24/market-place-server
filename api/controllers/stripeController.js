@@ -667,7 +667,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                                    email: address.email
                               }
                          }
-                         const printifyGateOrder = await axios.post("https://ishop-brangate.azurewebsites.net/api/printify/order/create", body)
+                         const printifyGateOrder = await axios.post(`https://ishop-brangate.azurewebsites.net/api/printify/order/create/${brand.x_printify_shop_id}`, body)
                          console.log(printifyGateOrder.data);
                     }
 
