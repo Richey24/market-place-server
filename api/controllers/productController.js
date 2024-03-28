@@ -756,9 +756,10 @@ exports.searchProduct = async (req, res) => {
           const keys = Object.keys(body);
           const arr = [];
           keys.forEach((key) => {
-               arr.push([key, "=", body[key]]);
+               arr.push([key, "ilike", body[key]]);
           });
           const theProducts = await searchProducts(arr);
+
           const products = theProducts.map((product) => {
                return {
                     id: product.id,
