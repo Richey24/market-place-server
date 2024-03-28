@@ -55,6 +55,7 @@ const getProductById = async (id) => {
                     "x_printify_blueprint_id",
                     "x_printify_provider_id",
                     "x_printify_variant_id",
+                    "x_printify_shop_id",
                     "x_printify_print_areas",
                     "attribute_line_ids",
                ],
@@ -256,6 +257,7 @@ const addProduct = async (params) => {
                x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_print_areas: params?.product.x_printify_print_areas,
+               x_printify_shop_id: params?.product.x_printify_shop_id,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -318,6 +320,7 @@ const addProductVariant = async (params) => {
                x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_print_areas: params?.product.x_printify_print_areas,
+               x_printify_shop_id: params?.product.x_printify_shop_id,
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
@@ -471,6 +474,7 @@ const updateProduct = async (params) => {
                x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_print_areas: params?.product.x_printify_print_areas,
+               x_printify_shop_id: params?.product.x_printify_shop_id,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
