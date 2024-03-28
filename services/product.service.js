@@ -52,11 +52,8 @@ const getProductById = async (id) => {
                     "website_meta_keywords",
                     "x_shipping_package",
                     "x_printify_id",
-                    "x_printify_blueprint_id",
-                    "x_printify_provider_id",
                     "x_printify_variant_id",
                     "x_printify_shop_id",
-                    "x_printify_print_areas",
                     "attribute_line_ids",
                ],
           ]);
@@ -253,10 +250,7 @@ const addProduct = async (params) => {
                x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
                x_show_sold_count: params?.product.x_show_sold_count,
                x_printify_id: params?.product.x_printify_id,
-               x_printify_blueprint_id: params?.product.x_printify_blueprint_id,
-               x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
-               x_printify_print_areas: params?.product.x_printify_print_areas,
                x_printify_shop_id: params?.product.x_printify_shop_id,
           };
 
@@ -316,10 +310,7 @@ const addProductVariant = async (params) => {
                x_free_shipping: params?.product.free_shipping,
                x_show_sold_count: params?.product.x_show_sold_count,
                x_printify_id: params?.product.x_printify_id,
-               x_printify_blueprint_id: params?.product.x_printify_blueprint_id,
-               x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
-               x_printify_print_areas: params?.product.x_printify_print_areas,
                x_printify_shop_id: params?.product.x_printify_shop_id,
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
@@ -470,10 +461,7 @@ const updateProduct = async (params) => {
                x_brand_gate_id: params?.product.brand_gate_id,
                x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
                x_printify_id: params?.product.x_printify_id,
-               x_printify_blueprint_id: params?.product.x_printify_blueprint_id,
-               x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
-               x_printify_print_areas: params?.product.x_printify_print_areas,
                x_printify_shop_id: params?.product.x_printify_shop_id,
           };
           // Update the product data
