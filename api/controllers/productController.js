@@ -980,7 +980,8 @@ exports.getUnratedProducts = async (req, res) => {
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });
           }
-          const unratedProducts = user.order_products.filter(
+          const uniquePro = [...new Set(user.order_products.map(pro => JSON.stringify(pro)))].map(uni => JSON.parse(uni))
+          const unratedProducts = uniquePro.filter(
                (order) => !user.rated.includes(order.id) && order.company_id === companyId,
           );
           res.status(200).json({ unratedProducts, status: true });
