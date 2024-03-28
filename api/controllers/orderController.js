@@ -352,7 +352,7 @@ exports.addProductToOrder = async (req, res) => {
                     company_id: companyId,
                     price_unit: req.body.price_unit,
                     ...(req.body.product_attribute && {
-                         product_attribute: req.body.product_attribute,
+                         x_variant: JSON.stringify(req.body.product_attribute),
                     }),
                },
           ]);

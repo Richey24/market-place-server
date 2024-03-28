@@ -218,7 +218,7 @@ exports.getFeaturedProducts = async (req, res) => {
 
           res.status(201).json({ products, count: productsLength.length });
      } catch (error) {
-          console.log(eror);
+          console.log(error);
      }
 };
 

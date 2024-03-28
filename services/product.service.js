@@ -55,6 +55,7 @@ const getProductById = async (id) => {
                     "x_printify_blueprint_id",
                     "x_printify_provider_id",
                     "x_printify_variant_id",
+                    "x_printify_shop_id",
                     "x_printify_print_areas",
                     "attribute_line_ids",
                ],
@@ -256,6 +257,7 @@ const addProduct = async (params) => {
                x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_print_areas: params?.product.x_printify_print_areas,
+               x_printify_shop_id: params?.product.x_printify_shop_id,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -270,30 +272,6 @@ const addProduct = async (params) => {
                     ]);
                }
           }
-          // // Write the images if provided
-          // for (const base64Image of base64Images) {
-          //      await params.odoo.execute_kw("product.template", "write", [
-          //           [productId],
-          //           { image_1920: base64Image.base64 },
-          //      ]);
-
-          //      const recordId = await Odoo.execute_kw("ir.attachment", "create", [
-          //           {
-          //                name: "productId.png",
-          //                datas: base64Image.base64,
-          //                res_model: "ir.ui.view",
-          //                res_id: productId,
-          //                res_field: "product_images",
-          //                public: true,
-          //                company_id: params.product.company_id,
-          //           },
-          //      ]);
-
-          //      console.log("Image saved with ID:", recordId);
-          // }
-
-          // saveImageToOdoo(base64Images[0].base64);
-          // Return the ID of the created product
           return productId;
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
@@ -342,6 +320,7 @@ const addProductVariant = async (params) => {
                x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_print_areas: params?.product.x_printify_print_areas,
+               x_printify_shop_id: params?.product.x_printify_shop_id,
                product_tag_ids: params.product.product_tag_ids
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
@@ -443,36 +422,6 @@ const addProductVariant = async (params) => {
                });
           }
 
-          // const images = params.product?.images || [];
-          // // Convert each image buffer to base64
-          // const base64Images = images.map((image) => {
-          //      return {
-          //           ...image,
-          //           base64: image.buffer.toString("base64"),
-          //      };
-          // });
-
-          // // // Write the images if provided
-          // for (const base64Image of base64Images) {
-          //      await params.odoo.execute_kw("product.template", "write", [
-          //           [templateId],
-          //           { image_1920: base64Image.base64 },
-          //      ]);
-
-          //      const recordId = await Odoo.execute_kw("ir.attachment", "create", [
-          //           {
-          //                name: "productId.png",
-          //                datas: base64Image.base64,
-          //                res_model: "ir.ui.view",
-          //                res_id: templateId,
-          //                res_field: "product_images",
-          //                public: true,
-          //                company_id: params.product.company_id,
-          //           },
-          //      ]);
-
-          //      console.log("Image saved with ID:", recordId);
-          // }
 
           return templateId;
      } else {
@@ -525,6 +474,7 @@ const updateProduct = async (params) => {
                x_printify_provider_id: params?.product.x_printify_provider_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_print_areas: params?.product.x_printify_print_areas,
+               x_printify_shop_id: params?.product.x_printify_shop_id,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
@@ -540,86 +490,6 @@ const updateProduct = async (params) => {
                throw new Error("Failed to update product data.");
           }
 
-          if (params?.product?.variants && params?.product?.variants.length > 0) {
-               await params?.product?.variants?.forEach(async (container) => {
-                    await container.forEach(async (variant, idx) => {
-                         // console.log("variant", variant);
-
-                         let attributeValueId;
-
-                         if (!variant?.valueId) {
-                              const attributeValueData = {
-                                   name: variant?.value, // Replace with the actual value
-                                   attribute_id: variant?.attributeId,
-                                   sequence: 1, // Optional: Display sequence
-                              };
-                              console.log(attributeValueData);
-                              attributeValueId = await params.odoo.execute_kw(
-                                   "product.attribute.value",
-                                   "create",
-                                   [attributeValueData],
-                              );
-                         } else {
-                              attributeValueId = variant?.valueId;
-                         }
-                         console.log(attributeValueId);
-                         const attributeLineData = {
-                              product_tmpl_id: params?.productId,
-                              attribute_id: variant?.attributeId,
-                              value_ids: [[6, 0, [attributeValueId]]],
-                         };
-
-                         const attributeLineId = await params.odoo.execute_kw(
-                              "product.template.attribute.line",
-                              "create",
-                              [attributeLineData],
-                         );
-
-                         if (variant?.price_extra && variant?.price_extra !== 0) {
-                              ///ADD PRICE_EXTRA
-                              const attributeLineRespData = await Odoo.execute_kw(
-                                   "product.template.attribute.line",
-                                   "read",
-                                   [[attributeLineId], ["product_template_value_ids"]],
-                              );
-
-                              const productTemplateValueIds =
-                                   attributeLineRespData[0]?.product_template_value_ids || [];
-                              const attributeValueWriteData = {
-                                   price_extra: variant?.price_extra, // Set the price adjustment here
-                              };
-
-                              await params.odoo.execute_kw(
-                                   "product.template.attribute.value",
-                                   "write",
-                                   [[productTemplateValueIds[0]], attributeValueWriteData],
-                              );
-                         }
-                    });
-               });
-          }
-
-          // for (const base64Image of base64Images) {
-          //      await params.odoo.execute_kw("product.template", "write", [
-          //           [productId],
-          //           { image_1920: base64Image.base64 },
-          //      ]);
-
-          //      const recordId = await Odoo.execute_kw("ir.attachment", "create", [
-          //           {
-          //                name: "productId.png",
-          //                datas: base64Image.base64,
-          //                res_model: "ir.ui.view",
-          //                res_id: productId,
-          //                res_field: "product_images",
-          //                public: true,
-          //                company_id: params.product.company_id,
-          //           },
-          //      ]);
-
-          //      console.log("Image saved with ID:", recordId);
-          // }
-
           return result;
      } catch (error) {
           console.error("Error updating product:", error);
@@ -631,19 +501,6 @@ const addMultipleProducts = async (params) => {
      try {
           const productIds = [];
           for (const product of params.products) {
-               // const images = product?.images || [];
-               // const base64Images = [];
-
-               // // Convert each image URL to base64
-               // for (const imageUrl of images) {
-               //      const response = await axios.get(imageUrl, { responseType: "arraybuffer" });
-               //      const imageBuffer = Buffer.from(response.data, "binary");
-
-               //      base64Images.push({
-               //           url: imageUrl,
-               //           base64: imageBuffer.toString("base64"),
-               //      });
-               // }
 
                // // Connect to Odoo instance
                await params.odoo.connect();
