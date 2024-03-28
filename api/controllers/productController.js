@@ -71,6 +71,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "website_url",
                               "website_meta_keywords",
                               "x_shipping_package",
+                              "x_discount",
                          ],
                          null,
                          0,
@@ -82,6 +83,7 @@ exports.getProductbyCompanyId = async (req, res) => {
                const products = theProducts.map((product) => {
                     return {
                          ...product,
+                         x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
                          x_images:
                               typeof product?.x_images === "string"
                                    ? JSON?.parse(product?.x_images)
@@ -140,6 +142,7 @@ exports.getProductbyCategory = async (req, res) => {
                          "website_url",
                          "website_meta_keywords",
                          "x_shipping_package",
+                         "x_discount",
                     ],
                ]);
 
@@ -147,6 +150,7 @@ exports.getProductbyCategory = async (req, res) => {
                     return {
                          ...product,
                          x_images: JSON.parse(product.x_images),
+                         x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
                     };
                });
 
@@ -357,6 +361,7 @@ exports.productDetails = async (req, res) => {
           return {
                ...product,
                x_images: JSON?.parse(product?.x_images),
+               x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
           };
      });
 
@@ -500,7 +505,7 @@ exports.updateProduct = async (req, res) => {
                odoo: Odoo,
                product: {
                     ...req.body,
-                    variants: req.body?.variants ? JSON.parse(req.body?.variants) : null
+                    variants: req.body?.variants ? JSON.parse(req.body?.variants) : null,
                },
                productId: req.params?.id,
           };
