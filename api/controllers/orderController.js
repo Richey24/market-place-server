@@ -273,8 +273,9 @@ exports.createOrder = async (req, res) => {
           const partner_id = +req.body.partner_id;
           const companyId = req.body.companyId;
 
+
           const orderLines = productData.map(
-               ({ productId, qty, price_unit, product_attribute }) => [
+               ({ productId, qty, price_unit, product_attribute, x_images }) => [
                     0,
                     0,
                     {
