@@ -3,19 +3,8 @@ require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 const morgan = require("morgan");
 const cors = require("cors");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const app = express();
-const {
-     reminderJob,
-     scheduleUserDisablingCronJob,
-     publishServiceItemsCronJob,
-     sendSalesReport,
-     sendEmailsToUsers,
-     disableExpiredAds,
-     deleteEvent,
-     clearOldToken,
-} = require("./config/helpers");
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
 const Odoo = require("./config/odoo.connection");
@@ -49,11 +38,6 @@ app.use(
      }),
 );
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.urlencoded({ extended: true }));
-// //configure body parser
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
-//configure body-parser ends here
 
 app.use(morgan("dev")); // configire morgan
 
@@ -103,16 +87,6 @@ app.get("/odoo/test", async (req, res) => {
      }
 });
 
-reminderJob();
-scheduleUserDisablingCronJob();
-publishServiceItemsCronJob();
-const items = [{ name: "Product1", price: 80, quantity: 4 }];
-sendSalesReport(175, { orderId: "1234", items });
-sendEmailsToUsers();
-disableExpiredAds();
-deleteEvent();
-// clearOldToken()
-
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
 const categoryRouter = require("./api/routes/category");
@@ -132,7 +106,6 @@ const dashboardRouter = require("./api/routes/dashbaord");
 const mainCategoryRouter = require("./api/routes/mainCategory");
 const popularProduct = require("./api/routes/popular");
 const serviceRoute = require("./api/routes/service");
-// const shipmentRoute = require("./api/routes/carrier");
 const statRoute = require("./api/routes/stat");
 const complainRoute = require("./api/routes/complain");
 const companyRoute = require("./api/routes/company");
@@ -150,10 +123,6 @@ const pluginRouter = require("./api/routes/plugin");
 const devRouter = require("./api/routes/dev");
 
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
-
-// const errorHandler = require("./config/errorHandler");
-
-// //for error handling
 // app.use(errorHandler)
 
 app.use("/api/admin/auth", adminRouter);

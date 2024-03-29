@@ -1,9 +1,5 @@
-const User = require("../model/User");
-const Company = require("../model/Company");
 const Odoo = require("../config/odoo.connection");
 const { toDataURL } = require("../utils/imageBase64");
-const fs = require("fs");
-const axios = require("axios");
 
 const unitOfMeasure = async (odoo) => {
      try {
@@ -18,7 +14,7 @@ const unitOfMeasure = async (odoo) => {
 
 const getProductById = async (id) => {
      let productId = id;
-     console.log("id", id);
+
      try {
           await Odoo.connect();
           const productData = await Odoo.execute_kw("product.template", "search_read", [
@@ -319,14 +315,14 @@ const addProductVariant = async (params) => {
                x_printify_id: params?.product.x_printify_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_shop_id: params?.product.x_printify_shop_id,
-               product_tag_ids: params.product.product_tag_idsfollow 
+               product_tag_ids: params.product.product_tag_idsfollow
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
                // qty_available: 5,
           };
 
           console.log("templateData", templateData);
-          const templateId = await createProductTemplate(params, templateData)
+          const templateId = await createProductTemplate(params, templateData);
 
           if (params?.product?.variants && params?.product?.variants.length > 0) {
                await params?.product?.variants?.forEach(async (container) => {

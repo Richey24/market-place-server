@@ -2,10 +2,8 @@ const nodemailer = require("nodemailer");
 const Company = require("../model/Company");
 const cron = require("node-cron");
 const User = require("../model/User");
-const Service = require("../model/Service");
 const {
   findCompanyByCompanyIdAndPopulateUser,
-  findCompaniesAndPopulateUser,
 } = require("../api/controllers/companyController");
 const OrderEmail = require("../model/OrderEmails");
 const Event = require("../model/Event");
@@ -1247,244 +1245,6 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
   });
 };
 
-const sendSubscriptionReminderEmail = (email, name, trialEndDate) => {
-  const endDate = new Date(trialEndDate);
-  endDate.setDate(endDate.getDate() - 2); // Calculate the date 2 days before trial end
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
-
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: "Reminder: Subscription Required to Keep Your Account Active",
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          /* CSS styles for the email template */
-          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
-          body {
-            font-family: 'Montserrat', Arial, sans-serif;
-            line-height: 1.6;
-          }
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-          }
-          .header {
-            text-align: center;
-            margin-bottom: 20px;
-          }
-          .message {
-            margin-bottom: 20px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 5px;
-          }
-          .highlight {
-            font-weight: bold;
-          }
-          .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-          }
-          .logo {
-            display: block;
-            margin: 0 auto;
-            max-width: 200px;
-          }
-          .cta-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-          }
-          .cta-button:hover {
-            background-color: #0056b3;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Subscription Reminder</h1>
-          </div>
-          <div class="message">
-            <p>Dear ${name},</p>
-            <p>We hope you've been enjoying your trial period on our vibrant and dynamic ecommerce marketplace.</p>
-            <p>This is a friendly reminder that your trial period is ending in 2 days, and your account will be disabled unless you subscribe.</p>
-            <p>Please note the trial end date:</p>
-            <ul>
-              <li><span class="highlight">Trial End Date:</span> ${formattedDate(trialEndDate)}</li>
-            </ul>
-          </div>
-          <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
-          <div class="message">
-            <p><span class="highlight">Benefits of Subscription:</span></p>
-            <ul>
-              <li>Continue to create and customize your ecommerce store.</li>
-              <li>Access our full suite of tools and features.</li>
-              <li>Upload and organize your products, descriptions, and images.</li>
-              <li>Familiarize yourself with our user-friendly interface.</li>
-              <li>Explore our robust marketing, promotional, and video training resources.</li>
-              <li>Evaluate the effectiveness of our platform for your business.</li>
-            </ul>
-          </div>
-          <div class="message">
-            <p>We value your presence on our platform and would love to see you continue as a subscriber. Don't miss out on the opportunities our platform offers!</p>
-          </div>
-          <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `,
-  };
-
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
-};
-
-const sendAccountDisablingReminderEmail = (email, name, trialEndDate) => {
-  const endDate = new Date(trialEndDate);
-  endDate.setDate(endDate.getDate() + 1); // Calculate the date for the day their account will be disabled
-  const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-  const formattedDate = (dt) => dt.toLocaleDateString("en-US", options);
-
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.EMAIL,
-    to: email,
-    subject: "Important: Your Account Will Be Disabled Tomorrow",
-    html: `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          /* CSS styles for the email template */
-          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
-          body {
-            font-family: 'Montserrat', Arial, sans-serif;
-            line-height: 1.6;
-          }
-          .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-          }
-          .header {
-            text-align: center;
-            margin-bottom: 20px;
-          }
-          .message {
-            margin-bottom: 20px;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 5px.
-          }
-          .highlight {
-            font-weight: bold;
-          }
-          .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-          }
-          .logo {
-            display: block;
-            margin: 0 auto;
-            max-width: 200px;
-          }
-          .cta-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 5px;
-          }
-          .cta-button:hover {
-            background-color: #0056b3;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class "header">
-            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">Account Disabling Reminder</h1>
-          </div>
-          <div class="message">
-            <p>Dear ${name},</p>
-            <p>This is an important reminder that your trial period is ending tomorrow, and your account will be disabled unless you subscribe.</p>
-            <p>Please note the trial end date:</p>
-            <ul>
-              <li><span class="highlight">Trial End Date:</span> ${formattedDate(trialEndDate)}</li>
-            </ul>
-          </div>
-          <hr style="border: none; border-top: 1px solid #dddddd; margin: 20px 0;">
-          <div class="message">
-            <p>We value your presence on our platform and would love to see you continue as a subscriber. Don't miss out on the opportunities our platform offers!</p>
-            <a class="cta-button" href="https://example.com/subscribe">Subscribe Now</a>
-          </div>
-          <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
-          </div>
-        </div>
-      </body>
-      </html>
-    `,
-  };
-
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // do something useful
-    }
-  });
-};
 const sendSubscriptionCancelEmail = (email, name, token) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.office365.com",
@@ -1694,6 +1454,7 @@ const sendAdminMessage = (email, name, message) => {
     }
   });
 };
+
 const sendVendorMessage = (email, name, message, orderID) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.office365.com",
@@ -2240,6 +2001,7 @@ const sendAdvertisementNotificationEmail = (
     }
   });
 };
+
 const createOrderTable = (order) => {
   let table = `
           <h3>Order # ${order.orderId}</h3>
@@ -2341,10 +2103,6 @@ const createOrderReport = (orders) => {
   return report;
 };
 
-const consolidateOrdersTables = (orders) => {
-  const orderTables = orders.map((order) => createOrderTable(order)).join("<br>");
-  return orderTables;
-};
 
 const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
   //  const { orderId, items } = orderDetails;
@@ -2526,235 +2284,6 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
   });
 };
 
-const sendPurchaseEmailOnceDaily = (vendorEmail, ordersTable, report, callback) => {
-  const transporter = nodemailer.createTransport({
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.PASSWORD,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.EMAIL,
-    to: vendorEmail,
-    subject: `Purchased Today`,
-    html: `
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    /* CSS styles for the email template */
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    body {
-      font-family: 'Montserrat', Arial, sans-serif;
-      line-height: 1.6;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-      border-radius: 5px;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .message {
-      margin-bottom: 20px;
-      background-color: #ffffff;
-      padding: 20px;
-      border-radius: 5px.
-    }
-    .highlight {
-      font-weight: bold;
-    }
-    .footer {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 12px;
-    }
-    .logo {
-      display: block;
-      margin: 0 auto;
-      max-width: 200px;
-    }
-    .cta-button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: #ffffff;
-      text-decoration: none;
-      border-radius: 5px;
-    }
-    .cta-button:hover {
-      background-color: #0056b3;
-    }
-
-    .box-container {
-      display: flex;
-      flex-wrap: wrap;
-    }
-    .box {
-        flex: 0 0 calc(50% - 10px);
-        max-width: calc(50% - 10px);
-        margin-right: 20px;
-        margin-bottom: 20px;
-        border: 1px solid #B886FC;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-    .box-content {
-        padding: 20px;
-    }
-    .box-number {
-        margin: 0;
-        font-size: 24px;
-        font-weight: 600;
-        opacity: 0.75;
-        text-align: right;
-    }
-    .box-text {
-        margin: 0;
-    }
-    body, table, td, th {
-      margin: 0;
-      padding: 0;
-      border-collapse: collapse;
-      border-spacing: 0;
-  }
-
-  /* Optional: Add some padding and border to the table */
-  .table {
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-  }
-
-  /* Style for table headers */
-  th {
-      background-color: #f2f2f2;
-      border-bottom: 1px solid #ccc;
-      padding: 10px;
-      text-align: left;
-  }
-
-  /* Style for table rows */
-  td {
-      border-bottom: 1px solid #ccc;
-      padding: 10px;
-  }
-
-  /* Alternate row colors */
-  tr:nth-child(even) {
-      background-color: #f9f9f9;
-  }
-
-  /* Bootstrap grid classes */
-  .row {
-      display: flex;
-      flex-wrap: wrap;
-      margin-right: -15px;
-      margin-left: -15px;
-  }
-
-  .col-lg-4 {
-      flex: 0 0 33.333333%;
-      max-width: 33.333333%;
-      padding-right: 15px;
-      padding-left: 15px;
-  }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class "header">
-      <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-      <h1 style="color: #333333;">New Message Regarding Your Orders</h1>
-    </div>
-    <div class="message">
-      <h2>Consolidated Order Details</h2>
-      ${ordersTable} 
-      ${report}
-    </div>
-    <div class="footer">
-      <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
-    </div>
-  </div>
-</body>
-</html>
-`,
-  };
-
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-      // Execute the callback function if provided (indicating successful email delivery)
-      if (callback) {
-        callback();
-      }
-    }
-  });
-};
-const prepareAndSendEmail = async (vendorEmail) => {
-  const userOrders = await OrderEmail.findOne({ email: vendorEmail });
-
-  const ordersTable = consolidateOrdersTables(userOrders.orders);
-  const report = createOrderReport(userOrders.orders);
-
-  sendPurchaseEmailOnceDaily(userOrders.email, ordersTable, report, async () => {
-    await OrderEmail.deleteOne({ _id: userOrders._id });
-    console.log(`OrderEmail document deleted after successful email delivery.`);
-  });
-};
-async function sendEmailsToUsers() {
-  console.log("Cron job to send order emails to vendors");
-  const fetchUsers = async () => {
-    const users = await OrderEmail.find({});
-    updateCronJobs(users);
-    console.log("Order emails cron job executed successfully");
-  };
-
-  const updateCronJobs = (users) => {
-    try {
-      const cronJobs = [];
-      for (const user of users) {
-        const job = cron.schedule(
-          "0 12 * * *",
-          async () => {
-            try {
-              await prepareAndSendEmail(user.email);
-              console.log(
-                `Order emails sent successfully for user ${user.email}.`,
-              );
-            } catch (error) {
-              console.error(
-                `Error sending order emails for user ${user.email}:`,
-                error,
-              );
-            }
-          },
-          { timezone: user.timeZone },
-        );
-        cronJobs.push(job);
-      }
-      return cronJobs;
-    } catch (error) {
-      console.error("Error sending emails to users:", error);
-    }
-  };
-
-  fetchUsers();
-  cron.schedule("0 * * * *", fetchUsers);
-}
 
 const sendSalesReport = async (companyId, orderDetails) => {
   try {
@@ -2799,6 +2328,7 @@ const sendSalesReport = async (companyId, orderDetails) => {
     console.log(err);
   }
 };
+
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
@@ -2880,156 +2410,6 @@ const reminderJob = () => {
   });
 };
 
-const scheduleUserDisablingCronJob = async () => {
-  // Calculate the date for 12:00 AM the next day
-  const nextDay = calculateNextDay();
-
-  // Calculate the date for 3 weeks after the trial end date
-  const threeWeeksLater = calculateThreeWeeksLater();
-
-  // Find users whose trial has ended and are not subscribed
-  const usersWithExpiredTrials = await User.find({
-    trial_end_date: { $lte: nextDay },
-    subscribed: false,
-    disabled: false,
-  });
-
-  // Iterate over the users and send reminder messages and schedule the deleteUserData function
-  usersWithExpiredTrials.forEach(async (user) => {
-    // Send a reminder message 2 days before trial end
-    sendSubscriptionReminderEmail(user.email, user.name, user.trial_end_date);
-
-    // Schedule the deleteUserData function to run 3 weeks later
-    cron.schedule("0 0 * * *", { start: threeWeeksLater }, async () => {
-      const result = await deleteUserData(user._id, user.companyId, user.siteId);
-
-      console.log(
-        `Cron job executed to delete user account 3 weeks after disabling: ${result.success}`,
-      );
-    });
-
-    // Send a reminder message 1 day before trial end
-    sendAccountDisablingReminderEmail(user.email, user.name, user.trial_end_date);
-  });
-
-  console.log("Cron job executed to manage trial ending reminders.");
-};
-
-const publishServiceItemsCronJob = async () => {
-  // Schedule the cron job to run every minute
-  cron.schedule("* * * * *", async () => {
-    try {
-      const currentTime = new Date();
-
-      // Find services where scheduledDate is less than or equal to the current time
-      // and visibility is 'schedule'
-      const servicesToUpdate = await Service.find({
-        scheduledDate: { $lte: currentTime },
-        visibility: "schedule",
-      });
-
-      // Update the visibility to 'published' for the found services
-      await Promise.all(
-        servicesToUpdate.map((service) => {
-          return Service.findByIdAndUpdate(service._id, {
-            $set: { visibility: "published" },
-          });
-        }),
-      );
-
-      console.log("Cron job executed successfully. for service");
-    } catch (error) {
-      console.error("Error in cron job:", error);
-    }
-  });
-};
-
-const disableExpiredAds = async () => {
-  cron.schedule("* * * * *", async () => {
-    console.log("Running a task every minute to check for expired subscriptions");
-
-    try {
-      const companies = await Company.find({});
-
-      for (const company of companies) {
-        let isUpdated = false;
-
-        for (const subscription of company.adsSubscription) {
-          const now = new Date();
-          if (
-            subscription.currentPeriodEnd &&
-            now > subscription.currentPeriodEnd &&
-            subscription.status !== "DISABLED"
-          ) {
-            subscription.status = "DISABLED";
-            isUpdated = true;
-
-            // If the subscription has an advertId, find and disable the associated advert
-            if (subscription.advertId) {
-              const advert = await Advert.findById(subscription.advertId);
-              if (advert) {
-                advert.status = "DISABLED";
-                await advert.save();
-              }
-            }
-          }
-        }
-
-        if (isUpdated) {
-          await company.save();
-        }
-      }
-    } catch (error) {
-      console.error("Error running the cron job:", error);
-    }
-    console.log("Cron job executed successfully for expired ads");
-  });
-};
-
-const clearOldToken = async () => {
-  cron.schedule("* * * * *", async () => {
-    console.log("Running a task every minute to check for expired token");
-
-    try {
-      const users = await User.find({});
-      users.forEach(async (user) => {
-        if (user.tokens.length > 3) {
-          user.tokens = user.tokens.slice(-3);
-          await user.save();
-        }
-      });
-    } catch (error) {
-      console.error("Error running the cron job:", error);
-    }
-    console.log("Cron job executed successfully for expired token");
-  });
-};
-
-const calculateNextDay = () => {
-  const currentDate = new Date();
-  const nextDay = new Date(currentDate);
-  nextDay.setDate(currentDate.getDate() + 1);
-  nextDay.setHours(0, 0, 0, 0);
-  return nextDay;
-};
-
-const calculateThreeWeeksLater = (nextDay) => {
-  const threeWeeksLater = new Date(nextDay);
-  threeWeeksLater.setDate(nextDay?.getDate() + 21);
-  return threeWeeksLater;
-};
-
-const deleteEvent = () => {
-  cron.schedule("0 0 * * *", async () => {
-    const events = await Event.find({});
-    events.forEach(async (event) => {
-      if (Date.now() > new Date(event.date).getTime()) {
-        await Event.findByIdAndDelete(event._id);
-      }
-    });
-  });
-};
-
 module.exports = {
   sendOnboardingEmail,
   sendAdminWelcomeMail,
@@ -3043,19 +2423,13 @@ module.exports = {
   formatDate,
   sendAdvertisementNotificationEmail,
   reminderJob,
-  scheduleUserDisablingCronJob,
   sendWelcomeEmail,
   sendForgotPasswordEmail,
   sendAdminMessage,
   sendVendorMessage,
-  publishServiceItemsCronJob,
   sendSubscriptionCancelEmail,
-  clearOldToken,
   deleteUserData,
-  disableExpiredAds,
-  deleteEvent,
   sendCreateEventMail,
   sendSalesReport,
-  sendEmailsToUsers,
   sendVideoInvite
 };
