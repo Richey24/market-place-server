@@ -14,7 +14,7 @@ const {
 const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
 const { default: axios } = require("axios");
-
+const randomstring = require("randomstring");
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
 const YOUR_ISHOP_DOMAIN = "https://ishop.black";
@@ -594,14 +594,12 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          await User.findByIdAndUpdate(session.metadata.buyerId, { $push: { order_products: { ...mainProduct.data.product[0], company_id: session.metadata.siteId } } });
                     }
 
-                    const checkBrand = await axios.get(`http://localhost:4000/api/products/details/${theOrder[0].product_template_id[0]}`)
+                    const checkBrand = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${theOrder[0].product_template_id[0]}`)
                     const brand = checkBrand.data.product[0]
                     if (brand.x_brand_gate_id) {
                          const lineItems = await Promise.all(theOrder.map(async (item) => {
                               const product = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${item.product_template_id[0]}`)
                               const pro = product.data.product[0]
-                              console.log(JSON.parse(pro.x_brand_gate_variant_id));
-                              console.log(JSON.parse(item.x_variant)[0].name);
                               return {
                                    product_id: pro.x_brand_gate_id,
                                    variation_id: JSON.parse(pro.x_brand_gate_variant_id)[JSON.parse(item.x_variant)[0].name],
@@ -614,7 +612,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          })
                          const address = theAddress.data
                          const body = {
-                              order_id: session.metadata.orderId,
+                              order_id: randomstring.generate(10),
                               line_items: lineItems,
                               shipping: {
                                    first_name: address.name.split(" ")[0],
@@ -649,7 +647,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          if (address.state_id) {
                               const countryCode = address.state_id[1].substring(address.state_id[1].indexOf("(") + 1, address.state_id[1].lastIndexOf(")"))
                               const body = {
-                                   external_id: order.data.order[0].id.toString(),
+                                   external_id: randomstring.generate(10),
                                    line_items: lineItems,
                                    shipping_method: 1,
                                    send_shipping_notification: true,
