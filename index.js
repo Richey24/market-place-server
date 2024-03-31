@@ -111,7 +111,7 @@ sendSalesReport(175, { orderId: "1234", items });
 sendEmailsToUsers();
 disableExpiredAds();
 deleteEvent();
-// clearOldToken()
+clearOldToken();
 
 const adminRouter = require("./api/routes/admin");
 const userRouter = require("./api/routes/user");
