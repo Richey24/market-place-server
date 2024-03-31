@@ -56,26 +56,25 @@ exports.getOrdersByCompanyId = async (req, res) => {
 };
 
 exports.getOrdersByPartner = async (req, res) => {
+     res.status(200).json({ order: "dddff", status: true });
      // try {
      //      await Odoo.connect();
 
      //      const partnerId = +req.params?.partner_id;
-
-     //      const orderIds = await Odoo.execute_kw(
-     //           "sale.order",
-     //           "search",
+     //      const orderIds = await Odoo.execute_kw("sale.order", "search", [
      //           [
-     //                [
-     //                     ["partner_id", "=", partnerId],
-     //                     ["state", "=", "draft"],
-     //                ],
+     //                ["partner_id", "=", partnerId],
+     //                ["state", "=", "draft"],
      //           ],
-     //           {
-     //                fields: ["name", "partner_id"],
-     //           },
-     //      );
-     //      const orders = await Odoo.execute_kw("sale.order", "read", [
-     //           orderIds,
+     //      ]);
+
+     //      if (orderIds.length === 0) {
+     //           return res.status(404).json({ message: "Order not found", status: false });
+     //      }
+
+     //      const [firstOrderId] = orderIds;
+     //      const [order] = await Odoo.execute_kw("sale.order", "read", [
+     //           [firstOrderId],
      //           [
      //                "id",
      //                "partner_id",
@@ -89,124 +88,50 @@ exports.getOrdersByPartner = async (req, res) => {
      //                "x_carrier",
      //           ],
      //      ]);
-     //      const ordersWithDetails = await Promise.all(
-     //           orders.map(async (order) => {
-     //                const orderLines = await Odoo.execute_kw(
-     //                     "sale.order.line",
-     //                     "search_read",
-     //                     [[["order_id", "=", order.id]]],
-     //                     {
-     //                          fields: ["product_id", "product_uom_qty", "price_unit"],
-     //                     },
-     //                );
-     //                order.order_lines = orderLines;
-     //                return order;
-     //           }),
-     //      );
-     //      const orderLines = ordersWithDetails[0]?.order_lines || [];
 
-     //      const productIds = orderLines.map((id) => id?.product_template_id?.[0]).filter(Boolean);
+     //      const orderLines = await Odoo.execute_kw("sale.order.line", "search_read", [
+     //           [["order_id", "=", order.id]],
+     //           [
+     //                "id",
+     //                "order_id",
+     //                "company_id",
+     //                "currency_id",
+     //                "order_partner_id",
+     //                "state",
+     //                "product_id",
+     //                "product_template_id",
+     //                "product_custom_attribute_value_ids",
+     //                "name",
+     //                "product_uom_qty",
+     //                "price_unit",
+     //                "discount",
+     //                "price_subtotal",
+     //                "warehouse_id",
+     //                "qty_to_deliver",
+     //                "x_variant",
+     //                "x_images",
+     //                "product_qty",
+     //           ],
+     //      ]);
+     //      order.order_lines = orderLines;
 
-     //      const productDetailsPromises = productIds.map((id) => getProductById(id));
-     //      const productDetails = await Promise.all(productDetailsPromises);
-
-     //      const images = productDetails.flatMap(
-     //           (info) => info?.map((data) => data?.x_images) || [],
-     //      );
-     //      const updatedOrderLines = orderLines.map((orderLine, index) => {
-     //           const imageIndex = index % images.length; // Calculate index to loop through images array
-     //           return {
-     //                ...orderLine,
-     //                x_images: JSON.parse(images[imageIndex]), // Assign corresponding array of images to x_images field
-     //           };
+     //      // Map product details (images) back to order lines
+     //      order.order_lines.forEach(async (line) => {
+     //           if (line.x_images) line.x_images = JSON.parse(line.x_images);
+     //           else if (!line?.x_images) {
+     //                const productData = await Odoo.execute_kw("product.template", "search_read", [
+     //                     [["id", "=", line?.product_template_id?.[0]]],
+     //                     ["x_images"],
+     //                ]);
+     //                line.x_images = JSON.parse(productData[0]?.x_images);
+     //           }
      //      });
-     //      const updatedOrder = { ...ordersWithDetails[0], order_lines: updatedOrderLines };
-     //      if (orders.length > 0) {
-     //           return res.status(201).json({ order: updatedOrder, status: true });
-     //      } else {
-     //           return res.status(404).json({ message: "Order not found", status: false });
-     //      }
-     //      // return res.status(201).json({ order: ordersWithDetails[0], status: true });
+
+     //      return res.status(200).json({ order, status: true });
      // } catch (error) {
-     //      console.error("Error when try connect Odoo XML-RPC.", error);
+     //      console.error("Error when trying to connect to Odoo XML-RPC.", error);
      //      res.status(400).json({ error, status: false });
      // }
-
-     try {
-          await Odoo.connect();
-
-          const partnerId = +req.params?.partner_id;
-          const orderIds = await Odoo.execute_kw("sale.order", "search", [
-               [
-                    ["partner_id", "=", partnerId],
-                    ["state", "=", "draft"],
-               ],
-          ]);
-
-          if (orderIds.length === 0) {
-               return res.status(404).json({ message: "Order not found", status: false });
-          }
-
-          const [firstOrderId] = orderIds;
-          const [order] = await Odoo.execute_kw("sale.order", "read", [
-               [firstOrderId],
-               [
-                    "id",
-                    "partner_id",
-                    "order_line",
-                    "company_id",
-                    "name",
-                    "state",
-                    "amount_total",
-                    "date_order",
-                    "x_tracking_id",
-                    "x_carrier",
-               ],
-          ]);
-
-          const orderLines = await Odoo.execute_kw("sale.order.line", "search_read", [
-               [["order_id", "=", order.id]],
-               [
-                    "id",
-                    "order_id",
-                    "company_id",
-                    "currency_id",
-                    "order_partner_id",
-                    "state",
-                    "product_id",
-                    "product_template_id",
-                    "product_custom_attribute_value_ids",
-                    "name",
-                    "product_uom_qty",
-                    "price_unit",
-                    "discount",
-                    "price_subtotal",
-                    "warehouse_id",
-                    "qty_to_deliver",
-                    "x_variant",
-                    "x_images",
-                    "product_qty",
-               ],
-          ]);
-          order.order_lines = orderLines;
-
-          // Map product details (images) back to order lines
-          order.order_lines.forEach(async (line) => {
-               if (line.x_images) line.x_images = JSON.parse(line.x_images);
-               else if (!line?.x_images) {
-                    const productData = await Odoo.execute_kw("product.template", "search_read", [
-                         [["id", "=", line?.product_template_id?.[0]]],
-                         ["x_images"],
-                    ]);
-                    line.x_images = JSON.parse(productData[0]?.x_images);
-               }
-          });
-
-          return res.status(200).json({ order, status: true });
-     } catch (error) {
-          console.error("Error when trying to connect to Odoo XML-RPC.", error);
-          res.status(400).json({ error, status: false });
-     }
 };
 
 exports.getOrderHistoryByPartner = async (req, res) => {

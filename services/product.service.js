@@ -1,9 +1,5 @@
-const User = require("../model/User");
-const Company = require("../model/Company");
 const Odoo = require("../config/odoo.connection");
 const { toDataURL } = require("../utils/imageBase64");
-const fs = require("fs");
-const axios = require("axios");
 
 const unitOfMeasure = async (odoo) => {
      try {
@@ -18,7 +14,7 @@ const unitOfMeasure = async (odoo) => {
 
 const getProductById = async (id) => {
      let productId = id;
-     console.log("id", id);
+
      try {
           await Odoo.connect();
           const productData = await Odoo.execute_kw("product.template", "search_read", [
@@ -319,7 +315,7 @@ const addProductVariant = async (params) => {
                x_printify_id: params?.product.x_printify_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_shop_id: params?.product.x_printify_shop_id,
-               product_tag_ids: params.product.product_tag_ids
+               product_tag_ids: params.product.product_tag_idsfollow
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
                // qty_available: 5,
@@ -327,39 +323,6 @@ const addProductVariant = async (params) => {
 
           console.log("templateData", templateData);
           const templateId = await createProductTemplate(params, templateData);
-
-          // if (params.product?.qty_available) {
-          //      console.log("got here");
-          //      await Odoo.execute_kw("product.product", "write", [
-          //           templateId,
-          //           { company_id: +params.product.company_id },
-          //      ]);
-
-          //      const stockMoveData = {
-          //           product_id: templateId,
-          //           product_uom_qty: +params.product.qty_available,
-          //           company_id: +params.product.company_id,
-          //           // location_id: params.location_id, // Replace with the source location ID
-          //           // location_dest_id: params.location_dest_id, // Replace with the destination location ID
-          //      };
-          //      console.log("got here now", stockMoveData);
-
-          //      const stockMoveId = await params.odoo.execute_kw("stock.move", "create", [
-          //           stockMoveData,
-          //      ]);
-          //      console.log("dead", stockMoveData);
-
-          //      // Confirm the stock move
-          //      const confirmMoveResult = await params.odoo.execute_kw(
-          //           "stock.move",
-          //           "action_confirm",
-          //           [[stockMoveId]],
-          //      );
-          //      if (!confirmMoveResult) {
-          //           console.error("Failed to confirm the stock move.");
-          //           // Handle the error as needed
-          //      }
-          // }
 
           if (params?.product?.variants && params?.product?.variants.length > 0) {
                await params?.product?.variants?.forEach(async (container) => {
