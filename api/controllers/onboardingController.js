@@ -102,16 +102,6 @@ const site = (theme, services) => {
                                                url: "/",
                                                subMenu: null,
                                           },
-                                          {
-                                               name: "shop",
-                                               url: "/tester",
-                                               subMenu: [
-                                                    {
-                                                         name: "tester",
-                                                         url: "/shop/tester",
-                                                    },
-                                               ],
-                                          },
                                      ],
                                 },
                            },
@@ -340,16 +330,6 @@ const site = (theme, services) => {
                                                name: "home",
                                                url: "/",
                                                subMenu: null,
-                                          },
-                                          {
-                                               name: "shop",
-                                               url: "/tester",
-                                               subMenu: [
-                                                    {
-                                                         name: "tester",
-                                                         url: "/shop/tester",
-                                                    },
-                                               ],
                                           },
                                      ],
                                 },

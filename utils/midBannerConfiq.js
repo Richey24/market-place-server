@@ -191,6 +191,20 @@ const midBannerConfig = {
                link: "/",
           },
      ],
+     theme13: [
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme13"]?.banner1,
+               link: "/",
+          },
+          {
+               title: "",
+               text: "",
+               imageUrl: bannerImages?.["theme13"]?.banner1,
+               link: "/",
+          },
+     ],
 };
 
 module.exports = midBannerConfig;
