@@ -420,16 +420,12 @@ const site = (theme, services) => {
                                                     midBanner: midBannerConfig?.[theme?.name] ?? "",
                                                     banner: [
                                                          {
-                                                              title: "",
-                                                              text: "",
                                                               imageUrl:
                                                                    bannerImages?.[theme?.name]
                                                                         ?.banner1,
                                                               link: "/",
                                                          },
                                                          {
-                                                              title: "",
-                                                              text: "",
                                                               imageUrl:
                                                                    bannerImages?.[theme?.name]
                                                                         ?.banner2,
@@ -438,22 +434,16 @@ const site = (theme, services) => {
                                                     ],
                                                     dealsBanner: [
                                                          {
-                                                              title: "",
-                                                              text: "",
                                                               imageUrl:
                                                                    "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-8.jpg",
                                                               link: "/",
                                                          },
                                                          {
-                                                              title: "",
-                                                              text: "",
                                                               imageUrl:
                                                                    "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-7.jpg",
                                                               link: "/",
                                                          },
                                                          {
-                                                              title: "",
-                                                              text: "",
                                                               imageUrl:
                                                                    "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-6.jpg",
                                                               link: "/",
