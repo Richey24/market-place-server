@@ -15,11 +15,12 @@ exports.getSalesReport = async (req, res) => {
           await Odoo.connect();
           const startDate = req.params.startDate;
           const endDate = req.params.endDate;
+          const companyId = +req.params?.companyId ? +req.params.companyId : 122;
 
           const result = await Odoo.execute_kw("sale.report", "search_read", [
                [
                     "&",
-                    ["company_id", "=", 122],
+                    ["company_id", "=", companyId],
                     ["state", "!=", "draft"],
                     ["date", ">=", startDate],
                     ["date", "<=", endDate],
@@ -67,13 +68,14 @@ exports.getBestSellingProducts = async (req, res) => {
           await Odoo.connect();
           const startDate = req.params.startDate;
           const endDate = req.params.endDate;
+          const companyId = +req.params?.companyId ? +req.params.companyId : 122;
 
           const orderIds = await Odoo.execute_kw(
                "sale.order",
                "search",
                [
                     [
-                         ["company_id", "=", 122],
+                         ["company_id", "=", companyId],
                          ["date_order", ">=", startDate],
                          ["date_order", "<=", endDate],
                     ],
@@ -151,19 +153,18 @@ exports.getOrdersByCustomers = async (req, res) => {
           await Odoo.connect();
           const startDate = req.params.startDate;
           const endDate = req.params.endDate;
+          const companyId = +req.params?.companyId ? +req.params.companyId : 122;
 
           const orders = await Odoo.execute_kw("sale.order", "search_read", [
                [
-                    ["company_id", "=", 122],
+                    ["company_id", "=", companyId],
                     ["date_order", ">=", startDate],
                     ["date_order", "<=", endDate],
                ],
                ["name", "partner_id"],
           ]);
-
           // Extract unique customer IDs from the orders
           const uniqueCustomerIds = [...new Set(orders.map((order) => order.partner_id[0]))];
-
           res.status(201).json({
                totalOrders: orders.length,
                noOfCustomers: uniqueCustomerIds.length,
@@ -185,11 +186,19 @@ exports.getRevenueByCustomers = async (req, res) => {
           await Odoo.connect();
           const startDate = req.params.startDate;
           const endDate = req.params.endDate;
+          const companyId = +req.params?.companyId ? +req.params.companyId : 122;
 
           const orderIds = await Odoo.execute_kw(
                "sale.order",
                "search",
-               [[["state", "!=", "draft"]]],
+               [
+                    [
+                         ["state", "!=", "draft"],
+                         ["company_id", "=", companyId],
+                         ["date_order", ">=", startDate],
+                         ["date_order", "<=", endDate],
+                    ],
+               ],
                {
                     fields: ["name", "partner_id"],
                },
