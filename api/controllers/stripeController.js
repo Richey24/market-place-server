@@ -14,6 +14,7 @@ const {
 const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
 const { default: axios } = require("axios");
+// const randomstring = require("randomstring");
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
 const YOUR_ISHOP_DOMAIN = "https://ishop.black";
@@ -584,13 +585,23 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          { state: "sale" },
                     ]);
 
-
-                    const order = await axios.get(`https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`)
-                    const theOrder = order.data.order[0].order_lines
+                    const order = await axios.get(
+                         `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
+                    );
+                    const theOrder = order.data.order[0].order_lines;
 
                     for (const product of theOrder) {
-                         const mainProduct = await axios.get(`https://market-server.azurewebsites.net/api/products/details/${product.product_template_id[0]}`)
-                         await User.findByIdAndUpdate(session.metadata.buyerId, { $push: { order_products: { ...mainProduct.data.product[0], company_id: session.metadata.siteId } } });
+                         const mainProduct = await axios.get(
+                              `https://market-server.azurewebsites.net/api/products/details/${product.product_template_id[0]}`,
+                         );
+                         await User.findByIdAndUpdate(session.metadata.buyerId, {
+                              $push: {
+                                   order_products: {
+                                        ...mainProduct.data.product[0],
+                                        company_id: session.metadata.siteId,
+                                   },
+                              },
+                         });
                     }
 
                     await Logger.create({
