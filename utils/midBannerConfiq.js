@@ -162,6 +162,10 @@ const midBannerConfig = {
                imageUrl: bannerImages?.["theme4"]?.banner1,
                link: "/",
           },
+          {
+               imageUrl: bannerImages?.["theme4"]?.banner1,
+               link: "/",
+          },
      ],
 };
 
