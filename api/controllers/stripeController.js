@@ -14,7 +14,6 @@ const {
 const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
 const { default: axios } = require("axios");
-const randomstring = require("randomstring");
 const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
 const YOUR_ISHOP_DOMAIN = "https://ishop.black";
