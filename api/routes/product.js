@@ -18,7 +18,6 @@ router.get("/inventory/total/sales/:startDate/:endDate", productController.total
 router.get("/inventory/quantity/sold/:startDate/:endDate", productController.totalSalesQuantity);
 router.get("/inventory/order/failed/:startDate/:endDate", productController.totalFailedOrder);
 router.delete("/delete/:id", productController.deleteProduct);
-router.get("/:companyId", auth, productController.getProductbyCompanyId);
 
 router.get("/attributes", productController.fetchProductAttributes);
 router.post("/attributes", productController.createProductAttributes);
@@ -40,5 +39,7 @@ router.post("/wishlist", productController.createWishlistRecord);
 router.get("/wishlist/:partner_id", productController.fetchWishlist);
 
 router.get("/best-selling/:companyId", productController.getBestSellingProducts);
+
+router.get("/:companyId", auth, productController.getProductbyCompanyId);
 
 module.exports = router;

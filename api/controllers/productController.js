@@ -986,7 +986,9 @@ exports.getUnratedProducts = async (req, res) => {
                     .status(400)
                     .json({ message: "Send all required parameters", status: false });
           }
-          const uniquePro = [...new Set(user.order_products.map(pro => JSON.stringify(pro)))].map(uni => JSON.parse(uni))
+          const uniquePro = [...new Set(user.order_products.map((pro) => JSON.stringify(pro)))].map(
+               (uni) => JSON.parse(uni),
+          );
           const unratedProducts = uniquePro.filter(
                (order) => !user.rated.includes(order.id) && order.company_id === companyId,
           );
@@ -1158,8 +1160,6 @@ exports.getProductbyCompanyIdAndSearch = async (req, res) => {
           const companyId = [+req.params.companyId];
           const searchQuery = req.query.searchQuery;
           const page = parseInt(req.query.page) || 1;
-          const limit = parseInt(req.query.limit) || 10;
-          const offset = (page - 1) * limit;
 
           if (companyId) {
                await Odoo.connect();
@@ -1180,43 +1180,37 @@ exports.getProductbyCompanyIdAndSearch = async (req, res) => {
                     searchFilter,
                ]);
 
-               const theProducts = await Odoo.execute_kw(
-                    "product.template",
-                    "search_read",
+               const theProducts = await Odoo.execute_kw("product.template", "search_read", [
+                    searchFilter,
                     [
-                         searchFilter,
-                         [
-                              "id",
-                              "public_categ_ids",
-                              "name",
-                              "display_name",
-                              "list_price",
-                              // "image_1920",
-                              "standard_price",
-                              "description",
-                              "base_unit_count",
-                              "product_variant_id",
-                              "categ_id",
-                              "rating_avg",
-                              "rating_count",
-                              "x_color",
-                              "x_dimension",
-                              "x_size",
-                              "x_subcategory",
-                              "x_weight",
-                              "x_rating",
-                              "x_images",
-                              "x_free_shipping",
-                              "create_date",
-                              "website_url",
-                              "website_meta_keywords",
-                              "x_shipping_package",
-                         ],
-                         null,
-                         0,
+                         "id",
+                         "public_categ_ids",
+                         "name",
+                         "display_name",
+                         "list_price",
+                         "standard_price",
+                         "description",
+                         "base_unit_count",
+                         "product_variant_id",
+                         "categ_id",
+                         "rating_avg",
+                         "rating_count",
+                         "x_color",
+                         "x_dimension",
+                         "x_size",
+                         "x_subcategory",
+                         "x_weight",
+                         "x_rating",
+                         "x_images",
+                         "x_free_shipping",
+                         "create_date",
+                         "website_url",
+                         "website_meta_keywords",
+                         "x_shipping_package",
                     ],
-                    { limit: limit, offset: offset },
-               );
+                    page ? page * 10 - 10 : 0,
+                    page ? page * 10 : 10,
+               ]);
 
                const products = theProducts.map((product) => {
                     return {
