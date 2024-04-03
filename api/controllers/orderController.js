@@ -110,7 +110,7 @@ exports.getOrdersByPartner = async (req, res) => {
                     "qty_to_deliver",
                     "x_variant",
                     "x_images",
-                    "product_qty",
+                    // "product_qty",
                ],
           ]);
           order.order_lines = orderLines;
