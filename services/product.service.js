@@ -124,10 +124,11 @@ const getFeaturedProducts = async (params) => {
      try {
           await Odoo.connect();
 
-          const tagName = "Featured Product";
+          // const tagName = "Featured Product";
           const products = await Odoo.execute_kw("product.template", "search_read", [
                [
-                    ["product_tag_ids.name", "=", tagName],
+                    // ["product_tag_ids.name", "=", tagName],
+                    ["x_featured_product", "=", true],
                     ["company_id", "=", params.company_id],
                ],
                [

@@ -204,7 +204,7 @@ exports.getFeaturedProducts = async (req, res) => {
           const theProducts = await getFeaturedProducts(params);
           const productsLength = await Odoo.execute_kw("product.template", "search_read", [
                [
-                    ["product_tag_ids.name", "=", "Featured Product"],
+                    ["x_featured_product", "=", true],
                     ["company_id", "=", params.company_id],
                ],
                ["id"],
