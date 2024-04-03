@@ -207,7 +207,9 @@ exports.createOrder = async (req, res) => {
                          product_uom_qty: qty,
                          price_unit,
                          x_images: x_images ? JSON.stringify(x_images) : null,
-                         ...(product_attribute && { product_attribute }),
+                         ...(product_attribute && {
+                              x_variant: JSON.stringify(product_attribute),
+                         }),
                     },
                ],
           );
