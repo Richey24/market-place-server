@@ -301,23 +301,23 @@ const stripeSession = async (req) => {
                line_items:
                     type !== "freelancer"
                          ? [
-                                {
-                                     price: "price_1OVEIDH56ySuleg3AnmtX3o0",
-                                     quantity: 1,
-                                },
-                           ]
+                              {
+                                   price: "price_1OVEIDH56ySuleg3AnmtX3o0",
+                                   quantity: 1,
+                              },
+                         ]
                          : [
-                                {
-                                     price_data: {
-                                          currency: "usd",
-                                          product_data: {
-                                               name: "FreeLancer Payment",
-                                          },
-                                          unit_amount: 120, // Price in cents
-                                     },
-                                     quantity: 1,
-                                },
-                           ],
+                              {
+                                   price_data: {
+                                        currency: "usd",
+                                        product_data: {
+                                             name: "FreeLancer Payment",
+                                        },
+                                        unit_amount: 120, // Price in cents
+                                   },
+                                   quantity: 1,
+                              },
+                         ],
 
                success_url: successUrl,
                cancel_url: cancelUrl,
