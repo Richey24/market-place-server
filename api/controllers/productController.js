@@ -509,7 +509,6 @@ exports.updateProduct = async (req, res) => {
                },
                productId: req.params?.id,
           };
-
           await updateProduct({ ...params });
 
           res.status(200).json({ message: "updated successfully", status: true });
