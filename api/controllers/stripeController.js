@@ -591,13 +591,13 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                     const theOrder = order.data.order[0].order_lines;
 
                     for (const product of theOrder) {
-                         const mainProduct = await axios.get(
-                              `https://market-server.azurewebsites.net/api/products/details/${product.product_template_id[0]}`,
-                         );
                          await User.findByIdAndUpdate(session.metadata.buyerId, {
                               $push: {
                                    order_products: {
-                                        ...mainProduct.data.product[0],
+                                        id: product.product_id[0],
+                                        name: product.product_id[1],
+                                        standard_price: product.price_total,
+                                        x_images: product.x_images,
                                         company_id: session.metadata.siteId,
                                    },
                               },
