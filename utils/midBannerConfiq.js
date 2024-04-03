@@ -167,6 +167,16 @@ const midBannerConfig = {
                link: "/",
           },
      ],
+     theme22: [
+          {
+               imageUrl: bannerImages?.["theme22"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme22"]?.banner1,
+               link: "/",
+          },
+     ],
      theme23: [
           {
                imageUrl: bannerImages?.["theme23"]?.banner1,
@@ -190,6 +200,12 @@ const midBannerConfig = {
           },
           {
                imageUrl: bannerImages?.["theme23"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme24: [
+          {
+               imageUrl: bannerImages?.["theme24"]?.banner1,
                link: "/",
           },
      ],
