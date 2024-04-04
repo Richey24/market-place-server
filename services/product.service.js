@@ -427,11 +427,6 @@ const updateProduct = async (params) => {
                x_images: params.product.images,
                x_show_sold_count: params?.product.x_show_sold_count,
                x_dimension: params.product.dimension,
-               x_brand_gate_id: params?.product.brand_gate_id,
-               x_brand_gate_variant_id: params?.product.brand_gate_variant_id,
-               x_printify_id: params?.product.x_printify_id,
-               x_printify_variant_id: params?.product.x_printify_variant_id,
-               x_printify_shop_id: params?.product.x_printify_shop_id,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
