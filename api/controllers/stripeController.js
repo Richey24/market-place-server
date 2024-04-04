@@ -301,23 +301,23 @@ const stripeSession = async (req) => {
                line_items:
                     type !== "freelancer"
                          ? [
-                                {
-                                     price: "price_1OVEIDH56ySuleg3AnmtX3o0",
-                                     quantity: 1,
-                                },
-                           ]
+                              {
+                                   price: "price_1OVEIDH56ySuleg3AnmtX3o0",
+                                   quantity: 1,
+                              },
+                         ]
                          : [
-                                {
-                                     price_data: {
-                                          currency: "usd",
-                                          product_data: {
-                                               name: "FreeLancer Payment",
-                                          },
-                                          unit_amount: 120, // Price in cents
-                                     },
-                                     quantity: 1,
-                                },
-                           ],
+                              {
+                                   price_data: {
+                                        currency: "usd",
+                                        product_data: {
+                                             name: "FreeLancer Payment",
+                                        },
+                                        unit_amount: 120, // Price in cents
+                                   },
+                                   quantity: 1,
+                              },
+                         ],
 
                success_url: successUrl,
                cancel_url: cancelUrl,
@@ -591,13 +591,13 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                     const theOrder = order.data.order[0].order_lines;
 
                     for (const product of theOrder) {
-                         const mainProduct = await axios.get(
-                              `https://market-server.azurewebsites.net/api/products/details/${product.product_template_id[0]}`,
-                         );
                          await User.findByIdAndUpdate(session.metadata.buyerId, {
                               $push: {
                                    order_products: {
-                                        ...mainProduct.data.product[0],
+                                        id: product.product_id[0],
+                                        name: product.product_id[1],
+                                        standard_price: product.price_total,
+                                        x_images: product.x_images,
                                         company_id: session.metadata.siteId,
                                    },
                               },

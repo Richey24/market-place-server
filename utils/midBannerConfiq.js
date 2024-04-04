@@ -153,6 +153,62 @@ const midBannerConfig = {
                link: "/",
           },
      ],
+     theme4: [
+          {
+               imageUrl: bannerImages?.["theme4"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme4"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme4"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme22: [
+          {
+               imageUrl: bannerImages?.["theme22"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme22"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme23: [
+          {
+               imageUrl: bannerImages?.["theme23"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme23"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme23"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme23"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme23"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme23"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme24: [
+          {
+               imageUrl: bannerImages?.["theme24"]?.banner1,
+               link: "/",
+          },
+     ],
 };
 
 module.exports = midBannerConfig;
