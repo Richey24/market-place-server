@@ -12,7 +12,26 @@ const transporter = nodemailer.createTransport({
      },
 });
 
+const getCompany = async (req, res) => {
+     try {
+          const companyId = req.params.id;
 
+          if (!companyId) {
+               return res.status(400).json({ message: "Company ID is required" });
+          }
+
+          const company = await Company.findOne({ company_id: companyId }, "subdomain");
+
+          if (!company) {
+               return res.status(404).json({ message: "Company not found" });
+          }
+
+          res.status(200).json(company);
+     } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: error.message });
+     }
+};
 
 const updateCompany = async (req, res) => {
      try {
@@ -86,7 +105,7 @@ const findCompaniesAndPopulateUser = async () => {
 
 const sendMeetingInvite = async (req, res) => {
      try {
-          const { name, email, url } = req.body
+          const { name, email, url } = req.body;
           if (!name || !email || !url) {
                return res.status(400).json({ message: "Send required parameter" });
           }
@@ -180,12 +199,13 @@ const sendMeetingInvite = async (req, res) => {
      } catch (error) {
           return res.status(500).json({ error });
      }
-}
+};
 
 module.exports = {
      updateCompany,
      findCompanyByCompanyIdAndPopulateUser,
      findCompaniesAndPopulateUser,
      updateBrandColor,
-     sendMeetingInvite
+     sendMeetingInvite,
+     getCompany,
 };

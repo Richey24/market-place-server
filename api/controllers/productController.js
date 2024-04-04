@@ -80,12 +80,14 @@ exports.getProductbyCompanyId = async (req, res) => {
                     { fields: ["name", "public_categ_ids"] },
                );
 
+               // console.log("theProducts", theProducts);
+
                const products = theProducts.map((product) => {
                     return {
                          ...product,
                          x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
                          x_images:
-                              typeof product?.x_images === "string"
+                              typeof product?.x_images === "string" && product?.x_images
                                    ? JSON?.parse(product?.x_images)
                                    : product?.x_images,
                     };
@@ -739,7 +741,10 @@ exports.createMultipleProducts = async (req, res) => {
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
-                    x_images: JSON?.parse(product?.x_images),
+                    x_images:
+                         typeof product?.x_images === "string" && product?.x_images
+                              ? JSON?.parse(product?.x_images)
+                              : product?.x_images,
                     x_dimension: product.x_dimension,
                };
           });
@@ -762,6 +767,7 @@ exports.searchProduct = async (req, res) => {
           const products = theProducts.map((product) => {
                return {
                     ...product,
+                    x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
                     x_images: JSON.parse(product.x_images),
                };
           });
@@ -835,7 +841,10 @@ exports.getBestSellingProducts = async (req, res) => {
                     x_weight: product.x_weight,
                     x_color: product.x_color,
                     sales_count: product.sales_count,
-                    x_images: JSON?.parse(product?.x_images),
+                    x_images:
+                         typeof product?.x_images === "string" && product?.x_images
+                              ? JSON?.parse(product?.x_images)
+                              : product?.x_images,
                     x_dimension: product.x_dimension,
                };
           });
