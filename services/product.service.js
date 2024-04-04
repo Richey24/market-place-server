@@ -52,6 +52,7 @@ const getProductById = async (id) => {
                     "x_printify_shop_id",
                     "attribute_line_ids",
                     "x_discount",
+                    "x_featured_product",
                ],
           ]);
           if (productData.length === 0) {
@@ -123,10 +124,11 @@ const getFeaturedProducts = async (params) => {
      try {
           await Odoo.connect();
 
-          const tagName = "Featured Product";
+          // const tagName = "Featured Product";
           const products = await Odoo.execute_kw("product.template", "search_read", [
                [
-                    ["product_tag_ids.name", "=", tagName],
+                    // ["product_tag_ids.name", "=", tagName],
+                    ["x_featured_product", "=", true],
                     ["company_id", "=", params.company_id],
                ],
                [
@@ -153,6 +155,7 @@ const getFeaturedProducts = async (params) => {
                     "rating_count",
                     "website_url",
                     "public_categ_ids",
+                    "x_discount",
                     "website_meta_keywords",
                ],
                // null,
@@ -172,31 +175,36 @@ const searchProducts = async (params) => {
           const products = await Odoo.execute_kw(
                "product.template",
                "search_read",
-               [[...params]],
                [
-                    "id",
-                    "name",
-                    "display_name",
-                    "list_price",
-                    // "image_1920",
-                    "standard_price",
-                    "description",
-                    "base_unit_count",
-                    "categ_id",
-                    "rating_avg",
-                    "x_color",
-                    "x_dimension",
-                    "x_size",
-                    "x_subcategory",
-                    "x_weight",
-                    "x_rating",
-                    "x_images",
-                    "rating_count",
-                    "website_url",
-                    "public_categ_ids",
-                    "x_show_sold_count",
-                    "website_meta_keywords",
+                    [...params],
+                    [
+                         "id",
+                         "name",
+                         "display_name",
+                         "list_price",
+                         "company_id",
+                         // "image_1920",
+                         "standard_price",
+                         "description",
+                         "base_unit_count",
+                         "categ_id",
+                         "rating_avg",
+                         "x_color",
+                         "x_dimension",
+                         "x_size",
+                         "x_subcategory",
+                         "x_weight",
+                         "x_rating",
+                         "x_images",
+                         "rating_count",
+                         "website_url",
+                         "public_categ_ids",
+                         "x_show_sold_count",
+                         "x_discount",
+                         "website_meta_keywords",
+                    ],
                ],
+
                {},
           );
           return products;
@@ -252,6 +260,7 @@ const addProduct = async (params) => {
                x_printify_id: params?.product.x_printify_id,
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_shop_id: params?.product.x_printify_shop_id,
+               x_featured_product: params?.product?.x_featured_product,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -318,6 +327,7 @@ const addProductVariant = async (params) => {
                product_tag_ids: params.product.product_tag_idsfollow
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
+               x_featured_product: params?.product?.x_featured_product,
                // qty_available: 5,
           };
 

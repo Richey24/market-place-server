@@ -13,6 +13,7 @@ class CategoryController {
                     [],
                ]);
 
+               console.log("heyyyyyy");
                res.status(200).json({ categories, status: true });
           } catch (e) {
                res.status(500).json({ error: e, status: false });
@@ -45,7 +46,7 @@ class CategoryController {
 
      async getComapnyCategoriesByName(req, res) {
           try {
-               const { name } = req.body
+               const { name } = req.body;
                await Odoo.connect();
                const company = await CompanyService.findById(req.params.companyId);
                console.log("company", company.categories);
@@ -53,22 +54,14 @@ class CategoryController {
                let categories = await Odoo.execute_kw(
                     "product.public.category",
                     "search_read",
-                    [
-                         [
-                              ["id", "in", company.categories]
-                         ],
-                         [
-                              "id",
-                              "name"
-                         ]
-                    ],
+                    [[["id", "in", company.categories]], ["id", "name"]],
                     {
                          fields: ["name"],
                          order: "id desc",
                     },
                );
 
-               const category = categories.find((cat) => cat.name === name)
+               const category = categories.find((cat) => cat.name === name);
 
                res.status(200).json({ category, status: true });
           } catch (e) {

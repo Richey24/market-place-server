@@ -80,12 +80,14 @@ exports.getProductbyCompanyId = async (req, res) => {
                     { fields: ["name", "public_categ_ids"] },
                );
 
+               // console.log("theProducts", theProducts);
+
                const products = theProducts.map((product) => {
                     return {
                          ...product,
                          x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
                          x_images:
-                              typeof product?.x_images === "string"
+                              typeof product?.x_images === "string" && product?.x_images
                                    ? JSON?.parse(product?.x_images)
                                    : product?.x_images,
                     };
@@ -204,7 +206,7 @@ exports.getFeaturedProducts = async (req, res) => {
           const theProducts = await getFeaturedProducts(params);
           const productsLength = await Odoo.execute_kw("product.template", "search_read", [
                [
-                    ["product_tag_ids.name", "=", "Featured Product"],
+                    ["x_featured_product", "=", true],
                     ["company_id", "=", params.company_id],
                ],
                ["id"],
@@ -509,7 +511,6 @@ exports.updateProduct = async (req, res) => {
                },
                productId: req.params?.id,
           };
-
           await updateProduct({ ...params });
 
           res.status(200).json({ message: "updated successfully", status: true });
@@ -740,7 +741,10 @@ exports.createMultipleProducts = async (req, res) => {
                     x_size: product.x_size,
                     x_weight: product.x_weight,
                     x_color: product.x_color,
-                    x_images: JSON?.parse(product?.x_images),
+                    x_images:
+                         typeof product?.x_images === "string" && product?.x_images
+                              ? JSON?.parse(product?.x_images)
+                              : product?.x_images,
                     x_dimension: product.x_dimension,
                };
           });
@@ -762,27 +766,9 @@ exports.searchProduct = async (req, res) => {
 
           const products = theProducts.map((product) => {
                return {
-                    id: product.id,
-                    website_url: product.website_url,
-                    name: product.name,
-                    description: product.description,
-                    categ_id: product.categ_id,
-                    public_categ_ids: product.public_categ_ids,
-                    list_price: product.list_price,
-                    standard_price: product.standard_price,
-                    company_id: product.company_id,
-                    display_name: product.display_name,
-                    base_unit_count: product.base_unit_count,
-                    // image_1920: product.image_1920,
-                    // image_1024: product.image_1024,
-                    x_rating: product.x_rating,
-                    create_date: product.create_date,
-                    x_subcategory: product.x_subcategory,
-                    x_size: product.x_size,
-                    x_weight: product.x_weight,
-                    x_color: product.x_color,
+                    ...product,
+                    x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
                     x_images: JSON.parse(product.x_images),
-                    x_dimension: product.x_dimension,
                };
           });
           res.status(200).json({ products, status: true });
@@ -855,7 +841,10 @@ exports.getBestSellingProducts = async (req, res) => {
                     x_weight: product.x_weight,
                     x_color: product.x_color,
                     sales_count: product.sales_count,
-                    x_images: JSON?.parse(product?.x_images),
+                    x_images:
+                         typeof product?.x_images === "string" && product?.x_images
+                              ? JSON?.parse(product?.x_images)
+                              : product?.x_images,
                     x_dimension: product.x_dimension,
                };
           });
@@ -1028,6 +1017,7 @@ exports.getAdsProduct = async (req, res) => {
                     "public_categ_ids",
                     "website_meta_keywords",
                     "x_ads_num",
+                    "x_discount",
                ],
           ]);
           const adsProduct = theProducts?.filter((pro) => pro.x_ads_num !== false);
