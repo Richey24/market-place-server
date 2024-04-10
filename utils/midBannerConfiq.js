@@ -224,6 +224,63 @@ const midBannerConfig = {
           },
           {
                imageUrl: bannerImages?.["theme25"]?.banner1,
+          },
+     ],
+     theme32: [
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme33: [
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme34: [
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
                link: "/",
           },
      ],
