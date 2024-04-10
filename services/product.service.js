@@ -437,6 +437,7 @@ const updateProduct = async (params) => {
                x_images: params.product.images,
                x_show_sold_count: params?.product.x_show_sold_count,
                x_dimension: params.product.dimension,
+               x_featured_product: params?.product?.x_featured_product,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
