@@ -15,7 +15,7 @@ const templateSchema = new mongoose.Schema({
      type: {
           type: String,
      },
-     limit: {
+     limited: {
           type: Boolean,
      },
 });
