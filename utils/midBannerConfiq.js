@@ -284,6 +284,18 @@ const midBannerConfig = {
                link: "/",
           },
      ],
+     theme38: [
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme40: [
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+     ],
 };
 
 module.exports = midBannerConfig;
