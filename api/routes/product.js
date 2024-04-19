@@ -26,6 +26,8 @@ router.post("/search/suggestions", productController.searchProductsAndcateg);
 router.get("/:companyId/featured", productController.getFeaturedProducts);
 router.get("/details/:id", productController.productDetails);
 router.get("/filter", productController.filterProducts);
+router.post("/search-filter", productController.filterProductSearch);
+//FilterProducts
 router.get("/site/:companyId", productController.getProductbyCompanyId);
 router.get("/search/:companyId", productController.getProductbyCompanyIdAndSearch);
 router.get("/image/:productId", productController.getProductImage);
