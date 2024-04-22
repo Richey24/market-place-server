@@ -59,57 +59,88 @@ const getProductById = async (id) => {
                return [];
           }
 
+
           let attributeLineIds = productData[0].attribute_line_ids || [];
-          attributeLineIds = attributeLineIds?.map(async (attributeLineId) => {
+          // attributeLineIds = attributeLineIds?.map(async (attributeLineId) => {
+          //      let attributeLineData = await Odoo.execute_kw(
+          //           "product.template.attribute.line",
+          //           "read",
+          //           [[attributeLineId], []],
+          //      );
+
+          //      attributeLineData = await attributeLineData?.map(async (lineData) => {
+          //           // const valueIds = lineData?.value_ids || [];
+          //           let productTemplateValueIds = lineData?.product_template_value_ids || [];
+
+          //           // for (const valueId of valueIds) {
+          //           //      const attributeValueData = await Odoo.execute_kw(
+          //           //           "product.attribute.value",
+          //           //           "read",
+          //           //           [[valueId], []],
+          //           //      );
+
+          //           //      console.log("Attribute Value ID:", attributeValueData);
+          //           // }
+
+          //           productTemplateValueIds = productTemplateValueIds?.map(
+          //                async (productTemplateValueId) => {
+          //                     const productTemplateValueData = await Odoo.execute_kw(
+          //                          "product.template.attribute.value",
+          //                          "read",
+          //                          [[productTemplateValueId], []],
+          //                     );
+
+          //                     return await productTemplateValueData;
+          //                },
+          //           );
+
+          //           productTemplateValueIds = await Promise.all(productTemplateValueIds);
+
+          //           return {
+          //                ...lineData,
+          //                product_template_value_ids_data: productTemplateValueIds,
+          //           };
+          //           // return lineData;
+          //      });
+          //      // attributeLineIds = await Promise.all(attributeLineData);
+          //      // console.log("Attribute Line ID:", await attributeLineData);
+
+          //      attributeLineData = Promise.all(attributeLineData);
+          //      return await attributeLineData;
+          // });
+          // attributeLineIds = await Promise.all(attributeLineIds);
+          // // console.log("attributeLineIds", attributeLineIds);
+
+
+          const variant1 = []
+
+          for (const attributeLineId of attributeLineIds) {
                let attributeLineData = await Odoo.execute_kw(
                     "product.template.attribute.line",
                     "read",
                     [[attributeLineId], []],
                );
-
-               attributeLineData = await attributeLineData?.map(async (lineData) => {
-                    // const valueIds = lineData?.value_ids || [];
-                    let productTemplateValueIds = lineData?.product_template_value_ids || [];
-
-                    // for (const valueId of valueIds) {
-                    //      const attributeValueData = await Odoo.execute_kw(
-                    //           "product.attribute.value",
-                    //           "read",
-                    //           [[valueId], []],
-                    //      );
-
-                    //      console.log("Attribute Value ID:", attributeValueData);
-                    // }
-
-                    productTemplateValueIds = productTemplateValueIds?.map(
-                         async (productTemplateValueId) => {
+               if (attributeLineData) {
+                    const variant2 = []
+                    for (const lineData of attributeLineData) {
+                         let productTemplateValueIds = lineData?.product_template_value_ids || [];
+                         const variant3 = []
+                         for (const productTemplateValueId of productTemplateValueIds) {
                               const productTemplateValueData = await Odoo.execute_kw(
                                    "product.template.attribute.value",
                                    "read",
                                    [[productTemplateValueId], []],
                               );
+                              variant3.push(productTemplateValueData)
+                         }
+                         console.log(variant3);
+                         variant2.push({ ...lineData, product_template_value_ids_data: variant3 })
+                    }
+                    variant1.push(variant2)
+               }
+          }
+          return [{ ...productData[0], attribute_line_ids_data: variant1 }];
 
-                              return await productTemplateValueData;
-                         },
-                    );
-
-                    productTemplateValueIds = await Promise.all(productTemplateValueIds);
-
-                    return {
-                         ...lineData,
-                         product_template_value_ids_data: productTemplateValueIds,
-                    };
-                    // return lineData;
-               });
-               // attributeLineIds = await Promise.all(attributeLineData);
-               // console.log("Attribute Line ID:", await attributeLineData);
-
-               attributeLineData = Promise.all(attributeLineData);
-               return await attributeLineData;
-          });
-          attributeLineIds = await Promise.all(attributeLineIds);
-          // console.log("attributeLineIds", attributeLineIds);
-          return [{ ...productData[0], attribute_line_ids_data: attributeLineIds }];
      } catch (e) {
           console.error("XMPLC Error", e);
      }
