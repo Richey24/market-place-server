@@ -22,23 +22,33 @@ class AdvertController {
                }
 
                const advertType = await advertService.findAdvertType(req.body.advertType);
-               console.log(req.body);
+
                let targetUrl;
 
                if (req.body.target === "landing") {
                     // Fetch company_name from the database based on company_id
                     const company = await companyModel.findById(req.body.company_id);
-                    const company_name = company ? company.company_name : "unknown";
+                    const company_name = company ? company.subdomain : "";
 
                     // Construct targetUrl for landing
-                    targetUrl = `https://${company_name}.ishop.black`;
+                    if (company.subdomain === "hops") {
+                         targetUrl = "https://www.aliveshoes.com/hops-44";
+                    } else if (company.subdomain === "tbm") {
+                         targetUrl = `https://www.theblackmarket.deals`;
+                    } else {
+                         targetUrl = `https://${company_name}.ishop.black`;
+                    }
                } else if (req.body.target === "product") {
                     // Fetch company_name from the database based on company_id
                     const company = await companyModel.findById(req.body.company_id);
-                    const company_name = company ? company.company_name : "unknown";
-
-                    // Construct targetUrl for product
-                    targetUrl = `https://${company_name}.ishop.black/product/${req.body.productId}`;
+                    const company_name = company ? company.subdomain : "";
+                    if (company.subdomain === "hops") {
+                         targetUrl = "https://www.aliveshoes.com/hops-44";
+                    } else if (company.subdomain === "tbm") {
+                         targetUrl = `https://www.theblackmarket.deals`;
+                    } else {
+                         targetUrl = `https://${company_name}.ishop.black/product/${req.body.productId}`;
+                    }
                }
 
                // Update the payload with the correct targetUrl

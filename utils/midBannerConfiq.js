@@ -209,6 +209,105 @@ const midBannerConfig = {
                link: "/",
           },
      ],
+     theme25: [
+          {
+               imageUrl: bannerImages?.["theme25"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme25"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme25"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme25"]?.banner1,
+          },
+     ],
+     theme32: [
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme32"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme33: [
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme33"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme34: [
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme35: [
+          {
+               imageUrl: bannerImages?.["theme35"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme41: [
+          {
+               imageUrl: bannerImages?.["theme41"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme38: [
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme40: [
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+     ],
 };
 
 module.exports = midBannerConfig;

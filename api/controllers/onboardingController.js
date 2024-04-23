@@ -776,7 +776,7 @@ exports.updateTemplate = async (req, res) => {
           if (!id) {
                return res.status(400).json({ message: "Send id" })
           }
-          await Site.findByIdAndUpdate(id, site(name))
+          await Site.findByIdAndUpdate(id, site({ name: name }))
           return res.status(200).json({ message: "Success" })
      } catch (error) {
           return res.status(500).json({ message: "error" })
