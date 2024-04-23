@@ -18,6 +18,7 @@ mongoose
      .catch((err) => {
           console.log({ database_error: err });
      });
+
 // db configuaration ends here
 
 const vapidKeys = {
@@ -177,6 +178,34 @@ app.use((error, _request, response, _next) => {
      return errorResponder(response, statusCode, message);
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
      console.log(`App is running on ${PORT}`);
+});
+
+async function closeDbConnection() {
+     const dbConnection = mongoose.connection;
+
+     dbConnection.on("close", () => {
+          console.log("database is closed");
+     });
+}
+
+function gracefulShutdown() {
+     server.close(async () => {
+          console.log("server is closing....");
+          await closeDbConnection();
+          console.log("Database closed..");
+          process.exit(0);
+     });
+}
+
+process.on("SIGINT", gracefulShutdown);
+
+process.on("SIGTERM", gracefulShutdown);
+
+process.on("uncaughtEcxeption", (error) => {
+     console.log("--- Uncaught exception ---");
+     console.error(error);
+     console.log("*** Uncaught exception ***");
+     gracefulShutdown();
 });
