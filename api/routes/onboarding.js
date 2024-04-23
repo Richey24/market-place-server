@@ -8,5 +8,6 @@ router.post("", auth, asyncHandler(onboardingController.postOnboarding)); // Ini
 router.get("/:domain", asyncHandler(onboardingController.getOnboarding)); // Initiates the onboarding process and creates a new onboarding record.
 router.post("/domain/verify", auth, asyncHandler(onboardingController.verifyDomainName)); // Initiates the onboarding process and creates a new onboarding record.
 router.post("/companyname/verify", auth, asyncHandler(onboardingController.verifyCompanyName)); // Initiates the onboarding process and creates a new onboarding record.
+router.put("/site/update/:id", onboardingController.updateTemplate)
 
 module.exports = router;
