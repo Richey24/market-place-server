@@ -119,6 +119,20 @@ const midBannerConfig = {
                height: 400,
           },
      ],
+     theme14: [
+          {
+               imageUrl: bannerImages?.["theme14"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme14"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme14"]?.banner1,
+               link: "/",
+          },
+     ],
      theme17: [
           {
                imageUrl: bannerImages?.["theme17"]?.banner1,
