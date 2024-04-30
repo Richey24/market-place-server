@@ -191,13 +191,9 @@ exports.stripeVendorCallback = async (req, res) => {
                const session = event.data.object;
                const user = await User.findOne({ stripeID: session.customer });
                if (user) {
-                    const company = await Company.findById(user.company);
-                    await deleteUserData(
-                         user._id,
-                         user.company,
-                         company.site,
-                         user.currentSiteType,
-                    );
+                    await axios.delete(
+                         `https://market-server.azurewebsites.net/api/company/delete/${user.company}`,
+                    )
                     await Logger.create({
                          userID: user._id,
                          eventType: "customer.subscription.deleted",
