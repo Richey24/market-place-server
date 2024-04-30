@@ -1,6 +1,10 @@
 const { sendVideoInvite, sendCreateEventMail } = require("../../config/helpers");
 const Company = require("../../model/Company");
 const nodemailer = require("nodemailer");
+const Odoo = require("../../config/odoo.connection");
+const Site = require("../../model/Site");
+const Service = require("../../model/Service");
+const User = require("../../model/User");
 
 const transporter = nodemailer.createTransport({
      host: "smtp.office365.com",
@@ -102,6 +106,52 @@ const findCompaniesAndPopulateUser = async () => {
           throw error;
      }
 };
+
+const deleteCompany = async (req, res) => {
+     try {
+          const id = req.params.id
+          const company = await Company.findById(id)
+          if (!company) {
+               return res.status(400).json({ message: "company not found" })
+          }
+          if (company.type !== "service") {
+               await Odoo.connect();
+               let searchFilter = [
+                    ["type", "=", "consu"],
+                    ["company_id", "=", company.company_id],
+               ];
+               const theProducts = await Odoo.execute_kw(
+                    "product.template",
+                    "search_read",
+                    [
+                         searchFilter,
+                         [
+                              "id",
+                         ],
+                         null,
+                         0,
+                         // 10,
+                    ],
+                    { fields: ["name", "public_categ_ids"] },
+               );
+               for (const product of theProducts) {
+                    await Odoo.execute_kw("product.template", "unlink", [[Number(product.id)]]);
+               }
+          } else {
+               const services = await Service.find({ userId: company.user_id })
+               for (const service of services) {
+                    await Service.findByIdAndDelete(service._id)
+               }
+          }
+          await Site.findByIdAndDelete(company.site)
+          await Company.findByIdAndDelete(company._id)
+          await User.findByIdAndDelete(company.user_id)
+          res.status(200).send({ message: "Company and all related data deleted successfully" });
+     } catch (error) {
+          console.log("err", error.message);
+          res.status(500).send({ message: "Error deleting company", error: error.message });
+     }
+}
 
 const sendMeetingInvite = async (req, res) => {
      try {
@@ -208,4 +258,5 @@ module.exports = {
      updateBrandColor,
      sendMeetingInvite,
      getCompany,
+     deleteCompany
 };
