@@ -15,7 +15,7 @@ const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
 const { default: axios } = require("axios");
 // const randomstring = require("randomstring");
-const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
 const YOUR_ISHOP_DOMAIN = "https://ishop.black";
 
@@ -298,23 +298,23 @@ const stripeSession = async (req) => {
                line_items:
                     type !== "freelancer"
                          ? [
-                                {
-                                     price: "price_1OVEIDH56ySuleg3AnmtX3o0",
-                                     quantity: 1,
-                                },
-                           ]
+                              {
+                                   price: process.env.MONTHLY_ADS,
+                                   quantity: 1,
+                              },
+                         ]
                          : [
-                                {
-                                     price_data: {
-                                          currency: "usd",
-                                          product_data: {
-                                               name: "FreeLancer Payment",
-                                          },
-                                          unit_amount: formattedPrice, // Price in cents
-                                     },
-                                     quantity: 1,
-                                },
-                           ],
+                              {
+                                   price_data: {
+                                        currency: "usd",
+                                        product_data: {
+                                             name: "FreeLancer Payment",
+                                        },
+                                        unit_amount: formattedPrice, // Price in cents
+                                   },
+                                   quantity: 1,
+                              },
+                         ],
 
                success_url: successUrl,
                cancel_url: cancelUrl,
