@@ -15,7 +15,7 @@ const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
 const { default: axios } = require("axios");
 // const randomstring = require("randomstring");
-const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
 const YOUR_ISHOP_DOMAIN = "https://ishop.black";
 
@@ -298,7 +298,7 @@ const stripeSession = async (req) => {
                     type !== "freelancer"
                          ? [
                               {
-                                   price: "price_1OVEIDH56ySuleg3AnmtX3o0",
+                                   price: process.env.MONTHLY_ADS,
                                    quantity: 1,
                               },
                          ]
