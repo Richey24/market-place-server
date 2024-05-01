@@ -275,6 +275,7 @@ const stripeSession = async (req) => {
           const { type, advertId, eventId, serviceId, price } = req.query;
 
           let successUrl, cancelUrl, metadata;
+          const formattedPrice = +price * 100; // change the price to dollar since stripe will read as cent (1/100)
           if (type === "event") {
                successUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=success`;
                cancelUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=failed`;
@@ -309,7 +310,7 @@ const stripeSession = async (req) => {
                                         product_data: {
                                              name: "FreeLancer Payment",
                                         },
-                                        unit_amount: 120, // Price in cents
+                                        unit_amount: formattedPrice, // Price in cents
                                    },
                                    quantity: 1,
                               },
