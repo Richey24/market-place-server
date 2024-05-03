@@ -15,7 +15,7 @@ const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
 const { default: axios } = require("axios");
 // const randomstring = require("randomstring");
-const stripe = require("stripe")(process.env.STRIPE_TEST_KEY);
+const stripe = require("stripe")(process.env.STRIPE_KEY);
 const YOUR_DOMAIN = "https://dashboard.ishop.black";
 const YOUR_ISHOP_DOMAIN = "https://ishop.black";
 
@@ -191,13 +191,9 @@ exports.stripeVendorCallback = async (req, res) => {
                const session = event.data.object;
                const user = await User.findOne({ stripeID: session.customer });
                if (user) {
-                    const company = await Company.findById(user.company);
-                    await deleteUserData(
-                         user._id,
-                         user.company,
-                         company.site,
-                         user.currentSiteType,
-                    );
+                    await axios.delete(
+                         `https://market-server.azurewebsites.net/api/company/delete/${user.company}`,
+                    )
                     await Logger.create({
                          userID: user._id,
                          eventType: "customer.subscription.deleted",
@@ -279,6 +275,7 @@ const stripeSession = async (req) => {
           const { type, advertId, eventId, serviceId, price } = req.query;
 
           let successUrl, cancelUrl, metadata;
+          const formattedPrice = +price * 100; // change the price to dollar since stripe will read as cent (1/100)
           if (type === "event") {
                successUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=success`;
                cancelUrl = `${YOUR_ISHOP_DOMAIN}/event/new-event?cb=failed`;
@@ -302,7 +299,7 @@ const stripeSession = async (req) => {
                     type !== "freelancer"
                          ? [
                               {
-                                   price: "price_1OVEIDH56ySuleg3AnmtX3o0",
+                                   price: process.env.MONTHLY_ADS,
                                    quantity: 1,
                               },
                          ]
@@ -313,7 +310,7 @@ const stripeSession = async (req) => {
                                         product_data: {
                                              name: "FreeLancer Payment",
                                         },
-                                        unit_amount: 120, // Price in cents
+                                        unit_amount: formattedPrice, // Price in cents
                                    },
                                    quantity: 1,
                               },

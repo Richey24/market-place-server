@@ -119,6 +119,20 @@ const midBannerConfig = {
                height: 400,
           },
      ],
+     theme14: [
+          {
+               imageUrl: bannerImages?.["theme14"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme14"]?.banner1,
+               link: "/",
+          },
+          {
+               imageUrl: bannerImages?.["theme14"]?.banner1,
+               link: "/",
+          },
+     ],
      theme17: [
           {
                imageUrl: bannerImages?.["theme17"]?.banner1,
@@ -279,6 +293,30 @@ const midBannerConfig = {
                imageUrl: bannerImages?.["theme34"]?.banner1,
                link: "/",
           },
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme35: [
+          {
+               imageUrl: bannerImages?.["theme35"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme41: [
+          {
+               imageUrl: bannerImages?.["theme41"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme38: [
+          {
+               imageUrl: bannerImages?.["theme34"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme40: [
           {
                imageUrl: bannerImages?.["theme34"]?.banner1,
                link: "/",

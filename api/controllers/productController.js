@@ -483,7 +483,7 @@ exports.createProductWithVariant = async (req, res) => {
                },
                // user: user
           };
-          // console.log("pro", params.product);
+          console.log("pro", params.product);
           const productId = await addProductVariant({ ...params });
           index.search(params.product.name).then(async ({ hits }) => {
                if (hits.length < 1) {
@@ -1140,6 +1140,73 @@ exports.fetchProductAttributeValues = async (req, res) => {
      } catch (error) {
           console.log(error);
           res.status(500).json({ error: "Internal Server Error", status: false });
+     }
+};
+
+exports.filterProductSearch = async (req, res) => {
+     try {
+          const body = req.body;
+          const keys = Object.keys(body);
+          const arr = [];
+          keys.forEach((key) => {
+               if (key === "categ_id") {
+                    arr.push(["public_categ_ids", "=", body[key]]);
+               }
+               if (key === "minPrice") {
+                    arr.push(["standard_price", ">=", body[key]]);
+               }
+               if (key === "maxPrice") {
+                    arr.push(["standard_price", "<=", body[key]]);
+               }
+          });
+
+          arr.push(["company_id", "=", Number(req.query.companyId)]);
+
+          console.log({ keys, arr: [...arr] });
+          // const theProducts = await searchProducts(arr); //[[['categ_id', '=', categoryId], ['company_id', '=', companyId]]]
+          try {
+               await Odoo.connect();
+               const theProducts = await Odoo.execute_kw(
+                    "product.product",
+                    "search_read",
+                    [
+                         [...arr],
+                         [
+                              "id",
+                              "name",
+                              "display_name",
+                              "list_price",
+                              "company_id",
+                              "standard_price",
+                              "description",
+                              "base_unit_count",
+                              "categ_id",
+                              "rating_avg",
+                              "x_subcategory",
+                              "x_images",
+                              "rating_count",
+                              "public_categ_ids",
+                              "x_discount",
+                         ],
+                    ],
+
+                    {},
+               );
+
+               const products = theProducts.map((product) => {
+                    return {
+                         ...product,
+                         x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
+                         x_images: JSON.parse(product.x_images),
+                    };
+               });
+               return res.status(200).json({ products, status: true });
+          } catch (e) {
+               console.error("Error when try connect Odoo XML-RPC.", e);
+               res.status(500).json({ err, status: false });
+          }
+     } catch (err) {
+          res.status(400).json({ err, status: false });
      }
 };
 
