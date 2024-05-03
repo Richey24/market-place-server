@@ -5,6 +5,48 @@ const { calculate } = require("../../utils/usps");
 
 const apiKey = "EZTK6cc52423aac2476eaea1c12cb94bb368qQqcaeAXfzOxo0hmKf7aJA";
 const easyPost = new EasyPost(apiKey);
+// Printify API Details
+const printifyApiEndpoint = "https://api.printify.com/v1/shipping/rates.json"; // Replace with the correct Printify endpoint
+const printifyApiKey =
+     "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6IjYwMTQwOTdmNTkzMzVlM2Q2NjBkMDEzNzg5ZjUyNTMwNzAyM2EyMzcwZGNhZTFiMGU5MmJkMTQ0NjFmNzJhNzFkNGVhMjhlNzEwZWUxMjk4IiwiaWF0IjoxNzEyODQwMzg3LjI2NTA5OSwibmJmIjoxNzEyODQwMzg3LjI2NTEwMSwiZXhwIjoxNzQ0Mzc2Mzg3LjI1NTgxOSwic3ViIjoiMTc4MDM0MDQiLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIl19.AgQtnbfBANdw4agAZwKeglS5E5rW64GZwFS_Em54mwT2szwazH9RWdtb9jCYrpep1cavwdLtqgQv48p8YUo"; // Replace with your Printify API key
+const axios = require("axios");
+
+// Function to fetch shipping rates from Printify
+const getPrintifyShippingRates = async (productDetails, destination) => {
+     try {
+          const response = await axios.post(
+               printifyApiEndpoint,
+               { productDetails, destination },
+               {
+                    headers: {
+                         Authorization: `Bearer ${printifyApiKey}`,
+                         "Content-Type": "application/json",
+                    },
+               },
+          );
+
+          return response.data;
+     } catch (error) {
+          throw error;
+     }
+};
+
+exports.calculatePrintifyShippingRate = async (req, res) => {
+     const { productDetails, destination } = req.body;
+
+     console.log(req.body);
+     if (!productDetails || !destination) {
+          return res.status(400).json({ error: "Missing required fields" });
+     }
+
+     try {
+          const shippingRate = await getPrintifyShippingRates(productDetails, destination);
+          res.json(shippingRate);
+     } catch (error) {
+          console.log("log", error);
+          res.status(500).json({ error: error.message });
+     }
+};
 
 exports.getCarriers = async (req, res) => {
      try {

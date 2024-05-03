@@ -9,6 +9,7 @@ const carrierController = require("../controllers/carrierController");
 router.get("/", carrierController.getCarriers);
 router.post("/", carrierController.createCarrier);
 router.post("/calculate", carrierController.calculateShippings);
+router.post("/printify-shipping-rate", carrierController.calculatePrintifyShippingRate);
 
 // router.get("/all", carrierController.getAllCarrriers);
 router.post("/company/:companyId", carrierController.selectCarrierByCompanyId);
