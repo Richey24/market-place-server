@@ -2003,110 +2003,10 @@ const sendAdvertisementNotificationEmail = (
      });
 };
 
-// const createOrderTable = (order) => {
-//   let table = `
-//           <h3>Order # ${order.orderId}</h3>
-
-//           <table border="1" class='table'>
-//             <tr>
-//               <th>SN</th>
-//               <th>Item</th>
-//               <th>Quantity</th>
-//               <th>Price</th>
-//             </tr>`;
-
-//   order.items.map((item, index) => {
-//     table += `
-//             <tr>
-//               <td>${index + 1}</td>
-//               <td>${item.name}</td>
-//               <td>${item.quantity}</td>
-//               <td>$${item.price.toFixed(2)}</td>
-//             </tr>`;
-//   });
-
-//   table += "</table>";
-//   return table;
-// };
-
-// const createOrderReport = (orders) => {
-//   let totalRevenue = 0;
-//   let numberOfOrders = 0;
-//   let numberOfItems = 0;
-
-//   if (Array.isArray(orders)) {
-//     numberOfOrders = orders.length;
-//     orders.forEach((order) => {
-//       order.items.forEach((item) => {
-//         numberOfItems += item.quantity;
-//         totalRevenue += item.quantity * item.price;
-//       });
-//     });
-//   } else {
-//     numberOfOrders = 1;
-//     orders.items.forEach((item) => {
-//       numberOfItems += item.quantity;
-//     });
-//     totalRevenue = orders.items.reduce((total, item) => {
-//       const subtotal = item.quantity * item.price;
-//       return total + subtotal;
-//     }, 0);
-//   }
-//   let report = `
-//       <div class='box-container'>
-//         <div className="box">
-//           <div class="box-content">
-//             <div style="display: flex; justify-content: flex-end;">
-//                 <div className="text-end">
-//                      <p class="box-number">
-//                              ${Number(totalRevenue).toLocaleString()}
-//                      </p>
-//                 </div>
-//             </div>
-//             <div className="lh-1">
-//               <p class="box-number">Total Revenue</p>
-//             </div>
-//           </div>
-//         </div>
-
-//         <div className="box">
-//           <div class="box-content">
-//             <div style="display: flex; justify-content: flex-end;">
-//                 <div className="text-end">
-//                      <p class="box-number">
-//                              ${Number(numberOfItems).toLocaleString()}
-//                      </p>
-//                 </div>
-//             </div>
-//             <div className="lh-1">
-//               <p class="box-number">Total Items</p>
-//             </div>
-//           </div>
-//         </div>
-
-//         <div className="box">
-//           <div class="box-content">
-//             <div style="display: flex; justify-content: flex-end;">
-//                 <div className="text-end">
-//                      <p class="box-number">
-//                              ${Number(numberOfOrders).toLocaleString()}
-//                      </p>
-//                 </div>
-//             </div>
-//             <div className="lh-1">
-//               <p class="box-number">Number Of Orders</p>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     `;
-
-//   return report;
-// };
-
 const createOrderTable = (order) => {
      let table = `
-    <h3 style="margin-bottom: 20px;">Order # ${order.orderId}</h3>
+    <div style="margin-bottom:32px">
+    <h3 style="margin-bottom: 16px;">Order-Id: ${order.orderId}</h3>
     <table style="border-collapse: collapse; width: 100%; border: 1px solid #000; text-align: left;">
       <tr>
         <th style="border: 1px solid #000; padding: 10px;">SN</th>
@@ -2125,96 +2025,90 @@ const createOrderTable = (order) => {
       </tr>`;
      });
 
-     table += "</table>";
+     table += "</table> </div>";
      return table;
 };
 
 const createOrderReport = (orders) => {
-  let totalRevenue = 0;
-  let numberOfOrders = 0;
-  let numberOfItems = 0;
+     let totalRevenue = 0;
+     let numberOfOrders = 0;
+     let numberOfItems = 0;
 
-  if (Array.isArray(orders)) {
-    numberOfOrders = orders.length;
-    orders.forEach((order) => {
-      order.items.forEach((item) => {
-        numberOfItems += item.quantity;
-        totalRevenue += item.quantity * item.price;
-      });
-    });
-  } else {
-    numberOfOrders = 1;
-    orders.items.forEach((item) => {
-      numberOfItems += item.quantity;
-    });
-    totalRevenue = orders.items.reduce((total, item) => {
-      const subtotal = item.quantity * item.price;
-      return total + subtotal;
-    }, 0);
-  }
+     if (Array.isArray(orders)) {
+          numberOfOrders = orders.length;
+          orders.forEach((order) => {
+               order.items.forEach((item) => {
+                    numberOfItems += item.quantity;
+                    totalRevenue += item.quantity * item.price;
+               });
+          });
+     } else {
+          numberOfOrders = 1;
+          orders.items.forEach((item) => {
+               numberOfItems += item.quantity;
+          });
+          totalRevenue = orders.items.reduce((total, item) => {
+               const subtotal = item.quantity * item.price;
+               return total + subtotal;
+          }, 0);
+     }
 
-  let report = `
-    <div style="display: flex; flex-wrap: wrap; margin-bottom: 20px;">
-      <div style="flex: 0 0 100%; max-width: 100%; margin-right: 0; margin-bottom: 20px; border: 1px solid #B886FC; border-radius: 8px; overflow: hidden;">
-        <div style="padding: 20px;">
-          <div style="display: flex; justify-content: flex-end;">
-            <div style="text-align: right;">
-              <p style="margin: 0; font-size: 24px; font-weight: 600; opacity: 0.75;">${Number(totalRevenue).toLocaleString()}</p>
-            </div>
-          </div>
-          <div style="margin-top: 10px;">
-            <p style="margin: 0; font-size: 16px; text-align: right;">Total Revenue</p>
-          </div>
-        </div>
-      </div>
+     let report = `
+     <div style="display: flex; flex-wrap: wrap; margin-bottom: 20px;">
+       <div style="width: 50%; max-width: calc(50% - 10px); margin-right: 10px; margin-bottom: 20px; border: 1px solid #B886FC; border-radius: 8px; overflow: hidden;">
+         <div style="padding: 20px;">
+           <div style="display: flex; justify-content: flex-end;">
+             <div style="text-align: right;">
+               <p style="margin: 0; font-size: 20px; font-weight: 600; opacity: 0.75;">$${Number(
+                    totalRevenue,
+               ).toLocaleString()}</p>
+             </div>
+           </div>
+           <div style="margin-top: 10px;">
+             <p style="margin: 0; font-size: 16px; text-align: right;">Revenue</p>
+           </div>
+         </div>
+       </div>
+ 
+       <div style="width: 50%; max-width: calc(50% - 10px); margin-right: 10px; margin-bottom: 20px; border: 1px solid #B886FC; border-radius: 8px; overflow: hidden;">
+         <div style="padding: 20px;">
+           <div style="display: flex; justify-content: flex-end;">
+             <div style="text-align: right;">
+               <p style="margin: 0; font-size: 20px; font-weight: 600; opacity: 0.75;">${Number(
+                    numberOfItems,
+               ).toLocaleString()}</p>
+             </div>
+           </div>
+           <div style="margin-top: 10px;">
+             <p style="margin: 0; font-size: 16px; text-align: right;">Items</p>
+           </div>
+         </div>
+       </div>
+ 
+       <div style="width: 50%; max-width: calc(50% - 10px); margin-bottom: 20px; border: 1px solid #B886FC; border-radius: 8px; overflow: hidden;">
+         <div style="padding: 20px;">
+           <div style="display: flex; justify-content: flex-end;">
+             <div style="text-align: right;">
+               <p style="margin: 0; font-size: 20px; font-weight: 600; opacity: 0.75;">${Number(
+                    numberOfOrders,
+               ).toLocaleString()}</p>
+             </div>
+           </div>
+           <div style="margin-top: 10px;">
+             <p style="margin: 0; font-size: 16px; text-align: right;">Orders</p>
+           </div>
+         </div>
+       </div>
+     </div>
+   `;
 
-      <div style="flex: 0 0 100%; max-width: 100%; margin-right: 0; margin-bottom: 20px; border: 1px solid #B886FC; border-radius: 8px; overflow: hidden;">
-        <div style="padding: 20px;">
-          <div style="display: flex; justify-content: flex-end;">
-            <div style="text-align: right;">
-              <p style="margin: 0; font-size: 24px; font-weight: 600; opacity: 0.75;">${Number(numberOfItems).toLocaleString()}</p>
-            </div>
-          </div>
-          <div style="margin-top: 10px;">
-            <p style="margin: 0; font-size: 16px; text-align: right;">Total Items</p>
-          </div>
-        </div>
-      </div>
-
-      <div style="flex: 0 0 100%; max-width: 100%; margin-right: 0; margin-bottom: 20px; border: 1px solid #B886FC; border-radius: 8px; overflow: hidden;">
-        <div style="padding: 20px;">
-          <div style="display: flex; justify-content: flex-end;">
-            <div style="text-align: right;">
-              <p style="margin: 0; font-size: 24px; font-weight: 600; opacity: 0.75;">${Number(numberOfOrders).toLocaleString()}</p>
-            </div>
-          </div>
-          <div style="margin-top: 10px;">
-            <p style="margin: 0; font-size: 16px; text-align: right;">Number Of Orders</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  return `
+     return `
     <div>
       ${report}
     </div>
-    <style>
-      @media (min-width: 768px) {
-        div[style^="display: flex;"] > div {
-          flex: 0 0 calc(33.333% - 20px);
-          max-width: calc(33.333% - 20px);
-          margin-right: 20px;
-        }
-        div[style^="display: flex;"] > div:last-child {
-          margin-right: 0;
-        }
-      }
-    </style>
+    
   `;
 };
-
 
 const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
      //  const { orderId, items } = orderDetails;
@@ -2349,30 +2243,16 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
           background-color: #f9f9f9;
       }
   
-      /* Bootstrap grid classes */
-      .row {
-          display: flex;
-          flex-wrap: wrap;
-          margin-right: -15px;
-          margin-left: -15px;
-      }
-  
-      .col-lg-4 {
-          flex: 0 0 33.333333%;
-          max-width: 33.333333%;
-          padding-right: 15px;
-          padding-left: 15px;
-      }
         </style>
       </head>
       <body>
         <div class="container">
           <div class "header">
-            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
-            <h1 style="color: #333333;">New Message Regarding Your Order</h1>
+            <img class="logo" width='250' src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h2 style="color: #333333; margin-bottom: 10px">Orders Report</h2>
           </div>
           <div class="message">
-            <h2>Purchased Today:</h2>
+            <h3 style="margin-bottom: 10px">Items Purchased:</h3>
         
            ${orderTable} 
            ${report}   
