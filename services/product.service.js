@@ -53,6 +53,7 @@ const getProductById = async (id) => {
                     "attribute_line_ids",
                     "x_discount",
                     "x_featured_product",
+                    "x_total_available_qty",
                ],
           ]);
           if (productData.length === 0) {
@@ -118,7 +119,7 @@ const getProductById = async (id) => {
                     "read",
                     [[attributeLineId], []],
                );
-               console.log("attributeLineData", attributeLineData);
+               // console.log("attributeLineData", attributeLineData);
                if (attributeLineData) {
                     const variant2 = [];
                     for (const lineData of attributeLineData) {
@@ -138,7 +139,7 @@ const getProductById = async (id) => {
                     variant1.push(variant2);
                }
           }
-          console.log("attribute_line_ids_data", variant1);
+          // console.log("attribute_line_ids_data", variant1);
           return [{ ...productData[0], attribute_line_ids_data: variant1 }];
      } catch (e) {
           console.error("XMPLC Error", e);

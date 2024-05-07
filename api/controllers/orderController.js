@@ -435,7 +435,7 @@ exports.changeOrderStatus = async (req, res) => {
           }
 
           // Connect to Odoo
-          await Odoo.connect();
+          // await Odoo.connect();
 
           // Update the order status
           const result = await Odoo.execute_kw("sale.order", "write", [
@@ -445,6 +445,10 @@ exports.changeOrderStatus = async (req, res) => {
 
           if (result) {
                console.log("Order status updated successfully. Order ID:", orderId);
+               // Update quantities if the new status is 'sale'
+               if (newStatus === "sale") {
+                    await updateProductQuantities(orderId);
+               }
                return res
                     .status(200)
                     .json({ status: true, message: "Order status updated successfully." });
@@ -460,6 +464,70 @@ exports.changeOrderStatus = async (req, res) => {
      }
 };
 
+async function updateProductQuantities(orderId) {
+     try {
+          // Retrieve order lines
+          const orderLines = await Odoo.execute_kw("sale.order.line", "search_read", [
+               [["order_id", "=", +orderId]],
+               ["product_uom_qty", "product_id", "x_variant"],
+          ]);
+
+          for (const line of orderLines) {
+               const productId = line.product_id[0];
+               const quantitySold = line.product_uom_qty;
+               const attributeValueId = JSON.parse(line.x_variant).id; // Assuming x_variant is a JSON string containing the id
+
+               // Retrieve the product and its template
+               const product = await Odoo.execute_kw("product.product", "search_read", [
+                    [["id", "=", productId]],
+                    ["product_tmpl_id"],
+               ]);
+
+               if (product.length > 0) {
+                    const productTemplateId = product[0].product_tmpl_id[0];
+
+                    // Retrieve current quantity from product template
+                    const productTemplate = await Odoo.execute_kw(
+                         "product.template",
+                         "search_read",
+                         [[["id", "=", productTemplateId]], ["x_total_available_qty"]],
+                    );
+
+                    if (productTemplate.length > 0) {
+                         const currentQty = productTemplate[0].x_total_available_qty || 0;
+                         const newQty = currentQty - quantitySold;
+
+                         // Update product template quantity
+                         await Odoo.execute_kw("product.template", "write", [
+                              [productTemplateId],
+                              { x_total_available_qty: newQty },
+                         ]);
+                    }
+               }
+
+               // Update the attribute line quantity based on x_variant
+               const attributeLine = await Odoo.execute_kw(
+                    "product.template.attribute.line",
+                    "search_read",
+                    [[["id", "=", attributeValueId]], ["x_quantity"]],
+               );
+
+               if (attributeLine.length > 0) {
+                    const currentAttrQty = attributeLine[0].x_quantity || 0;
+                    const newAttrQty = currentAttrQty - quantitySold;
+
+                    // Update attribute line quantity
+                    await Odoo.execute_kw("product.template.attribute.line", "write", [
+                         [attributeValueId],
+                         { x_quantity: newAttrQty },
+                    ]);
+               }
+          }
+     } catch (error) {
+          console.error("Error updating product quantities:", error.message);
+          throw error; // Rethrow to handle it in the outer catch block if necessary
+     }
+}
 exports.addDeliveryDetailsToOrder = async (req, res) => {
      try {
           const { orderId, deliveryPartnerId } = req.body;
