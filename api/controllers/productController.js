@@ -533,8 +533,6 @@ exports.deleteProduct = async (req, res) => {
 };
 
 exports.salesProducts = async (req, res) => {
-     // let companyId = req.params?.company_id;
-     // console.log("parasm", user);
      try {
           await Odoo.connect();
           const startDate = req.params.startDate;
@@ -578,21 +576,17 @@ exports.salesProducts = async (req, res) => {
 };
 
 exports.productOutOfStock = async (req, res) => {
-     // let companyId = req.params?.company_id;
-     // console.log("parasm", user);
      try {
           await Odoo.connect();
-          const startDate = req.params.startDate;
-          const endDate = req.params.endDate;
-          // Retrieve recently sold products
-          // Retrieve out-of-stock products
+          const { company_id } = req.body;
+
           const outOfStockProductsResult = await Odoo.execute_kw(
                "product.template",
                "search_read",
                [
                     [
-                         ["company_id", "=", 122],
-                         ["qty_available", "=", 0], // Assuming there's a field "qty_available" indicating stock level
+                         ["company_id", "=", +company_id],
+                         ["x_total_available_qty", "=", 0],
                     ],
                ],
           );
@@ -608,18 +602,14 @@ exports.productOutOfStock = async (req, res) => {
 };
 
 exports.totalSales = async (req, res) => {
-     // let companyId = req.params?.company_id;
-     // console.log("parasm", user);
      try {
           await Odoo.connect();
-          const startDate = req.params.startDate;
-          const endDate = req.params.endDate;
-          // Retrieve recently sold products
-          // Retrieve sales report
+          const { startDate, endDate, company_id } = req.body;
+
           const salesReportResult = await Odoo.execute_kw("sale.report", "search_read", [
                [
                     "&",
-                    ["company_id", "=", 122],
+                    ["company_id", "=", +company_id],
                     ["state", "!=", "draft"],
                     ["date", ">=", startDate],
                     ["date", "<=", endDate],
@@ -635,6 +625,8 @@ exports.totalSales = async (req, res) => {
           res.status(201).json({
                totalRevenue: totalRevenue,
                status: true,
+               salesReportResult,
+               body: req.body,
           });
      } catch (err) {
           console.log("error", err);
@@ -647,14 +639,14 @@ exports.totalSalesQuantity = async (req, res) => {
      // console.log("parasm", user);
      try {
           await Odoo.connect();
-          const startDate = req.params.startDate;
-          const endDate = req.params.endDate;
+          const { startDate, endDate, company_id } = req.body;
+
           // Retrieve recently sold products
           // Retrieve sales report
           const recentlySoldProductsResult = await Odoo.execute_kw("sale.report", "search_read", [
                [
                     "&",
-                    ["company_id", "=", 122],
+                    ["company_id", "=", +company_id],
                     ["state", "!=", "draft"],
                     ["date", ">=", startDate],
                     ["date", "<=", endDate],
@@ -687,13 +679,12 @@ exports.totalFailedOrder = async (req, res) => {
      // console.log("parasm", user);
      try {
           await Odoo.connect();
-          const startDate = req.params.startDate;
-          const endDate = req.params.endDate;
+          const { startDate, endDate, company_id } = req.body;
 
           const failedOrdersResult = await Odoo.execute_kw("sale.order", "search_read", [
                [
                     ["state", "=", "failed"], // Assuming "failed" is the state of failed orders
-                    ["company_id", "=", 122],
+                    ["company_id", "=", +company_id],
                     ["date_order", ">=", startDate],
                     ["date_order", "<=", endDate],
                ],

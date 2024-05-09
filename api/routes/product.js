@@ -12,11 +12,11 @@ router.post("/variants", multer().any("images"), productController.createProduct
 router.put("/:id", auth, multer().any("images"), productController.updateProduct);
 router.post("/multiple", productController.createMultipleProducts);
 router.post("/search", productController.searchProduct);
-router.get("/inventory/products/sales/:startDate/:endDate", productController.salesProducts);
-router.get("/inventory/products/out-of-stock", productController.productOutOfStock);
-router.get("/inventory/total/sales/:startDate/:endDate", productController.totalSales);
-router.get("/inventory/quantity/sold/:startDate/:endDate", productController.totalSalesQuantity);
-router.get("/inventory/order/failed/:startDate/:endDate", productController.totalFailedOrder);
+router.post("/inventory/products/sales/:startDate/:endDate", productController.salesProducts);
+router.post("/inventory/products/out-of-stock", productController.productOutOfStock);
+router.post("/inventory/total/sales", productController.totalSales);
+router.post("/inventory/quantity/sold", productController.totalSalesQuantity);
+router.post("/inventory/order/failed", productController.totalFailedOrder);
 router.delete("/delete/:id", productController.deleteProduct);
 
 router.get("/attributes", productController.fetchProductAttributes);
