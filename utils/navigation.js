@@ -58,10 +58,10 @@ const ecommerceNav = [
         title: "Promotions",
         icon: "MdPayment",
         submenu: [
-            {
-                path: "/promotions",
-                title: "Internal",
-            },
+            // {
+            //     path: "/promotions",
+            //     title: "Internal",
+            // },
             {
                 path: "/promotions/ads",
                 title: "Ads",
@@ -136,10 +136,10 @@ const serviceNav = [
         title: "Promotions",
         icon: "MdPayment",
         submenu: [
-            {
-                path: "/promotions",
-                title: "Internal",
-            },
+            // {
+            //     path: "/promotions",
+            //     title: "Internal",
+            // },
             {
                 path: "/promotions/ads",
                 title: "Ads",
