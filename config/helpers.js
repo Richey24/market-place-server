@@ -2103,6 +2103,104 @@ const createOrderReport = (orders) => {
   return report;
 };
 
+const sendNotificationForOnboardedNewUsersToFounder = (userEmail, siteType, userName, domain, paid, companyType) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const subject = "New User Onboarded Notification";
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: "info@ishop.black",
+    subject: subject,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          /* CSS styles for the email template */
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">New User Onboarded</h1>
+          </div>
+          <div class="message">
+            <p>Hey I.B,</p>
+            <p>A new user has been onboarded with the following details:</p>
+            <ul>
+              <li><span class="highlight">Email:</span> ${userEmail}</li>
+              <li><span class="highlight">Site Type:</span> ${siteType}</li>
+              <li><span class="highlight">Company Name:</span> ${userName}</li>
+              <li><span class="highlight">Domain:</span> ${domain}</li>
+              <li><span class="highlight">Paid:</span> ${paid ? 'Yes' : 'No'}</li>
+              <li><span class="highlight">Company Type:</span> ${companyType}</li>
+            </ul>
+            <p>Please reach out to the new user to welcome them personally and offer any assistance they may need.</p>
+          </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC.</p>
+          </div>
+        </div>
+      </body>
+      </html>       
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
 
 const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
   //  const { orderId, items } = orderDetails;
@@ -2424,6 +2522,7 @@ module.exports = {
   sendAdvertisementNotificationEmail,
   reminderJob,
   sendWelcomeEmail,
+  sendNotificationForOnboardedNewUsersToFounder,
   sendForgotPasswordEmail,
   sendAdminMessage,
   sendVendorMessage,
