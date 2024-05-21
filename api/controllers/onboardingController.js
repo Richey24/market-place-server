@@ -561,7 +561,7 @@ exports.postOnboarding = async (req, res) => {
      let subscription = req.body.subscription;
      let subscribed = false;
      let trial_End_Date = formattedTrialEndDate;
-     const { firstname, email, _id } = req.userData;
+     const { firstname, email, _id, currentSiteType } = req.userData;
      const categ_ids = req.body.categ_ids;
      const type = req?.body?.type;
 
@@ -658,6 +658,7 @@ exports.postOnboarding = async (req, res) => {
                     }
 
                sendOnboardingEmail(email, firstname);
+               sendNotificationForOnboardedNewUsersToFounder(email, currentSiteType, company_name, tenantname, subscribed)
 
                // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
@@ -702,6 +703,7 @@ exports.postOnboarding = async (req, res) => {
                }
 
                sendOnboardingEmail(email, firstname, req.body.type);
+               sendNotificationForOnboardedNewUsersToFounder(email, currentSiteType, company_name, tenantname, subscribed)
                // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
                     $set: { onboarded: true, company: company_data?._id },
