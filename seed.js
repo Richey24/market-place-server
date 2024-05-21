@@ -12,12 +12,11 @@ mongoose
      .connect(process.env.MONGO_URL, { useNewUrlParser: true })
      .then(() => {
           console.log("Database is connected");
-          addNav()
+          addNav();
      })
      .catch((err) => {
           console.log({ database_error: err });
      });
-
 
 const addNav = async () => {
      try {
@@ -27,7 +26,7 @@ const addNav = async () => {
      } catch (error) {
           console.log(error);
      }
-}
-
+};
 
 // Invoke the seeder function
+// testing basit errors caused by his M1 PRO
