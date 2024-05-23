@@ -189,36 +189,34 @@ exports.loginUser = async (req, res) => {
      console.log({
           body: req.body,
      });
-     try {
-          console.log("logging user in");
-          const email = req.body.email;
-          const password = req.body.password;
-          const domain = req.body.domain;
-          const user = await User.findByCredentials(email, password);
-
-          if (!user) {
-               return res
-                    .status(401)
-                    .json({ error: "Login failed! Check authenthication credentails" });
-          }
-
-          const userWithoutPassword = {
-               _id: user._id,
-               firstname: user.firstname,
-               lastname: user.lastname,
-               email: user.email,
-               role: user.role,
-               chatID: user.chatID,
-               onboarded: user.onboarded,
-               partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
-               subscribed: user.subscribed,
-               status: user.status,
-          };
-          const token = await user.generateAuthToken(domain);
-          res.status(201).json({ user: userWithoutPassword, token });
-     } catch (error) {
-          res.status(400).json(error);
+     // try {
+     console.log("logging user in");
+     const email = req.body.email;
+     const password = req.body.password;
+     const domain = req.body.domain;
+     const user = await User.findByCredentials(email, password);
+     console.log("first check", user);
+     if (!user) {
+          return res.status(401).json({ error: "Login failed! Check authenthication credentails" });
      }
+     console.log("check", user);
+     const userWithoutPassword = {
+          _id: user._id,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          email: user.email,
+          role: user.role,
+          chatID: user.chatID,
+          onboarded: user.onboarded,
+          partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
+          subscribed: user.subscribed,
+          status: user.status,
+     };
+     const token = await user.generateAuthToken(domain);
+     res.status(201).json({ user: userWithoutPassword, token });
+     // } catch (error) {
+     //      res.status(400).json(error);
+     // }
 };
 const socialLogin = async (req, res) => {
      console.log("in login");
@@ -576,7 +574,6 @@ exports.editBillingAddress = async (req, res) => {
 };
 
 exports.updateUserDetails = async (req, res) => {
-     console.log("Request body", req.body);
      try {
           const updatedUserData = {
                firstname: req.body?.firstname,
@@ -587,9 +584,8 @@ exports.updateUserDetails = async (req, res) => {
                sales_opt_in: req.body?.sales_opt_in,
                salesEmailReport: req.body?.salesEmailReport,
                timeZone: req.body?.timeZone,
+               show_phone: req.body?.show_phone,
           };
-
-          console.log("updatedUserData", updatedUserData);
 
           // Assuming you have a User model and a method like `updateUserById` to update a user by ID
           const updatedUser = await User.findByIdAndUpdate(
