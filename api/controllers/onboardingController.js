@@ -658,7 +658,7 @@ exports.postOnboarding = async (req, res) => {
                     }
 
                sendOnboardingEmail(email, firstname);
-               sendNotificationForOnboardedNewUsersToFounder(email, currentSiteType, company_name, tenantname, subscribed)
+               sendNotificationForOnboardedNewUsersToFounder(email, type, company_name, tenantname, subscribed)
 
                // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
@@ -703,7 +703,7 @@ exports.postOnboarding = async (req, res) => {
                }
 
                sendOnboardingEmail(email, firstname, req.body.type);
-               sendNotificationForOnboardedNewUsersToFounder(email, currentSiteType, company_name, tenantname, subscribed)
+               sendNotificationForOnboardedNewUsersToFounder(email, type, company_name, tenantname, subscribed)
                // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
                     $set: { onboarded: true, company: company_data?._id },

@@ -2103,7 +2103,7 @@ const createOrderReport = (orders) => {
   return report;
 };
 
-const sendNotificationForOnboardedNewUsersToFounder = (userEmail, siteType, userName, domain, paid, companyType) => {
+const sendNotificationForOnboardedNewUsersToFounder = (userEmail, siteType, userName, domain, paid,) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.office365.com",
     port: 587,
@@ -2179,7 +2179,6 @@ const sendNotificationForOnboardedNewUsersToFounder = (userEmail, siteType, user
               <li><span class="highlight">Company Name:</span> ${userName}</li>
               <li><span class="highlight">Domain:</span> ${domain}</li>
               <li><span class="highlight">Paid:</span> ${paid ? 'Yes' : 'No'}</li>
-              <li><span class="highlight">Company Type:</span> ${companyType}</li>
             </ul>
             <p>Please reach out to the new user to welcome them personally and offer any assistance they may need.</p>
           </div>
