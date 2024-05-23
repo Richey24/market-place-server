@@ -202,6 +202,9 @@ const userSchema = mongoose.Schema({
      navigation: {
           type: Array,
      },
+     show_phone: {
+          type: Boolean,
+     },
 });
 
 userSchema.pre("save", async function () {
