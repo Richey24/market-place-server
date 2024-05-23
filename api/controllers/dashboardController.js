@@ -2,15 +2,9 @@
 const Odoo = require("../../config/odoo.connection");
 const User = require("../../model/User");
 const { USER_ROLE } = require("../../schemas/user.schema");
-const { addOrder } = require("../../services/order.service");
-const { getProductById } = require("../../services/product.service");
 
 exports.getSalesReport = async (req, res) => {
      console.log("GET /api/getSalesReport");
-
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           const startDate = req.params.startDate;
@@ -26,8 +20,9 @@ exports.getSalesReport = async (req, res) => {
                     ["date", "<=", endDate],
                ],
           ]);
+
           const mapRevenue = result?.map((re) => re.price_total);
-          if (mapRevenue.length > 1) {
+          if (mapRevenue.length > 0) {
                const totalRevenue = mapRevenue.reduce((a, b) => a + b);
                return res.status(201).json({
                     // result,
@@ -44,14 +39,6 @@ exports.getSalesReport = async (req, res) => {
                     status: true,
                });
           }
-
-          res.status(201).json({
-               // result,
-               totalSales: result?.length,
-               totalRevenue,
-               averageOrderSpend: totalRevenue / result?.length,
-               status: true,
-          });
      } catch (error) {
           console.error("Error when try connect Odoo XML-RPC.", error);
           res.status(400).json({ error, status: false });
@@ -60,10 +47,6 @@ exports.getSalesReport = async (req, res) => {
 
 exports.getBestSellingProducts = async (req, res) => {
      console.log("GET /api/getSalesReport");
-
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           const startDate = req.params.startDate;
@@ -146,9 +129,6 @@ exports.getBestSellingProducts = async (req, res) => {
 exports.getOrdersByCustomers = async (req, res) => {
      console.log("GET /api/getSalesReport");
 
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           const startDate = req.params.startDate;
@@ -179,9 +159,6 @@ exports.getOrdersByCustomers = async (req, res) => {
 exports.getRevenueByCustomers = async (req, res) => {
      console.log("GET /api/getSalesReport");
 
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           const startDate = req.params.startDate;
@@ -259,9 +236,6 @@ exports.getRevenueByCustomers = async (req, res) => {
 exports.getSalesByCategory = async (req, res) => {
      console.log("GET /api/getSalesReport");
 
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           // Fetch products that need to be reordered
@@ -311,9 +285,6 @@ exports.getSalesByCategory = async (req, res) => {
 exports.getAdminSalesReport = async (req, res) => {
      console.log("GET /api/getSalesReport");
 
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           const startDate = req.params.startDate;
@@ -325,6 +296,7 @@ exports.getAdminSalesReport = async (req, res) => {
                ["&", ["state", "!=", "draft"], ["date", ">=", startDate], ["date", "<=", endDate]],
           ]);
 
+          console.log("Total sales count", result);
           const totalRevenue = result?.map((re) => re.price_total).reduce((a, b) => a + b);
 
           // console.log("result", result);
@@ -353,9 +325,6 @@ exports.getAdminSalesReport = async (req, res) => {
 exports.getAdminTopProducts = async (req, res) => {
      console.log("GET /api/getSalesReport");
 
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           const startDate = req.params.startDate;
@@ -436,9 +405,6 @@ exports.getAdminTopProducts = async (req, res) => {
 exports.getProductReorder = async (req, res) => {
      console.log("GET /api/getSalesReport");
 
-     // let user = req.userData;
-     // const companyId = +req.params.companyId;
-     // console.log("user", user);
      try {
           await Odoo.connect();
           // Fetch products that need to be reordered
