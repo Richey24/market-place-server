@@ -54,6 +54,8 @@ const getProductById = async (id) => {
                     "x_discount",
                     "x_featured_product",
                     "x_total_available_qty",
+                    "x_aliexpress_id",
+                    "x_aliexpress_variant_id"
                ],
           ]);
           if (productData.length === 0) {
