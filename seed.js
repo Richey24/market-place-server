@@ -24,16 +24,35 @@ const addNav = async () => {
           // sendAdminMessage("uahomorejoice@gmail.com", "Rejoice", "testing the new email")
           await Odoo.connect();
 
-          const orderLines = await Odoo.execute_kw(
-               "sale.order.line",
-               "search_read",
-               [],
-               {
-                    fields: ["product_id", "product_uom_qty", "price_unit"],
-               },
-          );
-          console.log(orderLines);
-          // await Odoo.execute_kw("sale.order.line", "unlink", [[Number(33)]]);
+          // const orderLines = await Odoo.execute_kw(
+          //      "sale.order.line",
+          //      "search_read",
+          //      [
+          //           [],
+          //           ["product_id", "product_uom_qty", "price_unit"]
+          //      ]
+          // );
+          // console.log(orderLines);
+          // await Odoo.execute_kw("sale.order.line", "unlink", [[Number(58)]]);
+
+          // const products = await Odoo.execute_kw("product.template", "search_read", [
+          //      [
+          //           // ["product_tag_ids.name", "=", tagName],
+          //           ["standard_price", "=", 20],
+          //           ["company_id", "=", 2],
+          //      ],
+          //      [
+          //           "id",
+          //           "name",
+          //           "display_name",
+          //           "list_price",
+          //           "product_tag_ids",
+          //           "standard_price",
+          //           "x_brand_gate_id"
+          //      ],
+          // ]);
+          // console.log(products);
+          // await Odoo.execute_kw("product.template", "unlink", [[Number(2870)]]);
           console.log("worked");
      } catch (error) {
           console.log(error);
