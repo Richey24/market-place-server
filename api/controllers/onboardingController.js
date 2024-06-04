@@ -549,7 +549,7 @@ exports.postOnboarding = async (req, res) => {
      let date = formattedDate;
      let company_name = req.body.company_name;
      let company_type = req.body.company_type;
-     let tenantname = req.body.domain.trim();
+     let tenantname = req.body.domain.toLowerCase().trim();
      let theme = req.body.theme;
      let brandcolor = req.body.colors;
      let subscription = req.body.subscription;
