@@ -27,8 +27,8 @@ class PaymentService {
           } catch (error) {
                throw new ServerError(
                     error?.message ||
-                         error?.raw?.message ||
-                         "Error creating a stripe connected account",
+                    error?.raw?.message ||
+                    "Error creating a stripe connected account",
                     error?.raw?.statusCode || error?.statusCode,
                     error?.raw?.code,
                );
@@ -74,8 +74,8 @@ class PaymentService {
                // Handle payment failure
                throw new ServerError(
                     error?.message ||
-                         error?.raw?.message ||
-                         "An error occured while creating payment intent",
+                    error?.raw?.message ||
+                    "An error occured while creating payment intent",
                     error?.raw?.statusCode || error?.statusCode,
                     error?.raw?.code,
                );
@@ -122,8 +122,8 @@ class PaymentService {
                // Handle payment failure
                throw new ServerError(
                     error?.message ||
-                         error?.raw?.message ||
-                         "An error occured while creating payment intent",
+                    error?.raw?.message ||
+                    "An error occured while creating payment intent",
                     error?.raw?.statusCode || error?.statusCode,
                     error?.raw?.code,
                );
@@ -148,7 +148,7 @@ class PaymentService {
                          metadata: payload.metadata,
                     },
                     payload.stripeAccount && {
-                         stripeAccount: payload.stripeAccount,
+                         stripeAccount: process.env.ACCT_ID,
                     },
                );
 
@@ -162,8 +162,8 @@ class PaymentService {
           } catch (error) {
                throw new ServerError(
                     error?.message ||
-                         error?.raw?.message ||
-                         "An error occured while a payment link",
+                    error?.raw?.message ||
+                    "An error occured while a payment link",
                     error?.raw?.statusCode || error?.statusCode,
                     error?.raw?.code,
                );
@@ -180,8 +180,8 @@ class PaymentService {
           } catch (error) {
                throw new ServerError(
                     error?.message ||
-                         error?.raw?.message ||
-                         "An error occured while get all external accounts",
+                    error?.raw?.message ||
+                    "An error occured while get all external accounts",
                     error?.raw?.statusCode || error?.statusCode,
                     error?.raw?.code,
                );
@@ -199,8 +199,8 @@ class PaymentService {
           } catch (error) {
                throw new Error(
                     error?.message ||
-                         error?.raw?.message ||
-                         "An error occured while get all external accounts",
+                    error?.raw?.message ||
+                    "An error occured while get all external accounts",
                );
           }
      };
