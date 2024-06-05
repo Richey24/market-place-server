@@ -132,7 +132,7 @@ exports.stripeVendorCallback = async (req, res) => {
                          userID: user._id,
                          eventType: "checkout.session.completed",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
                break;
           }
@@ -161,7 +161,7 @@ exports.stripeVendorCallback = async (req, res) => {
                     userID: user._id,
                     eventType: "checkout.session.async_payment_succeeded",
                });
-               res.status(200).json({ message: "successful" });
+               res.status(200).send("successful");
                break;
           }
           case "invoice.payment_succeeded": {
@@ -183,7 +183,7 @@ exports.stripeVendorCallback = async (req, res) => {
                          userID: user._id,
                          eventType: "invoice.payment_succeeded",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
                break;
           }
@@ -198,7 +198,7 @@ exports.stripeVendorCallback = async (req, res) => {
                          userID: user._id,
                          eventType: "customer.subscription.deleted",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
           }
           default:
@@ -492,7 +492,7 @@ exports.adsCallback = async (req, res) => {
           }
      }
 
-     res.status(200).json({ message: "successful" });
+     res.status(200).send("successful");
 };
 
 exports.stripePubicCheckoutCallback = async (req, res) => {
@@ -536,7 +536,7 @@ exports.stripePubicCheckoutCallback = async (req, res) => {
                          siteId: session.metadata.siteId,
                          eventType: "checkout.session.completed",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
                break;
           }
@@ -577,7 +577,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                     await Odoo.connect();
 
                     // Update the order status
-                    const result = await Odoo.execute_kw("sale.order", "write", [
+                    await Odoo.execute_kw("sale.order", "write", [
                          [+session.metadata.orderId],
                          { state: "sale" },
                     ]);
@@ -586,7 +586,6 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
                     );
                     const theOrder = order.data.order[0].order_lines;
-
                     for (const product of theOrder) {
                          await User.findByIdAndUpdate(session.metadata.buyerId, {
                               $push: {
@@ -600,13 +599,12 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                               },
                          });
                     }
-
                     await Logger.create({
                          userID: session.metadata.buyerId,
                          siteId: session.metadata.siteId,
                          eventType: "checkout.session.completed",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
                break;
           }
