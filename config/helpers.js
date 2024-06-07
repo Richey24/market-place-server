@@ -6,6 +6,7 @@ const { findCompanyByCompanyIdAndPopulateUser } = require("../api/controllers/co
 const OrderEmail = require("../model/OrderEmails");
 const Event = require("../model/Event");
 const Advert = require("../model/Advert");
+const subdomainList = process.env.SITES.split(",");
 
 const sendOnboardingEmail = (email, name, type) => {
      const startDate = new Date();
@@ -2208,7 +2209,7 @@ const sendNotificationForOnboardedNewUsersToFounder = (
      });
 };
 
-const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
+const sendPurchaseEmailPerSales = (vendorEmail, orderDetails, subdomain) => {
      //  const { orderId, items } = orderDetails;
      const orderTable = createOrderTable(orderDetails);
      const report = createOrderReport(orderDetails);
@@ -2222,9 +2223,12 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
           },
      });
 
+     const additionalEmail = "info@ishop.black";
+     const isSubdomainMatched = subdomainList.includes(subdomain);
+
      const mailOptions = {
           from: process.env.EMAIL,
-          to: vendorEmail,
+          to: isSubdomainMatched ? [vendorEmail, additionalEmail] : vendorEmail,
           subject: `New Order Email:`,
           html: `
       <!DOCTYPE html>
@@ -2391,11 +2395,14 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails) => {
 const sendSalesReport = async (companyId, orderDetails) => {
      try {
           const company = await findCompanyByCompanyIdAndPopulateUser(companyId);
+
           if (company) {
                const { user_id: user } = company;
+               //  console.log("company", user);
+               //  console.log("user.salesEmailReport", company?.subdomain);
                if (user.salesEmailReport.status) {
                     if (user.salesEmailReport.frequency === "Per sales") {
-                         sendPurchaseEmailPerSales(user.email, orderDetails);
+                         sendPurchaseEmailPerSales(user.email, orderDetails, company?.subdomain);
                     } else {
                          // Find existing OrderEmail document for the user's email
                          const existingOrderEmail = await OrderEmail.findOne({ email: user.email });
@@ -2422,6 +2429,9 @@ const sendSalesReport = async (companyId, orderDetails) => {
                          }
                     }
                } else {
+                    ///FOR TEST
+                    // sendPurchaseEmailPerSales(user.email, orderDetails, company?.subdomain);
+
                     console.log("email status is off");
                }
           } else {
