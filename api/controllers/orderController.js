@@ -428,6 +428,7 @@ exports.updateProductToOrderLine = async (req, res) => {
 
 exports.changeOrderStatus = async (req, res) => {
      try {
+          await Odoo.connect();
           const { orderId, newStatus } = req.body;
 
           if (!orderId || !newStatus) {
