@@ -573,10 +573,18 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          await Odoo.connect();
 
                          // Update the order status
-                         await Odoo.execute_kw("sale.order", "write", [
-                              [+session.metadata.orderId],
-                              { state: "sale" },
-                         ]);
+                         // await Odoo.execute_kw("sale.order", "write", [
+                         //      [+session.metadata.orderId],
+                         //      { state: "sale" },
+                         // ]);
+
+                         await axios.put(
+                              `https://market-server.azurewebsites.net/api/orders/status`,
+                              {
+                                   orderId: session.metadata.orderId,
+                                   newStatus: "sale"
+                              }
+                         );
 
                          const order = await axios.get(
                               `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
