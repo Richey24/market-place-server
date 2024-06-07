@@ -590,22 +590,6 @@ exports.postOnboarding = async (req, res) => {
                     },
                ]);
 
-               // HANDLE CREATE CATEOGIES
-               // const categoryIds = [];
-               // if (company_id)
-               //      try {
-               //           for (const category of categories) {
-               //                const id = await odoo.execute_kw(
-               //                     "product.public.category",
-               //                     "create",
-               //                     [{ name: category.name }],
-               //                );
-               //                categoryIds.push(id);
-               //           }
-               //      } catch (err) {
-               //           console.log("failed catgories", err);
-               //      }
-
                const save_company = new Company({
                     user_id: _id,
                     company_id: company_id,
@@ -660,7 +644,6 @@ exports.postOnboarding = async (req, res) => {
                     subscribed,
                );
 
-               // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
                     $set: { onboarded: true, company: company_data?._id },
                });
@@ -692,7 +675,7 @@ exports.postOnboarding = async (req, res) => {
                let company_data = await save_company.save();
 
                try {
-                    console.log("services,", req.body.services);
+                    // console.log("services,", req.body.services);
                     const save_site = new Site(site(theme, req.body.services));
                     const site_data = await save_site.save();
                     await Company.findByIdAndUpdate(company_data?._id, {

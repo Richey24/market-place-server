@@ -146,8 +146,8 @@ const userSchema = mongoose.Schema({
           type: Boolean,
      },
      salesEmailReport: {
-          status: { type: Boolean, default: false },
-          frequency: { type: String, enum: ["Per sales", "Once daily"] },
+          status: { type: Boolean, default: true },
+          frequency: { type: String, enum: ["Per sales", "Once daily"], default: "Per sales" },
           time: { type: String },
      },
      created_at: {
