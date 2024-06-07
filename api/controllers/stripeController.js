@@ -132,7 +132,7 @@ exports.stripeVendorCallback = async (req, res) => {
                          userID: user._id,
                          eventType: "checkout.session.completed",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
                break;
           }
@@ -161,7 +161,7 @@ exports.stripeVendorCallback = async (req, res) => {
                     userID: user._id,
                     eventType: "checkout.session.async_payment_succeeded",
                });
-               res.status(200).json({ message: "successful" });
+               res.status(200).send("successful");
                break;
           }
           case "invoice.payment_succeeded": {
@@ -183,7 +183,7 @@ exports.stripeVendorCallback = async (req, res) => {
                          userID: user._id,
                          eventType: "invoice.payment_succeeded",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
                break;
           }
@@ -198,7 +198,7 @@ exports.stripeVendorCallback = async (req, res) => {
                          userID: user._id,
                          eventType: "customer.subscription.deleted",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
           }
           default:
@@ -492,7 +492,7 @@ exports.adsCallback = async (req, res) => {
           }
      }
 
-     res.status(200).json({ message: "successful" });
+     res.status(200).send("successful");
 };
 
 exports.stripePubicCheckoutCallback = async (req, res) => {
@@ -536,7 +536,7 @@ exports.stripePubicCheckoutCallback = async (req, res) => {
                          siteId: session.metadata.siteId,
                          eventType: "checkout.session.completed",
                     });
-                    res.status(200).json({ message: "successful" });
+                    res.status(200).send("successful");
                }
                break;
           }
@@ -561,58 +561,56 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                sig,
                process.env.PRIVATE_SITE_STRIPE_SECRET,
           );
+
+          switch (event.type) {
+               case "checkout.session.completed": {
+                    const session = event.data.object;
+                    if (session.mode !== "payment") {
+                         return res.status(200).json("wrong webhook");
+                    }
+                    if (session.payment_status === "paid") {
+                         // Connect to Odoo
+                         await Odoo.connect();
+
+                         // Update the order status
+                         await Odoo.execute_kw("sale.order", "write", [
+                              [+session.metadata.orderId],
+                              { state: "sale" },
+                         ]);
+
+                         const order = await axios.get(
+                              `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
+                         );
+                         const theOrder = order.data.order[0].order_lines;
+                         for (const product of theOrder) {
+                              await User.findByIdAndUpdate(session.metadata.buyerId, {
+                                   $push: {
+                                        order_products: {
+                                             id: product.product_template_id[0],
+                                             name: product.product_id[1],
+                                             standard_price: product.price_total,
+                                             x_images: product.x_images,
+                                             company_id: session.metadata.siteId,
+                                        },
+                                   },
+                              });
+                         }
+                         await Logger.create({
+                              userID: session.metadata.buyerId,
+                              siteId: session.metadata.siteId,
+                              eventType: "checkout.session.completed",
+                         });
+                         res.status(200).send("successful");
+                    }
+                    break;
+               }
+
+               default:
+                    break;
+          }
      } catch (err) {
           console.log(err);
           return res.status(400).send(`Webhook Error: ${err.message}`);
-     }
-
-     switch (event.type) {
-          case "checkout.session.completed": {
-               const session = event.data.object;
-               if (session.mode !== "payment") {
-                    return res.status(200).json("wrong webhook");
-               }
-               if (session.payment_status === "paid") {
-                    // Connect to Odoo
-                    await Odoo.connect();
-
-                    // Update the order status
-                    const result = await Odoo.execute_kw("sale.order", "write", [
-                         [+session.metadata.orderId],
-                         { state: "sale" },
-                    ]);
-
-                    const order = await axios.get(
-                         `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
-                    );
-                    const theOrder = order.data.order[0].order_lines;
-
-                    for (const product of theOrder) {
-                         await User.findByIdAndUpdate(session.metadata.buyerId, {
-                              $push: {
-                                   order_products: {
-                                        id: product.product_id[0],
-                                        name: product.product_id[1],
-                                        standard_price: product.price_total,
-                                        x_images: product.x_images,
-                                        company_id: session.metadata.siteId,
-                                   },
-                              },
-                         });
-                    }
-
-                    await Logger.create({
-                         userID: session.metadata.buyerId,
-                         siteId: session.metadata.siteId,
-                         eventType: "checkout.session.completed",
-                    });
-                    res.status(200).json({ message: "successful" });
-               }
-               break;
-          }
-
-          default:
-               break;
      }
 };
 

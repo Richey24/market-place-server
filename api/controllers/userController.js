@@ -133,12 +133,13 @@ exports.register = async (req, res) => {
                     company: data.company,
                     stripeConnectedAccountId: data?.stripeConnectedAccountId,
                };
-
-          sendWelcomeEmail(
-               req.body?.email ?? user?.firstname,
-               req.body?.firstname ?? user?.lastname,
-               req?.body.currentSiteType ?? user?.currentSiteType,
-          );
+          if (req.body.role !== "USER") {
+               sendWelcomeEmail(
+                    req.body?.email ?? user?.firstname,
+                    req.body?.firstname ?? user?.lastname,
+                    req?.body.currentSiteType ?? user?.currentSiteType,
+               );
+          }
 
           res.status(201).json({ user: userWithoutPassword ?? user, token, status: true });
      } catch (error) {

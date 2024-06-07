@@ -520,14 +520,14 @@ exports.updateProduct = async (req, res) => {
 };
 
 exports.deleteProduct = async (req, res) => {
-     const id = req.params.id;
-     if (!id) {
-          return res.status(400).json({ message: "Send product id" });
-     }
-     const response = deleteProduct(id);
-     if (response) {
+     try {
+          const id = req.params.id;
+          if (!id) {
+               return res.status(400).json({ message: "Send product id" });
+          }
+          await deleteProduct(id);
           res.status(200).json({ message: "Product deleted successfully" });
-     } else {
+     } catch (error) {
           res.status(500).json({ message: "Something went wrong" });
      }
 };
@@ -1203,76 +1203,79 @@ exports.filterProductSearch = async (req, res) => {
 
 exports.getProductbyCompanyIdAndSearch = async (req, res) => {
      console.log("GET /api/products");
-
+ 
      try {
-          const companyId = [+req.params.companyId];
-          const searchQuery = req.query.searchQuery;
-          const page = parseInt(req.query.page) || 1;
-
-          if (companyId) {
-               await Odoo.connect();
-               console.log("Connected to Odoo XML-RPC - api/products");
-
-               // Define the search filter
-               let searchFilter = [
-                    ["type", "=", "consu"],
-                    ["company_id", "=", companyId],
-               ];
-
-               if (searchQuery) {
-                    searchFilter.push(["name", "ilike", searchQuery]);
-               }
-
-               // Get total count of products
-               const totalCount = await Odoo.execute_kw("product.template", "search_count", [
-                    searchFilter,
-               ]);
-
-               const theProducts = await Odoo.execute_kw("product.template", "search_read", [
-                    searchFilter,
-                    [
-                         "id",
-                         "public_categ_ids",
-                         "name",
-                         "display_name",
-                         "list_price",
-                         "standard_price",
-                         "description",
-                         "base_unit_count",
-                         "product_variant_id",
-                         "categ_id",
-                         "rating_avg",
-                         "rating_count",
-                         "x_color",
-                         "x_dimension",
-                         "x_size",
-                         "x_subcategory",
-                         "x_weight",
-                         "x_rating",
-                         "x_images",
-                         "x_free_shipping",
-                         "create_date",
-                         "website_url",
-                         "website_meta_keywords",
-                         "x_shipping_package",
-                    ],
-                    page ? page * 10 - 10 : 0,
-                    page ? page * 10 : 10,
-               ]);
-
-               const products = theProducts.map((product) => {
-                    return {
-                         ...product,
-                         x_images: JSON.parse(product.x_images),
-                    };
-               });
-
-               res.status(200).json({ products, totalCount, status: true });
-          } else {
-               res.status(404).json({ error: "Invalid Company Id", status: false });
-          }
+         const companyId = [+req.params.companyId];
+         const searchQuery = req.query.searchQuery;
+         const page = parseInt(req.query.page) || 1;
+         const limit = 10; // Number of products per page
+         const offset = (page - 1) * limit; // Calculate offset
+ 
+         if (companyId) {
+             await Odoo.connect();
+             console.log("Connected to Odoo XML-RPC - api/products");
+ 
+             // Define the search filter
+             let searchFilter = [
+                 ["type", "=", "consu"],
+                 ["company_id", "=", companyId],
+             ];
+ 
+             if (searchQuery) {
+                 searchFilter.push(["name", "ilike", searchQuery]);
+             }
+ 
+             // Get total count of products
+             const totalCount = await Odoo.execute_kw("product.template", "search_count", [
+                 searchFilter,
+             ]);
+ 
+             const theProducts = await Odoo.execute_kw("product.template", "search_read", [
+                 searchFilter,
+                 [
+                     "id",
+                     "public_categ_ids",
+                     "name",
+                     "display_name",
+                     "list_price",
+                     "standard_price",
+                     "description",
+                     "base_unit_count",
+                     "product_variant_id",
+                     "categ_id",
+                     "rating_avg",
+                     "rating_count",
+                     "x_color",
+                     "x_dimension",
+                     "x_size",
+                     "x_subcategory",
+                     "x_weight",
+                     "x_rating",
+                     "x_images",
+                     "x_free_shipping",
+                     "create_date",
+                     "website_url",
+                     "website_meta_keywords",
+                     "x_shipping_package",
+                 ],
+                 offset,
+                 limit,
+             ]);
+ 
+             const products = theProducts.map((product) => {
+                 return {
+                     ...product,
+                     x_images: JSON.parse(product.x_images),
+                 };
+             });
+ 
+             res.status(200).json({ products, totalCount, status: true });
+         } else {
+             res.status(404).json({ error: "Invalid Company Id", status: false });
+         }
      } catch (error) {
-          console.error("Error when trying to connect to Odoo XML-RPC.", error);
-          res.status(500).json({ error: "Internal Server Error", status: false });
+         console.error("Error when trying to connect to Odoo XML-RPC.", error);
+         res.status(500).json({ error: "Internal Server Error", status: false });
      }
-};
+ };
+ 

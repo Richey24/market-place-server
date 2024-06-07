@@ -56,27 +56,16 @@ const site = (theme, services) => {
                            name: "",
                            props: {
                                 static: {
-                                     description:
-                                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis consectetur auctor elit.",
+                                     description: "Welcome to iMarketplace",
                                      customerService: [
-                                          { name: "Help & Faq", link: "/" },
-                                          { name: "Order Tracking", link: "/" },
+                                          { name: "Help & Faq", link: "/contact-us" },
                                           { name: "Shipping & Delivery", link: "/" },
-                                          { name: "Orders History", link: "/" },
-                                          { name: "Advanced Search", link: "/" },
-                                          { name: "About Us", link: "/" },
-                                          { name: "Corporate Sales", link: "/" },
-                                          { name: "Privacy", link: "/" },
+                                          { name: "Orders History", link: "/dashboard/orders" },
+                                          { name: "About Us", link: "/about" },
+                                          { name: "Refund Policy", link: "/privacy/refund" },
+                                          { name: "Shipping Policy", link: "/privacy/shipping" },
                                      ],
-                                     popularTags: [
-                                          { name: "Cloths", link: "/" },
-                                          { name: "Fashions", link: "/" },
-                                          { name: "Hub", link: "/" },
-                                          { name: "Shirt", link: "/" },
-                                          { name: "Skirt", link: "/" },
-                                          { name: "Sports", link: "/" },
-                                          { name: "Sweater", link: "/" },
-                                     ],
+                                     popularTags: [],
                                      businessHours: [
                                           "Monday - Friday 9am to 5pm",
                                           "Saturday - 9am to 2pm",
@@ -560,13 +549,13 @@ exports.postOnboarding = async (req, res) => {
      let date = formattedDate;
      let company_name = req.body.company_name;
      let company_type = req.body.company_type;
-     let tenantname = req.body.domain;
+     let tenantname = req.body.domain.toLowerCase().trim();
      let theme = req.body.theme;
      let brandcolor = req.body.colors;
      let subscription = req.body.subscription;
      let subscribed = false;
      let trial_End_Date = formattedTrialEndDate;
-     const { firstname, email, _id, currentSiteType } = req.userData;
+     const { firstname, email, _id, phone } = req.userData;
      const categ_ids = req.body.categ_ids;
      const type = req?.body?.type;
 
@@ -596,7 +585,7 @@ exports.postOnboarding = async (req, res) => {
                          partner_id: partner,
                          website: domain,
                          email,
-                         phone: "80911223344",
+                         phone: phone,
                          currency_id: 1,
                     },
                ]);
@@ -608,7 +597,7 @@ exports.postOnboarding = async (req, res) => {
                     company_type: company_type,
                     subdomain: tenantname,
                     theme: theme?.name,
-                    phone: "09033442211",
+                    phone: phone,
                     logo: req.body.logo,
                     brandcolor: brandcolor,
                     subscription: subscription,
@@ -668,7 +657,7 @@ exports.postOnboarding = async (req, res) => {
                     company_type: company_type,
                     subdomain: tenantname,
                     theme: theme?.name,
-                    phone: "09033442211",
+                    phone: phone,
                     logo: req.body.logo,
                     brandcolor: brandcolor,
                     subscription: subscription,
