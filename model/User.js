@@ -248,6 +248,7 @@ userSchema.methods.generateAuthToken = async function (domain) {
                firstname: user.firstname,
                lastname: user.lastname,
                email: user.email,
+               phone: user.phone,
                onboarded: user.onboarded,
                partner_id: user?.partner_ids?.find((partner) => partner?.domain === domain)?.id,
           },

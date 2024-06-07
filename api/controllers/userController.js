@@ -308,6 +308,18 @@ exports.socialRegister = async (req, res) => {
                });
                data = await newUser.save();
                token = await newUser.generateAuthToken(req.body.domain);
+              
+                    let vendorConnectedAccount = await paymentService.createConnectedAccount({
+                         email: data.email,
+                    });
+
+                    await User.updateOne(
+                         { _id: data.id },
+                         {
+                              $set: { stripeConnectedAccountId: vendorConnectedAccount.id },
+                         },
+                    );
+     
           } else {
                user = await User.findByIdAndUpdate(user?._id, {
                     $set: {

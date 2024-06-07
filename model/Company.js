@@ -30,7 +30,7 @@ const companySchema = mongoose.Schema({
      },
      phone: {
           type: String,
-          required: [true, "Phone is a required field"],
+          default: "123456789",
      },
      theme: {
           type: String,
