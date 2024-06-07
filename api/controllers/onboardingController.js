@@ -558,7 +558,7 @@ exports.postOnboarding = async (req, res) => {
      const { firstname, email, _id } = req.userData;
      const categ_ids = req.body.categ_ids;
      const type = req?.body?.type;
-    const user = await User.findById(_id); 
+     const user = await User.findById(_id);
 
      try {
           var odoo = new Odoo({
@@ -573,83 +573,112 @@ exports.postOnboarding = async (req, res) => {
           console.log("Connected to Odoo XML-RPC", type);
 
           if (type !== "service") {
-               let partner = await odoo.execute_kw("res.partner", "create", [
-                    { is_company: true, is_published: true, is_public: true, name: company_name },
-               ]);
-
-               let domain = req.body.domain + "." + "imarketplace.world";
-               let company_id = await odoo.execute_kw("res.company", "create", [
-                    {
-                         account_opening_date: date,
-                         active: true,
-                         name: req.body.company_name,
-                         partner_id: partner,
-                         website: domain,
-                         email,
-                         phone: user.phone,
-                         currency_id: 1,
-                    },
-               ]);
-
-               const save_company = new Company({
-                    user_id: _id,
-                    company_id: company_id,
-                    company_name: company_name,
-                    company_type: company_type,
-                    subdomain: tenantname,
-                    theme: theme?.name,
-                    phone: user.phone,
-                    logo: req.body.logo,
-                    brandcolor: brandcolor,
-                    subscription: subscription,
-                    subscribed: subscribed,
-                    account_opening_date: date,
-                    trial_end_date: trial_End_Date,
-                    country: req.body.country,
-                    city: req.body.city,
-                    state: req.body.state,
-                    categories: categ_ids || [],
-                    type,
+               let company_id;
+               const existingCompanyMongo = await Company.findOne({
+                    company_name: req.body.company_name,
                });
 
-               let company_data = await save_company.save();
-
-               try {
-                    const save_site = new Site(site(theme));
-                    const site_data = await save_site.save();
-                    await Company.findByIdAndUpdate(company_data?._id, {
-                         $set: { site: site_data?._id },
+               if (existingCompanyMongo) {
+                    console.log("Company already exists in MongoDB:", existingCompanyMongo);
+                    return res.status(200).json({
+                         status: true,
+                         message: "Company already exists",
+                         company: existingCompanyMongo,
                     });
-               } catch (err) {
-                    console.log("error creatting site", err);
-               }
+               } else {
+                    let partner = await odoo.execute_kw("res.partner", "create", [
+                         {
+                              is_company: true,
+                              is_published: true,
+                              is_public: true,
+                              name: company_name,
+                         },
+                    ]);
 
-               // HANDLE CREATE PRODUCTS
-               let params = {
-                    odoo,
-                    products: initProducts(company_id),
-               };
-               if (company_id)
-                    try {
-                         await addMultipleProducts({ ...params });
-                    } catch (err) {
-                         console.log("failed products", err);
+                    let domain = req.body.domain + "." + "imarketplace.world";
+
+                    const existingCompany = await odoo.execute_kw("res.company", "search_read", [
+                         [["name", "=", req.body.company_name]],
+                         ["id", "name"],
+                    ]);
+
+                    if (existingCompany.length > 0) {
+                         company_id = existingCompany[0]?.id;
+                    } else {
+                         company_id = await odoo.execute_kw("res.company", "create", [
+                              {
+                                   account_opening_date: date,
+                                   active: true,
+                                   name: req.body.company_name,
+                                   partner_id: partner,
+                                   website: domain,
+                                   email,
+                                   phone: user.phone,
+                                   currency_id: 1,
+                              },
+                         ]);
                     }
 
-               sendOnboardingEmail(email, firstname);
-               sendNotificationForOnboardedNewUsersToFounder(
-                    email,
-                    type,
-                    company_name,
-                    tenantname,
-                    subscribed,
-               );
+                    const save_company = new Company({
+                         user_id: _id,
+                         company_id: company_id,
+                         company_name: company_name,
+                         company_type: company_type,
+                         subdomain: tenantname,
+                         theme: theme?.name,
+                         phone: user.phone,
+                         logo: req.body.logo,
+                         brandcolor: brandcolor,
+                         subscription: subscription,
+                         subscribed: subscribed,
+                         account_opening_date: date,
+                         trial_end_date: trial_End_Date,
+                         country: req.body.country,
+                         city: req.body.city,
+                         state: req.body.state,
+                         categories: categ_ids || [],
+                         type,
+                    });
 
-               await User.findByIdAndUpdate(_id, {
-                    $set: { onboarded: true, company: company_data?._id },
-               });
+                    let company_data = await save_company.save();
 
-               res.status(201).json({ company: company_data, status: true });
+                    try {
+                         const save_site = new Site(site(theme));
+                         const site_data = await save_site.save();
+                         await Company.findByIdAndUpdate(company_data?._id, {
+                              $set: { site: site_data?._id },
+                         });
+                    } catch (err) {
+                         console.log("error creatting site", err);
+                    }
+
+                    // HANDLE CREATE PRODUCTS
+                    let params = {
+                         odoo,
+                         products: initProducts(company_id),
+                    };
+                    if (company_id)
+                         try {
+                              await addMultipleProducts({ ...params });
+                         } catch (err) {
+                              console.log("failed products", err);
+                         }
+
+                    sendOnboardingEmail(email, firstname);
+                    sendNotificationForOnboardedNewUsersToFounder(
+                         email,
+                         type,
+                         company_name,
+                         tenantname,
+                         subscribed,
+                    );
+
+                    await User.findByIdAndUpdate(_id, {
+                         $set: { onboarded: true, company: company_data?._id },
+                    });
+
+                    res.status(201).json({ company: company_data, status: true });
+               }
           } else {
                const save_company = new Company({
                     user_id: _id,
