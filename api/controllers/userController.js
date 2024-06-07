@@ -27,13 +27,10 @@ exports.register = async (req, res) => {
           await Odoo.connect();
 
           const ipAddress = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-          console.log("IP Address:", ipAddress);
-
           // Fetch timezone information using the IP address
           const response = await axios.get(`http://ip-api.com/json/${ipAddress}`);
           const timezone = response.data.timezone;
 
-          console.log("Timezone:", timezone);
           // TODO: add tenant id to verify
           let user = await User.findOne({ email: req.body.email });
           // console.log("user", user);
