@@ -428,14 +428,12 @@ exports.updateProductToOrderLine = async (req, res) => {
 
 exports.changeOrderStatus = async (req, res) => {
      try {
+          await Odoo.connect();
           const { orderId, newStatus } = req.body;
 
           if (!orderId || !newStatus) {
                return res.status(400).json({ error: "Invalid input data", status: false });
           }
-
-          // Connect to Odoo
-          // await Odoo.connect();
 
           // Update the order status
           const result = await Odoo.execute_kw("sale.order", "write", [
@@ -459,7 +457,7 @@ exports.changeOrderStatus = async (req, res) => {
                     .json({ status: false, message: "Failed to update order status." });
           }
      } catch (error) {
-          console.error("Error changing order status:", error.message);
+          console.error("Error changing order status:", error);
           return res.status(500).json({ error: "Internal Server Error", status: false });
      }
 };
@@ -469,65 +467,98 @@ async function updateProductQuantities(orderId) {
           // Retrieve order lines
           const orderLines = await Odoo.execute_kw("sale.order.line", "search_read", [
                [["order_id", "=", +orderId]],
-               ["product_uom_qty", "product_id", "x_variant"],
+               [
+                    "product_uom_qty",
+                    "product_id",
+                    "x_variant",
+                    "product_template_id",
+                    "price_unit",
+                    "company_id",
+               ],
           ]);
 
-          for (const line of orderLines) {
-               const productId = line.product_id[0];
-               const quantitySold = line.product_uom_qty;
-               const attributeValueId = JSON.parse(line.x_variant).id; // Assuming x_variant is a JSON string containing the id
+          // console.log("orderLines", orderLines);
+          try {
+               for (const line of orderLines) {
+                    const productId = line.product_id[0];
+                    const quantitySold = line.product_uom_qty;
+                    const attributeValueId = JSON.parse(line.x_variant)?.id; // Assuming x_variant is a JSON string containing the id
 
-               // Retrieve the product and its template
-               const product = await Odoo.execute_kw("product.product", "search_read", [
-                    [["id", "=", productId]],
-                    ["product_tmpl_id"],
-               ]);
+                    // Retrieve the product and its template
+                    const product = await Odoo.execute_kw("product.product", "search_read", [
+                         [["id", "=", productId]],
+                         ["product_tmpl_id"],
+                    ]);
 
-               if (product.length > 0) {
-                    const productTemplateId = product[0].product_tmpl_id[0];
+                    if (product.length > 0) {
+                         const productTemplateId = product[0].product_tmpl_id[0];
 
-                    // Retrieve current quantity from product template
-                    const productTemplate = await Odoo.execute_kw(
-                         "product.template",
+                         // Retrieve current quantity from product template
+                         const productTemplate = await Odoo.execute_kw(
+                              "product.template",
+                              "search_read",
+                              [[["id", "=", productTemplateId]], ["x_total_available_qty"]],
+                         );
+
+                         if (productTemplate.length > 0) {
+                              const currentQty = productTemplate[0].x_total_available_qty || 0;
+                              const newQty = currentQty - quantitySold;
+
+                              // Update product template quantity
+                              await Odoo.execute_kw("product.template", "write", [
+                                   [productTemplateId],
+                                   { x_total_available_qty: newQty },
+                              ]);
+                         }
+                    }
+
+                    // Update the attribute line quantity based on x_variant
+                    const attributeLine = await Odoo.execute_kw(
+                         "product.template.attribute.line",
                          "search_read",
-                         [[["id", "=", productTemplateId]], ["x_total_available_qty"]],
+                         [[["id", "=", attributeValueId]], ["x_quantity"]],
                     );
 
-                    if (productTemplate.length > 0) {
-                         const currentQty = productTemplate[0].x_total_available_qty || 0;
-                         const newQty = currentQty - quantitySold;
+                    if (attributeLine.length > 0) {
+                         const currentAttrQty = attributeLine[0].x_quantity || 0;
+                         const newAttrQty = currentAttrQty - quantitySold;
 
-                         // Update product template quantity
-                         await Odoo.execute_kw("product.template", "write", [
-                              [productTemplateId],
-                              { x_total_available_qty: newQty },
+                         // Update attribute line quantity
+                         await Odoo.execute_kw("product.template.attribute.line", "write", [
+                              [attributeValueId],
+                              { x_quantity: newAttrQty },
                          ]);
                     }
                }
-
-               // Update the attribute line quantity based on x_variant
-               const attributeLine = await Odoo.execute_kw(
-                    "product.template.attribute.line",
-                    "search_read",
-                    [[["id", "=", attributeValueId]], ["x_quantity"]],
-               );
-
-               if (attributeLine.length > 0) {
-                    const currentAttrQty = attributeLine[0].x_quantity || 0;
-                    const newAttrQty = currentAttrQty - quantitySold;
-
-                    // Update attribute line quantity
-                    await Odoo.execute_kw("product.template.attribute.line", "write", [
-                         [attributeValueId],
-                         { x_quantity: newAttrQty },
-                    ]);
-               }
+          } catch (error) {
+               console.log("error", error);
           }
+
+          const items = orderLines.map(
+               ({ product_template_id, product_uom_qty, price_unit, company_id }) => {
+                    // Extract product name from product details
+                    const productName = product_template_id?.[1];
+                    return {
+                         name: productName,
+                         price: price_unit,
+                         quantity: product_uom_qty,
+                         companyId: company_id?.[0],
+                    };
+               },
+          );
+
+          const orderDetails = {
+               orderId,
+               items,
+          };
+
+          sendSalesReport(items?.[0]?.companyId, orderDetails);
      } catch (error) {
           console.error("Error updating product quantities:", error.message);
-          throw error; // Rethrow to handle it in the outer catch block if necessary
+          // throw error; // Rethrow to handle it in the outer catch block if necessary
      }
 }
+
 exports.addDeliveryDetailsToOrder = async (req, res) => {
      try {
           const { orderId, deliveryPartnerId } = req.body;

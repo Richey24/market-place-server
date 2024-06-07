@@ -483,7 +483,7 @@ exports.createProductWithVariant = async (req, res) => {
                },
                // user: user
           };
-          console.log("pro", params.product);
+          // console.log("pro", params.product);
           const productId = await addProductVariant({ ...params });
           index.search(params.product.name).then(async ({ hits }) => {
                if (hits.length < 1) {

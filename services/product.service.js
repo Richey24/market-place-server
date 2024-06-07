@@ -362,7 +362,7 @@ const addProductVariant = async (params) => {
                     ? JSON.parse(params.product.product_tag_ids)
                     : [],
                x_featured_product: params?.product?.x_featured_product,
-               // qty_available: 5,
+               x_inventory_tracking: params?.product?.x_inventory_tracking,
           };
 
           // console.log("templateData", params?.product);
@@ -377,11 +377,11 @@ const addProductVariant = async (params) => {
 
                          if (!variant?.valueId) {
                               const attributeValueData = {
-                                   name: variant?.value, // Replace with the actual value
+                                   name: variant?.value,
                                    attribute_id: variant?.attributeId,
-                                   sequence: 1, // Optional: Display sequence
+                                   sequence: 1,
                               };
-                              console.log(attributeValueData);
+
                               attributeValueId = await params.odoo.execute_kw(
                                    "product.attribute.value",
                                    "create",
@@ -473,13 +473,15 @@ const updateProduct = async (params) => {
                x_images: params.product.images,
                x_show_sold_count: params?.product.x_show_sold_count,
                x_dimension: params.product.dimension,
+               x_inventory_tracking: params?.product?.x_inventory_tracking,
+               x_total_available_qty: +params?.product.x_total_available_qty,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
                [+params?.productId],
                productData,
           ]);
-          console.log("result", result);
+          // console.log("result", result);
 
           if (result) {
                console.log("Product data updated successfully. Product ID:", +params?.productId);
