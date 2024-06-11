@@ -39,6 +39,12 @@ exports.createVendorSubscription = async (req, res) => {
                          },
                     ],
                     mode: "subscription",
+                    metadata: {
+                         email: email,
+                         plan: plan,
+                         userID: id,
+                         mode: mode
+                    },
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -61,6 +67,12 @@ exports.createVendorSubscription = async (req, res) => {
                          },
                     ],
                     mode: "subscription",
+                    metadata: {
+                         email: email,
+                         plan: plan,
+                         userID: id,
+                         mode: mode
+                    },
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -591,23 +603,23 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                               },
                          );
 
-                         const order = await axios.get(
-                              `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
-                         );
-                         const theOrder = order.data.order[0].order_lines;
-                         for (const product of theOrder) {
-                              await User.findByIdAndUpdate(session.metadata.buyerId, {
-                                   $push: {
-                                        order_products: {
-                                             id: product.product_template_id[0],
-                                             name: product.product_id[1],
-                                             standard_price: product.price_total,
-                                             x_images: product.x_images,
-                                             company_id: session.metadata.siteId,
-                                        },
-                                   },
-                              });
-                         }
+                         // const order = await axios.get(
+                         //      `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
+                         // );
+                         // const theOrder = order.data.order[0].order_lines;
+                         // for (const product of theOrder) {
+                         //      await User.findByIdAndUpdate(session.metadata.buyerId, {
+                         //           $push: {
+                         //                order_products: {
+                         //                     id: product.product_template_id[0],
+                         //                     name: product.product_id[1],
+                         //                     standard_price: product.price_total,
+                         //                     x_images: product.x_images,
+                         //                     company_id: session.metadata.siteId,
+                         //                },
+                         //           },
+                         //      });
+                         // }
                          await Logger.create({
                               userID: session.metadata.buyerId,
                               siteId: session.metadata.siteId,
