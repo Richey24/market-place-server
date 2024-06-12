@@ -1116,7 +1116,7 @@ const sendCouponEmail = (email, name) => {
               <li>Copy and paste the code onto your store's landing page.</li>
             </ol>
             <p>Watch your sales grow as the Ads code works its magic!</p>
-            <p>If you need any assistance, our dedicated support team is here to help. Contact us at [support email/phone number].</p>
+            <p>If you need any assistance, our dedicated support team is here to help. Contact us at support@ishop.black.</p>
             <p>Don't miss out on this incredible opportunity to boost your online presence and generate more revenue. The FREE Ads code is our way of showing appreciation for your commitment to our marketplace.</p>
           </div>
           <div class="footer">
@@ -1223,7 +1223,7 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
           <div class="message">
             <a class="cta-button" href="${url}/reset-password/${token}">Reset Password</a>
             <p>Ignore this email if this was not requested by you.</p>
-            <p>If you need any assistance, our dedicated support team is here to help. Contact us at [support email/phone number].</p>
+            <p>If you need any assistance, our dedicated support team is here to help. Contact us at support@ishop.black.</p>
           </div>
           <div class="footer">
             <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
