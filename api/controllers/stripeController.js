@@ -205,7 +205,7 @@ exports.stripeVendorCallback = async (req, res) => {
                if (user) {
                     await axios.delete(
                          `https://market-server.azurewebsites.net/api/company/delete/${user.company}`,
-                    )
+                    );
                     await Logger.create({
                          userID: user._id,
                          eventType: "customer.subscription.deleted",
@@ -310,23 +310,23 @@ const stripeSession = async (req) => {
                line_items:
                     type !== "freelancer"
                          ? [
-                              {
-                                   price: process.env.MONTHLY_ADS,
-                                   quantity: 1,
-                              },
-                         ]
+                                {
+                                     price: process.env.MONTHLY_ADS,
+                                     quantity: 1,
+                                },
+                           ]
                          : [
-                              {
-                                   price_data: {
-                                        currency: "usd",
-                                        product_data: {
-                                             name: "FreeLancer Payment",
-                                        },
-                                        unit_amount: formattedPrice, // Price in cents
-                                   },
-                                   quantity: 1,
-                              },
-                         ],
+                                {
+                                     price_data: {
+                                          currency: "usd",
+                                          product_data: {
+                                               name: "FreeLancer Payment",
+                                          },
+                                          unit_amount: formattedPrice, // Price in cents
+                                     },
+                                     quantity: 1,
+                                },
+                           ],
 
                success_url: successUrl,
                cancel_url: cancelUrl,
@@ -578,6 +578,11 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                case "checkout.session.completed": {
                     const session = event.data.object;
                     if (session.mode !== "payment") {
+                         await Odoo.execute_kw("sale.order", "write", [
+                              [+session.metadata.orderId],
+                              { state: "draft" },
+                         ]);
+
                          return res.status(200).json("wrong webhook");
                     }
                     if (session.payment_status === "paid") {
@@ -594,8 +599,8 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                               `https://market-server.azurewebsites.net/api/orders/status`,
                               {
                                    orderId: session.metadata.orderId,
-                                   newStatus: "sale"
-                              }
+                                   newStatus: "sale",
+                              },
                          );
 
                          // const order = await axios.get(
