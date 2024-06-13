@@ -429,17 +429,17 @@ const site = (theme, services) => {
                                                   dealsBanner: [
                                                        {
                                                             imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-8.jpg",
+                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/68bac9b225f708ca47466a0d19e95749",
                                                             link: "/",
                                                        },
                                                        {
                                                             imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-7.jpg",
+                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2543f2b06939bfaf42016d83ea2c3d23",
                                                             link: "/",
                                                        },
                                                        {
                                                             imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo1-product/banner/banner-6.jpg",
+                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/f039b65d6d0da8e2e52bfd0b4d2db346",
                                                             link: "/",
                                                        },
                                                   ],
