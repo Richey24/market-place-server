@@ -56,6 +56,7 @@ const getProductById = async (id) => {
                     "x_total_available_qty",
                     "x_aliexpress_id",
                     "x_aliexpress_variant_id",
+                    "x_variants",
                ],
           ]);
           if (productData.length === 0) {
@@ -372,66 +373,66 @@ const addProductVariant = async (params) => {
           // console.log("templateData", params?.product);
           const templateId = await createProductTemplate(params, templateData);
 
-          if (params?.product?.variants && params?.product?.variants.length > 0) {
-               await params?.product?.variants?.forEach(async (container) => {
-                    await container.forEach(async (variant, idx) => {
-                         // console.log("variant", variant);
+          // if (params?.product?.variants && params?.product?.variants.length > 0) {
+          //      await params?.product?.variants?.forEach(async (container) => {
+          //           await container.forEach(async (variant, idx) => {
+          //                // console.log("variant", variant);
 
-                         let attributeValueId;
+          //                let attributeValueId;
 
-                         if (!variant?.valueId) {
-                              const attributeValueData = {
-                                   name: variant?.value,
-                                   attribute_id: variant?.attributeId,
-                                   sequence: 1,
-                              };
+          //                if (!variant?.valueId) {
+          //                     const attributeValueData = {
+          //                          name: variant?.value,
+          //                          attribute_id: variant?.attributeId,
+          //                          sequence: 1,
+          //                     };
 
-                              attributeValueId = await params.odoo.execute_kw(
-                                   "product.attribute.value",
-                                   "create",
-                                   [attributeValueData],
-                              );
-                         } else {
-                              attributeValueId = variant?.valueId;
-                         }
-                         console.log(attributeValueId);
-                         const attributeLineData = {
-                              product_tmpl_id: templateId,
-                              attribute_id: variant?.attributeId,
-                              value_ids: [[6, 0, [attributeValueId]]],
-                              x_price_extra: +variant?.price_extra || 0,
-                              x_quantity: +variant?.quantity || 1,
-                         };
+          //                     attributeValueId = await params.odoo.execute_kw(
+          //                          "product.attribute.value",
+          //                          "create",
+          //                          [attributeValueData],
+          //                     );
+          //                } else {
+          //                     attributeValueId = variant?.valueId;
+          //                }
+          //                console.log(attributeValueId);
+          //                const attributeLineData = {
+          //                     product_tmpl_id: templateId,
+          //                     attribute_id: variant?.attributeId,
+          //                     value_ids: [[6, 0, [attributeValueId]]],
+          //                     x_price_extra: +variant?.price_extra || 0,
+          //                     x_quantity: +variant?.quantity || 1,
+          //                };
 
-                         const attributeLineId = await params.odoo.execute_kw(
-                              "product.template.attribute.line",
-                              "create",
-                              [attributeLineData],
-                         );
+          //                const attributeLineId = await params.odoo.execute_kw(
+          //                     "product.template.attribute.line",
+          //                     "create",
+          //                     [attributeLineData],
+          //                );
 
-                         if (variant?.price_extra && variant?.price_extra !== 0) {
-                              ///ADD PRICE_EXTRA
-                              const attributeLineRespData = await Odoo.execute_kw(
-                                   "product.template.attribute.line",
-                                   "read",
-                                   [[attributeLineId], ["product_template_value_ids"]],
-                              );
+          //                if (variant?.price_extra && variant?.price_extra !== 0) {
+          //                     ///ADD PRICE_EXTRA
+          //                     const attributeLineRespData = await Odoo.execute_kw(
+          //                          "product.template.attribute.line",
+          //                          "read",
+          //                          [[attributeLineId], ["product_template_value_ids"]],
+          //                     );
 
-                              const productTemplateValueIds =
-                                   attributeLineRespData[0]?.product_template_value_ids || [];
-                              const attributeValueWriteData = {
-                                   price_extra: variant?.price_extra,
-                              };
+          //                     const productTemplateValueIds =
+          //                          attributeLineRespData[0]?.product_template_value_ids || [];
+          //                     const attributeValueWriteData = {
+          //                          price_extra: variant?.price_extra,
+          //                     };
 
-                              await params.odoo.execute_kw(
-                                   "product.template.attribute.value",
-                                   "write",
-                                   [[productTemplateValueIds[0]], attributeValueWriteData],
-                              );
-                         }
-                    });
-               });
-          }
+          //                     await params.odoo.execute_kw(
+          //                          "product.template.attribute.value",
+          //                          "write",
+          //                          [[productTemplateValueIds[0]], attributeValueWriteData],
+          //                     );
+          //                }
+          //           });
+          //      });
+          // }
 
           return templateId;
      } else {

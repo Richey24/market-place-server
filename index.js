@@ -8,7 +8,6 @@ const app = express();
 const webpush = require("web-push");
 const Visitor = require("./model/Visitor");
 const Odoo = require("./config/odoo.connection");
-const { sendAdminMessage } = require("./config/helpers");
 
 //configure database and mongoose
 mongoose
@@ -42,43 +41,6 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 
 app.use(morgan("dev")); // configire morgan
-
-
-["igzclothingz@gmail.com",
-     "otho432@gmail.com",
-     "richardmcfall@dmvcleaningsolutions.com",
-     "iconicgraphicz@gmail.com",
-     "tobiasbrowninc@gmail.com",
-     "4sumkoko@gmail.com",
-     "maritaferg@gmail.com",
-     "lshmws46@gmail.com",
-     "kimberlsw@gmail.com",
-     "tcynay08@gmail.com",
-     "merchunlimtd@gmail.com",
-     "msclbrooks.62@gmail.com",
-     "glover1199@gmail.com",
-     "harrispeter749@gmail.com",
-     "harrispeter435@gmail.com",
-     "ccriderrr@gmail.com",
-     "redplanetphotography@photographer.net",
-     "kinsharry58@gmail.com",
-     "nevershedtears4u1@gmail.com",
-     "thetrueblking@gmail.com"
-].forEach((email) => {
-     sendAdminMessage(email, "User", `We hope this email finds you well.
-We noticed that you were unable to complete the registration onboarding process for accessing your dashboard.
-To help you get started, You can log in to your dashboard by following these steps:
-Go to our website at https://www.dashboard.ishop.black/login then complete the onboarding to create your company and website, enter your username and password.
-If you do not remember your password, you can reset it by clicking on the “Forgot Password” link and following the instructions.
-If you encounter any issues while logging in or have any questions, please do not hesitate to reach out to our support team at support@ishop.black.
-Also, you have the option to book a session with us at https://calendly.com/ishopblack2024/imarketplace-orientation where one of our associates can assist you with configuring your site.
-We are here to assist you.
-Thank you for choosing our service and look forward to supporting you in growing your business.
-Best regards,
-I.b. Israel
-iMarketplace Support Team
-858.366.3838`)
-})
 
 // Middleware to track unique visitors, record the visited site URL, and maintain an array of visited pages
 app.use(async (req, res, next) => {

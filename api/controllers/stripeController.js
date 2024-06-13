@@ -39,6 +39,12 @@ exports.createVendorSubscription = async (req, res) => {
                          },
                     ],
                     mode: "subscription",
+                    metadata: {
+                         email: email,
+                         plan: plan,
+                         userID: id,
+                         mode: mode,
+                    },
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -61,6 +67,12 @@ exports.createVendorSubscription = async (req, res) => {
                          },
                     ],
                     mode: "subscription",
+                    metadata: {
+                         email: email,
+                         plan: plan,
+                         userID: id,
+                         mode: mode,
+                    },
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -580,7 +592,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          // Update the order status
                          // await Odoo.execute_kw("sale.order", "write", [
                          //      [+session.metadata.orderId],
-                         //      { state: "sale" },
+                         //      { state: "pending" },
                          // ]);
 
                          await axios.put(
