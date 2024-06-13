@@ -163,7 +163,7 @@ const bannerImages = {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo41-product/banner/banner-1.png",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo41-product/banner/banner-2.png",
     },
-    theme41: {
+    theme42: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo42-product/slider/slide1.jpg",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo42-product/slider/slide2.jpg",
     },
