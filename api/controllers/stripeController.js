@@ -594,6 +594,7 @@ exports.stripePrivateCheckoutCallback = async (req, res) => {
                          const order = await axios.get(
                               `https://market-server.azurewebsites.net/api/orders/${session.metadata.orderId}`,
                          );
+
                          const theOrder = order.data.order[0].order_lines;
                          for (const product of theOrder) {
                               await User.findByIdAndUpdate(session.metadata.buyerId, {

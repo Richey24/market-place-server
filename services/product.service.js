@@ -55,7 +55,7 @@ const getProductById = async (id) => {
                     "x_featured_product",
                     "x_total_available_qty",
                     "x_aliexpress_id",
-                    "x_aliexpress_variant_id"
+                    "x_aliexpress_variant_id",
                ],
           ]);
           if (productData.length === 0) {
@@ -363,6 +363,10 @@ const addProductVariant = async (params) => {
                     : [],
                x_featured_product: params?.product?.x_featured_product,
                x_inventory_tracking: params?.product?.x_inventory_tracking,
+               x_variants:
+                    params?.product?.variants && params?.product?.variants.length > 0
+                         ? JSON.stringify(params?.product?.variants)
+                         : false,
           };
 
           // console.log("templateData", params?.product);
