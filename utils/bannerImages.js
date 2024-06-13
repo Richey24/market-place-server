@@ -124,8 +124,8 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo31-product/banner/home_banner2.jpg",
     },
     theme32: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo32-product/slider/home_slide1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo32-product/slider/home_slide2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2eb95a46c8c09edd672fa55dd172fe19",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/c389df0070de9979f8bbf96bad6c7a74",
     },
     theme33: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo33-product/slider/slide-1.jpg",
