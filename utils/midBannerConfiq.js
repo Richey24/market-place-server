@@ -93,11 +93,11 @@ const midBannerConfig = {
      ],
      theme6: [
           {
-               imageUrl: bannerImages?.["theme6"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/528a0a5a2711fd4a67c9da3e2e6aaa0f",
                link: "/",
           },
           {
-               imageUrl: bannerImages?.["theme6"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/6b0ef1dde550351a476d3a5943dfd55b",
                link: "/",
           },
      ],
@@ -219,7 +219,7 @@ const midBannerConfig = {
      ],
      theme24: [
           {
-               imageUrl: bannerImages?.["theme24"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/d8ec3445f3961659ae4995e93bc09b53",
                link: "/",
           },
      ],
@@ -248,6 +248,14 @@ const midBannerConfig = {
                width: 300,
                height: 400,
           },
+     ],
+     theme26: [
+          {
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/927ee2292d2bd5d73b750046a80cc493",
+               link: "/",
+               width: 300,
+               height: 400,
+          }
      ],
      theme32: [
           {
