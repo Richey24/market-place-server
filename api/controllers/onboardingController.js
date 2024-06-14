@@ -423,6 +423,7 @@ const site = (theme, services) => {
                                                               majorDiscountText: "Up TO 80% OFF",
                                                               startingText: "starting AT",
                                                               amountText: "$39.99",
+                                                              position: "left",
                                                          },
                                                          {
                                                               imageUrl:
@@ -434,6 +435,7 @@ const site = (theme, services) => {
                                                               majorDiscountText: "Up TO 80% OFF",
                                                               startingText: "starting AT",
                                                               amountText: "$39.99",
+                                                              position: "left",
                                                          },
                                                     ],
                                                     dealsBanner: [
