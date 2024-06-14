@@ -4,92 +4,92 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/15113308190c6c0c98ed2edd250b7c78",
     },
     theme2: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo2-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo2-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/ff0f6797db3314e8d72b5b76c559e9f7",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/d4855528157090d33050d92e1f88c86e",
     },
     theme3: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/1177f7b27e500c56797a5d1b33a77aef",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/5fd8aed6e3235a162a1538b2088d9323",
     },
     theme4: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo4-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo4-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/1e3747fb39973512de4bb7ebed99e060",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2aac19cdf2b010cf8d9f081ad8289fbc",
     },
     theme5: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo5-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo5-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/d2b8141d2508734b70ebbd4de2e71f5f",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/6bee5c03c0799e49b6f0712d85af448a",
     },
     theme6: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/b9ffd8ce25ada924b06cb70e76121bfa",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/a51af73b0c2b55185ec202fb403279f6",
     },
     theme7: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo7-product/banner/banner-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo7-product/banner/banner-4.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/17ab56bffd6223b158d236cdbc243ba2",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/657f8751a8bf7e0eeceb523766809137",
     },
     theme8: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo8-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo8-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0d596d013402345bfe7f7de41e9f9c3e",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/9a182b9a60c32677c8cb98b73d5b3fcb",
     },
     theme9: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo9-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo9-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/76164a2b29cf3520eb829e878e464cc5",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/4145ce12368f0ba6b593d45d776edb69",
     },
     theme10: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo10-product/slider/slide-1.jpg",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo10-product/slider/slide-2.jpg",
     },
     theme11: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo11-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo11-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/373d24484f9b43e5ff18ee45f5892780",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/7aa9bdab936f4f1600fe38a266141b7b",
     },
     theme12: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo12-slide.jpg",
-        banner2: "",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/1e3747fb39973512de4bb7ebed99e060",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/97d4e5da532aa247a63b8581bc0de8b5",
     },
     theme13: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo13-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo13-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/d518c1cf1bccb540825e46d43305be38",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/91ecee795c6455a86a6f4ad0089582d5",
     },
     theme14: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/acb13e2c6c2483bf38169bb52503d091",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/424f27749c5369734f59a02c82efa1fd",
     },
     theme15: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo15-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo15-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/d4855528157090d33050d92e1f88c86e",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/ff0f6797db3314e8d72b5b76c559e9f7",
     },
     theme16: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo16-product/bgImages/bg-2.jpg",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo16-product/bgImages/bg-3.jpg",
     },
     theme17: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo17-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo17-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/fe2ad1b8fc80266b60c929c0f42c7b24",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/97d4e5da532aa247a63b8581bc0de8b5",
     },
     theme18: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/15ae2e9839c44b2d6bd9d107160b4898",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/3d450ca592a947d53445d7ff6d4cfc17",
     },
     theme19: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo19-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo19-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2418581689a77442bbc596f550bf8d83",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/ff0f6797db3314e8d72b5b76c559e9f7",
     },
     theme20: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo20-product/banner/banner-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo20-product/banner/banner-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/69a153c54917bd3f1ca8a81fbe5be5f9",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/aa35536bb2e27ab5af99844a45a67cd9",
     },
     theme21: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo21-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo21-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0d64aaf2b76d94611399be13c2959b24",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/a65a3e2d9796f22fe5e0e9c6acd0517e",
     },
     theme22: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/3e085f9fcc640f8197c84e707c3ac66a",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/424f27749c5369734f59a02c82efa1fd",
     },
     theme23: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo23-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo23-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/29c7e95933a2e7b0339f0f258bab9d20",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/c39eb53a2f9850d0992d31f9784a94d2",
     },
     theme24: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/fb26fb94c4f87834bacb9c97413deb12",
@@ -112,8 +112,8 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo28/banner/2.jpg",
     },
     theme29: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo29-product/banner/home-banner1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo29-product/banner/home-banner2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/37e67c005367dbd89d4ad2ac0c1090c4",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/c3c9193fe852c369259c5ba971564bbb",
     },
     theme30: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2eb95a46c8c09edd672fa55dd172fe19",
@@ -128,8 +128,8 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/a14960194c71aeb495ab6395223b61e0",
     },
     theme33: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo33-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo33-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/1e3747fb39973512de4bb7ebed99e060",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2aac19cdf2b010cf8d9f081ad8289fbc",
     },
     theme34: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/c0b6378a7124405018200a0c0f0bb16e",
@@ -144,8 +144,8 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2543f2b06939bfaf42016d83ea2c3d23",
     },
     theme37: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo37-product/slider/slide-1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo37-product/slider/slide-2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0846e9971566cb20682f19bcfa3c3946",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/fbd5991814b38c5cf9f0d58b95c5384a",
     },
     theme38: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0363e3fbcc2cb9fd7f65aa522d54a161",
@@ -160,12 +160,12 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/e9105d136e7a6c7528db907d7fe8d4cd",
     },
     theme41: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo41-product/banner/banner-1.png",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo41-product/banner/banner-2.png",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/7bab173cbe0031c5649205b031bf1164",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/042e206412ecfe8905f380c9447815fb",
     },
     theme42: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo42-product/slider/slide1.jpg",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/templates-images/demo42-product/slider/slide2.jpg",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/cb1333b7211439c49c9a3c92b7d61c16",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/3fca6ba76644d6fa7423f2ad706807b1",
     },
 }
 
