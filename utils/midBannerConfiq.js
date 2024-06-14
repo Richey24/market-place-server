@@ -145,7 +145,7 @@ const midBannerConfig = {
      ],
      theme14: [
           {
-               imageUrl: bannerImages?.["theme14"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/dc59d4acd0be8f0f4820d4669e9d0be4",
                link: "/",
           },
           {
@@ -153,7 +153,7 @@ const midBannerConfig = {
                link: "/",
           },
           {
-               imageUrl: bannerImages?.["theme14"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/57879d0db9b516f6ab9da1721f2022da",
                link: "/",
           },
      ],
@@ -171,6 +171,12 @@ const midBannerConfig = {
                link: "/",
           },
      ],
+     theme18: [
+          {
+               imageUrl: bannerImages?.["theme18"]?.banner1,
+               link: "/",
+          },
+     ],
      theme21: [
           {
                imageUrl: bannerImages?.["theme21"]?.banner1,
@@ -183,11 +189,11 @@ const midBannerConfig = {
      ],
      theme22: [
           {
-               imageUrl: bannerImages?.["theme22"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/aa35536bb2e27ab5af99844a45a67cd9",
                link: "/",
           },
           {
-               imageUrl: bannerImages?.["theme22"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/69a153c54917bd3f1ca8a81fbe5be5f9",
                link: "/",
           },
      ],
@@ -259,7 +265,7 @@ const midBannerConfig = {
      ],
      theme32: [
           {
-               imageUrl: bannerImages?.["theme32"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0dac05af2f0664c796f974475b66c8f3",
                link: "/",
           },
           {
@@ -267,7 +273,7 @@ const midBannerConfig = {
                link: "/",
           },
           {
-               imageUrl: bannerImages?.["theme32"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/4745401b126ab7a03f7215eddfaf8777",
                link: "/",
           },
           {
@@ -275,7 +281,7 @@ const midBannerConfig = {
                link: "/",
           },
           {
-               imageUrl: bannerImages?.["theme32"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2c273b44a701013366d108b4aa546a26",
                link: "/",
           },
      ],
@@ -299,7 +305,7 @@ const midBannerConfig = {
      ],
      theme34: [
           {
-               imageUrl: bannerImages?.["theme34"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/3a81904cde860755bf51c53e0281ac78",
                link: "/",
           },
           {
@@ -311,13 +317,19 @@ const midBannerConfig = {
                link: "/",
           },
           {
-               imageUrl: bannerImages?.["theme34"]?.banner1,
+               imageUrl: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/01aa158f51f7d186acb6823494f2c220",
                link: "/",
           },
      ],
      theme35: [
           {
                imageUrl: bannerImages?.["theme35"]?.banner1,
+               link: "/",
+          },
+     ],
+     theme36: [
+          {
+               imageUrl: bannerImages?.["theme36"]?.banner1,
                link: "/",
           },
      ],
