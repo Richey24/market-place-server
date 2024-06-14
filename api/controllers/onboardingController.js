@@ -31,513 +31,523 @@ const getErrorMessage = (faultCode) => {
 const site = (theme, services) => {
      return theme.type === "service"
           ? {
-               theme: theme?.name,
-               topAds: {
-                    name: "topAds",
-                    content: "",
-                    component: {
-                         theme: theme?.name,
-                         name: "",
-                         props: {
-                              static: {
-                                   show: true,
-                                   title: "Get Up to40% OFF New-Season Styles",
-                                   categories: ["men", "woman"],
-                                   additionalText: "Limited time only",
-                              },
-                         },
-                    },
-               },
-               footer: {
-                    name: "footer",
-                    content: "",
-                    component: {
-                         theme: theme?.name,
-                         name: "",
-                         props: {
-                              static: {
-                                   description: "Welcome to iMarketplace",
-                                   customerService: [
-                                        { name: "Help & Faq", link: "/contact-us" },
-                                        { name: "Shipping & Delivery", link: "/" },
-                                        { name: "Orders History", link: "/dashboard/orders" },
-                                        { name: "About Us", link: "/about" },
-                                        { name: "Refund Policy", link: "/privacy/refund" },
-                                        { name: "Shipping Policy", link: "/privacy/shipping" },
-                                   ],
-                                   popularTags: [],
-                                   businessHours: [
-                                        "Monday - Friday 9am to 5pm",
-                                        "Saturday - 9am to 2pm",
-                                        "Sunday - Closed",
-                                   ],
-                              },
-                         },
-                    },
-               },
-               header: {
-                    name: "header",
-                    content: "",
-                    component: {
-                         theme: theme?.name,
-                         props: {
-                              company: {},
-                              static: {
-                                   languages: [],
-                                   currencies: [],
-                                   socials: [
-                                        { name: "facebook", link: "/" },
-                                        { name: "instagram", link: "/" },
-                                        { name: "twitter", link: "/" },
-                                   ],
-                                   pageLinks: [
-                                        {
-                                             name: "home",
-                                             url: "/",
-                                             subMenu: null,
-                                        },
-                                   ],
-                              },
-                         },
-                    },
-               },
-               pages: [
-                    {
-                         name: "home",
-                         layout: "",
-                         sections: [
-                              {
-                                   name: "home",
-                                   content: "",
-                                   component: {
-                                        theme: theme?.name,
-                                        props: {
-                                             static: {
-                                                  brochures:
-                                                       "View our 2020 financial prospectus brochure for an easy to read guide on all of the services offer.",
+                 theme: theme?.name,
+                 topAds: {
+                      name: "topAds",
+                      content: "",
+                      component: {
+                           theme: theme?.name,
+                           name: "",
+                           props: {
+                                static: {
+                                     show: true,
+                                     title: "Get Up to40% OFF New-Season Styles",
+                                     categories: ["men", "woman"],
+                                     additionalText: "Limited time only",
+                                },
+                           },
+                      },
+                 },
+                 footer: {
+                      name: "footer",
+                      content: "",
+                      component: {
+                           theme: theme?.name,
+                           name: "",
+                           props: {
+                                static: {
+                                     description: "Welcome to iMarketplace",
+                                     customerService: [
+                                          { name: "Help & Faq", link: "/contact-us" },
+                                          { name: "Shipping & Delivery", link: "/" },
+                                          { name: "Orders History", link: "/dashboard/orders" },
+                                          { name: "About Us", link: "/about" },
+                                          { name: "Refund Policy", link: "/privacy/refund" },
+                                          { name: "Shipping Policy", link: "/privacy/shipping" },
+                                     ],
+                                     popularTags: [],
+                                     businessHours: [
+                                          "Monday - Friday 9am to 5pm",
+                                          "Saturday - 9am to 2pm",
+                                          "Sunday - Closed",
+                                     ],
+                                },
+                           },
+                      },
+                 },
+                 header: {
+                      name: "header",
+                      content: "",
+                      component: {
+                           theme: theme?.name,
+                           props: {
+                                company: {},
+                                static: {
+                                     languages: [],
+                                     currencies: [],
+                                     socials: [
+                                          { name: "facebook", link: "/" },
+                                          { name: "instagram", link: "/" },
+                                          { name: "twitter", link: "/" },
+                                     ],
+                                     pageLinks: [
+                                          {
+                                               name: "home",
+                                               url: "/",
+                                               subMenu: null,
+                                          },
+                                     ],
+                                },
+                           },
+                      },
+                 },
+                 pages: [
+                      {
+                           name: "home",
+                           layout: "",
+                           sections: [
+                                {
+                                     name: "home",
+                                     content: "",
+                                     component: {
+                                          theme: theme?.name,
+                                          props: {
+                                               static: {
+                                                    brochures:
+                                                         "View our 2020 financial prospectus brochure for an easy to read guide on all of the services offer.",
 
-                                                  serviceDetails: {
-                                                       label: "Home - Service Details.",
-                                                       image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/hand.jpg",
-                                                       subImage:
-                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/workers.jpg",
-                                                       title: "International Business Opportunities.",
-                                                       description:
-                                                            "There are many variations of passages of Lorem Ipsum available, but the majority have suffered altera tion in some form, by injected humour, or randomised words which don’t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn’t anything embarrassing hidden. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.",
-                                                       list: [
-                                                            {
-                                                                 title: "Seed do eiusmod tempor incididunt ut",
-                                                            },
-                                                            {
-                                                                 title: "Exercitation ullamco laboris nis.",
-                                                            },
-                                                            {
-                                                                 title: "Quis nostrud exerc citation.",
-                                                            },
-                                                            {
-                                                                 title: "Andomised words which don't look",
-                                                            },
-                                                            {
-                                                                 title: "Commodo consequat duis autex.",
-                                                            },
-                                                            {
-                                                                 title: "Andomised words which don't look",
-                                                            },
-                                                            {
-                                                                 title: "Andomised words which don't look",
-                                                            },
-                                                       ],
-                                                  },
-                                                  services,
-                                                  howItWorks: {
-                                                       description:
-                                                            "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best and why they should hire them for their security. Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
-                                                       list: [
-                                                            {
-                                                                 title: "Wait! What is VPN Service?",
-                                                                 description:
-                                                                      "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
-                                                            },
+                                                    serviceDetails: {
+                                                         label: "Home - Service Details.",
+                                                         image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/hand.jpg",
+                                                         subImage:
+                                                              "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/workers.jpg",
+                                                         title: "International Business Opportunities.",
+                                                         description:
+                                                              "There are many variations of passages of Lorem Ipsum available, but the majority have suffered altera tion in some form, by injected humour, or randomised words which don’t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn’t anything embarrassing hidden. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.",
+                                                         list: [
+                                                              {
+                                                                   title: "Seed do eiusmod tempor incididunt ut",
+                                                              },
+                                                              {
+                                                                   title: "Exercitation ullamco laboris nis.",
+                                                              },
+                                                              {
+                                                                   title: "Quis nostrud exerc citation.",
+                                                              },
+                                                              {
+                                                                   title: "Andomised words which don't look",
+                                                              },
+                                                              {
+                                                                   title: "Commodo consequat duis autex.",
+                                                              },
+                                                              {
+                                                                   title: "Andomised words which don't look",
+                                                              },
+                                                              {
+                                                                   title: "Andomised words which don't look",
+                                                              },
+                                                         ],
+                                                    },
+                                                    services,
+                                                    howItWorks: {
+                                                         description:
+                                                              "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best and why they should hire them for their security. Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                         list: [
+                                                              {
+                                                                   title: "Wait! What is VPN Service?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
 
-                                                            {
-                                                                 title: "Why you need security service before start a new business?",
-                                                                 description:
-                                                                      "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
-                                                            },
-                                                            {
-                                                                 title: "How to be more benighted on business now-a-days?",
-                                                                 description:
-                                                                      "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
-                                                            },
-                                                            {
-                                                                 title: "Our business is protecting yours?",
-                                                                 description:
-                                                                      "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
-                                                            },
-                                                       ],
-                                                  },
-                                                  midList: {
-                                                       title: "Gigabit Service, Fastest Always",
-                                                       list: [
-                                                            {
-                                                                 title: "The result of employees, over detailers and engineers",
-                                                            },
-                                                            {
-                                                                 title: "All coming together to solve problem before.",
-                                                            },
-                                                            {
-                                                                 title: "Teamwork it demonstrates both internally and externally",
-                                                            },
-                                                            {
-                                                                 title: "Outstanding in the creation of landmark buildings",
-                                                            },
-                                                            {
-                                                                 title: "The result of employees, over detailers and engineers",
-                                                            },
-                                                       ],
-                                                  },
-                                                  midSection: {
-                                                       audit: {
-                                                            description:
-                                                                 "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet",
-                                                       },
-                                                       strategy: {
-                                                            image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/female.jpg",
-                                                            title: "International Business Opportunities.",
-                                                            description:
-                                                                 "Adipisicing elit, sed do eiusmod tempor incididunt ul labore et dolore magna aliqua",
-                                                            list: [
-                                                                 {
-                                                                      title: "research beyond the business plan",
-                                                                 },
-                                                                 {
-                                                                      title: "marketing options and rates.",
-                                                                 },
-                                                                 {
-                                                                      title: "the ability to turnaround consulting.",
-                                                                 },
-                                                            ],
-                                                       },
-                                                       sustainability: {
-                                                            title: "Project Results.",
-                                                            image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/graph.png",
-                                                            description:
-                                                                 "There are many variations of passages of Lorem ipsum available, but the majority have suffered altera tion in some form, by injected, Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. eu fugiat nulla pariatur. Enim minim veniam quis nostrud. exercitation ullamco laboris nisi aliquip",
-                                                       },
-                                                  },
-                                             },
-                                        },
-                                   },
-                              },
-                         ],
-                    },
-               ],
-               pageLinks: ["home", "shop"],
-               styles: {
-                    colors: [],
-                    mode: "light",
-                    demoLink: "demo13",
-               },
-               shipping: {
-                    free: {
-                         condition: {
-                              target: "quantity",
-                              count: 50,
-                         },
-                         enabled: true,
-                    },
-               },
-          }
+                                                              {
+                                                                   title: "Why you need security service before start a new business?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
+                                                              {
+                                                                   title: "How to be more benighted on business now-a-days?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
+                                                              {
+                                                                   title: "Our business is protecting yours?",
+                                                                   description:
+                                                                        "Security companies are working all around the world to protect homes, offices and other buildings. Many security companies are using slogans and taglines to distinguish themselves from their competitors and to tell the public why they are the best & why they should hire them for their security Thinking a slogan or tagline for a security company can be very hard. In this post, we have gathered",
+                                                              },
+                                                         ],
+                                                    },
+                                                    midList: {
+                                                         title: "Gigabit Service, Fastest Always",
+                                                         list: [
+                                                              {
+                                                                   title: "The result of employees, over detailers and engineers",
+                                                              },
+                                                              {
+                                                                   title: "All coming together to solve problem before.",
+                                                              },
+                                                              {
+                                                                   title: "Teamwork it demonstrates both internally and externally",
+                                                              },
+                                                              {
+                                                                   title: "Outstanding in the creation of landmark buildings",
+                                                              },
+                                                              {
+                                                                   title: "The result of employees, over detailers and engineers",
+                                                              },
+                                                         ],
+                                                    },
+                                                    midSection: {
+                                                         audit: {
+                                                              description:
+                                                                   "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet",
+                                                         },
+                                                         strategy: {
+                                                              image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/female.jpg",
+                                                              title: "International Business Opportunities.",
+                                                              description:
+                                                                   "Adipisicing elit, sed do eiusmod tempor incididunt ul labore et dolore magna aliqua",
+                                                              list: [
+                                                                   {
+                                                                        title: "research beyond the business plan",
+                                                                   },
+                                                                   {
+                                                                        title: "marketing options and rates.",
+                                                                   },
+                                                                   {
+                                                                        title: "the ability to turnaround consulting.",
+                                                                   },
+                                                              ],
+                                                         },
+                                                         sustainability: {
+                                                              title: "Project Results.",
+                                                              image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/graph.png",
+                                                              description:
+                                                                   "There are many variations of passages of Lorem ipsum available, but the majority have suffered altera tion in some form, by injected, Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore. eu fugiat nulla pariatur. Enim minim veniam quis nostrud. exercitation ullamco laboris nisi aliquip",
+                                                         },
+                                                    },
+                                               },
+                                          },
+                                     },
+                                },
+                           ],
+                      },
+                 ],
+                 pageLinks: ["home", "shop"],
+                 styles: {
+                      colors: [],
+                      mode: "light",
+                      demoLink: "demo13",
+                 },
+                 shipping: {
+                      free: {
+                           condition: {
+                                target: "quantity",
+                                count: 50,
+                           },
+                           enabled: true,
+                      },
+                 },
+            }
           : {
-               theme: theme?.name,
-               topAds: {
-                    name: "topAds",
-                    content: "",
-                    component: {
-                         theme: theme?.name,
-                         name: "",
-                         props: {
-                              static: {
-                                   show: true,
-                                   title: "Get Up to40% OFF New-Season Styles",
-                                   categories: ["men", "woman"],
-                                   additionalText: "Limited time only",
-                              },
-                         },
-                    },
-               },
-               footer: {
-                    name: "footer",
-                    content: "",
-                    component: {
-                         theme: theme?.name,
-                         name: "",
-                         props: {
-                              static: {
-                                   description:
-                                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis consectetur auctor elit.",
-                                   customerService: [
-                                        { name: "Help & Faq", link: "/" },
-                                        { name: "Order Tracking", link: "/" },
-                                        { name: "Shipping & Delivery", link: "/" },
-                                        { name: "Orders History", link: "/" },
-                                        { name: "Advanced Search", link: "/" },
-                                        { name: "About Us", link: "/" },
-                                        { name: "Corporate Sales", link: "/" },
-                                        { name: "Privacy", link: "/" },
-                                   ],
-                                   popularTags: [
-                                        { name: "Cloths", link: "/" },
-                                        { name: "Fashions", link: "/" },
-                                        { name: "Hub", link: "/" },
-                                        { name: "Shirt", link: "/" },
-                                        { name: "Skirt", link: "/" },
-                                        { name: "Sports", link: "/" },
-                                        { name: "Sweater", link: "/" },
-                                   ],
-                                   businessHours: [
-                                        "Monday - Friday 9am to 5pm",
-                                        "Saturday - 9am to 2pm",
-                                        "Sunday - Closed",
-                                   ],
-                              },
-                         },
-                    },
-               },
-               header: {
-                    name: "header",
-                    content: "",
-                    component: {
-                         theme: theme?.name,
-                         props: {
-                              company: {},
-                              static: {
-                                   languages: [],
-                                   currencies: [],
-                                   socials: [
-                                        { name: "facebook", link: "/" },
-                                        { name: "instagram", link: "/" },
-                                        { name: "twitter", link: "/" },
-                                   ],
-                                   pageLinks: [
-                                        {
-                                             name: "home",
-                                             url: "/",
-                                             subMenu: null,
-                                        },
-                                   ],
-                              },
-                         },
-                    },
-               },
-               pages: [
-                    {
-                         name: "home",
-                         layout: "",
-                         sections: [
-                              {
-                                   name: "home",
-                                   content: "",
-                                   component: {
-                                        theme: theme?.name,
-                                        props: {
-                                             static: {
-                                                  brochures:
-                                                       "View our 2020 financial prospectus brochure for an easy to read guide on all of the services offer.",
-                                                  promotion: {
-                                                       enabled: true,
-                                                       promotion: {},
-                                                  },
-                                                  guarantee: {
-                                                       shipping: "",
-                                                       money: "",
-                                                       support: "",
-                                                  },
-                                                  serviceDetails: {
-                                                       label: "Home - Service Details.",
-                                                       image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/hand.jpg",
-                                                       subImage:
-                                                            "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/workers.jpg",
-                                                       title: "International Business Opportunities.",
-                                                       description:
-                                                            "There are many variations of passages of Lorem Ipsum available, but the majority have suffered altera tion in some form, by injected humour, or randomised words which don’t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn’t anything embarrassing hidden. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.",
-                                                       list: [
-                                                            {
-                                                                 title: "Seed do eiusmod tempor incididunt ut",
-                                                            },
-                                                            {
-                                                                 title: "Exercitation ullamco laboris nis.",
-                                                            },
-                                                            {
-                                                                 title: "Quis nostrud exerc citation.",
-                                                            },
-                                                            {
-                                                                 title: "Andomised words which don't look",
-                                                            },
-                                                            {
-                                                                 title: "Commodo consequat duis autex.",
-                                                            },
-                                                            {
-                                                                 title: "Andomised words which don't look",
-                                                            },
-                                                            {
-                                                                 title: "Andomised words which don't look",
-                                                            },
-                                                       ],
-                                                  },
-                                                  categories: [
-                                                       {
-                                                            title: "Finance Management",
-                                                       },
-                                                       {
-                                                            title: "Banking Investigation",
-                                                       },
-                                                       {
-                                                            title: "Business Insurance",
-                                                       },
-                                                       {
-                                                            title: "Car Insurance",
-                                                       },
-                                                       {
-                                                            title: "Market Research",
-                                                       },
-                                                       {
-                                                            title: "Home Insurance",
-                                                       },
-                                                       {
-                                                            title: "Life Insurance",
-                                                       },
-                                                       {
-                                                            title: "Health Insurance",
-                                                       },
-                                                  ],
-                                                  midBanner: midBannerConfig?.[theme?.name] ?? [],
-                                                  banner: [
-                                                       {
-                                                            imageUrl:
-                                                                 bannerImages?.[theme?.name]
-                                                                      ?.banner1,
-                                                            link: "/",
-                                                       },
-                                                       {
-                                                            imageUrl:
-                                                                 bannerImages?.[theme?.name]
-                                                                      ?.banner2,
-                                                            link: "/",
-                                                       },
-                                                  ],
-                                                  dealsBanner: [
-                                                       {
-                                                            imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/68bac9b225f708ca47466a0d19e95749",
-                                                            link: "/",
-                                                       },
-                                                       {
-                                                            imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2543f2b06939bfaf42016d83ea2c3d23",
-                                                            link: "/",
-                                                       },
-                                                       {
-                                                            imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/f039b65d6d0da8e2e52bfd0b4d2db346",
-                                                            link: "/",
-                                                       },
-                                                  ],
-                                             },
-                                        },
-                                   },
-                              },
-                         ],
-                    },
-                    {
-                         name: "about_us",
-                         layout: "",
-                         sections: [
-                              {
-                                   name: "about_us",
-                                   content: "",
-                                   component: {
-                                        theme: theme?.name,
-                                        props: {
-                                             static: {
-                                                  history: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. desktop publishing software like Aldus PageMaker including versions. was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently",
-                                                  team: [
-                                                       {
-                                                            name: "Victor",
-                                                            role: "Engineer",
-                                                            image_url: "",
-                                                       },
-                                                       {
-                                                            name: "Ib",
-                                                            role: "CEO",
-                                                            image_url: "",
-                                                       },
-                                                  ],
-                                             },
-                                        },
-                                   },
-                              },
-                         ],
-                    },
-                    {
-                         name: "contact_us",
-                         layout: "",
-                         sections: [
-                              {
-                                   name: "contact_us",
-                                   content: "",
-                                   component: {
-                                        theme: theme?.name,
-                                        props: {
-                                             static: {
-                                                  contact_email: "example@gmail.com",
-                                                  getInTouch:
-                                                       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget leo at velit imperdiet varius. In eu ipsum vitae velit congue iaculis vitae at risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                                                  businessHours: [
-                                                       "Monday - Friday 9am to 5pm",
-                                                       "Saturday - 9am to 2pm",
-                                                       "Sunday - Closed",
-                                                  ],
-                                                  faq: [
-                                                       {
-                                                            title: "this is just a test",
-                                                            description:
-                                                                 "this is just a text descriptions",
-                                                       },
-                                                       {
-                                                            title: "this is just a test",
-                                                            description:
-                                                                 "this is just a text descriptions",
-                                                       },
-                                                       {
-                                                            title: "this is just a test",
-                                                            description:
-                                                                 "this is just a text descriptions",
-                                                       },
-                                                  ],
-                                             },
-                                        },
-                                   },
-                              },
-                         ],
-                    },
-               ],
-               pageLinks: ["home", "shop"],
-               styles: {
-                    colors: [],
-                    mode: "light",
-                    demoLink: "demo13",
-               },
-               shipping: {
-                    free: {
-                         condition: {
-                              target: "quantity",
-                              count: 50,
-                         },
-                         enabled: true,
-                    },
-               },
-          };
+                 theme: theme?.name,
+                 topAds: {
+                      name: "topAds",
+                      content: "",
+                      component: {
+                           theme: theme?.name,
+                           name: "",
+                           props: {
+                                static: {
+                                     show: true,
+                                     title: "Get Up to40% OFF New-Season Styles",
+                                     categories: ["men", "woman"],
+                                     additionalText: "Limited time only",
+                                },
+                           },
+                      },
+                 },
+                 footer: {
+                      name: "footer",
+                      content: "",
+                      component: {
+                           theme: theme?.name,
+                           name: "",
+                           props: {
+                                static: {
+                                     description:
+                                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis consectetur auctor elit.",
+                                     customerService: [
+                                          { name: "Help & Faq", link: "/" },
+                                          { name: "Order Tracking", link: "/" },
+                                          { name: "Shipping & Delivery", link: "/" },
+                                          { name: "Orders History", link: "/" },
+                                          { name: "Advanced Search", link: "/" },
+                                          { name: "About Us", link: "/" },
+                                          { name: "Corporate Sales", link: "/" },
+                                          { name: "Privacy", link: "/" },
+                                     ],
+                                     popularTags: [
+                                          { name: "Cloths", link: "/" },
+                                          { name: "Fashions", link: "/" },
+                                          { name: "Hub", link: "/" },
+                                          { name: "Shirt", link: "/" },
+                                          { name: "Skirt", link: "/" },
+                                          { name: "Sports", link: "/" },
+                                          { name: "Sweater", link: "/" },
+                                     ],
+                                     businessHours: [
+                                          "Monday - Friday 9am to 5pm",
+                                          "Saturday - 9am to 2pm",
+                                          "Sunday - Closed",
+                                     ],
+                                },
+                           },
+                      },
+                 },
+                 header: {
+                      name: "header",
+                      content: "",
+                      component: {
+                           theme: theme?.name,
+                           props: {
+                                company: {},
+                                static: {
+                                     languages: [],
+                                     currencies: [],
+                                     socials: [
+                                          { name: "facebook", link: "/" },
+                                          { name: "instagram", link: "/" },
+                                          { name: "twitter", link: "/" },
+                                     ],
+                                     pageLinks: [
+                                          {
+                                               name: "home",
+                                               url: "/",
+                                               subMenu: null,
+                                          },
+                                     ],
+                                },
+                           },
+                      },
+                 },
+                 pages: [
+                      {
+                           name: "home",
+                           layout: "",
+                           sections: [
+                                {
+                                     name: "home",
+                                     content: "",
+                                     component: {
+                                          theme: theme?.name,
+                                          props: {
+                                               static: {
+                                                    brochures:
+                                                         "View our 2020 financial prospectus brochure for an easy to read guide on all of the services offer.",
+                                                    promotion: {
+                                                         enabled: true,
+                                                         promotion: {},
+                                                    },
+                                                    guarantee: {
+                                                         shipping: "",
+                                                         money: "",
+                                                         support: "",
+                                                    },
+                                                    serviceDetails: {
+                                                         label: "Home - Service Details.",
+                                                         image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/hand.jpg",
+                                                         subImage:
+                                                              "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/workers.jpg",
+                                                         title: "International Business Opportunities.",
+                                                         description:
+                                                              "There are many variations of passages of Lorem Ipsum available, but the majority have suffered altera tion in some form, by injected humour, or randomised words which don’t look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn’t anything embarrassing hidden. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet.",
+                                                         list: [
+                                                              {
+                                                                   title: "Seed do eiusmod tempor incididunt ut",
+                                                              },
+                                                              {
+                                                                   title: "Exercitation ullamco laboris nis.",
+                                                              },
+                                                              {
+                                                                   title: "Quis nostrud exerc citation.",
+                                                              },
+                                                              {
+                                                                   title: "Andomised words which don't look",
+                                                              },
+                                                              {
+                                                                   title: "Commodo consequat duis autex.",
+                                                              },
+                                                              {
+                                                                   title: "Andomised words which don't look",
+                                                              },
+                                                              {
+                                                                   title: "Andomised words which don't look",
+                                                              },
+                                                         ],
+                                                    },
+                                                    categories: [
+                                                         {
+                                                              title: "Finance Management",
+                                                         },
+                                                         {
+                                                              title: "Banking Investigation",
+                                                         },
+                                                         {
+                                                              title: "Business Insurance",
+                                                         },
+                                                         {
+                                                              title: "Car Insurance",
+                                                         },
+                                                         {
+                                                              title: "Market Research",
+                                                         },
+                                                         {
+                                                              title: "Home Insurance",
+                                                         },
+                                                         {
+                                                              title: "Life Insurance",
+                                                         },
+                                                         {
+                                                              title: "Health Insurance",
+                                                         },
+                                                    ],
+                                                    midBanner: midBannerConfig?.[theme?.name] ?? [],
+                                                    banner: [
+                                                         {
+                                                              imageUrl:
+                                                                   bannerImages?.[theme?.name]
+                                                                        ?.banner1,
+                                                              link: "/",
+                                                              text: "Find the boundaries, push through",
+                                                              title: "Jeans Sales",
+                                                              majorDiscountText: "Up TO 80% OFF",
+                                                              startingText: "starting AT",
+                                                              amountText: "$39.99",
+                                                         },
+                                                         {
+                                                              imageUrl:
+                                                                   bannerImages?.[theme?.name]
+                                                                        ?.banner2,
+                                                              link: "/",
+                                                              text: "Find the boundaries, push through",
+                                                              title: "Jeans Sales",
+                                                              majorDiscountText: "Up TO 80% OFF",
+                                                              startingText: "starting AT",
+                                                              amountText: "$39.99",
+                                                         },
+                                                    ],
+                                                    dealsBanner: [
+                                                         {
+                                                              imageUrl:
+                                                                   "https://absa7kzimnaf.blob.core.windows.net/newcontainer/68bac9b225f708ca47466a0d19e95749",
+                                                              link: "/",
+                                                         },
+                                                         {
+                                                              imageUrl:
+                                                                   "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2543f2b06939bfaf42016d83ea2c3d23",
+                                                              link: "/",
+                                                         },
+                                                         {
+                                                              imageUrl:
+                                                                   "https://absa7kzimnaf.blob.core.windows.net/newcontainer/f039b65d6d0da8e2e52bfd0b4d2db346",
+                                                              link: "/",
+                                                         },
+                                                    ],
+                                               },
+                                          },
+                                     },
+                                },
+                           ],
+                      },
+                      {
+                           name: "about_us",
+                           layout: "",
+                           sections: [
+                                {
+                                     name: "about_us",
+                                     content: "",
+                                     component: {
+                                          theme: theme?.name,
+                                          props: {
+                                               static: {
+                                                    history: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In eu libero ligula. Fusce eget metus lorem, ac viverra leo. desktop publishing software like Aldus PageMaker including versions. was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently",
+                                                    team: [
+                                                         {
+                                                              name: "Victor",
+                                                              role: "Engineer",
+                                                              image_url: "",
+                                                         },
+                                                         {
+                                                              name: "Ib",
+                                                              role: "CEO",
+                                                              image_url: "",
+                                                         },
+                                                    ],
+                                               },
+                                          },
+                                     },
+                                },
+                           ],
+                      },
+                      {
+                           name: "contact_us",
+                           layout: "",
+                           sections: [
+                                {
+                                     name: "contact_us",
+                                     content: "",
+                                     component: {
+                                          theme: theme?.name,
+                                          props: {
+                                               static: {
+                                                    contact_email: "example@gmail.com",
+                                                    getInTouch:
+                                                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eget leo at velit imperdiet varius. In eu ipsum vitae velit congue iaculis vitae at risus. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                                                    businessHours: [
+                                                         "Monday - Friday 9am to 5pm",
+                                                         "Saturday - 9am to 2pm",
+                                                         "Sunday - Closed",
+                                                    ],
+                                                    faq: [
+                                                         {
+                                                              title: "this is just a test",
+                                                              description:
+                                                                   "this is just a text descriptions",
+                                                         },
+                                                         {
+                                                              title: "this is just a test",
+                                                              description:
+                                                                   "this is just a text descriptions",
+                                                         },
+                                                         {
+                                                              title: "this is just a test",
+                                                              description:
+                                                                   "this is just a text descriptions",
+                                                         },
+                                                    ],
+                                               },
+                                          },
+                                     },
+                                },
+                           ],
+                      },
+                 ],
+                 pageLinks: ["home", "shop"],
+                 styles: {
+                      colors: [],
+                      mode: "light",
+                      demoLink: "demo13",
+                 },
+                 shipping: {
+                      free: {
+                           condition: {
+                                target: "quantity",
+                                count: 50,
+                           },
+                           enabled: true,
+                      },
+                 },
+            };
 };
 
 exports.postOnboarding = async (req, res) => {
