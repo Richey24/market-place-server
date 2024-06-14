@@ -424,6 +424,7 @@ const site = (theme, services) => {
                                                               startingText: "starting AT",
                                                               amountText: "$39.99",
                                                               position: "left",
+                                                              displayText: true,
                                                          },
                                                          {
                                                               imageUrl:
@@ -436,6 +437,7 @@ const site = (theme, services) => {
                                                               startingText: "starting AT",
                                                               amountText: "$39.99",
                                                               position: "left",
+                                                              displayText: true,
                                                          },
                                                     ],
                                                     dealsBanner: [
