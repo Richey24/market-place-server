@@ -63,87 +63,7 @@ const getProductById = async (id) => {
                return [];
           }
 
-          let attributeLineIds = productData[0].attribute_line_ids || [];
-          // attributeLineIds = attributeLineIds?.map(async (attributeLineId) => {
-          //      let attributeLineData = await Odoo.execute_kw(
-          //           "product.template.attribute.line",
-          //           "read",
-          //           [[attributeLineId], []],
-          //      );
-
-          //      attributeLineData = await attributeLineData?.map(async (lineData) => {
-          //           // const valueIds = lineData?.value_ids || [];
-          //           let productTemplateValueIds = lineData?.product_template_value_ids || [];
-
-          //           // for (const valueId of valueIds) {
-          //           //      const attributeValueData = await Odoo.execute_kw(
-          //           //           "product.attribute.value",
-          //           //           "read",
-          //           //           [[valueId], []],
-          //           //      );
-
-          //           //      console.log("Attribute Value ID:", attributeValueData);
-          //           // }
-
-          //           productTemplateValueIds = productTemplateValueIds?.map(
-          //                async (productTemplateValueId) => {
-          //                     const productTemplateValueData = await Odoo.execute_kw(
-          //                          "product.template.attribute.value",
-          //                          "read",
-          //                          [[productTemplateValueId], []],
-          //                     );
-
-          //                     return await productTemplateValueData;
-          //                },
-          //           );
-
-          //           productTemplateValueIds = await Promise.all(productTemplateValueIds);
-
-          //           return {
-          //                ...lineData,
-          //                product_template_value_ids_data: productTemplateValueIds,
-          //           };
-          //           // return lineData;
-          //      });
-          //      // attributeLineIds = await Promise.all(attributeLineData);
-          //      // console.log("Attribute Line ID:", await attributeLineData);
-
-          //      attributeLineData = Promise.all(attributeLineData);
-          //      return await attributeLineData;
-          // });
-          // attributeLineIds = await Promise.all(attributeLineIds);
-          // // console.log("attributeLineIds", attributeLineIds);
-
-          const variant1 = [];
-
-          for (const attributeLineId of attributeLineIds) {
-               let attributeLineData = await Odoo.execute_kw(
-                    "product.template.attribute.line",
-                    "read",
-                    [[attributeLineId], []],
-               );
-               // console.log("attributeLineData", attributeLineData);
-               if (attributeLineData) {
-                    const variant2 = [];
-                    for (const lineData of attributeLineData) {
-                         let productTemplateValueIds = lineData?.product_template_value_ids || [];
-                         const variant3 = [];
-                         for (const productTemplateValueId of productTemplateValueIds) {
-                              const productTemplateValueData = await Odoo.execute_kw(
-                                   "product.template.attribute.value",
-                                   "read",
-                                   [[productTemplateValueId], []],
-                              );
-                              variant3.push(productTemplateValueData);
-                         }
-                         // console.log(variant3);
-                         variant2.push({ ...lineData, product_template_value_ids_data: variant3 });
-                    }
-                    variant1.push(variant2);
-               }
-          }
-          // console.log("attribute_line_ids_data", variant1);
-          return [{ ...productData[0], attribute_line_ids_data: variant1 }];
+          return [{ ...productData[0] }];
      } catch (e) {
           console.error("XMPLC Error", e);
      }
@@ -504,42 +424,93 @@ const updateProduct = async (params) => {
 
 const addMultipleProducts = async (params) => {
      try {
+          await params.odoo.connect();
+
           const productIds = [];
-          for (const product of params.products) {
-               // // Connect to Odoo instance
-               await params.odoo.connect();
+          let parentCateg;
+          for (const categs of params?.productsAndCateg) {
+               for (const product of categs?.products) {
+                    let public_categ;
 
-               // // Create the product
-               const productData = {
-                    base_unit_count: product.qty,
-                    categ_id: product.category_id,
-                    list_price: product.list_price,
-                    standard_price: product.standard_price,
-                    name: product.name,
-                    uom_name: product.uom_name,
-                    display_name: product.name,
-                    website_published: product.published,
-                    company_id: product.company_id,
-                    x_images: product.images,
-               };
+                    let category_id = await params.odoo.execute_kw(
+                         "product.public.category",
+                         "search_read",
+                         [[["name", "=", product?.public_categ]], ["id", "name"]],
+                    );
 
-               const productId = await params.odoo.execute_kw("product.template", "create", [
-                    productData,
-               ]);
+                    if (category_id?.length > 0) {
+                         public_categ = category_id[0].id;
+                    } else {
+                         const category_id = await params.odoo.execute_kw(
+                              "product.public.category",
+                              "create",
+                              [{ name: product?.public_categ }],
+                         );
+                         public_categ = category_id;
+                    }
+                    parentCateg = public_categ;
 
-               // // Write the images if provided
-               // for (const base64Image of base64Images) {
-               //      await params.odoo.execute_kw("product.template", "write", [
-               //           [productId],
-               //           { image_1920: base64Image.base64 },
-               //      ]);
-               // }
-               productIds.push(productId);
-               // Log the ID of the created product
-               console.log(`Product created with ID: ${productId}`);
+                    const templateData = {
+                         base_unit_count: product?.qty,
+                         public_categ_ids: [+public_categ],
+                         list_price: +product?.list_price,
+                         standard_price: +product?.standard_price,
+                         name: product.name,
+                         uom_name: product.uom_name,
+                         display_name: product.name,
+                         description: product.description,
+                         website_published: product.published,
+                         company_id: product?.company_id,
+                         // x_color: product.color,
+                         // x_subcategory: product.subcategory,
+                         x_size: product.size,
+                         x_weight: product?.weight,
+                         x_images: product.images,
+                         x_dimension: product.dimension,
+                         x_brand_gate_id: product.brand_gate_id,
+                         x_brand_gate_variant_id: product.brand_gate_variant_id,
+                         x_shipping_package: JSON?.stringify(product?.x_shipping_package),
+                         x_free_shipping: product.free_shipping,
+                         x_show_sold_count: product.x_show_sold_count,
+                         x_discount: product?.discount ? JSON.stringify(product?.discount) : null,
+                         x_total_available_qty: +product.x_total_available_qty,
+                         x_featured_product: product?.x_featured_product,
+                         x_inventory_tracking: product?.x_inventory_tracking,
+                         x_variants:
+                              product?.variants && product?.variants.length > 0
+                                   ? JSON.stringify(product?.variants)
+                                   : false,
+                    };
+
+                    const productId = await params.odoo.execute_kw("product.template", "create", [
+                         templateData,
+                    ]);
+
+                    productIds.push(productId);
+                    // Log the ID of the created product
+                    console.log(`Product created with ID: ${productId}`);
+               }
+               try {
+                    if (categs?.categories)
+                         for (const categ of categs?.categories) {
+                              let category_id = await params.odoo.execute_kw(
+                                   "product.public.category",
+                                   "search_read",
+                                   [[["name", "=", categ?.name]], ["id", "name"]],
+                              );
+                              if (category_id?.length === 0) {
+                                   await params.odoo.execute_kw(
+                                        "product.public.category",
+                                        "create",
+                                        [{ name: categ?.name }],
+                                   );
+                              }
+                         }
+               } catch (err) {
+                    console.log("error from creating categories", err);
+               }
           }
 
-          // Return a success message or relevant data
           return productIds;
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
@@ -581,10 +552,10 @@ const getProductDetails = async (productId) => {
 //      try {
 //           await params.odoo.connect();
 //           let product = await odoo.execute_kw("product.template", "write", [
-//                [params.product_id],
+//                [productt_id],
 //                {
-//                     base_unit_count: params.product.qty,
-//                     categ_id: params.product.category_id,
+//                     base_unit_count: productt.qty,
+//                     categ_id: productt.category_id,
 //                     list_price: params.product.list_price,
 //                     standard_price: params.product.standard_price,
 //                     name: params.product.name,

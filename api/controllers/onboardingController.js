@@ -12,8 +12,8 @@ const { initProducts } = require("../../utils/initProducts");
 const { addMultipleProducts } = require("../../services/product.service");
 const companyService = require("../../services/company.service");
 const bannerImages = require("../../utils/bannerImages");
-const midBannerCOnfig = require("../../utils/midBannerConfiq");
 const midBannerConfig = require("../../utils/midBannerConfiq");
+const { error } = require("console");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -633,6 +633,26 @@ exports.postOnboarding = async (req, res) => {
                          ]);
                     }
 
+                    const filteredCategIds = [];
+                    for (const categ_name of categ_ids) {
+                         let category = await odoo.execute_kw(
+                              "product.public.category",
+                              "search_read",
+                              [[["name", "=", categ_name]], ["id", "name"]],
+                         );
+
+                         if (category.length > 0) {
+                              filteredCategIds.push(category[0].id);
+                         } else {
+                              const category_id = await odoo.execute_kw(
+                                   "product.public.category",
+                                   "create",
+                                   [{ name: categ_name }],
+                              );
+                              filteredCategIds.push(category_id);
+                         }
+                    }
+
                     const save_company = new Company({
                          user_id: _id,
                          company_id: company_id,
@@ -650,7 +670,7 @@ exports.postOnboarding = async (req, res) => {
                          country: req.body.country,
                          city: req.body.city,
                          state: req.body.state,
-                         categories: categ_ids || [],
+                         categories: filteredCategIds,
                          type,
                     });
 
@@ -669,8 +689,13 @@ exports.postOnboarding = async (req, res) => {
                     // HANDLE CREATE PRODUCTS
                     let params = {
                          odoo,
-                         products: initProducts(company_id),
+                         productsAndCateg: initProducts(company_id, categ_ids),
                     };
+
+                    console.log(
+                         "initProducts(company_id, categ_ids)",
+                         JSON.stringify(initProducts(company_id, categ_ids)),
+                    );
                     if (company_id)
                          try {
                               await addMultipleProducts({ ...params });
