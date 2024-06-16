@@ -148,7 +148,7 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/fbd5991814b38c5cf9f0d58b95c5384a",
     },
     theme38: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0363e3fbcc2cb9fd7f65aa522d54a161",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/8bac2b0789169aa6eef70547f464b8c6",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/699619858a76499d5d3029f4bc862f3f",
     },
     theme39: {
