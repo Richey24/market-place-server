@@ -347,7 +347,7 @@ exports.initProducts = (company_id, categ_ids) => {
           Clothing: {
                products: [
                     {
-                         name: "High Fashion T-Shirt",
+                         name: "Modern T-Shirt",
                          category_id: "255",
                          uom_name: "1",
                          published: true,
