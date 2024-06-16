@@ -1,4 +1,5 @@
 const Odoo = require("../config/odoo.connection");
+const Company = require("../model/Company");
 const { toDataURL } = require("../utils/imageBase64");
 
 const unitOfMeasure = async (odoo) => {
@@ -449,7 +450,9 @@ const addMultipleProducts = async (params) => {
                          public_categ = category_id;
                     }
                     parentCateg = public_categ;
-
+                    console.log(product?.public_categ, public_categ);
+                    console.log("company_id", product?.company_id);
+                    await Company.findOneAndUpdate({ company_id: product?.company_id }, { $push: { categories: public_categ } })
                     const templateData = {
                          base_unit_count: product?.qty,
                          public_categ_ids: [+public_categ],
@@ -485,7 +488,6 @@ const addMultipleProducts = async (params) => {
                     const productId = await params.odoo.execute_kw("product.template", "create", [
                          templateData,
                     ]);
-
                     productIds.push(productId);
                     // Log the ID of the created product
                     console.log(`Product created with ID: ${productId}`);
@@ -493,13 +495,14 @@ const addMultipleProducts = async (params) => {
                try {
                     if (categs?.categories)
                          for (const categ of categs?.categories) {
-                              let category_id = await params.odoo.execute_kw(
+                              let category_id;
+                              category_id = await params.odoo.execute_kw(
                                    "product.public.category",
                                    "search_read",
                                    [[["name", "=", categ?.name]], ["id", "name"]],
                               );
                               if (category_id?.length === 0) {
-                                   await params.odoo.execute_kw(
+                                   category_id = await params.odoo.execute_kw(
                                         "product.public.category",
                                         "create",
                                         [{ name: categ?.name }],
