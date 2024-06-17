@@ -14,6 +14,7 @@ const companyService = require("../../services/company.service");
 const bannerImages = require("../../utils/bannerImages");
 const midBannerConfig = require("../../utils/midBannerConfiq");
 const { error } = require("console");
+const dealsBanner = require("../../utils/dealsBanner");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -440,23 +441,7 @@ const site = (theme, services) => {
                                                             displayText: true,
                                                        },
                                                   ],
-                                                  dealsBanner: [
-                                                       {
-                                                            imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/68bac9b225f708ca47466a0d19e95749",
-                                                            link: "/",
-                                                       },
-                                                       {
-                                                            imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/2543f2b06939bfaf42016d83ea2c3d23",
-                                                            link: "/",
-                                                       },
-                                                       {
-                                                            imageUrl:
-                                                                 "https://absa7kzimnaf.blob.core.windows.net/newcontainer/f039b65d6d0da8e2e52bfd0b4d2db346",
-                                                            link: "/",
-                                                       },
-                                                  ],
+                                                  dealsBanner: dealsBanner[theme?.name] ?? [],
                                              },
                                         },
                                    },
@@ -832,7 +817,7 @@ exports.updateTemplate = async (req, res) => {
      try {
           const id = req.params.id;
           const name = req.body.name;
-          if (!id) {
+          if (!id || !name) {
                return res.status(400).json({ message: "Send id" });
           }
           await Site.findByIdAndUpdate(id, site({ name: name }));
