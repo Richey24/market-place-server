@@ -119,7 +119,7 @@ const site = (theme, services) => {
 
                                                   serviceDetails: {
                                                        label: "Home - Service Details.",
-                                                       image: "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/hand.jpg",
+                                                       image: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/3ceb34bc5df926900f0bae0b0943db15",
                                                        subImage:
                                                             "https://absa7kzimnaf.blob.core.windows.net/templates-images/service/workers.jpg",
                                                        title: "International Business Opportunities.",
