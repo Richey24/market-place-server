@@ -83,6 +83,10 @@ const companySchema = mongoose.Schema({
      serviceType: {
           type: String,
      },
+     disabled: {
+          type: Boolean,
+          default: false
+     },
      selectedCarriers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Carrier" }],
      adsSubscription: [
           {

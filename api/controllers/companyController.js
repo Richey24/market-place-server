@@ -44,7 +44,7 @@ const updateCompany = async (req, res) => {
           if (!id) {
                return res.status(400).json({ message: "Send Company ID" });
           }
-          await Company.findOneAndUpdate({ company_id: id }, data);
+          await Company.findOneAndUpdate({ _id: id }, data);
           res.status(200).json({ message: "success" });
      } catch (error) {
           return res.status(500).json({ error });
