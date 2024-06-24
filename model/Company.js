@@ -112,6 +112,10 @@ const companySchema = mongoose.Schema({
                },
           },
      ],
+     trialPeriod: {
+          type: Date,
+          default: new Date(Date.now() + 12096e5)
+     }
 });
 
 const Company = mongoose.model("Company", companySchema);

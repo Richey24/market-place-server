@@ -76,7 +76,6 @@ exports.register = async (req, res) => {
           let data;
           let token;
           if (!user) {
-               const trial = await FreeTrial.find({})
                const newUser = new User({
                     firstname: req.body.firstname,
                     lastname: req.body.lastname,
@@ -89,7 +88,6 @@ exports.register = async (req, res) => {
                     timeZone: timezone,
                     sales_opt_in: req.body.sales_opt_in,
                     partner_ids: [{ id: partner_id, domain: req.body.domain }],
-                    trialPeriod: new Date(new Date().setDate(new Date().getDate() + Number(trial))),
                     currentSiteType: req.body.currentSiteType,
                     ...(company && { company: company._id }),
                });
