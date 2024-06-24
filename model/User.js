@@ -205,6 +205,10 @@ const userSchema = mongoose.Schema({
      show_phone: {
           type: Boolean,
      },
+     trialPeriod: {
+          type: Date,
+          default: new Date(Date.now() + 12096e5)
+     }
 });
 
 userSchema.pre("save", async function () {
