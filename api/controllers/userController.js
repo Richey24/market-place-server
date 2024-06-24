@@ -62,9 +62,8 @@ exports.register = async (req, res) => {
           if (!req.body.role || req.body.role === "USER") {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${
-                              req.body.lastname ?? user?.lastname
-                         }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
+                              }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -77,6 +76,7 @@ exports.register = async (req, res) => {
           let data;
           let token;
           if (!user) {
+               const trial = await FreeTrial.find({})
                const newUser = new User({
                     firstname: req.body.firstname,
                     lastname: req.body.lastname,
@@ -89,6 +89,7 @@ exports.register = async (req, res) => {
                     timeZone: timezone,
                     sales_opt_in: req.body.sales_opt_in,
                     partner_ids: [{ id: partner_id, domain: req.body.domain }],
+                    trialPeriod: new Date(new Date().setDate(new Date().getDate() + Number(trial))),
                     currentSiteType: req.body.currentSiteType,
                     ...(company && { company: company._id }),
                });
@@ -278,9 +279,8 @@ exports.socialRegister = async (req, res) => {
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${
-                              req.body.lastname ?? user?.lastname
-                         }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
+                              }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -308,18 +308,18 @@ exports.socialRegister = async (req, res) => {
                });
                data = await newUser.save();
                token = await newUser.generateAuthToken(req.body.domain);
-              
-                    let vendorConnectedAccount = await paymentService.createConnectedAccount({
-                         email: data.email,
-                    });
 
-                    await User.updateOne(
-                         { _id: data.id },
-                         {
-                              $set: { stripeConnectedAccountId: vendorConnectedAccount.id },
-                         },
-                    );
-     
+               let vendorConnectedAccount = await paymentService.createConnectedAccount({
+                    email: data.email,
+               });
+
+               await User.updateOne(
+                    { _id: data.id },
+                    {
+                         $set: { stripeConnectedAccountId: vendorConnectedAccount.id },
+                    },
+               );
+
           } else {
                user = await User.findByIdAndUpdate(user?._id, {
                     $set: {
