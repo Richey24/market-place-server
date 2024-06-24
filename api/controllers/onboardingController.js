@@ -15,6 +15,7 @@ const bannerImages = require("../../utils/bannerImages");
 const midBannerConfig = require("../../utils/midBannerConfiq");
 const { error } = require("console");
 const dealsBanner = require("../../utils/dealsBanner");
+const FreeTrial = require("../../model/FreeTrial");
 
 const getErrorMessage = (faultCode) => {
      switch (faultCode) {
@@ -637,7 +638,7 @@ exports.postOnboarding = async (req, res) => {
                               filteredCategIds.push(category_id);
                          }
                     }
-
+                    const trial = await FreeTrial.find({})
                     const save_company = new Company({
                          user_id: _id,
                          company_id: company_id,
@@ -652,6 +653,7 @@ exports.postOnboarding = async (req, res) => {
                          subscribed: subscribed,
                          account_opening_date: date,
                          trial_end_date: trial_End_Date,
+                         trialPeriod: new Date(new Date().setDate(new Date().getDate() + Number(trial))),
                          country: req.body.country,
                          city: req.body.city,
                          state: req.body.state,
@@ -704,6 +706,7 @@ exports.postOnboarding = async (req, res) => {
                     res.status(201).json({ company: company_data, status: true });
                }
           } else {
+               const trial = await FreeTrial.find({})
                const save_company = new Company({
                     user_id: _id,
                     company_id: null,
@@ -718,6 +721,7 @@ exports.postOnboarding = async (req, res) => {
                     subscribed: subscribed,
                     account_opening_date: date,
                     trial_end_date: trial_End_Date,
+                    trialPeriod: new Date(new Date().setDate(new Date().getDate() + Number(trial))),
                     country: req.body.country,
                     city: req.body.city,
                     state: req.body.state,
