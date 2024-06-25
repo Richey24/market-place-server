@@ -45,6 +45,7 @@ exports.createVendorSubscription = async (req, res) => {
                          userID: id,
                          mode: mode,
                     },
+                    allow_promotion_codes: true,
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -73,6 +74,7 @@ exports.createVendorSubscription = async (req, res) => {
                          userID: id,
                          mode: mode,
                     },
+                    allow_promotion_codes: true,
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -310,23 +312,23 @@ const stripeSession = async (req) => {
                line_items:
                     type !== "freelancer"
                          ? [
-                                {
-                                     price: process.env.MONTHLY_ADS,
-                                     quantity: 1,
-                                },
-                           ]
+                              {
+                                   price: process.env.MONTHLY_ADS,
+                                   quantity: 1,
+                              },
+                         ]
                          : [
-                                {
-                                     price_data: {
-                                          currency: "usd",
-                                          product_data: {
-                                               name: "FreeLancer Payment",
-                                          },
-                                          unit_amount: formattedPrice, // Price in cents
-                                     },
-                                     quantity: 1,
-                                },
-                           ],
+                              {
+                                   price_data: {
+                                        currency: "usd",
+                                        product_data: {
+                                             name: "FreeLancer Payment",
+                                        },
+                                        unit_amount: formattedPrice, // Price in cents
+                                   },
+                                   quantity: 1,
+                              },
+                         ],
 
                success_url: successUrl,
                cancel_url: cancelUrl,
