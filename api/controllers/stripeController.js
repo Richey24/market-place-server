@@ -46,6 +46,9 @@ exports.createVendorSubscription = async (req, res) => {
                          mode: mode,
                     },
                     allow_promotion_codes: true,
+                    discounts: [{
+                         coupon: 'promo_1PVMz3Bf3U2rieTNt9IXAdgl',
+                    }],
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -75,6 +78,9 @@ exports.createVendorSubscription = async (req, res) => {
                          mode: mode,
                     },
                     allow_promotion_codes: true,
+                    discounts: [{
+                         coupon: 'promo_1PVMz3Bf3U2rieTNt9IXAdgl',
+                    }],
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
