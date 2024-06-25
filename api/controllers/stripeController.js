@@ -10,6 +10,7 @@ const {
      sendSubscriptionCancelEmail,
      sendAdvertisementNotificationEmail,
      deleteUserData,
+     sendSubscriptionNotification,
 } = require("../../config/helpers");
 const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
@@ -148,6 +149,8 @@ exports.stripeVendorCallback = async (req, res) => {
                          },
                          { new: true },
                     );
+                    const company = await Company.findOne({ user_id: user._id });
+                    sendSubscriptionNotification(user.email, company.company_name, company.subdomain )
                     await Logger.create({
                          userID: user._id,
                          eventType: "checkout.session.completed",
