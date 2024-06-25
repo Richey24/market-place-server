@@ -20,91 +20,91 @@ const YOUR_DOMAIN = "https://dashboard.ishop.black";
 const YOUR_ISHOP_DOMAIN = "https://ishop.black";
 
 exports.createVendorSubscription = async (req, res) => {
-     // try {
-     const { email, plan, mode, id, register } = req.query;
-     if (!email || !plan || !mode) {
-          return res.status(400).json({ message: "Send All Required Parameter" });
-     }
-     let session;
-     if (mode === "service") {
-          session = await stripe.checkout.sessions.create({
-               line_items: [
-                    {
-                         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                         price:
-                              plan === "monthly"
-                                   ? process.env.MONTHLY_SERVICE
-                                   : process.env.YEARLY_SERVICE,
-                         quantity: 1,
+     try {
+          const { email, plan, mode, id, register } = req.query;
+          if (!email || !plan || !mode) {
+               return res.status(400).json({ message: "Send All Required Parameter" });
+          }
+          let session;
+          if (mode === "service") {
+               session = await stripe.checkout.sessions.create({
+                    line_items: [
+                         {
+                              // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                              price:
+                                   plan === "monthly"
+                                        ? process.env.MONTHLY_SERVICE
+                                        : process.env.YEARLY_SERVICE,
+                              quantity: 1,
+                         },
+                    ],
+                    mode: "subscription",
+                    metadata: {
+                         email: email,
+                         plan: plan,
+                         userID: id,
+                         mode: mode,
                     },
-               ],
-               mode: "subscription",
-               metadata: {
+                    allow_promotion_codes: true,
+                    success_url:
+                         register === "yes"
+                              ? `${YOUR_DOMAIN}/onboarding?success=true`
+                              : `${YOUR_DOMAIN}/billing`,
+                    cancel_url:
+                         register === "yes"
+                              ? `${YOUR_DOMAIN}/onboarding?success=false`
+                              : `${YOUR_DOMAIN}/billing`,
+               });
+          } else if (mode === "ecommerce") {
+               session = await stripe.checkout.sessions.create({
+                    line_items: [
+                         {
+                              // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                              price:
+                                   plan === "monthly"
+                                        ? process.env.MONTHLY_STORE
+                                        : process.env.YEARLY_STORE,
+                              quantity: 1,
+                         },
+                    ],
+                    mode: "subscription",
+                    metadata: {
+                         email: email,
+                         plan: plan,
+                         userID: id,
+                         mode: mode,
+                    },
+                    allow_promotion_codes: true,
+                    success_url:
+                         register === "yes"
+                              ? `${YOUR_DOMAIN}/onboarding?success=true`
+                              : `${YOUR_DOMAIN}/billing`,
+                    cancel_url:
+                         register === "yes"
+                              ? `${YOUR_DOMAIN}/onboarding?success=false`
+                              : `${YOUR_DOMAIN}/billing`,
+               });
+          }
+          const check = await StripeSession.findOne({ email: email });
+          console.log(session);
+          if (check) {
+               await StripeSession.findOneAndUpdate(
+                    { email: email },
+                    { sessionID: session.id, plan: plan, userID: id },
+               );
+          } else {
+               await StripeSession.create({
+                    sessionID: session.id,
                     email: email,
                     plan: plan,
                     userID: id,
-                    mode: mode,
-               },
-               allow_promotion_codes: true,
-               success_url:
-                    register === "yes"
-                         ? `${YOUR_DOMAIN}/onboarding?success=true`
-                         : `${YOUR_DOMAIN}/billing`,
-               cancel_url:
-                    register === "yes"
-                         ? `${YOUR_DOMAIN}/onboarding?success=false`
-                         : `${YOUR_DOMAIN}/billing`,
-          });
-     } else if (mode === "ecommerce") {
-          session = await stripe.checkout.sessions.create({
-               line_items: [
-                    {
-                         // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-                         price:
-                              plan === "monthly"
-                                   ? process.env.MONTHLY_STORE
-                                   : process.env.YEARLY_STORE,
-                         quantity: 1,
-                    },
-               ],
-               mode: "subscription",
-               metadata: {
-                    email: email,
-                    plan: plan,
-                    userID: id,
-                    mode: mode,
-               },
-               allow_promotion_codes: true,
-               success_url:
-                    register === "yes"
-                         ? `${YOUR_DOMAIN}/onboarding?success=true`
-                         : `${YOUR_DOMAIN}/billing`,
-               cancel_url:
-                    register === "yes"
-                         ? `${YOUR_DOMAIN}/onboarding?success=false`
-                         : `${YOUR_DOMAIN}/billing`,
-          });
-     }
-     const check = await StripeSession.findOne({ email: email });
-     console.log(session);
-     if (check) {
-          await StripeSession.findOneAndUpdate(
-               { email: email },
-               { sessionID: session.id, plan: plan, userID: id },
-          );
-     } else {
-          await StripeSession.create({
-               sessionID: session.id,
-               email: email,
-               plan: plan,
-               userID: id,
-          });
-     }
+               });
+          }
 
-     res.redirect(303, session.url);
-     // } catch (error) {
-     //      res.status(500).json({ message: "An error occurred" });
-     // }
+          res.redirect(303, session.url);
+     } catch (error) {
+          res.status(500).json({ message: "An error occurred" });
+     }
 };
 
 exports.stripeVendorCallback = async (req, res) => {
