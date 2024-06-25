@@ -401,6 +401,10 @@ const updateProduct = async (params) => {
                x_dimension: params.product.dimension,
                x_inventory_tracking: params?.product?.x_inventory_tracking,
                x_total_available_qty: +params?.product.x_total_available_qty,
+               x_variants:
+                    params?.product?.variants && params?.product?.variants.length > 0
+                         ? JSON.stringify(params?.product?.variants)
+                         : false,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
