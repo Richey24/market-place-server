@@ -251,6 +251,29 @@ const sendMeetingInvite = async (req, res) => {
      }
 };
 
+const disableCompany = async (req, res) => {
+     try {
+          const id = req.params.id;
+          const data = req.body;
+          if (!id) {
+               return res.status(400).json({ message: "Send Company ID" });
+          }
+          await Odoo.connect();
+          await Company.findOneAndUpdate({ company_id: id }, data);
+          const productIds = await Odoo.execute_kw("product.template", "search_read", [
+               [["company_id", "=", [+id]]],
+               [
+                    "id"
+               ],
+          ]);
+          const ids = productIds.map((product) => product.id)
+          await Odoo.execute_kw("product.template", 'write', [[...ids], { x_disabled: data.disabled }]);
+          res.status(200).json({ message: "success" });
+     } catch (error) {
+          return res.status(500).json({ error });
+     }
+};
+
 module.exports = {
      updateCompany,
      findCompanyByCompanyIdAndPopulateUser,
@@ -258,5 +281,6 @@ module.exports = {
      updateBrandColor,
      sendMeetingInvite,
      getCompany,
-     deleteCompany
+     deleteCompany,
+     disableCompany
 };
