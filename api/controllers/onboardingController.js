@@ -544,7 +544,6 @@ exports.postOnboarding = async (req, res) => {
      const currentDate = new Date();
      const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
      const formattedDate = formatDate(new Date(currentDate));
-     const formattedTrialEndDate = formatDate(new Date(trialEndDate));
 
      let date = formattedDate;
      let company_name = req.body.company_name;
@@ -554,7 +553,6 @@ exports.postOnboarding = async (req, res) => {
      let brandcolor = req.body.colors;
      let subscription = req.body.subscription;
      let subscribed = false;
-     let trial_End_Date = formattedTrialEndDate;
      const { firstname, email, _id } = req.userData;
      const categ_ids = req.body.categ_ids;
      const type = req?.body?.type;
@@ -652,7 +650,7 @@ exports.postOnboarding = async (req, res) => {
                          subscription: subscription,
                          subscribed: subscribed,
                          account_opening_date: date,
-                         trial_end_date: trial_End_Date,
+                         trial_end_date: "",
                          trialPeriod: new Date(new Date().setDate(new Date().getDate() + Number(trial[0].period))),
                          country: req.body.country,
                          city: req.body.city,
@@ -720,7 +718,7 @@ exports.postOnboarding = async (req, res) => {
                     subscription: subscription,
                     subscribed: subscribed,
                     account_opening_date: date,
-                    trial_end_date: trial_End_Date,
+                    trial_end_date: "",
                     trialPeriod: new Date(new Date().setDate(new Date().getDate() + Number(trial[0].period))),
                     country: req.body.country,
                     city: req.body.city,
