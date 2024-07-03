@@ -1,5 +1,6 @@
 const { successResponder, errorResponder } = require("../../utils/http_responder");
 const User = require("../../model/User");
+const Company = require("../../model/Company")
 const paymentService = require("../../services/payment.service");
 
 exports.createPaymentIntents = async (req, res) => {
@@ -49,6 +50,10 @@ exports.generateAccountLink = async (req, res) => {
 
 exports.checkConnectedAccountStatus = async (req, res) => {
      const userId = req.query.userId;
+     const trialEndDate = currentDate.setDate(currentDate.getDate() + 14);
+     const formattedTrialEndDate = formatDate(new Date(trialEndDate));
+
+     let trial_End_Date = formattedTrialEndDate;
 
      try {
           const account = await paymentService.retriveConnectAccount({
@@ -62,6 +67,10 @@ exports.checkConnectedAccountStatus = async (req, res) => {
                          $set: { isStripeConnectedAccountVerified: true },
                     },
                );
+               await Company.updateOne({user_id: userId},    {
+                    $set: { 
+                         trial_end_date:  trial_End_Date,},
+               }, )
                return successResponder(res, account, 200, "successFull");
           }
           return successResponder(res, {}, 400, "error");
