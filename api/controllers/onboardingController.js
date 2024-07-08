@@ -695,6 +695,7 @@ exports.postOnboarding = async (req, res) => {
                          company_name,
                          tenantname,
                          subscribed,
+                         user.phone
                     );
 
                     await User.findByIdAndUpdate(_id, {

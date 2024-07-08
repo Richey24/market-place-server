@@ -2209,6 +2209,7 @@ const sendNotificationForOnboardedNewUsersToFounder = (
   userName,
   domain,
   paid,
+  phone,
 ) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.office365.com",
@@ -2285,6 +2286,7 @@ const sendNotificationForOnboardedNewUsersToFounder = (
               <li><span class="highlight">Company Name:</span> ${userName}</li>
               <li><span class="highlight">Domain:</span> ${domain}</li>
               <li><span class="highlight">Paid:</span> ${paid ? "Yes" : "No"}</li>
+              <li><span class="highlight">Phone:</span> ${phone}</li>
             </ul>
             <p>Please reach out to the new user to welcome them personally and offer any assistance they may need.</p>
           </div>
