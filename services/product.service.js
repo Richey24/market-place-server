@@ -1,4 +1,5 @@
 const Odoo = require("../config/odoo.connection");
+const Company = require("../model/Company");
 const { toDataURL } = require("../utils/imageBase64");
 
 const unitOfMeasure = async (odoo) => {
@@ -57,6 +58,8 @@ const getProductById = async (id) => {
                     "x_aliexpress_id",
                     "x_aliexpress_variant_id",
                     "x_variants",
+                    "x_disabled",
+                    "company_id"
                ],
           ]);
           if (productData.length === 0) {
@@ -400,6 +403,10 @@ const updateProduct = async (params) => {
                x_dimension: params.product.dimension,
                x_inventory_tracking: params?.product?.x_inventory_tracking,
                x_total_available_qty: +params?.product.x_total_available_qty,
+               x_variants:
+                    params?.product?.variants && params?.product?.variants.length > 0
+                         ? JSON.stringify(params?.product?.variants)
+                         : false,
           };
           // Update the product data
           const result = await params.odoo.execute_kw("product.template", "write", [
@@ -449,7 +456,9 @@ const addMultipleProducts = async (params) => {
                          public_categ = category_id;
                     }
                     parentCateg = public_categ;
-
+                    console.log(product?.public_categ, public_categ);
+                    console.log("company_id", product?.company_id);
+                    await Company.findOneAndUpdate({ company_id: product?.company_id }, { $push: { categories: public_categ } })
                     const templateData = {
                          base_unit_count: product?.qty,
                          public_categ_ids: [+public_categ],
@@ -485,30 +494,30 @@ const addMultipleProducts = async (params) => {
                     const productId = await params.odoo.execute_kw("product.template", "create", [
                          templateData,
                     ]);
-
                     productIds.push(productId);
                     // Log the ID of the created product
                     console.log(`Product created with ID: ${productId}`);
                }
-               try {
-                    if (categs?.categories)
-                         for (const categ of categs?.categories) {
-                              let category_id = await params.odoo.execute_kw(
-                                   "product.public.category",
-                                   "search_read",
-                                   [[["name", "=", categ?.name]], ["id", "name"]],
-                              );
-                              if (category_id?.length === 0) {
-                                   await params.odoo.execute_kw(
-                                        "product.public.category",
-                                        "create",
-                                        [{ name: categ?.name }],
-                                   );
-                              }
-                         }
-               } catch (err) {
-                    console.log("error from creating categories", err);
-               }
+               // try {
+               //      if (categs?.categories)
+               //           for (const categ of categs?.categories) {
+               //                let category_id;
+               //                category_id = await params.odoo.execute_kw(
+               //                     "product.public.category",
+               //                     "search_read",
+               //                     [[["name", "=", categ?.name]], ["id", "name"]],
+               //                );
+               //                if (category_id?.length === 0) {
+               //                     category_id = await params.odoo.execute_kw(
+               //                          "product.public.category",
+               //                          "create",
+               //                          [{ name: categ?.name }],
+               //                     );
+               //                }
+               //           }
+               // } catch (err) {
+               //      console.log("error from creating categories", err);
+               // }
           }
 
           return productIds;

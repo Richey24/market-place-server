@@ -120,10 +120,12 @@ const stripeRouter = require("./api/routes/stripe");
 const eventRouter = require("./api/routes/event");
 const boardRouter = require("./api/routes/board");
 const pluginRouter = require("./api/routes/plugin");
+const freeTrialRouter = require("./api/routes/freeTrial");
 
 const devRouter = require("./api/routes/dev");
 
 const freelancePaymentRouter = require("./api/routes/freelancePayment");
+const { sendSubscriptionNotification } = require("./config/helpers");
 // app.use(errorHandler)
 
 app.use("/api/admin/auth", adminRouter);
@@ -136,6 +138,7 @@ app.use("/api/plugins", pluginRouter);
 app.use("/api/tags", tagRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/trial", freeTrialRouter);
 // app.use("/api/shipment", shipmentRoute);
 app.use("/api/visitor", visitorRoute);
 app.use("/api/policy", policyRouter);

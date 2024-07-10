@@ -62,9 +62,8 @@ exports.register = async (req, res) => {
           if (!req.body.role || req.body.role === "USER") {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${
-                              req.body.lastname ?? user?.lastname
-                         }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
+                              }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -278,9 +277,8 @@ exports.socialRegister = async (req, res) => {
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${
-                              req.body.lastname ?? user?.lastname
-                         }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
+                              }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,

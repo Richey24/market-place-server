@@ -52,8 +52,8 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/91ecee795c6455a86a6f4ad0089582d5",
     },
     theme14: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/acb13e2c6c2483bf38169bb52503d091",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/424f27749c5369734f59a02c82efa1fd",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/e210bc9c8aec6b2e27cda7f7214ff588",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/a557e485abc3faa92885ae1b8bea700c",
     },
     theme15: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/d4855528157090d33050d92e1f88c86e",
@@ -80,12 +80,12 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/aa35536bb2e27ab5af99844a45a67cd9",
     },
     theme21: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0d64aaf2b76d94611399be13c2959b24",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/a65a3e2d9796f22fe5e0e9c6acd0517e",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/084344a1a6e1bf07fca8091f5e408c90",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/3338678648bd43fcd50be6abbbed0ea6",
     },
     theme22: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/3e085f9fcc640f8197c84e707c3ac66a",
-        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/424f27749c5369734f59a02c82efa1fd",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/f803b96918c1db4f038147fc7f5e1028",
+        banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/507d5960e42a82749ac11fa72ed2d35b",
     },
     theme23: {
         banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/29c7e95933a2e7b0339f0f258bab9d20",
@@ -148,7 +148,7 @@ const bannerImages = {
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/fbd5991814b38c5cf9f0d58b95c5384a",
     },
     theme38: {
-        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/0363e3fbcc2cb9fd7f65aa522d54a161",
+        banner1: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/8bac2b0789169aa6eef70547f464b8c6",
         banner2: "https://absa7kzimnaf.blob.core.windows.net/newcontainer/699619858a76499d5d3029f4bc862f3f",
     },
     theme39: {

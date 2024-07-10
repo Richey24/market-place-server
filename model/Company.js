@@ -83,6 +83,10 @@ const companySchema = mongoose.Schema({
      serviceType: {
           type: String,
      },
+     disabled: {
+          type: Boolean,
+          default: false
+     },
      selectedCarriers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Carrier" }],
      adsSubscription: [
           {
@@ -108,6 +112,10 @@ const companySchema = mongoose.Schema({
                },
           },
      ],
+     trialPeriod: {
+          type: Date,
+          default: new Date(Date.now() + 12096e5)
+     }
 });
 
 const Company = mongoose.model("Company", companySchema);

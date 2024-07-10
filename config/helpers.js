@@ -294,7 +294,7 @@ const sendWelcomeEmail = (email, name, type) => {
             <a class="cta-button" href="https://example.com">Get Started</a>
           </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -404,7 +404,7 @@ ${introMessage}
 <a class="cta-button" href="${resetLink}"> Get Started</a>
 </div>
 <div class="footer">
-<p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+<p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
 </div>
 </div>
 </body>
@@ -514,7 +514,7 @@ const sendAdminWelcomeMail = (email, name, adminId, token, url) => {
     <p>Welcome aboard! If you have any questions or need further assistance, please do not hesitate to reach out to us. We are always here to help.</p>
   </div>
   <div class="footer">
-    <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+    <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
   </div>
 </div>
 </body>
@@ -626,7 +626,7 @@ const sendTrialEndReminderEmail = (email, name, company_id, type) => {
              <a href="${extensionLink}" class="cta-button">Extend Trial</a>
            </div>
            <div class="footer">
-             <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you have any questions, please <a href="mailto:info@example.com" style="color: #777777; text-decoration: underline;">contact us</a>.</p>
+             <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you have any questions, please <a href="mailto:info@example.com" style="color: #777777; text-decoration: underline;">contact us</a>.</p>
            </div>
          </div>
        </body>
@@ -788,7 +788,7 @@ const sendTrialExtensionEmail = (email, name, trialEndDate, type) => {
             <a class="cta-button" href="https://example.com">Get Started</a>
           </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -897,7 +897,7 @@ const sendSubscriptionEmail = (email, name) => {
           </ul>
         </div>
         <div class="footer">
-          <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you have any concerns or wish to unsubscribe from our service, please <a href="#" style="color: #777777; text-decoration: underline;">contact us</a>.</p>
+          <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you have any concerns or wish to unsubscribe from our service, please <a href="#" style="color: #777777; text-decoration: underline;">contact us</a>.</p>
         </div>
       </div>
     </body>
@@ -1002,7 +1002,7 @@ const sendSubscriptionExpiredEmail = (email, name) => {
           <p>The IsraelB Marketplace Team</p>
         </div>
         <div class="footer">
-          <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you have any concerns, please <a href="#" style="color: #777777; text-decoration="underline;">contact us</a>.</p>
+          <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you have any concerns, please <a href="#" style="color: #777777; text-decoration="underline;">contact us</a>.</p>
         </div>
       </div>
     </body>
@@ -1120,7 +1120,7 @@ const sendCouponEmail = (email, name) => {
             <p>Don't miss out on this incredible opportunity to boost your online presence and generate more revenue. The FREE Ads code is our way of showing appreciation for your commitment to our marketplace.</p>
           </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -1226,7 +1226,7 @@ const sendForgotPasswordEmail = (email, name, token, url) => {
             <p>If you need any assistance, our dedicated support team is here to help. Contact us at support@ishop.black.</p>
           </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -1333,10 +1333,10 @@ const sendSubscriptionCancelEmail = (email, name, token) => {
             <p>Best regards,</p>
             <p>Isaiah Ben Israel</p>
             <p>C.E.O</p>
-            <p>Breaking Black Ventures</p>
+            <p>IMarketplace</p>
           </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -1436,7 +1436,7 @@ const sendAdminMessage = (email, name, message) => {
             <p>${message}</p>
             </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -1536,7 +1536,7 @@ const sendVendorMessage = (email, name, message, orderID) => {
             <p>${message}</p>
             </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -1636,7 +1636,7 @@ const sendCreateEventMail = (email, token) => {
             <a class="cta-button" href="https://ishop.black/event/new-event?token=${token}">Finish</a>
             </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -1736,7 +1736,7 @@ const sendVideoInvite = (email, url, name) => {
             <a class="cta-button" href="${url}">Join meeting</a>
             </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -1867,7 +1867,7 @@ const sendRatingMail = (email, name, url, product) => {
             <p>
             You can return an item within 7 days of delivery if it is not as expected (wrong, defective, or damaged). In most cases, you can also return an item if you change your mind. To request a return, go to the <a href="https://${url}/dashboard/order">Order page</a>.
             </p>
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -2102,12 +2102,114 @@ const createOrderReport = (orders) => {
   return report;
 };
 
+
+const sendSubscriptionNotification = (
+  userEmail,
+  userName,
+  domain,
+) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.office365.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.EMAIL,
+      pass: process.env.PASSWORD,
+    },
+  });
+
+  const subject = "New Subscriber Notification";
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: "info@ishop.black",
+    subject: subject,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+          body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            line-height: 1.6;
+          }
+          .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .message {
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+          }
+          .highlight {
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+          }
+          .logo {
+            display: block;
+            margin: 0 auto;
+            max-width: 200px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <img class="logo" src="https://cdn.jsdelivr.net/gh/Richey24/imarket-cdn/src/assets/images/logo.png" alt="Company Logo">
+            <h1 style="color: #333333;">New Paid Subscriber</h1>
+          </div>
+          <div class="message">
+            <p>Hey I.B,</p>
+            <p>A new user has subscribed with the following details:</p>
+            <ul>
+              <li><span class="highlight">Email:</span> ${userEmail}</li>
+              <li><span class="highlight">Name:</span> ${userName}</li>
+              <li><span class="highlight">Domain:</span> ${domain}</li>
+            </ul>
+            <p>Please reach out to the new subscriber to welcome them and offer any assistance they may need.</p>
+          </div>
+          <div class="footer">
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC.</p>
+          </div>
+        </div>
+      </body>
+      </html>       
+    `,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("sub Email sent: " + info.response);
+      // do something useful
+    }
+  });
+};
+
+
 const sendNotificationForOnboardedNewUsersToFounder = (
   userEmail,
   siteType,
   userName,
   domain,
   paid,
+  phone,
 ) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.office365.com",
@@ -2184,11 +2286,12 @@ const sendNotificationForOnboardedNewUsersToFounder = (
               <li><span class="highlight">Company Name:</span> ${userName}</li>
               <li><span class="highlight">Domain:</span> ${domain}</li>
               <li><span class="highlight">Paid:</span> ${paid ? "Yes" : "No"}</li>
+              <li><span class="highlight">Phone:</span> ${phone}</li>
             </ul>
             <p>Please reach out to the new user to welcome them personally and offer any assistance they may need.</p>
           </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC.</p>
           </div>
         </div>
       </body>
@@ -2371,7 +2474,7 @@ const sendPurchaseEmailPerSales = (vendorEmail, orderDetails, subdomain) => {
            ${report}   
           </div>
           <div class="footer">
-            <p style="color: #777777;">This email was sent by Breaking Black Ventures, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
+            <p style="color: #777777;">This email was sent by IMarketplace, LLC. If you no longer wish to receive emails from us, please <a href="#" style="color: #777777; text-decoration: underline;">unsubscribe</a>.</p>
           </div>
         </div>
       </body>
@@ -2543,4 +2646,5 @@ module.exports = {
   sendCreateEventMail,
   sendSalesReport,
   sendVideoInvite,
+  sendSubscriptionNotification
 };

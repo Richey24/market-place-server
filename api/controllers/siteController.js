@@ -26,6 +26,9 @@ exports.getSiteByDomain = async (req, res) => {
                     //      },
                     // },
                });
+          if (company.disabled) {
+               return res.status(201).json({ message: "site disabled" });
+          }
           if (company) {
                res.status(201).json({ status: true, domain, company });
           } else {

@@ -225,8 +225,12 @@ const userSchema = mongoose.Schema({
      },
      show_phone: {
           type: Boolean,
+<<<<<<< HEAD
      },
      dropshippers: [DropshipperSchema],
+=======
+     }
+>>>>>>> c7f520bf97b33add1e418ab5fcaf5f10c978e519
 });
 
 userSchema.pre("save", async function () {

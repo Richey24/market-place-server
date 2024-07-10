@@ -10,6 +10,7 @@ const {
      sendSubscriptionCancelEmail,
      sendAdvertisementNotificationEmail,
      deleteUserData,
+     sendSubscriptionNotification,
 } = require("../../config/helpers");
 const Order = require("../../model/Order");
 const { changeOrderStatus } = require("./orderController");
@@ -45,6 +46,7 @@ exports.createVendorSubscription = async (req, res) => {
                          userID: id,
                          mode: mode,
                     },
+                    allow_promotion_codes: true,
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -73,6 +75,7 @@ exports.createVendorSubscription = async (req, res) => {
                          userID: id,
                          mode: mode,
                     },
+                    allow_promotion_codes: true,
                     success_url:
                          register === "yes"
                               ? `${YOUR_DOMAIN}/onboarding?success=true`
@@ -140,6 +143,8 @@ exports.stripeVendorCallback = async (req, res) => {
                          },
                          { new: true },
                     );
+                    const company = await Company.findOne({ user_id: user._id });
+                    sendSubscriptionNotification(user.email, company.company_name, company.subdomain )
                     await Logger.create({
                          userID: user._id,
                          eventType: "checkout.session.completed",
@@ -310,23 +315,23 @@ const stripeSession = async (req) => {
                line_items:
                     type !== "freelancer"
                          ? [
-                                {
-                                     price: process.env.MONTHLY_ADS,
-                                     quantity: 1,
-                                },
-                           ]
+                              {
+                                   price: process.env.MONTHLY_ADS,
+                                   quantity: 1,
+                              },
+                         ]
                          : [
-                                {
-                                     price_data: {
-                                          currency: "usd",
-                                          product_data: {
-                                               name: "FreeLancer Payment",
-                                          },
-                                          unit_amount: formattedPrice, // Price in cents
-                                     },
-                                     quantity: 1,
-                                },
-                           ],
+                              {
+                                   price_data: {
+                                        currency: "usd",
+                                        product_data: {
+                                             name: "FreeLancer Payment",
+                                        },
+                                        unit_amount: formattedPrice, // Price in cents
+                                   },
+                                   quantity: 1,
+                              },
+                         ],
 
                success_url: successUrl,
                cancel_url: cancelUrl,
