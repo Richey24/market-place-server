@@ -749,6 +749,7 @@ exports.postOnboarding = async (req, res) => {
                     company_name,
                     tenantname,
                     subscribed,
+                    phone
                );
                // reminderJob.start();
                await User.findByIdAndUpdate(_id, {
