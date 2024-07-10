@@ -308,18 +308,17 @@ exports.socialRegister = async (req, res) => {
                });
                data = await newUser.save();
                token = await newUser.generateAuthToken(req.body.domain);
-              
-                    let vendorConnectedAccount = await paymentService.createConnectedAccount({
-                         email: data.email,
-                    });
 
-                    await User.updateOne(
-                         { _id: data.id },
-                         {
-                              $set: { stripeConnectedAccountId: vendorConnectedAccount.id },
-                         },
-                    );
-     
+               let vendorConnectedAccount = await paymentService.createConnectedAccount({
+                    email: data.email,
+               });
+
+               await User.updateOne(
+                    { _id: data.id },
+                    {
+                         $set: { stripeConnectedAccountId: vendorConnectedAccount.id },
+                    },
+               );
           } else {
                user = await User.findByIdAndUpdate(user?._id, {
                     $set: {
@@ -371,6 +370,53 @@ exports.logoutUser = async (req, res) => {
           return res.status(200).json("logout");
      } catch (err) {
           return res.status(500).json(err.message);
+     }
+};
+
+exports.saveDropshipper = async (req, res) => {
+     try {
+          const { _id } = req.userData;
+          const { name, apiKey, shopID } = req.body;
+
+          if (!name || !apiKey || !shopID) {
+               return res.status(400).json({ message: "All dropshipper details are required" });
+          }
+
+          const user = await User.findById(_id);
+          if (!user) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+          const dropshipperData = {
+               name,
+               apiKey,
+               shopID,
+               verified: true,
+          };
+
+          user.dropshippers.push(dropshipperData);
+          await user.save();
+
+          return res
+               .status(200)
+               .json({ message: "Dropshipper added successfully", dropshipper: dropshipperData });
+     } catch (error) {
+          return res.status(500).json({ message: error.message });
+     }
+};
+
+exports.getDropshippers = async (req, res) => {
+     try {
+          const { _id } = req.userData;
+
+          const user = await User.findById(_id);
+          if (!user) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+          return res.status(200).json({ dropshippers: user.dropshippers, status: true });
+     } catch (error) {
+          return res.status(500).json({ message: error.message });
      }
 };
 

@@ -4,7 +4,28 @@ const jwt = require("jsonwebtoken");
 const { USER_ROLE } = require("../schemas/user.schema");
 const { serviceNav, ecommerceNav } = require("../utils/navigation");
 
-const currentDate = new Date();
+const DropshipperSchema = new mongoose.Schema({
+     name: {
+          type: String,
+          required: [true, "Dropshipper name is required"],
+     },
+     apiKey: {
+          type: String,
+          required: [true, "API Key is required"],
+     },
+     shopID: {
+          type: String,
+          required: [true, "API Key is required"],
+     },
+     verified: {
+          type: Boolean,
+          default: false,
+     },
+     createdAt: {
+          type: Date,
+          default: Date.now,
+     },
+});
 
 const userSchema = mongoose.Schema({
      firstname: {
@@ -205,6 +226,7 @@ const userSchema = mongoose.Schema({
      show_phone: {
           type: Boolean,
      },
+     dropshippers: [DropshipperSchema],
 });
 
 userSchema.pre("save", async function () {
