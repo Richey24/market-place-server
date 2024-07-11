@@ -62,8 +62,9 @@ exports.register = async (req, res) => {
           if (!req.body.role || req.body.role === "USER") {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
-                              }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${
+                              req.body.lastname ?? user?.lastname
+                         }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -277,8 +278,9 @@ exports.socialRegister = async (req, res) => {
           if (!req.body.role) {
                partner_id = await Odoo.execute_kw("res.partner", "create", [
                     {
-                         name: `${req.body.firstname ?? user?.firstname} ${req.body.lastname ?? user?.lastname
-                              }`,
+                         name: `${req.body.firstname ?? user?.firstname} ${
+                              req.body.lastname ?? user?.lastname
+                         }`,
                          email: req.body.email ?? user?.email,
                          phone: req.body.phone ?? user?.phone,
                          company_id: company.company_id,
@@ -413,6 +415,83 @@ exports.getDropshippers = async (req, res) => {
           }
 
           return res.status(200).json({ dropshippers: user.dropshippers, status: true });
+     } catch (error) {
+          return res.status(500).json({ message: error.message });
+     }
+};
+
+exports.getOneDropshipper = async (req, res) => {
+     try {
+          const { _id } = req.userData;
+          const { shopID } = req.params;
+
+          const user = await User.findById(_id);
+          if (!user) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+          const dropshipper = user.dropshippers.find(
+               (dropshipper) => dropshipper.shopID === shopID,
+          );
+          if (!dropshipper) {
+               return res.status(404).json({ message: "Dropshipper not found" });
+          }
+
+          return res.status(200).json({ dropshipper, status: true });
+     } catch (error) {
+          return res.status(500).json({ message: error.message });
+     }
+};
+
+exports.removeDropshipper = async (req, res) => {
+     try {
+          const { _id } = req.userData;
+          const { shopID } = req.params;
+
+          const user = await User.findById(_id);
+          if (!user) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+          user.dropshippers = user.dropshippers.filter(
+               (dropshipper) => dropshipper.shopID !== shopID,
+          );
+          await user.save();
+
+          return res
+               .status(200)
+               .json({ message: "Dropshipper removed successfully", status: true });
+     } catch (error) {
+          return res.status(500).json({ message: error.message });
+     }
+};
+
+exports.updateDropshipper = async (req, res) => {
+     try {
+          const { _id } = req.userData;
+          const { shopID } = req.params;
+          const { name, apiKey, details } = req.body;
+
+          const user = await User.findById(_id);
+          if (!user) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+          const dropshipper = user.dropshippers.find(
+               (dropshipper) => dropshipper.shopID === shopID,
+          );
+          if (!dropshipper) {
+               return res.status(404).json({ message: "Dropshipper not found" });
+          }
+
+          dropshipper.name = name || dropshipper.name;
+          dropshipper.apiKey = apiKey || dropshipper.apiKey;
+          dropshipper.details = details || dropshipper.details;
+          await user.save();
+
+          return res
+               .status(200)
+               .json({ message: "Dropshipper updated successfully", status: true });
      } catch (error) {
           return res.status(500).json({ message: error.message });
      }
