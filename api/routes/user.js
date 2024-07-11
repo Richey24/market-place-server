@@ -30,6 +30,9 @@ router.post("/notification", userController.sendNotification);
 //droppers
 router.post("/dropshipper", auth, userController.saveDropshipper);
 router.get("/dropshipper", auth, userController.getDropshippers);
+router.get("/dropshipper/:shopID", auth, userController.getOneDropshipper);
+router.put("/dropshipper/:shopID", auth, userController.updateDropshipper);
+router.delete("/dropshipper/:shopID", auth, userController.removeDropshipper);
 
 // ban user
 router.get("/users", userController.getAllUsers);
