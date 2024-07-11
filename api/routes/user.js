@@ -27,6 +27,10 @@ router.post("/admin/mail", userController.sendAdminMail);
 router.post("/vendor/mail", userController.sendVendorMail);
 router.post("/notification", userController.sendNotification);
 
+//droppers
+router.post("/dropshipper", auth, userController.saveDropshipper);
+router.get("/dropshipper", auth, userController.getDropshippers);
+
 // ban user
 router.get("/users", userController.getAllUsers);
 
