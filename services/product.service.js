@@ -218,6 +218,7 @@ const addProduct = async (params) => {
                x_printify_variant_id: params?.product.x_printify_variant_id,
                x_printify_shop_id: params?.product.x_printify_shop_id,
                x_featured_product: params?.product?.x_featured_product,
+               x_disabled: params?.product?.x_disabled,
           };
 
           const productId = await params.odoo.execute_kw("product.template", "create", [
@@ -287,6 +288,7 @@ const addProductVariant = async (params) => {
                     : [],
                x_featured_product: params?.product?.x_featured_product,
                x_inventory_tracking: params?.product?.x_inventory_tracking,
+               x_disabled: params?.product?.x_disabled,
                x_variants:
                     params?.product?.variants && params?.product?.variants.length > 0
                          ? JSON.stringify(params?.product?.variants)
