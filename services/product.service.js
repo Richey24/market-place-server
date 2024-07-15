@@ -487,6 +487,7 @@ const addMultipleProducts = async (params) => {
                          x_total_available_qty: +product.x_total_available_qty,
                          x_featured_product: product?.x_featured_product,
                          x_inventory_tracking: product?.x_inventory_tracking,
+                         x_disabled: product?.x_disabled,
                          x_variants:
                               product?.variants && product?.variants.length > 0
                                    ? JSON.stringify(product?.variants)
