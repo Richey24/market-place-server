@@ -266,8 +266,9 @@ const disableCompany = async (req, res) => {
                     "id"
                ],
           ]);
-          const ids = productIds.map((product) => product.id)
-          await Odoo.execute_kw("product.template", 'write', [[...ids], { x_disabled: data.disabled }]);
+          for (const product of productIds) {
+               await Odoo.execute_kw("product.template", 'write', [[+product.id], { x_disabled: data.disabled }]);
+          }
           res.status(200).json({ message: "success" });
      } catch (error) {
           return res.status(500).json({ error });
