@@ -89,7 +89,6 @@ class PaymentService {
                     {
                          amount: amount * 100, //amount + service charges and Convert to cents
                          currency: "usd",
-
                          automatic_payment_methods: {
                               enabled: true,
                          },
@@ -145,6 +144,10 @@ class PaymentService {
                          line_items: payload.products,
                          success_url: payload.successUrl,
                          payment_intent_data: payload.payment_intent_data,
+                         automatic_tax: {
+                              enabled: true,
+                         },
+
                          metadata: payload.metadata,
                     },
                     payload.stripeAccount && {
