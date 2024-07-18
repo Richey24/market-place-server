@@ -117,6 +117,7 @@ const userSchema = mongoose.Schema({
      },
      subscriptionPlan: {
           type: String,
+          default: "Free-Trial",
      },
      rated: {
           type: Array,
