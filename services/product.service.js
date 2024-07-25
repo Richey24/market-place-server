@@ -59,7 +59,7 @@ const getProductById = async (id) => {
                     "x_aliexpress_variant_id",
                     "x_variants",
                     "x_disabled",
-                    "company_id"
+                    "company_id",
                ],
           ]);
           if (productData.length === 0) {
@@ -125,7 +125,7 @@ const getFeaturedProducts = async (params) => {
      }
 };
 
-const searchProducts = async (params) => {
+const searchProducts = async (params, limit, offset) => {
      console.log("GET /api/products/search");
      try {
           await Odoo.connect();
@@ -133,7 +133,7 @@ const searchProducts = async (params) => {
                "product.template",
                "search_read",
                [
-                    [...params],
+                    params,
                     [
                          "id",
                          "name",
@@ -160,13 +160,14 @@ const searchProducts = async (params) => {
                          "x_discount",
                          "website_meta_keywords",
                     ],
+                    offset,
+                    limit,
                ],
-
                {},
           );
           return products;
      } catch (e) {
-          console.error("Error when try connect Odoo XML-RPC.", e);
+          console.error("Error when trying to connect to Odoo XML-RPC.", e);
      }
 };
 
@@ -460,7 +461,10 @@ const addMultipleProducts = async (params) => {
                     parentCateg = public_categ;
                     console.log(product?.public_categ, public_categ);
                     console.log("company_id", product?.company_id);
-                    await Company.findOneAndUpdate({ company_id: product?.company_id }, { $push: { categories: public_categ } })
+                    await Company.findOneAndUpdate(
+                         { company_id: product?.company_id },
+                         { $push: { categories: public_categ } },
+                    );
                     const templateData = {
                          base_unit_count: product?.qty,
                          public_categ_ids: [+public_categ],

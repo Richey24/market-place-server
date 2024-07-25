@@ -23,8 +23,12 @@ exports.getProductbyCompanyId = async (req, res) => {
      console.log("GET /api/products");
 
      try {
-          const companyId = [+req.params.companyId];
+          const companyId = +req.params.companyId;
           const searchQuery = req.query.searchQuery;
+          const limit = req.query.limit ? +req.query.limit : 10;
+          const page = req.query.page ? +req.query.page : 1;
+          const offset = (page - 1) * limit;
+          const currentPage = Math.floor(offset / limit) + 1;
 
           if (companyId) {
                await Odoo.connect();
@@ -40,6 +44,14 @@ exports.getProductbyCompanyId = async (req, res) => {
                     searchFilter.push(["name", "ilike", searchQuery]);
                }
 
+               // Get the total number of products for the given filter
+               const totalItems = await Odoo.execute_kw("product.template", "search_count", [
+                    searchFilter,
+               ]);
+
+               const totalPages = Math.ceil(totalItems / limit);
+
+               // Fetch the products with pagination
                const theProducts = await Odoo.execute_kw(
                     "product.template",
                     "search_read",
@@ -51,7 +63,6 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "name",
                               "display_name",
                               "list_price",
-                              // "image_1920",
                               "standard_price",
                               "description",
                               "base_unit_count",
@@ -73,13 +84,13 @@ exports.getProductbyCompanyId = async (req, res) => {
                               "x_shipping_package",
                               "x_discount",
                          ],
-                         null,
-                         0,
-                         // 10,
+                         offset, // Number of records to skip
+                         limit, // Maximum number of records to return
                     ],
                     { fields: ["name", "public_categ_ids"] },
                );
 
+               // Process the returned products
                const products = theProducts.map((product) => {
                     let x_images;
                     try {
@@ -98,7 +109,16 @@ exports.getProductbyCompanyId = async (req, res) => {
                     };
                });
 
-               res.status(200).json({ products, status: true });
+               res.status(200).json({
+                    products,
+                    status: true,
+                    pagination: {
+                         currentPage,
+                         totalPages,
+                         limit,
+                         totalItems,
+                    },
+               });
           } else {
                res.status(404).json({ error: "Invalid Company Id", status: false });
           }
@@ -113,12 +133,28 @@ exports.getProductbyCategory = async (req, res) => {
 
      try {
           const categoryId = +req.params.categoryId;
-          const companyId = [+req.params.companyId];
+          const companyId = +req.params.companyId;
+          const limit = req.query.limit ? +req.query.limit : 10;
+          const page = req.query.page ? +req.query.page : 1;
+          const offset = (page - 1) * limit;
+          const currentPage = Math.floor(offset / limit) + 1;
 
-          if (!req.params.category) {
+          if (categoryId && companyId) {
                await Odoo.connect();
-               console.log("Connect to Odoo XML-RPC - api/products");
+               console.log("Connected to Odoo XML-RPC - api/products");
 
+               // Get the total number of products for the given category and company
+               const totalItems = await Odoo.execute_kw("product.template", "search_count", [
+                    [
+                         ["public_categ_ids", "=", categoryId],
+                         ["type", "=", "consu"],
+                         ["company_id", "=", companyId],
+                    ],
+               ]);
+
+               const totalPages = Math.ceil(totalItems / limit);
+
+               // Fetch the products with pagination
                const theProducts = await Odoo.execute_kw("product.template", "search_read", [
                     [
                          ["public_categ_ids", "=", categoryId],
@@ -131,7 +167,6 @@ exports.getProductbyCategory = async (req, res) => {
                          "name",
                          "display_name",
                          "list_price",
-                         // "image_1920",
                          "product_variant_id",
                          "standard_price",
                          "description",
@@ -151,19 +186,30 @@ exports.getProductbyCategory = async (req, res) => {
                          "x_shipping_package",
                          "x_discount",
                     ],
+                    offset,
+                    limit,
                ]);
 
                const products = theProducts.map((product) => {
                     return {
                          ...product,
-                         x_images: JSON.parse(product.x_images),
+                         x_images: product.x_images ? JSON.parse(product.x_images) : [],
                          x_discount: product?.x_discount ? JSON.parse(product?.x_discount) : null,
                     };
                });
 
-               res.status(200).json({ products, status: true });
+               res.status(200).json({
+                    products,
+                    status: true,
+                    pagination: {
+                         currentPage,
+                         totalPages,
+                         limit,
+                         totalItems,
+                    },
+               });
           } else {
-               res.status(404).json({ error: "Invalid Category", status: false });
+               res.status(404).json({ error: "Invalid Category or Company ID", status: false });
           }
      } catch (error) {
           console.error("Error when trying to connect to Odoo XML-RPC.", error);
@@ -196,8 +242,12 @@ exports.getProductImage = async (req, res) => {
 
 exports.getFeaturedProducts = async (req, res) => {
      try {
-          console.log("GET  api/products/featured");
-          const company_id = [+req.params.companyId];
+          console.log("GET /api/products/featured");
+          const company_id = +req.params.companyId;
+          const limit = req.query.limit ? +req.query.limit : 10;
+          const page = req.query.page ? +req.query.page : 1;
+          const offset = (page - 1) * limit;
+          const currentPage = Math.floor(offset / limit) + 1;
 
           let user = req.userData;
 
@@ -206,20 +256,27 @@ exports.getFeaturedProducts = async (req, res) => {
                user: user,
                company_id,
                page: req.query.page,
+               limit,
+               offset,
           };
 
+          // Fetch the featured products with pagination
           const theProducts = await getFeaturedProducts(params);
-          const productsLength = await Odoo.execute_kw("product.template", "search_read", [
+
+          // Get the total number of featured products for the company
+          const productsLength = await Odoo.execute_kw("product.template", "search_count", [
                [
                     ["x_featured_product", "=", true],
-                    ["company_id", "=", params.company_id],
+                    ["company_id", "=", company_id],
                ],
-               ["id"],
           ]);
+
+          const totalPages = Math.ceil(productsLength / limit);
 
           if (theProducts.length === 0) {
                return res.status(400).json({ products: null, count: 0 });
           }
+
           const products = theProducts.map((product) => {
                return {
                     ...product,
@@ -227,134 +284,114 @@ exports.getFeaturedProducts = async (req, res) => {
                };
           });
 
-          res.status(201).json({ products, count: productsLength.length });
+          res.status(201).json({
+               products,
+               count: productsLength,
+               pagination: {
+                    currentPage,
+                    totalPages,
+                    limit,
+                    totalItems: productsLength,
+               },
+          });
      } catch (error) {
-          console.log(error);
+          console.error(error);
+          res.status(500).json({ error: "Internal Server Error" });
      }
 };
 
 exports.filterProducts = async (req, res) => {
      const category = req.body.category_id;
-     const offset = 5;
-     const page = 0;
+     const limit = req.query.limit ? +req.query.limit : 10;
+     const page = req.query.page ? +req.query.page : 1;
+     const offset = (page - 1) * limit;
+     const currentPage = Math.floor(offset / limit) + 1;
 
      try {
           await Odoo.connect();
 
-          if (category === null) {
-               let theProducts = await Odoo.execute_kw("product.product", "search_read", [
-                    [["type", "=", "consu"]],
-                    [
-                         "name",
-                         "list_price",
-                         // "image_512",
-                         "categ_id",
-                         "x_rating",
-                         "rating_count",
-                         "x_color",
-                         "x_dimension",
-                         "x_size",
-                         "x_subcategory",
-                         "x_weight",
-                         "x_rating",
-                         "x_images",
-                         "website_url",
-                         "public_categ_ids",
-                         "website_meta_keywords",
-                         "x_shipping_package",
-                         "x_show_sold_count",
-                    ],
-                    0,
-                    5, // Offset, Limit
-               ]);
-               const products = theProducts.map((product) => {
-                    return {
-                         id: product.id,
-                         website_url: product.website_url,
-                         name: product.name,
-                         description: product.description,
-                         categ_id: product.categ_id,
-                         public_categ_ids: product.public_categ_ids,
-                         list_price: product.list_price,
-                         standard_price: product.standard_price,
-                         company_id: product.company_id,
-                         display_name: product.display_name,
-                         base_unit_count: product.base_unit_count,
-                         // image_1920: product.image_1920,
-                         // image_1024: product.image_1024,
-                         x_rating: product.x_rating,
-                         create_date: product.create_date,
-                         x_subcategory: product.x_subcategory,
-                         x_size: product.x_size,
-                         x_weight: product.x_weight,
-                         x_color: product.x_color,
-                         x_images: JSON.parse(product.x_images),
-                         x_dimension: product.x_dimension,
-                         x_shipping_package: product?.x_shipping_package,
-                         x_show_sold_count: product?.x_show_sold_count,
-                    };
-               });
-               res.status(201).json({ products });
-          } else {
-               let theProducts = await Odoo.execute_kw("product.product", "search_read", [
-                    [["type", "=", "consu"]],
-                    // [['type', '=', 'consu'], ['public_categ_ids', '=', Number(category)]]
-                    [
-                         "name",
-                         "list_price",
-                         "image_512",
-                         "categ_id",
-                         "x_color",
-                         "x_dimension",
-                         "x_size",
-                         "x_subcategory",
-                         "x_weight",
-                         "x_images",
-                         "x_rating",
-                         "rating_count",
-                         "website_url",
-                         "public_categ_ids",
-                         "website_meta_keywords",
-                         "x_shipping_package",
-                         "x_show_sold_count",
-                    ], // Fields
-                    0,
-                    5, // Offset, Limit
-               ]);
-               const products = theProducts.map((product) => {
-                    return {
-                         id: product.id,
-                         website_url: product.website_url,
-                         name: product.name,
-                         description: product.description,
-                         categ_id: product.categ_id,
-                         public_categ_ids: product.public_categ_ids,
-                         list_price: product.list_price,
-                         standard_price: product.standard_price,
-                         company_id: product.company_id,
-                         display_name: product.display_name,
-                         base_unit_count: product.base_unit_count,
-                         // image_1920: product.image_1920,
-                         // image_1024: product.image_1024,
-                         x_rating: product.x_rating,
-                         create_date: product.create_date,
-                         x_subcategory: product.x_subcategory,
-                         x_show_sold_count: product?.x_show_sold_count,
-                         x_size: product.x_size,
-                         x_weight: product.x_weight,
-                         x_color: product.x_color,
-                         x_shipping_package: product?.x_shipping_package,
-                         x_images:
-                              typeof product?.x_images === "string"
-                                   ? JSON?.parse(product?.x_images)
-                                   : product?.x_images,
-                         x_dimension: product.x_dimension,
-                    };
-               });
-               res.status(201).json(products);
+          // Define the base filter
+          let baseFilter = [["type", "=", "consu"]];
+
+          // Add category filter if provided
+          if (category !== null) {
+               baseFilter.push(["public_categ_ids", "=", Number(category)]);
           }
+
+          // Get the total number of products matching the filter criteria
+          const totalItems = await Odoo.execute_kw("product.product", "search_count", [baseFilter]);
+
+          const totalPages = Math.ceil(totalItems / limit);
+
+          // Fetch the products with pagination
+          const theProducts = await Odoo.execute_kw("product.product", "search_read", [
+               baseFilter,
+               [
+                    "name",
+                    "list_price",
+                    // "image_512",
+                    "categ_id",
+                    "x_rating",
+                    "rating_count",
+                    "x_color",
+                    "x_dimension",
+                    "x_size",
+                    "x_subcategory",
+                    "x_weight",
+                    "x_images",
+                    "website_url",
+                    "public_categ_ids",
+                    "website_meta_keywords",
+                    "x_shipping_package",
+                    "x_show_sold_count",
+               ],
+               offset, // Number of records to skip
+               limit, // Maximum number of records to return
+          ]);
+
+          const products = theProducts.map((product) => {
+               return {
+                    id: product.id,
+                    website_url: product.website_url,
+                    name: product.name,
+                    description: product.description,
+                    categ_id: product.categ_id,
+                    public_categ_ids: product.public_categ_ids,
+                    list_price: product.list_price,
+                    standard_price: product.standard_price,
+                    company_id: product.company_id,
+                    display_name: product.display_name,
+                    base_unit_count: product.base_unit_count,
+                    // image_1920: product.image_1920,
+                    // image_1024: product.image_1024,
+                    x_rating: product.x_rating,
+                    create_date: product.create_date,
+                    x_subcategory: product.x_subcategory,
+                    x_size: product.x_size,
+                    x_weight: product.x_weight,
+                    x_color: product.x_color,
+                    x_shipping_package: product?.x_shipping_package,
+                    x_show_sold_count: product?.x_show_sold_count,
+                    x_images:
+                         typeof product?.x_images === "string"
+                              ? JSON?.parse(product?.x_images)
+                              : product?.x_images,
+                    x_dimension: product.x_dimension,
+               };
+          });
+
+          res.status(201).json({
+               products,
+               pagination: {
+                    currentPage,
+                    totalPages,
+                    limit,
+                    totalItems,
+               },
+          });
      } catch (e) {
-          console.error("Error when try connect Odoo XML-RPC.", e);
+          console.error("Error when trying to connect to Odoo XML-RPC.", e);
+          res.status(500).json({ error: "Internal Server Error" });
      }
 };
 
@@ -757,7 +794,19 @@ exports.searchProduct = async (req, res) => {
           keys.forEach((key) => {
                arr.push([key, "ilike", body[key]]);
           });
-          const theProducts = await searchProducts(arr);
+
+          const limit = req.query.limit ? +req.query.limit : 10;
+          const page = req.query.page ? +req.query.page : 1;
+          const offset = (page - 1) * limit;
+
+          const currentPage = page;
+
+          // Get the total number of products matching the filter criteria
+          const totalItems = await Odoo.execute_kw("product.template", "search_count", [arr]);
+
+          const totalPages = Math.ceil(totalItems / limit);
+
+          const theProducts = await searchProducts(arr, limit, offset);
 
           const products = theProducts.map((product) => {
                return {
@@ -766,7 +815,17 @@ exports.searchProduct = async (req, res) => {
                     x_images: JSON.parse(product.x_images),
                };
           });
-          res.status(200).json({ products, status: true });
+
+          res.status(200).json({
+               products,
+               status: true,
+               pagination: {
+                    currentPage,
+                    totalPages,
+                    limit,
+                    totalItems,
+               },
+          });
      } catch (err) {
           res.status(400).json({ err, status: false });
      }
