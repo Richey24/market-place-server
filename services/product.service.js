@@ -292,7 +292,7 @@ const addProductVariant = async (params) => {
                x_disabled: params?.product?.x_disabled,
                x_variants:
                     params?.product?.variants
-                         ? params?.product?.variants
+                         ? JSON.stringify(params?.product?.variants)
                          : false,
           };
 
@@ -350,7 +350,7 @@ const updateProduct = async (params) => {
                     : null,
                x_variants:
                     params?.product?.variants
-                         ? params?.product?.variants
+                         ? JSON.stringify(params?.product?.variants)
                          : false,
           };
           // Update the product data
