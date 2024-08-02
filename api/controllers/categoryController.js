@@ -11,6 +11,7 @@ class CategoryController {
 
                let categories = await Odoo.execute_kw("product.public.category", "search_read", [
                     [],
+                    ["id", "name"]
                ]);
 
                res.status(200).json({ categories, status: true });
@@ -29,7 +30,7 @@ class CategoryController {
                let categories = await Odoo.execute_kw(
                     "product.public.category",
                     "search_read",
-                    [[["id", "in", company.categories]]],
+                    [[["id", "in", company.categories]], ["id", "name"]],
                     {
                          fields: ["name"],
                          order: "id desc",
