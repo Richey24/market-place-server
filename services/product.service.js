@@ -291,74 +291,13 @@ const addProductVariant = async (params) => {
                x_inventory_tracking: params?.product?.x_inventory_tracking,
                x_disabled: params?.product?.x_disabled,
                x_variants:
-                    params?.product?.variants && params?.product?.variants.length > 0
-                         ? JSON.stringify(params?.product?.variants)
+                    params?.product?.variants
+                         ? params?.product?.variants
                          : false,
           };
 
           // console.log("templateData", params?.product);
           const templateId = await createProductTemplate(params, templateData);
-
-          // if (params?.product?.variants && params?.product?.variants.length > 0) {
-          //      await params?.product?.variants?.forEach(async (container) => {
-          //           await container.forEach(async (variant, idx) => {
-          //                // console.log("variant", variant);
-
-          //                let attributeValueId;
-
-          //                if (!variant?.valueId) {
-          //                     const attributeValueData = {
-          //                          name: variant?.value,
-          //                          attribute_id: variant?.attributeId,
-          //                          sequence: 1,
-          //                     };
-
-          //                     attributeValueId = await params.odoo.execute_kw(
-          //                          "product.attribute.value",
-          //                          "create",
-          //                          [attributeValueData],
-          //                     );
-          //                } else {
-          //                     attributeValueId = variant?.valueId;
-          //                }
-          //                console.log(attributeValueId);
-          //                const attributeLineData = {
-          //                     product_tmpl_id: templateId,
-          //                     attribute_id: variant?.attributeId,
-          //                     value_ids: [[6, 0, [attributeValueId]]],
-          //                     x_price_extra: +variant?.price_extra || 0,
-          //                     x_quantity: +variant?.quantity || 1,
-          //                };
-
-          //                const attributeLineId = await params.odoo.execute_kw(
-          //                     "product.template.attribute.line",
-          //                     "create",
-          //                     [attributeLineData],
-          //                );
-
-          //                if (variant?.price_extra && variant?.price_extra !== 0) {
-          //                     ///ADD PRICE_EXTRA
-          //                     const attributeLineRespData = await Odoo.execute_kw(
-          //                          "product.template.attribute.line",
-          //                          "read",
-          //                          [[attributeLineId], ["product_template_value_ids"]],
-          //                     );
-
-          //                     const productTemplateValueIds =
-          //                          attributeLineRespData[0]?.product_template_value_ids || [];
-          //                     const attributeValueWriteData = {
-          //                          price_extra: variant?.price_extra,
-          //                     };
-
-          //                     await params.odoo.execute_kw(
-          //                          "product.template.attribute.value",
-          //                          "write",
-          //                          [[productTemplateValueIds[0]], attributeValueWriteData],
-          //                     );
-          //                }
-          //           });
-          //      });
-          // }
 
           return templateId;
      } else {
@@ -406,9 +345,12 @@ const updateProduct = async (params) => {
                x_dimension: params.product.dimension,
                x_inventory_tracking: params?.product?.x_inventory_tracking,
                x_total_available_qty: +params?.product.x_total_available_qty,
+               x_discount: params?.product?.discount
+                    ? JSON.stringify(params?.product?.discount)
+                    : null,
                x_variants:
-                    params?.product?.variants && params?.product?.variants.length > 0
-                         ? JSON.stringify(params?.product?.variants)
+                    params?.product?.variants
+                         ? params?.product?.variants
                          : false,
           };
           // Update the product data
