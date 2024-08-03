@@ -22,7 +22,8 @@ const YOUR_ISHOP_DOMAIN = "https://ishop.black";
 
 exports.createVendorSubscription = async (req, res) => {
      // try {
-     const { email, plan, mode, id, register } = req.query;
+     const { email, plan, mode, id, register, premium } = req.query;
+     console.log(premium);
      if (!email || !plan || !mode) {
           return res.status(400).json({ message: "Send All Required Parameter" });
      }
@@ -66,9 +67,12 @@ exports.createVendorSubscription = async (req, res) => {
                     {
                          // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
                          price:
-                              plan === "monthly"
-                                   ? process.env.MONTHLY_STORE
-                                   : process.env.YEARLY_STORE,
+                              premium === "true" ? plan === "monthly"
+                                   ? process.env.PREMIUM_MONTHLY
+                                   : process.env.PREMIUM_YEARLY
+                                   : plan === "monthly"
+                                        ? process.env.MONTHLY_STORE
+                                        : process.env.YEARLY_STORE,
                          quantity: 1,
                     },
                ],
@@ -78,6 +82,7 @@ exports.createVendorSubscription = async (req, res) => {
                     plan: plan,
                     userID: id,
                     mode: mode,
+                    premium: premium
                },
                allow_promotion_codes: true,
                automatic_tax: {
