@@ -119,6 +119,10 @@ const userSchema = mongoose.Schema({
           type: String,
           default: "Free-Trial",
      },
+     premium: {
+          type: Boolean,
+          default: false
+     },
      rated: {
           type: Array,
           default: [],
