@@ -120,6 +120,35 @@ exports.createVendorSubscription = async (req, res) => {
      // }
 };
 
+exports.coursePayment = async (req, res) => {
+     const { email } = req.body
+     if (!email) {
+          res.status(400).json({ message: "Send email" })
+     }
+     const session = await stripe.checkout.sessions.create({
+          line_items: [
+               {
+                    // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
+                    price: process.env.COURSE_PAYMENT,
+                    quantity: 1,
+               },
+          ],
+          mode: "payment",
+          metadata: {
+               email: email
+          },
+          allow_promotion_codes: true,
+          automatic_tax: {
+               enabled: true,
+          },
+
+          success_url: "https://www.blackowned.store",
+          cancel_url: "https://www.blackowned.store",
+     });
+     res.redirect(303, session.url);
+     // res.json({ url: session.url })
+}
+
 exports.stripeVendorCallback = async (req, res) => {
      const payload = req.rawBody;
      const sig = req.headers["stripe-signature"];
@@ -262,7 +291,7 @@ exports.updateSubscription = async (req, res) => {
                customer: user.stripeID,
                return_url: `${YOUR_DOMAIN}/billing`,
           });
-          res.redirect(303, session.url);
+          res.status(200).json({ url: session.url });
      } catch (error) {
           res.status(500).json({ message: "An error occurred" });
      }

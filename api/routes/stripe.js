@@ -3,6 +3,7 @@ const router = express.Router();
 const stripeController = require("../controllers/stripeController")
 
 router.post("/vendor/subscription/create", stripeController.createVendorSubscription)
+router.post("/course/pay", stripeController.coursePayment)
 router.post("/vendor/webhook", express.raw({ type: 'application/json' }), stripeController.stripeVendorCallback)
 router.post("/vendor/subscription/cancel/:id", stripeController.cancelVendorSubscription)
 router.post("/", stripeController.stripeCheckout);
