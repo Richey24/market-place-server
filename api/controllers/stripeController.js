@@ -145,8 +145,8 @@ exports.coursePayment = async (req, res) => {
           success_url: "https://www.blackowned.store",
           cancel_url: "https://www.blackowned.store",
      });
-     // res.redirect(303, session.url);
-     res.json({ url: session.url })
+     res.redirect(303, session.url);
+     // res.json({ url: session.url })
 }
 
 exports.stripeVendorCallback = async (req, res) => {
